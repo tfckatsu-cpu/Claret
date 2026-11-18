@@ -74,6 +74,15 @@ foreach ($inputPath in $Paths) {
     }
 
     $repoPath = "mods/$Mod/$($relativePath.Replace('\', '/'))"
+    & git -C $repoRoot diff --cached --quiet HEAD -- $repoPath
+    $stagedDiff = $LASTEXITCODE
+    if ($stagedDiff -eq 1) {
+        throw "Файл '$repoPath' уже staged. Сначала разберите его изменения отдельно."
+    }
+    if ($stagedDiff -ne 0) {
+        throw "Не удалось проверить staged-состояние: $repoPath"
+    }
+
     $sourceHash = (Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash
     $mirrorExists = Test-Path -LiteralPath $mirrorPath -PathType Leaf
     $mirrorHash = $null
