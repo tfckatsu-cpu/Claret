@@ -80,4 +80,9 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 - Performance measurements are done by the user; method in `Context/performance-hotspots.md`.
 
 ## Git (when connected)
-- One branch per major system, one commit per finished feature, review the diff. Exclude `Context/sources/` and `.tools/`.
+- Оригиналы для разработки — `../mods/ClaretCore/` и `../mods/ClaretHotbuild/`; копии в `mods/ClaretCore/` и `mods/ClaretHotbuild/` внутри репозитория — только зеркала. Никогда не копировать зеркало обратно в оригинал.
+- Разработка только в ветке `dev`. Не коммитить в `main`, не использовать force-push и не создавать PR без прямой просьбы пользователя.
+- После каждой задачи сначала дождаться подтверждения пользователя, что изменения работают в игре. Без такого подтверждения не синхронизировать, не коммитить и не отправлять незавершённые изменения, кроме явно запрошенного checkpoint.
+- После подтверждения перечислить только изменённые в задаче относительные пути и выполнить из корня репозитория `powershell -NoProfile -File .\Tools\Sync-ClaretMods.ps1 -Mod <ClaretCore|ClaretHotbuild> -Paths '<путь1>','<путь2>'`. Скрипт копирует только эти файлы из оригиналов в зеркала, проверяет конфликт и SHA-256; не синхронизирует удаления и останавливается при конфликте.
+- Просмотреть `git diff`, проверить `git status`, добавить в индекс только файлы текущей задачи, создать отдельный описательный коммит и выполнить `git push origin dev`. Не включать несвязанные или незавершённые изменения.
+- Исключать `Context/sources/` и `.tools/`; никогда не отправлять секреты, кэши и временные файлы.
