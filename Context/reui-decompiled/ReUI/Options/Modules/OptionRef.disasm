@@ -1,0 +1,244 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/options/modules/optionref.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"GetPreference"	1	24
+.local	"SetPreference"	2	24
+.local	"String"	5	24
+.local	"IsValidLevels"	6	24
+
+.constant	k0	"GetPreference"
+.constant	k1	"SetPreference"
+.constant	k2	"ReUI"
+.constant	k3	"Core"
+.constant	k4	"String"
+.constant	k5	"OptionRef"
+.constant	k6	"Class"
+.constant	k7	"__init"
+.constant	k8	"GetPath"
+.constant	k9	"Get"
+.constant	k10	"Set"
+
+.line	1	getglobal     r0    k0 ; k0 = "GetPreference"
+.line	2	getglobal     r1    k1 ; k1 = "SetPreference"
+.line	4	getglobal     r2    k2 ; k2 = "ReUI"
+.line	4	gettable      r2    r2    k3 ; k3 = "Core"
+.line	4	gettable      r2    r2    k4 ; k4 = "String"
+.line	16	closure       r3    f0
+.line	20	getglobal     r4    k2 ; k2 = "ReUI"
+.line	20	gettable      r4    r4    k3 ; k3 = "Core"
+.line	20	gettable      r4    r4    k6 ; k6 = "Class"
+.line	20	call          r4     1     2
+.line	20	newtable      r5     0     3
+.line	31	closure       r6    f1
+.line	31	settable      r5    k7    r6 ; k7 = "__init"
+.line	42	closure       r6    f2
+.line	42	move          r0    r2 ; upvalue declaration
+.line	42	settable      r5    k8    r6 ; k8 = "GetPath"
+.line	49	closure       r6    f3
+.line	49	move          r0    r0 ; upvalue declaration
+.line	49	settable      r5    k9    r6 ; k9 = "Get"
+.line	57	closure       r6    f4
+.line	57	move          r0    r1 ; upvalue declaration
+.line	57	settable      r5   k10    r6 ; k10 = "Set"
+.line	21	call          r4     2     2
+.line	58	setglobal     r4    k5 ; k5 = "OptionRef"
+.line	58	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	8
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"levels"	0	16
+.local	"pattern"	8	16
+
+.constant	k0	"type"
+.constant	k1	"string"
+.constant	k2	"^[a-zA-Z_][a-zA-Z0-9_]*(%.[a-zA-Z_][a-zA-Z0-9_]*)*$"
+.constant	k3	"find"
+.constant	k4	nil
+
+.line	9	getglobal     r1    k0 ; k0 = "type"
+.line	9	move          r2    r0
+.line	9	call          r1     2     2
+.line	9	eq             1    r1    k1 ; k1 = "string"
+.line	9	jmp           l8
+.line	10	loadbool      r1     0     0
+.line	10	return        r1     2
+.label	l8
+.line	14	loadk         r1    k2 ; k2 = "^[a-zA-Z_][a-zA-Z0-9" (truncated)
+.line	15	self          r2    r0    k3 ; k3 = "find"
+.line	15	move          r4    r1
+.line	15	call          r2     3     2
+.line	15	eq             0    r2    k4 ; k4 = nil
+.line	15	jmp          l15
+.line	15	loadbool      r2     0     1
+.label	l15
+.line	15	loadbool      r2     1     0
+.line	15	return        r2     2
+.line	16	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	24
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	6
+.local	"levels"	0	6
+.local	"lvls"	5	6
+
+.constant	k0	"table"
+.constant	k1	"concat"
+.constant	k2	"."
+.constant	k3	"_levels"
+
+.line	25	getglobal     r2    k0 ; k0 = "table"
+.line	25	gettable      r2    r2    k1 ; k1 = "concat"
+.line	25	move          r3    r1
+.line	25	loadk         r4    k2 ; k2 = "."
+.line	25	call          r2     3     2
+.line	30	settable      r0    k3    r2 ; k3 = "_levels"
+.line	31	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	36
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	16
+.local	"start"	0	16
+.local	"ss"	7	14
+
+.upvalue	"String"	0	false
+
+.constant	k0	"Split"
+.constant	k1	"_levels"
+.constant	k2	"."
+.constant	k3	"table"
+.constant	k4	"concat"
+
+.line	37	test          r1    r1     0
+.line	37	jmp          l15
+.line	38	getupval      r2    u0
+.line	38	gettable      r2    r2    k0 ; k0 = "Split"
+.line	38	gettable      r3    r0    k1 ; k1 = "_levels"
+.line	38	loadk         r4    k2 ; k2 = "."
+.line	38	call          r2     3     2
+.line	39	getglobal     r3    k3 ; k3 = "table"
+.line	39	gettable      r3    r3    k4 ; k4 = "concat"
+.line	39	move          r4    r2
+.line	39	loadk         r5    k2 ; k2 = "."
+.line	39	move          r6    r1
+.line	39	tailcall      r3     4
+.line	39	return        r3     0
+.label	l15
+.line	41	gettable      r2    r0    k1 ; k1 = "_levels"
+.line	41	return        r2     2
+.line	42	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	47
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	5
+.local	"default"	0	5
+
+.upvalue	"GetPreference"	0	false
+
+.constant	k0	"_levels"
+
+.line	48	getupval      r2    u0
+.line	48	gettable      r3    r0    k0 ; k0 = "_levels"
+.line	48	move          r4    r1
+.line	48	tailcall      r2     3
+.line	48	return        r2     0
+.line	49	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	54
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	6
+.local	"value"	0	6
+
+.upvalue	"SetPreference"	0	false
+
+.constant	k0	"_levels"
+
+.line	55	getupval      r2    u0
+.line	55	gettable      r3    r0    k0 ; k0 = "_levels"
+.line	55	move          r4    r1
+.line	55	call          r2     3     1
+.line	56	loadbool      r2     1     0
+.line	56	return        r2     2
+.line	57	return        r0     1
+

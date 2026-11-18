@@ -1,0 +1,144 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ui/ui.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.constant	k0	"Version"
+.constant	k1	"1.4.0"
+.constant	k2	"ReUI"
+.constant	k3	"Require"
+.constant	k4	"ReUI.Core >= 1.0.0"
+.constant	k5	"Main"
+
+.line	1	loadk         r0    k1 ; k1 = "1.4.0"
+.line	1	setglobal     r0    k0 ; k0 = "Version"
+.line	3	getglobal     r0    k2 ; k2 = "ReUI"
+.line	3	gettable      r0    r0    k3 ; k3 = "Require"
+.line	3	newtable      r1     1     0
+.line	6	loadk         r2    k4 ; k4 = "ReUI.Core >= 1.0.0"
+.line	6	setlist       r1     0
+.line	4	call          r0     2     1
+.line	28	closure       r0    f0
+.line	8	setglobal     r0    k5 ; k5 = "Main"
+.line	28	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	8
+.numparams	1
+.is_vararg	0
+.maxstacksize	8
+
+.local	"isReplay"	0	36
+.local	"LayoutFunctions"	3	36
+.local	"LayouterModule"	6	36
+.local	"Layoutable"	10	36
+.local	"BaseLayout"	14	36
+
+.constant	k0	"import"
+.constant	k1	"Modules/LayoutFunctions.lua"
+.constant	k2	"Modules/Layouter.lua"
+.constant	k3	"Modules/Layoutable.lua"
+.constant	k4	"Layoutable"
+.constant	k5	"BaseLayout"
+.constant	k6	"Layouter"
+.constant	k7	"FloorLayouter"
+.constant	k8	"RoundLayouter"
+.constant	k9	"FloorLayoutFor"
+.constant	k10	"RoundLayoutFor"
+.constant	k11	"LayoutFunctions"
+.constant	k12	"Global"
+.constant	k13	"ReUI"
+.constant	k14	"Core"
+.constant	k15	"Weak"
+.constant	k16	"Value"
+
+.line	9	getglobal     r1    k0 ; k0 = "import"
+.line	9	loadk         r2    k1 ; k1 = "Modules/LayoutFuncti" (truncated)
+.line	9	call          r1     2     2
+.line	10	getglobal     r2    k0 ; k0 = "import"
+.line	10	loadk         r3    k2 ; k2 = "Modules/Layouter.lua"
+.line	10	call          r2     2     2
+.line	11	getglobal     r3    k0 ; k0 = "import"
+.line	11	loadk         r4    k3 ; k3 = "Modules/Layoutable.l" (truncated)
+.line	11	call          r3     2     2
+.line	11	gettable      r3    r3    k4 ; k4 = "Layoutable"
+.line	12	getglobal     r4    k0 ; k0 = "import"
+.line	12	loadk         r5    k3 ; k3 = "Modules/Layoutable.l" (truncated)
+.line	12	call          r4     2     2
+.line	12	gettable      r4    r4    k5 ; k5 = "BaseLayout"
+.line	14	newtable      r5     0     4
+.line	15	gettable      r6    r2    k6 ; k6 = "Layouter"
+.line	15	settable      r5    k6    r6 ; k6 = "Layouter"
+.line	16	gettable      r6    r2    k7 ; k7 = "FloorLayouter"
+.line	16	settable      r5    k7    r6 ; k7 = "FloorLayouter"
+.line	17	gettable      r6    r2    k8 ; k8 = "RoundLayouter"
+.line	17	settable      r5    k8    r6 ; k8 = "RoundLayouter"
+.line	19	gettable      r6    r2    k9 ; k9 = "FloorLayoutFor"
+.line	19	settable      r5    k9    r6 ; k9 = "FloorLayoutFor"
+.line	20	gettable      r6    r2   k10 ; k10 = "RoundLayoutFor"
+.line	20	settable      r5   k10    r6 ; k10 = "RoundLayoutFor"
+.line	22	settable      r5    k4    r3 ; k4 = "Layoutable"
+.line	23	settable      r5   k11    r1 ; k11 = "LayoutFunctions"
+.line	24	settable      r5    k5    r4 ; k5 = "BaseLayout"
+.line	26	getglobal     r6   k13 ; k13 = "ReUI"
+.line	26	gettable      r6    r6   k14 ; k14 = "Core"
+.line	26	gettable      r6    r6   k15 ; k15 = "Weak"
+.line	26	gettable      r6    r6   k16 ; k16 = "Value"
+.line	26	newtable      r7     0     0
+.line	26	call          r6     2     2
+.line	26	settable      r5   k12    r6 ; k12 = "Global"
+.line	27	return        r5     2
+.line	28	return        r0     1
+

@@ -1,0 +1,1473 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/datapanelconfig.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	23
+
+.local	"Utils"	3	636
+.local	"RGBA"	4	636
+.local	"normalMassColor"	7	636
+.local	"normalEnergyColor"	10	636
+.local	"overMassColor"	13	636
+.local	"overEnergyColor"	16	636
+.local	"normalUncheckedColor"	19	636
+.local	"overUncheckedColor"	22	636
+.local	"normalCheckedColor"	25	636
+.local	"overCheckedColor"	28	636
+.local	"tooltips"	570	636
+.local	"ColorUtils"	573	636
+.local	"(for generator)"	576	636
+.local	"(for state)"	576	636
+.local	"name"	576	636
+.local	"category"	576	636
+.local	"(for generator)"	579	634
+.local	"(for state)"	579	634
+.local	"i"	579	634
+.local	"checkbox"	579	634
+
+.constant	k0	"import"
+.constant	k1	"Utils.lua"
+.constant	k2	"#45a329"
+.constant	k3	"#f7c70f"
+.constant	k4	"#68e344"
+.constant	k5	"#faf202"
+.constant	k6	"#3f3f3f"
+.constant	k7	"#555555"
+.constant	k8	"#e0e0e0"
+.constant	k9	"#f0f0f0"
+.constant	k10	"checkboxes"
+.constant	k11	"tooltip"
+.constant	k12	"score-points"
+.constant	k13	"title"
+.constant	k14	"Army score"
+.constant	k15	"description"
+.constant	k16	"Score points of army"
+.constant	k17	"text"
+.constant	k18	"S"
+.constant	k19	"nu"
+.constant	k20	""
+.constant	k21	"nc"
+.constant	k22	"ou"
+.constant	k23	"oc"
+.constant	k24	"du"
+.constant	k25	"dc"
+.constant	k26	"GetData"
+.constant	k27	"kills-built-ratio"
+.constant	k28	"Kills-built ratio"
+.constant	k29	"Ratio of killed units to built"
+.constant	k30	"B"
+.constant	k31	"kills-loses-ratio"
+.constant	k32	"Kills-loses ratio"
+.constant	k33	"Ratio of killed units to lost"
+.constant	k34	"K"
+.constant	k35	"#ff0000"
+.constant	k36	"#ff2222"
+.constant	k37	"mass-income"
+.constant	k38	"Mass income"
+.constant	k39	"Mass income of an army"
+.constant	k40	"M"
+.constant	k41	"mass-total"
+.constant	k42	"Total Mass"
+.constant	k43	"Total amount of mass got by army"
+.constant	k44	"T"
+.constant	k45	"mass-reclaim"
+.constant	k46	"Reclaimed Mass"
+.constant	k47	"Total amount of reaclaimed mass by army"
+.constant	k48	"R"
+.constant	k49	"mass-storage"
+.constant	k50	"Mass in storage"
+.constant	k51	"Current amount of mass in storage of an army"
+.constant	k52	"energy-income"
+.constant	k53	"Energy income"
+.constant	k54	"Energy income of an army"
+.constant	k55	"E"
+.constant	k56	"energy-total"
+.constant	k57	"Total Energy"
+.constant	k58	"Total amount of energy got by army"
+.constant	k59	"energy-reclaim"
+.constant	k60	"Reaclaimed Energy"
+.constant	k61	"Total amount of reaclaimed energy by army"
+.constant	k62	"energy-storage"
+.constant	k63	"Energy in storage"
+.constant	k64	"Current amount of energy in storage of an army"
+.constant	k65	"total-mass-killed"
+.constant	k66	"Mass killed"
+.constant	k67	"Total amount of mass killed by army"
+.constant	k68	"total-mass-rate"
+.constant	k69	"Mass rate"
+.constant	k70	"Mass rate of army"
+.constant	k71	"total-mass-collected"
+.constant	k72	"all-units"
+.constant	k73	"All units"
+.constant	k74	"Amount of all units"
+.constant	k75	"naval-units"
+.constant	k76	"Naval units"
+.constant	k77	"Amount of naval units"
+.constant	k78	"N"
+.constant	k79	"air-units"
+.constant	k80	"Air units"
+.constant	k81	"Amount of air units"
+.constant	k82	"A"
+.constant	k83	"land-units"
+.constant	k84	"Land units"
+.constant	k85	"Amount of land units"
+.constant	k86	"L"
+.constant	k87	"experimental-units"
+.constant	k88	"EXP"
+.constant	k89	"Amount of EXPs"
+.constant	k90	"/lua/ui/help/tooltips.lua"
+.constant	k91	"Tooltips"
+.constant	k92	"ReUI"
+.constant	k93	"UI"
+.constant	k94	"Color"
+.constant	k95	"ColorMult"
+.constant	k96	0.8
+.constant	k97	"#ffffff"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "Utils.lua"
+.line	1	call          r0     2     2
+.line	13	closure       r1    f0
+.line	15	move          r2    r1
+.line	15	loadk         r3    k2 ; k2 = "#45a329"
+.line	15	call          r2     2     2
+.line	16	move          r3    r1
+.line	16	loadk         r4    k3 ; k3 = "#f7c70f"
+.line	16	call          r3     2     2
+.line	18	move          r4    r1
+.line	18	loadk         r5    k4 ; k4 = "#68e344"
+.line	18	call          r4     2     2
+.line	19	move          r5    r1
+.line	19	loadk         r6    k5 ; k5 = "#faf202"
+.line	19	call          r5     2     2
+.line	22	move          r6    r1
+.line	22	loadk         r7    k6 ; k6 = "#3f3f3f"
+.line	22	call          r6     2     2
+.line	23	move          r7    r1
+.line	23	loadk         r8    k7 ; k7 = "#555555"
+.line	23	call          r7     2     2
+.line	26	move          r8    r1
+.line	26	loadk         r9    k8 ; k8 = "#e0e0e0"
+.line	26	call          r8     2     2
+.line	27	move          r9    r1
+.line	27	loadk        r10    k9 ; k9 = "#f0f0f0"
+.line	27	call          r9     2     2
+.line	126	newtable     r10     5     0
+.line	126	newtable     r11     3     0
+.line	127	newtable     r12     0     4
+.line	129	settable     r12   k11   k12 ; k12 = "score-points"
+.line	130	settable     r12   k13   k14 ; k14 = "Army score"
+.line	131	settable     r12   k15   k16 ; k16 = "Score points of army"
+.line	132	settable     r12   k17   k18 ; k18 = "S"
+.line	133	move         r13    r1
+.line	133	loadk        r14   k20 ; k20 = ""
+.line	133	call         r13     2     2
+.line	133	settable     r12   k19   r13 ; k19 = "nu"
+.line	134	move         r13    r1
+.line	134	loadk        r14   k20 ; k20 = ""
+.line	134	call         r13     2     2
+.line	134	settable     r12   k21   r13 ; k21 = "nc"
+.line	135	move         r13    r1
+.line	135	loadk        r14   k20 ; k20 = ""
+.line	135	call         r13     2     2
+.line	135	settable     r12   k22   r13 ; k22 = "ou"
+.line	136	move         r13    r1
+.line	136	loadk        r14   k20 ; k20 = ""
+.line	136	call         r13     2     2
+.line	136	settable     r12   k23   r13 ; k23 = "oc"
+.line	137	move         r13    r1
+.line	137	loadk        r14   k20 ; k20 = ""
+.line	137	call         r13     2     2
+.line	137	settable     r12   k24   r13 ; k24 = "du"
+.line	138	move         r13    r1
+.line	138	loadk        r14   k20 ; k20 = ""
+.line	138	call         r13     2     2
+.line	138	settable     r12   k25   r13 ; k25 = "dc"
+.line	143	closure      r13    f1
+.line	143	settable     r12   k26   r13 ; k26 = "GetData"
+.line	144	newtable     r13     0     4
+.line	146	settable     r13   k11   k27 ; k27 = "kills-built-ratio"
+.line	147	settable     r13   k13   k28 ; k28 = "Kills-built ratio"
+.line	148	settable     r13   k15   k29 ; k29 = "Ratio of killed unit" (truncated)
+.line	149	settable     r13   k17   k30 ; k30 = "B"
+.line	150	move         r14    r1
+.line	150	loadk        r15   k20 ; k20 = ""
+.line	150	call         r14     2     2
+.line	150	settable     r13   k19   r14 ; k19 = "nu"
+.line	151	settable     r13   k21    r2 ; k21 = "nc"
+.line	152	move         r14    r1
+.line	152	loadk        r15   k20 ; k20 = ""
+.line	152	call         r14     2     2
+.line	152	settable     r13   k22   r14 ; k22 = "ou"
+.line	153	settable     r13   k23    r4 ; k23 = "oc"
+.line	154	move         r14    r1
+.line	154	loadk        r15   k20 ; k20 = ""
+.line	154	call         r14     2     2
+.line	154	settable     r13   k24   r14 ; k24 = "du"
+.line	155	move         r14    r1
+.line	155	loadk        r15   k20 ; k20 = ""
+.line	155	call         r14     2     2
+.line	155	settable     r13   k25   r14 ; k25 = "dc"
+.line	161	closure      r14    f2
+.line	161	move          r0    r0 ; upvalue declaration
+.line	161	settable     r13   k26   r14 ; k26 = "GetData"
+.line	162	newtable     r14     0     4
+.line	164	settable     r14   k11   k31 ; k31 = "kills-loses-ratio"
+.line	165	settable     r14   k13   k32 ; k32 = "Kills-loses ratio"
+.line	166	settable     r14   k15   k33 ; k33 = "Ratio of killed unit" (truncated)
+.line	167	settable     r14   k17   k34 ; k34 = "K"
+.line	168	move         r15    r1
+.line	168	loadk        r16   k20 ; k20 = ""
+.line	168	call         r15     2     2
+.line	168	settable     r14   k19   r15 ; k19 = "nu"
+.line	169	move         r15    r1
+.line	169	loadk        r16   k35 ; k35 = "#ff0000"
+.line	169	call         r15     2     2
+.line	169	settable     r14   k21   r15 ; k21 = "nc"
+.line	170	move         r15    r1
+.line	170	loadk        r16   k20 ; k20 = ""
+.line	170	call         r15     2     2
+.line	170	settable     r14   k22   r15 ; k22 = "ou"
+.line	171	move         r15    r1
+.line	171	loadk        r16   k36 ; k36 = "#ff2222"
+.line	171	call         r15     2     2
+.line	171	settable     r14   k23   r15 ; k23 = "oc"
+.line	172	move         r15    r1
+.line	172	loadk        r16   k20 ; k20 = ""
+.line	172	call         r15     2     2
+.line	172	settable     r14   k24   r15 ; k24 = "du"
+.line	173	move         r15    r1
+.line	173	loadk        r16   k20 ; k20 = ""
+.line	173	call         r15     2     2
+.line	173	settable     r14   k25   r15 ; k25 = "dc"
+.line	179	closure      r15    f3
+.line	179	move          r0    r0 ; upvalue declaration
+.line	179	settable     r14   k26   r15 ; k26 = "GetData"
+.line	182	setlist      r11     2
+.line	182	newtable     r12     4     0
+.line	183	newtable     r13     0     4
+.line	185	settable     r13   k11   k37 ; k37 = "mass-income"
+.line	186	settable     r13   k13   k38 ; k38 = "Mass income"
+.line	187	settable     r13   k15   k39 ; k39 = "Mass income of an ar" (truncated)
+.line	188	settable     r13   k17   k40 ; k40 = "M"
+.line	189	move         r14    r1
+.line	189	loadk        r15   k20 ; k20 = ""
+.line	189	call         r14     2     2
+.line	189	settable     r13   k19   r14 ; k19 = "nu"
+.line	190	settable     r13   k21    r2 ; k21 = "nc"
+.line	191	move         r14    r1
+.line	191	loadk        r15   k20 ; k20 = ""
+.line	191	call         r14     2     2
+.line	191	settable     r13   k22   r14 ; k22 = "ou"
+.line	192	settable     r13   k23    r4 ; k23 = "oc"
+.line	193	move         r14    r1
+.line	193	loadk        r15   k20 ; k20 = ""
+.line	193	call         r14     2     2
+.line	193	settable     r13   k24   r14 ; k24 = "du"
+.line	194	move         r14    r1
+.line	194	loadk        r15   k20 ; k20 = ""
+.line	194	call         r14     2     2
+.line	194	settable     r13   k25   r14 ; k25 = "dc"
+.line	199	closure      r14    f4
+.line	199	settable     r13   k26   r14 ; k26 = "GetData"
+.line	200	newtable     r14     0     4
+.line	202	settable     r14   k11   k41 ; k41 = "mass-total"
+.line	203	settable     r14   k13   k42 ; k42 = "Total Mass"
+.line	204	settable     r14   k15   k43 ; k43 = "Total amount of mass" (truncated)
+.line	205	settable     r14   k17   k44 ; k44 = "T"
+.line	206	move         r15    r1
+.line	206	loadk        r16   k20 ; k20 = ""
+.line	206	call         r15     2     2
+.line	206	settable     r14   k19   r15 ; k19 = "nu"
+.line	207	settable     r14   k21    r2 ; k21 = "nc"
+.line	208	move         r15    r1
+.line	208	loadk        r16   k20 ; k20 = ""
+.line	208	call         r15     2     2
+.line	208	settable     r14   k22   r15 ; k22 = "ou"
+.line	209	settable     r14   k23    r4 ; k23 = "oc"
+.line	210	move         r15    r1
+.line	210	loadk        r16   k20 ; k20 = ""
+.line	210	call         r15     2     2
+.line	210	settable     r14   k24   r15 ; k24 = "du"
+.line	211	move         r15    r1
+.line	211	loadk        r16   k20 ; k20 = ""
+.line	211	call         r15     2     2
+.line	211	settable     r14   k25   r15 ; k25 = "dc"
+.line	216	closure      r15    f5
+.line	216	settable     r14   k26   r15 ; k26 = "GetData"
+.line	217	newtable     r15     0     4
+.line	219	settable     r15   k11   k45 ; k45 = "mass-reclaim"
+.line	220	settable     r15   k13   k46 ; k46 = "Reclaimed Mass"
+.line	221	settable     r15   k15   k47 ; k47 = "Total amount of reac" (truncated)
+.line	222	settable     r15   k17   k48 ; k48 = "R"
+.line	223	move         r16    r1
+.line	223	loadk        r17   k20 ; k20 = ""
+.line	223	call         r16     2     2
+.line	223	settable     r15   k19   r16 ; k19 = "nu"
+.line	224	settable     r15   k21    r2 ; k21 = "nc"
+.line	225	move         r16    r1
+.line	225	loadk        r17   k20 ; k20 = ""
+.line	225	call         r16     2     2
+.line	225	settable     r15   k22   r16 ; k22 = "ou"
+.line	226	settable     r15   k23    r4 ; k23 = "oc"
+.line	227	move         r16    r1
+.line	227	loadk        r17   k20 ; k20 = ""
+.line	227	call         r16     2     2
+.line	227	settable     r15   k24   r16 ; k24 = "du"
+.line	228	move         r16    r1
+.line	228	loadk        r17   k20 ; k20 = ""
+.line	228	call         r16     2     2
+.line	228	settable     r15   k25   r16 ; k25 = "dc"
+.line	233	closure      r16    f6
+.line	233	settable     r15   k26   r16 ; k26 = "GetData"
+.line	234	newtable     r16     0     4
+.line	236	settable     r16   k11   k49 ; k49 = "mass-storage"
+.line	237	settable     r16   k13   k50 ; k50 = "Mass in storage"
+.line	238	settable     r16   k15   k51 ; k51 = "Current amount of ma" (truncated)
+.line	239	settable     r16   k17   k18 ; k18 = "S"
+.line	240	move         r17    r1
+.line	240	loadk        r18   k20 ; k20 = ""
+.line	240	call         r17     2     2
+.line	240	settable     r16   k19   r17 ; k19 = "nu"
+.line	241	settable     r16   k21    r2 ; k21 = "nc"
+.line	242	move         r17    r1
+.line	242	loadk        r18   k20 ; k20 = ""
+.line	242	call         r17     2     2
+.line	242	settable     r16   k22   r17 ; k22 = "ou"
+.line	243	settable     r16   k23    r4 ; k23 = "oc"
+.line	244	move         r17    r1
+.line	244	loadk        r18   k20 ; k20 = ""
+.line	244	call         r17     2     2
+.line	244	settable     r16   k24   r17 ; k24 = "du"
+.line	245	move         r17    r1
+.line	245	loadk        r18   k20 ; k20 = ""
+.line	245	call         r17     2     2
+.line	245	settable     r16   k25   r17 ; k25 = "dc"
+.line	250	closure      r17    f7
+.line	250	settable     r16   k26   r17 ; k26 = "GetData"
+.line	253	setlist      r12     3
+.line	253	newtable     r13     4     0
+.line	254	newtable     r14     0     4
+.line	256	settable     r14   k11   k52 ; k52 = "energy-income"
+.line	257	settable     r14   k13   k53 ; k53 = "Energy income"
+.line	258	settable     r14   k15   k54 ; k54 = "Energy income of an " (truncated)
+.line	259	settable     r14   k17   k55 ; k55 = "E"
+.line	260	move         r15    r1
+.line	260	loadk        r16   k20 ; k20 = ""
+.line	260	call         r15     2     2
+.line	260	settable     r14   k19   r15 ; k19 = "nu"
+.line	261	settable     r14   k21    r3 ; k21 = "nc"
+.line	262	move         r15    r1
+.line	262	loadk        r16   k20 ; k20 = ""
+.line	262	call         r15     2     2
+.line	262	settable     r14   k22   r15 ; k22 = "ou"
+.line	263	settable     r14   k23    r5 ; k23 = "oc"
+.line	264	move         r15    r1
+.line	264	loadk        r16   k20 ; k20 = ""
+.line	264	call         r15     2     2
+.line	264	settable     r14   k24   r15 ; k24 = "du"
+.line	265	move         r15    r1
+.line	265	loadk        r16   k20 ; k20 = ""
+.line	265	call         r15     2     2
+.line	265	settable     r14   k25   r15 ; k25 = "dc"
+.line	270	closure      r15    f8
+.line	270	settable     r14   k26   r15 ; k26 = "GetData"
+.line	271	newtable     r15     0     4
+.line	273	settable     r15   k11   k56 ; k56 = "energy-total"
+.line	274	settable     r15   k13   k57 ; k57 = "Total Energy"
+.line	275	settable     r15   k15   k58 ; k58 = "Total amount of ener" (truncated)
+.line	276	settable     r15   k17   k44 ; k44 = "T"
+.line	277	move         r16    r1
+.line	277	loadk        r17   k20 ; k20 = ""
+.line	277	call         r16     2     2
+.line	277	settable     r15   k19   r16 ; k19 = "nu"
+.line	278	settable     r15   k21    r3 ; k21 = "nc"
+.line	279	move         r16    r1
+.line	279	loadk        r17   k20 ; k20 = ""
+.line	279	call         r16     2     2
+.line	279	settable     r15   k22   r16 ; k22 = "ou"
+.line	280	settable     r15   k23    r5 ; k23 = "oc"
+.line	281	move         r16    r1
+.line	281	loadk        r17   k20 ; k20 = ""
+.line	281	call         r16     2     2
+.line	281	settable     r15   k24   r16 ; k24 = "du"
+.line	282	move         r16    r1
+.line	282	loadk        r17   k20 ; k20 = ""
+.line	282	call         r16     2     2
+.line	282	settable     r15   k25   r16 ; k25 = "dc"
+.line	287	closure      r16    f9
+.line	287	settable     r15   k26   r16 ; k26 = "GetData"
+.line	288	newtable     r16     0     4
+.line	290	settable     r16   k11   k59 ; k59 = "energy-reclaim"
+.line	291	settable     r16   k13   k60 ; k60 = "Reaclaimed Energy"
+.line	292	settable     r16   k15   k61 ; k61 = "Total amount of reac" (truncated)
+.line	293	settable     r16   k17   k48 ; k48 = "R"
+.line	294	move         r17    r1
+.line	294	loadk        r18   k20 ; k20 = ""
+.line	294	call         r17     2     2
+.line	294	settable     r16   k19   r17 ; k19 = "nu"
+.line	295	settable     r16   k21    r3 ; k21 = "nc"
+.line	296	move         r17    r1
+.line	296	loadk        r18   k20 ; k20 = ""
+.line	296	call         r17     2     2
+.line	296	settable     r16   k22   r17 ; k22 = "ou"
+.line	297	settable     r16   k23    r5 ; k23 = "oc"
+.line	298	move         r17    r1
+.line	298	loadk        r18   k20 ; k20 = ""
+.line	298	call         r17     2     2
+.line	298	settable     r16   k24   r17 ; k24 = "du"
+.line	299	move         r17    r1
+.line	299	loadk        r18   k20 ; k20 = ""
+.line	299	call         r17     2     2
+.line	299	settable     r16   k25   r17 ; k25 = "dc"
+.line	304	closure      r17   f10
+.line	304	settable     r16   k26   r17 ; k26 = "GetData"
+.line	305	newtable     r17     0     4
+.line	307	settable     r17   k11   k62 ; k62 = "energy-storage"
+.line	308	settable     r17   k13   k63 ; k63 = "Energy in storage"
+.line	309	settable     r17   k15   k64 ; k64 = "Current amount of en" (truncated)
+.line	310	settable     r17   k17   k18 ; k18 = "S"
+.line	311	move         r18    r1
+.line	311	loadk        r19   k20 ; k20 = ""
+.line	311	call         r18     2     2
+.line	311	settable     r17   k19   r18 ; k19 = "nu"
+.line	312	settable     r17   k21    r3 ; k21 = "nc"
+.line	313	move         r18    r1
+.line	313	loadk        r19   k20 ; k20 = ""
+.line	313	call         r18     2     2
+.line	313	settable     r17   k22   r18 ; k22 = "ou"
+.line	314	settable     r17   k23    r5 ; k23 = "oc"
+.line	315	move         r18    r1
+.line	315	loadk        r19   k20 ; k20 = ""
+.line	315	call         r18     2     2
+.line	315	settable     r17   k24   r18 ; k24 = "du"
+.line	316	move         r18    r1
+.line	316	loadk        r19   k20 ; k20 = ""
+.line	316	call         r18     2     2
+.line	316	settable     r17   k25   r18 ; k25 = "dc"
+.line	321	closure      r18   f11
+.line	321	settable     r17   k26   r18 ; k26 = "GetData"
+.line	324	setlist      r13     3
+.line	324	newtable     r14     3     0
+.line	325	newtable     r15     0     4
+.line	327	settable     r15   k11   k65 ; k65 = "total-mass-killed"
+.line	328	settable     r15   k13   k66 ; k66 = "Mass killed"
+.line	329	settable     r15   k15   k67 ; k67 = "Total amount of mass" (truncated)
+.line	330	settable     r15   k17   k44 ; k44 = "T"
+.line	331	move         r16    r1
+.line	331	loadk        r17   k20 ; k20 = ""
+.line	331	call         r16     2     2
+.line	331	settable     r15   k19   r16 ; k19 = "nu"
+.line	332	move         r16    r1
+.line	332	loadk        r17   k35 ; k35 = "#ff0000"
+.line	332	call         r16     2     2
+.line	332	settable     r15   k21   r16 ; k21 = "nc"
+.line	333	move         r16    r1
+.line	333	loadk        r17   k20 ; k20 = ""
+.line	333	call         r16     2     2
+.line	333	settable     r15   k22   r16 ; k22 = "ou"
+.line	334	move         r16    r1
+.line	334	loadk        r17   k36 ; k36 = "#ff2222"
+.line	334	call         r16     2     2
+.line	334	settable     r15   k23   r16 ; k23 = "oc"
+.line	335	move         r16    r1
+.line	335	loadk        r17   k20 ; k20 = ""
+.line	335	call         r16     2     2
+.line	335	settable     r15   k24   r16 ; k24 = "du"
+.line	336	move         r16    r1
+.line	336	loadk        r17   k20 ; k20 = ""
+.line	336	call         r16     2     2
+.line	336	settable     r15   k25   r16 ; k25 = "dc"
+.line	341	closure      r16   f12
+.line	341	settable     r15   k26   r16 ; k26 = "GetData"
+.line	342	newtable     r16     0     4
+.line	344	settable     r16   k11   k68 ; k68 = "total-mass-rate"
+.line	345	settable     r16   k13   k69 ; k69 = "Mass rate"
+.line	346	settable     r16   k15   k70 ; k70 = "Mass rate of army"
+.line	347	settable     r16   k17   k44 ; k44 = "T"
+.line	348	move         r17    r1
+.line	348	loadk        r18   k20 ; k20 = ""
+.line	348	call         r17     2     2
+.line	348	settable     r16   k19   r17 ; k19 = "nu"
+.line	349	settable     r16   k21    r2 ; k21 = "nc"
+.line	350	move         r17    r1
+.line	350	loadk        r18   k20 ; k20 = ""
+.line	350	call         r17     2     2
+.line	350	settable     r16   k22   r17 ; k22 = "ou"
+.line	351	settable     r16   k23    r4 ; k23 = "oc"
+.line	352	move         r17    r1
+.line	352	loadk        r18   k20 ; k20 = ""
+.line	352	call         r17     2     2
+.line	352	settable     r16   k24   r17 ; k24 = "du"
+.line	353	move         r17    r1
+.line	353	loadk        r18   k20 ; k20 = ""
+.line	353	call         r17     2     2
+.line	353	settable     r16   k25   r17 ; k25 = "dc"
+.line	358	closure      r17   f13
+.line	358	settable     r16   k26   r17 ; k26 = "GetData"
+.line	359	newtable     r17     0     4
+.line	362	settable     r17   k11   k71 ; k71 = "total-mass-collected"
+.line	363	settable     r17   k13   k42 ; k42 = "Total Mass"
+.line	364	settable     r17   k15   k43 ; k43 = "Total amount of mass" (truncated)
+.line	365	settable     r17   k17   k44 ; k44 = "T"
+.line	366	move         r18    r1
+.line	366	loadk        r19   k20 ; k20 = ""
+.line	366	call         r18     2     2
+.line	366	settable     r17   k19   r18 ; k19 = "nu"
+.line	367	settable     r17   k21    r2 ; k21 = "nc"
+.line	368	move         r18    r1
+.line	368	loadk        r19   k20 ; k20 = ""
+.line	368	call         r18     2     2
+.line	368	settable     r17   k22   r18 ; k22 = "ou"
+.line	369	settable     r17   k23    r4 ; k23 = "oc"
+.line	370	move         r18    r1
+.line	370	loadk        r19   k20 ; k20 = ""
+.line	370	call         r18     2     2
+.line	370	settable     r17   k24   r18 ; k24 = "du"
+.line	371	move         r18    r1
+.line	371	loadk        r19   k20 ; k20 = ""
+.line	371	call         r18     2     2
+.line	371	settable     r17   k25   r18 ; k25 = "dc"
+.line	376	closure      r18   f14
+.line	376	settable     r17   k26   r18 ; k26 = "GetData"
+.line	378	setlist      r14     2
+.line	378	newtable     r15     5     0
+.line	379	newtable     r16     0     4
+.line	381	settable     r16   k11   k72 ; k72 = "all-units"
+.line	382	settable     r16   k13   k73 ; k73 = "All units"
+.line	383	settable     r16   k15   k74 ; k74 = "Amount of all units"
+.line	384	settable     r16   k17   k44 ; k44 = "T"
+.line	385	move         r17    r1
+.line	385	loadk        r18   k20 ; k20 = ""
+.line	385	call         r17     2     2
+.line	385	settable     r16   k19   r17 ; k19 = "nu"
+.line	386	move         r17    r1
+.line	386	loadk        r18   k20 ; k20 = ""
+.line	386	call         r17     2     2
+.line	386	settable     r16   k21   r17 ; k21 = "nc"
+.line	387	move         r17    r1
+.line	387	loadk        r18   k20 ; k20 = ""
+.line	387	call         r17     2     2
+.line	387	settable     r16   k22   r17 ; k22 = "ou"
+.line	388	move         r17    r1
+.line	388	loadk        r18   k20 ; k20 = ""
+.line	388	call         r17     2     2
+.line	388	settable     r16   k23   r17 ; k23 = "oc"
+.line	389	move         r17    r1
+.line	389	loadk        r18   k20 ; k20 = ""
+.line	389	call         r17     2     2
+.line	389	settable     r16   k24   r17 ; k24 = "du"
+.line	390	move         r17    r1
+.line	390	loadk        r18   k20 ; k20 = ""
+.line	390	call         r17     2     2
+.line	390	settable     r16   k25   r17 ; k25 = "dc"
+.line	395	closure      r17   f15
+.line	395	settable     r16   k26   r17 ; k26 = "GetData"
+.line	396	newtable     r17     0     4
+.line	398	settable     r17   k11   k75 ; k75 = "naval-units"
+.line	399	settable     r17   k13   k76 ; k76 = "Naval units"
+.line	400	settable     r17   k15   k77 ; k77 = "Amount of naval unit" (truncated)
+.line	401	settable     r17   k17   k78 ; k78 = "N"
+.line	402	move         r18    r1
+.line	402	loadk        r19   k20 ; k20 = ""
+.line	402	call         r18     2     2
+.line	402	settable     r17   k19   r18 ; k19 = "nu"
+.line	403	move         r18    r1
+.line	403	loadk        r19   k20 ; k20 = ""
+.line	403	call         r18     2     2
+.line	403	settable     r17   k21   r18 ; k21 = "nc"
+.line	404	move         r18    r1
+.line	404	loadk        r19   k20 ; k20 = ""
+.line	404	call         r18     2     2
+.line	404	settable     r17   k22   r18 ; k22 = "ou"
+.line	405	move         r18    r1
+.line	405	loadk        r19   k20 ; k20 = ""
+.line	405	call         r18     2     2
+.line	405	settable     r17   k23   r18 ; k23 = "oc"
+.line	406	move         r18    r1
+.line	406	loadk        r19   k20 ; k20 = ""
+.line	406	call         r18     2     2
+.line	406	settable     r17   k24   r18 ; k24 = "du"
+.line	407	move         r18    r1
+.line	407	loadk        r19   k20 ; k20 = ""
+.line	407	call         r18     2     2
+.line	407	settable     r17   k25   r18 ; k25 = "dc"
+.line	412	closure      r18   f16
+.line	412	settable     r17   k26   r18 ; k26 = "GetData"
+.line	413	newtable     r18     0     4
+.line	415	settable     r18   k11   k79 ; k79 = "air-units"
+.line	416	settable     r18   k13   k80 ; k80 = "Air units"
+.line	417	settable     r18   k15   k81 ; k81 = "Amount of air units"
+.line	418	settable     r18   k17   k82 ; k82 = "A"
+.line	419	move         r19    r1
+.line	419	loadk        r20   k20 ; k20 = ""
+.line	419	call         r19     2     2
+.line	419	settable     r18   k19   r19 ; k19 = "nu"
+.line	420	move         r19    r1
+.line	420	loadk        r20   k20 ; k20 = ""
+.line	420	call         r19     2     2
+.line	420	settable     r18   k21   r19 ; k21 = "nc"
+.line	421	move         r19    r1
+.line	421	loadk        r20   k20 ; k20 = ""
+.line	421	call         r19     2     2
+.line	421	settable     r18   k22   r19 ; k22 = "ou"
+.line	422	move         r19    r1
+.line	422	loadk        r20   k20 ; k20 = ""
+.line	422	call         r19     2     2
+.line	422	settable     r18   k23   r19 ; k23 = "oc"
+.line	423	move         r19    r1
+.line	423	loadk        r20   k20 ; k20 = ""
+.line	423	call         r19     2     2
+.line	423	settable     r18   k24   r19 ; k24 = "du"
+.line	424	move         r19    r1
+.line	424	loadk        r20   k20 ; k20 = ""
+.line	424	call         r19     2     2
+.line	424	settable     r18   k25   r19 ; k25 = "dc"
+.line	429	closure      r19   f17
+.line	429	settable     r18   k26   r19 ; k26 = "GetData"
+.line	430	newtable     r19     0     4
+.line	432	settable     r19   k11   k83 ; k83 = "land-units"
+.line	433	settable     r19   k13   k84 ; k84 = "Land units"
+.line	434	settable     r19   k15   k85 ; k85 = "Amount of land units"
+.line	435	settable     r19   k17   k86 ; k86 = "L"
+.line	436	move         r20    r1
+.line	436	loadk        r21   k20 ; k20 = ""
+.line	436	call         r20     2     2
+.line	436	settable     r19   k19   r20 ; k19 = "nu"
+.line	437	move         r20    r1
+.line	437	loadk        r21   k20 ; k20 = ""
+.line	437	call         r20     2     2
+.line	437	settable     r19   k21   r20 ; k21 = "nc"
+.line	438	move         r20    r1
+.line	438	loadk        r21   k20 ; k20 = ""
+.line	438	call         r20     2     2
+.line	438	settable     r19   k22   r20 ; k22 = "ou"
+.line	439	move         r20    r1
+.line	439	loadk        r21   k20 ; k20 = ""
+.line	439	call         r20     2     2
+.line	439	settable     r19   k23   r20 ; k23 = "oc"
+.line	440	move         r20    r1
+.line	440	loadk        r21   k20 ; k20 = ""
+.line	440	call         r20     2     2
+.line	440	settable     r19   k24   r20 ; k24 = "du"
+.line	441	move         r20    r1
+.line	441	loadk        r21   k20 ; k20 = ""
+.line	441	call         r20     2     2
+.line	441	settable     r19   k25   r20 ; k25 = "dc"
+.line	446	closure      r20   f18
+.line	446	settable     r19   k26   r20 ; k26 = "GetData"
+.line	447	newtable     r20     0     4
+.line	464	settable     r20   k11   k87 ; k87 = "experimental-units"
+.line	465	settable     r20   k13   k88 ; k88 = "EXP"
+.line	466	settable     r20   k15   k89 ; k89 = "Amount of EXPs"
+.line	467	settable     r20   k17   k55 ; k55 = "E"
+.line	468	move         r21    r1
+.line	468	loadk        r22   k20 ; k20 = ""
+.line	468	call         r21     2     2
+.line	468	settable     r20   k19   r21 ; k19 = "nu"
+.line	469	move         r21    r1
+.line	469	loadk        r22   k20 ; k20 = ""
+.line	469	call         r21     2     2
+.line	469	settable     r20   k21   r21 ; k21 = "nc"
+.line	470	move         r21    r1
+.line	470	loadk        r22   k20 ; k20 = ""
+.line	470	call         r21     2     2
+.line	470	settable     r20   k22   r21 ; k22 = "ou"
+.line	471	move         r21    r1
+.line	471	loadk        r22   k20 ; k20 = ""
+.line	471	call         r21     2     2
+.line	471	settable     r20   k23   r21 ; k23 = "oc"
+.line	472	move         r21    r1
+.line	472	loadk        r22   k20 ; k20 = ""
+.line	472	call         r21     2     2
+.line	472	settable     r20   k24   r21 ; k24 = "du"
+.line	473	move         r21    r1
+.line	473	loadk        r22   k20 ; k20 = ""
+.line	473	call         r21     2     2
+.line	473	settable     r20   k25   r21 ; k25 = "dc"
+.line	478	closure      r21   f19
+.line	478	settable     r20   k26   r21 ; k26 = "GetData"
+.line	480	setlist      r15     4
+.line	481	setlist      r10     4
+.line	481	setglobal    r10   k10 ; k10 = "checkboxes"
+.line	483	getglobal    r10    k0 ; k0 = "import"
+.line	483	loadk        r11   k90 ; k90 = "/lua/ui/help/tooltip" (truncated)
+.line	483	call         r10     2     2
+.line	483	gettable     r10   r10   k91 ; k91 = "Tooltips"
+.line	484	getglobal    r11   k92 ; k92 = "ReUI"
+.line	484	gettable     r11   r11   k93 ; k93 = "UI"
+.line	484	gettable     r11   r11   k94 ; k94 = "Color"
+.line	485	getglobal    r12   k10 ; k10 = "checkboxes"
+.line	485	loadnil      r13   r15
+.line	485	tforprep     r12  l635
+.label	l577
+.line	486	move         r16   r15
+.line	486	loadnil      r17   r19
+.line	486	tforprep     r16  l633
+.label	l580
+.line	487	gettable     r20   r19   k21 ; k21 = "nc"
+.line	487	test         r20   r20     1
+.line	487	jmp         l584
+.line	487	move         r20    r8
+.label	l584
+.line	487	settable     r19   k21   r20 ; k21 = "nc"
+.line	488	gettable     r20   r19   k23 ; k23 = "oc"
+.line	488	test         r20   r20     1
+.line	488	jmp         l589
+.line	488	move         r20    r9
+.label	l589
+.line	488	settable     r19   k23   r20 ; k23 = "oc"
+.line	490	gettable     r20   r19   k19 ; k19 = "nu"
+.line	490	test         r20   r20     1
+.line	490	jmp         l594
+.line	490	move         r20    r6
+.label	l594
+.line	490	settable     r19   k19   r20 ; k19 = "nu"
+.line	491	gettable     r20   r19   k22 ; k22 = "ou"
+.line	491	test         r20   r20     1
+.line	491	jmp         l599
+.line	491	move         r20    r7
+.label	l599
+.line	491	settable     r19   k22   r20 ; k22 = "ou"
+.line	493	gettable     r20   r19   k24 ; k24 = "du"
+.line	493	test         r20   r20     1
+.line	493	jmp         l607
+.line	493	gettable     r20   r11   k95 ; k95 = "ColorMult"
+.line	493	gettable     r21   r19   k19 ; k19 = "nu"
+.line	493	loadk        r22   k96 ; k96 = 0.8
+.line	493	call         r20     3     2
+.label	l607
+.line	493	settable     r19   k24   r20 ; k24 = "du"
+.line	494	gettable     r20   r19   k25 ; k25 = "dc"
+.line	494	test         r20   r20     1
+.line	494	jmp         l620
+.line	494	gettable     r20   r11   k95 ; k95 = "ColorMult"
+.line	494	gettable     r21   r19   k21 ; k21 = "nc"
+.line	494	test         r21   r21     1
+.line	494	jmp         l618
+.line	494	move         r21    r1
+.line	494	loadk        r22   k97 ; k97 = "#ffffff"
+.line	494	call         r21     2     2
+.label	l618
+.line	494	loadk        r22   k96 ; k96 = 0.8
+.line	494	call         r20     3     2
+.label	l620
+.line	494	settable     r19   k25   r20 ; k25 = "dc"
+.line	496	gettable     r20   r19   k26 ; k26 = "GetData"
+.line	496	test         r20   r20     1
+.line	496	jmp         l625
+.line	496	closure      r20   f20
+.label	l625
+.line	496	settable     r19   k26   r20 ; k26 = "GetData"
+.line	498	gettable     r20   r19   k11 ; k11 = "tooltip"
+.line	498	newtable     r21     0     2
+.line	499	gettable     r22   r19   k13 ; k13 = "title"
+.line	499	settable     r21   k13   r22 ; k13 = "title"
+.line	500	gettable     r22   r19   k15 ; k15 = "description"
+.line	500	settable     r21   k15   r22 ; k15 = "description"
+.line	501	settable     r10   r20   r21
+.label	l633
+.line	486	tforloop     r16     1
+.line	501	jmp         l580
+.label	l635
+.line	485	tforloop     r12     1
+.line	502	jmp         l577
+.line	504	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	5
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"color"	0	36
+
+.constant	k0	"string"
+.constant	k1	"len"
+.constant	k2	9
+.constant	k3	"sub"
+.constant	k4	8
+.constant	k5	2
+.constant	k6	7
+.constant	k7	"ff"
+
+.line	6	getglobal     r1    k0 ; k0 = "string"
+.line	6	gettable      r1    r1    k1 ; k1 = "len"
+.line	6	move          r2    r0
+.line	6	call          r1     2     2
+.line	6	eq             0    r1    k2 ; k2 = 9
+.line	6	jmp          l21
+.line	7	getglobal     r1    k0 ; k0 = "string"
+.line	7	gettable      r1    r1    k3 ; k3 = "sub"
+.line	7	move          r2    r0
+.line	7	loadk         r3    k4 ; k4 = 8
+.line	7	call          r1     3     2
+.line	7	getglobal     r2    k0 ; k0 = "string"
+.line	7	gettable      r2    r2    k3 ; k3 = "sub"
+.line	7	move          r3    r0
+.line	7	loadk         r4    k5 ; k5 = 2
+.line	7	loadk         r5    k6 ; k6 = 7
+.line	7	call          r2     4     2
+.line	7	concat        r1    r1    r2
+.line	7	return        r1     2
+.line	7	jmp          l37
+.label	l21
+.line	8	getglobal     r1    k0 ; k0 = "string"
+.line	8	gettable      r1    r1    k1 ; k1 = "len"
+.line	8	move          r2    r0
+.line	8	call          r1     2     2
+.line	8	eq             0    r1    k6 ; k6 = 7
+.line	8	jmp          l36
+.line	9	loadk         r1    k7 ; k7 = "ff"
+.line	9	getglobal     r2    k0 ; k0 = "string"
+.line	9	gettable      r2    r2    k3 ; k3 = "sub"
+.line	9	move          r3    r0
+.line	9	loadk         r4    k5 ; k5 = 2
+.line	9	call          r2     3     2
+.line	9	concat        r1    r1    r2
+.line	9	return        r1     2
+.line	9	jmp          l37
+.label	l36
+.line	11	return        r0     1
+.label	l37
+.line	13	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	141
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	6
+
+.constant	k0	"general"
+.constant	k1	"score"
+.constant	k2	0
+
+.line	142	gettable      r1    r0    k0 ; k0 = "general"
+.line	142	gettable      r1    r1    k1 ; k1 = "score"
+.line	142	test          r1    r1     1
+.line	142	jmp           l6
+.line	142	loadk         r1    k2 ; k2 = 0
+.label	l6
+.line	142	return        r1     2
+.line	143	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	158
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	25
+
+.upvalue	"Utils"	0	false
+
+.constant	k0	"general"
+.constant	k1	"built"
+.constant	k2	"mass"
+.constant	k3	0
+.constant	k4	"FormatRatioNumber"
+.constant	k5	"kills"
+.constant	k6	1
+
+.line	159	gettable      r1    r0    k0 ; k0 = "general"
+.line	159	gettable      r1    r1    k1 ; k1 = "built"
+.line	159	gettable      r1    r1    k2 ; k2 = "mass"
+.line	159	eq             0    r1    k3 ; k3 = 0
+.line	159	jmp          l10
+.line	159	loadk         r1    k3 ; k3 = 0
+.line	159	getupval      r2    u0
+.line	159	gettable      r2    r2    k4 ; k4 = "FormatRatioNumber"
+.line	159	return        r1     3
+.label	l10
+.line	160	gettable      r1    r0    k0 ; k0 = "general"
+.line	160	gettable      r1    r1    k5 ; k5 = "kills"
+.line	160	gettable      r1    r1    k2 ; k2 = "mass"
+.line	160	test          r1    r1     1
+.line	160	jmp          l16
+.line	160	loadk         r1    k3 ; k3 = 0
+.label	l16
+.line	160	gettable      r2    r0    k0 ; k0 = "general"
+.line	160	gettable      r2    r2    k1 ; k1 = "built"
+.line	160	gettable      r2    r2    k2 ; k2 = "mass"
+.line	160	test          r2    r2     1
+.line	160	jmp          l22
+.line	160	loadk         r2    k6 ; k6 = 1
+.label	l22
+.line	160	div           r1    r1    r2
+.line	160	getupval      r2    u0
+.line	160	gettable      r2    r2    k4 ; k4 = "FormatRatioNumber"
+.line	160	return        r1     3
+.line	161	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	176
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	25
+
+.upvalue	"Utils"	0	false
+
+.constant	k0	"general"
+.constant	k1	"lost"
+.constant	k2	"mass"
+.constant	k3	0
+.constant	k4	"FormatRatioNumber"
+.constant	k5	"kills"
+.constant	k6	1
+
+.line	177	gettable      r1    r0    k0 ; k0 = "general"
+.line	177	gettable      r1    r1    k1 ; k1 = "lost"
+.line	177	gettable      r1    r1    k2 ; k2 = "mass"
+.line	177	eq             0    r1    k3 ; k3 = 0
+.line	177	jmp          l10
+.line	177	loadk         r1    k3 ; k3 = 0
+.line	177	getupval      r2    u0
+.line	177	gettable      r2    r2    k4 ; k4 = "FormatRatioNumber"
+.line	177	return        r1     3
+.label	l10
+.line	178	gettable      r1    r0    k0 ; k0 = "general"
+.line	178	gettable      r1    r1    k5 ; k5 = "kills"
+.line	178	gettable      r1    r1    k2 ; k2 = "mass"
+.line	178	test          r1    r1     1
+.line	178	jmp          l16
+.line	178	loadk         r1    k3 ; k3 = 0
+.label	l16
+.line	178	gettable      r2    r0    k0 ; k0 = "general"
+.line	178	gettable      r2    r2    k1 ; k1 = "lost"
+.line	178	gettable      r2    r2    k2 ; k2 = "mass"
+.line	178	test          r2    r2     1
+.line	178	jmp          l22
+.line	178	loadk         r2    k6 ; k6 = 1
+.label	l22
+.line	178	div           r1    r1    r2
+.line	178	getupval      r2    u0
+.line	178	gettable      r2    r2    k4 ; k4 = "FormatRatioNumber"
+.line	178	return        r1     3
+.line	179	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	197
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	8
+
+.constant	k0	"resources"
+.constant	k1	"massin"
+.constant	k2	"rate"
+.constant	k3	0
+.constant	k4	10
+
+.line	198	gettable      r1    r0    k0 ; k0 = "resources"
+.line	198	gettable      r1    r1    k1 ; k1 = "massin"
+.line	198	gettable      r1    r1    k2 ; k2 = "rate"
+.line	198	test          r1    r1     1
+.line	198	jmp           l7
+.line	198	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	198	mul           r1    r1    k4 ; k4 = 10
+.line	198	return        r1     2
+.line	199	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	214
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"massin"
+.constant	k2	"total"
+.constant	k3	0
+
+.line	215	gettable      r1    r0    k0 ; k0 = "resources"
+.line	215	gettable      r1    r1    k1 ; k1 = "massin"
+.line	215	gettable      r1    r1    k2 ; k2 = "total"
+.line	215	test          r1    r1     1
+.line	215	jmp           l7
+.line	215	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	215	return        r1     2
+.line	216	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	231
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"massin"
+.constant	k2	"reclaimed"
+.constant	k3	0
+
+.line	232	gettable      r1    r0    k0 ; k0 = "resources"
+.line	232	gettable      r1    r1    k1 ; k1 = "massin"
+.line	232	gettable      r1    r1    k2 ; k2 = "reclaimed"
+.line	232	test          r1    r1     1
+.line	232	jmp           l7
+.line	232	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	232	return        r1     2
+.line	233	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	248
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"storage"
+.constant	k2	"storedMass"
+.constant	k3	0
+
+.line	249	gettable      r1    r0    k0 ; k0 = "resources"
+.line	249	gettable      r1    r1    k1 ; k1 = "storage"
+.line	249	gettable      r1    r1    k2 ; k2 = "storedMass"
+.line	249	test          r1    r1     1
+.line	249	jmp           l7
+.line	249	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	249	return        r1     2
+.line	250	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	268
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	8
+
+.constant	k0	"resources"
+.constant	k1	"energyin"
+.constant	k2	"rate"
+.constant	k3	0
+.constant	k4	10
+
+.line	269	gettable      r1    r0    k0 ; k0 = "resources"
+.line	269	gettable      r1    r1    k1 ; k1 = "energyin"
+.line	269	gettable      r1    r1    k2 ; k2 = "rate"
+.line	269	test          r1    r1     1
+.line	269	jmp           l7
+.line	269	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	269	mul           r1    r1    k4 ; k4 = 10
+.line	269	return        r1     2
+.line	270	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	285
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"energyin"
+.constant	k2	"total"
+.constant	k3	0
+
+.line	286	gettable      r1    r0    k0 ; k0 = "resources"
+.line	286	gettable      r1    r1    k1 ; k1 = "energyin"
+.line	286	gettable      r1    r1    k2 ; k2 = "total"
+.line	286	test          r1    r1     1
+.line	286	jmp           l7
+.line	286	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	286	return        r1     2
+.line	287	return        r0     1
+
+.function	main/f10
+
+.source	null
+.linedefined	302
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"energyin"
+.constant	k2	"reclaimed"
+.constant	k3	0
+
+.line	303	gettable      r1    r0    k0 ; k0 = "resources"
+.line	303	gettable      r1    r1    k1 ; k1 = "energyin"
+.line	303	gettable      r1    r1    k2 ; k2 = "reclaimed"
+.line	303	test          r1    r1     1
+.line	303	jmp           l7
+.line	303	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	303	return        r1     2
+.line	304	return        r0     1
+
+.function	main/f11
+
+.source	null
+.linedefined	319
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"storage"
+.constant	k2	"storedEnergy"
+.constant	k3	0
+
+.line	320	gettable      r1    r0    k0 ; k0 = "resources"
+.line	320	gettable      r1    r1    k1 ; k1 = "storage"
+.line	320	gettable      r1    r1    k2 ; k2 = "storedEnergy"
+.line	320	test          r1    r1     1
+.line	320	jmp           l7
+.line	320	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	320	return        r1     2
+.line	321	return        r0     1
+
+.function	main/f12
+
+.source	null
+.linedefined	339
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"general"
+.constant	k1	"kills"
+.constant	k2	"mass"
+.constant	k3	0
+
+.line	340	gettable      r1    r0    k0 ; k0 = "general"
+.line	340	gettable      r1    r1    k1 ; k1 = "kills"
+.line	340	gettable      r1    r1    k2 ; k2 = "mass"
+.line	340	test          r1    r1     1
+.line	340	jmp           l7
+.line	340	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	340	return        r1     2
+.line	341	return        r0     1
+
+.function	main/f13
+
+.source	null
+.linedefined	356
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	15
+
+.constant	k0	"resources"
+.constant	k1	"massin"
+.constant	k2	"rate"
+.constant	k3	0
+.constant	k4	"massout"
+.constant	k5	10
+
+.line	357	gettable      r1    r0    k0 ; k0 = "resources"
+.line	357	gettable      r1    r1    k1 ; k1 = "massin"
+.line	357	gettable      r1    r1    k2 ; k2 = "rate"
+.line	357	test          r1    r1     1
+.line	357	jmp           l7
+.line	357	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	357	gettable      r2    r0    k0 ; k0 = "resources"
+.line	357	gettable      r2    r2    k4 ; k4 = "massout"
+.line	357	gettable      r2    r2    k2 ; k2 = "rate"
+.line	357	test          r2    r2     1
+.line	357	jmp          l13
+.line	357	loadk         r2    k3 ; k3 = 0
+.label	l13
+.line	357	sub           r1    r1    r2
+.line	357	mul           r1    r1    k5 ; k5 = 10
+.line	357	return        r1     2
+.line	358	return        r0     1
+
+.function	main/f14
+
+.source	null
+.linedefined	374
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	7
+
+.constant	k0	"resources"
+.constant	k1	"massin"
+.constant	k2	"total"
+.constant	k3	0
+
+.line	375	gettable      r1    r0    k0 ; k0 = "resources"
+.line	375	gettable      r1    r1    k1 ; k1 = "massin"
+.line	375	gettable      r1    r1    k2 ; k2 = "total"
+.line	375	test          r1    r1     1
+.line	375	jmp           l7
+.line	375	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	375	return        r1     2
+.line	376	return        r0     1
+
+.function	main/f15
+
+.source	null
+.linedefined	393
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"score"	0	6
+
+.constant	k0	"general"
+.constant	k1	"currentunits"
+.constant	k2	0
+
+.line	394	gettable      r1    r0    k0 ; k0 = "general"
+.line	394	gettable      r1    r1    k1 ; k1 = "currentunits"
+.line	394	test          r1    r1     1
+.line	394	jmp           l6
+.line	394	loadk         r1    k2 ; k2 = 0
+.label	l6
+.line	394	return        r1     2
+.line	395	return        r0     1
+
+.function	main/f16
+
+.source	null
+.linedefined	410
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	14
+
+.constant	k0	"units"
+.constant	k1	"naval"
+.constant	k2	"built"
+.constant	k3	0
+.constant	k4	"lost"
+
+.line	411	gettable      r1    r0    k0 ; k0 = "units"
+.line	411	gettable      r1    r1    k1 ; k1 = "naval"
+.line	411	gettable      r1    r1    k2 ; k2 = "built"
+.line	411	test          r1    r1     1
+.line	411	jmp           l7
+.line	411	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	411	gettable      r2    r0    k0 ; k0 = "units"
+.line	411	gettable      r2    r2    k1 ; k1 = "naval"
+.line	411	gettable      r2    r2    k4 ; k4 = "lost"
+.line	411	test          r2    r2     1
+.line	411	jmp          l13
+.line	411	loadk         r2    k3 ; k3 = 0
+.label	l13
+.line	411	sub           r1    r1    r2
+.line	411	return        r1     2
+.line	412	return        r0     1
+
+.function	main/f17
+
+.source	null
+.linedefined	427
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	14
+
+.constant	k0	"units"
+.constant	k1	"air"
+.constant	k2	"built"
+.constant	k3	0
+.constant	k4	"lost"
+
+.line	428	gettable      r1    r0    k0 ; k0 = "units"
+.line	428	gettable      r1    r1    k1 ; k1 = "air"
+.line	428	gettable      r1    r1    k2 ; k2 = "built"
+.line	428	test          r1    r1     1
+.line	428	jmp           l7
+.line	428	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	428	gettable      r2    r0    k0 ; k0 = "units"
+.line	428	gettable      r2    r2    k1 ; k1 = "air"
+.line	428	gettable      r2    r2    k4 ; k4 = "lost"
+.line	428	test          r2    r2     1
+.line	428	jmp          l13
+.line	428	loadk         r2    k3 ; k3 = 0
+.label	l13
+.line	428	sub           r1    r1    r2
+.line	428	return        r1     2
+.line	429	return        r0     1
+
+.function	main/f18
+
+.source	null
+.linedefined	444
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	14
+
+.constant	k0	"units"
+.constant	k1	"land"
+.constant	k2	"built"
+.constant	k3	0
+.constant	k4	"lost"
+
+.line	445	gettable      r1    r0    k0 ; k0 = "units"
+.line	445	gettable      r1    r1    k1 ; k1 = "land"
+.line	445	gettable      r1    r1    k2 ; k2 = "built"
+.line	445	test          r1    r1     1
+.line	445	jmp           l7
+.line	445	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	445	gettable      r2    r0    k0 ; k0 = "units"
+.line	445	gettable      r2    r2    k1 ; k1 = "land"
+.line	445	gettable      r2    r2    k4 ; k4 = "lost"
+.line	445	test          r2    r2     1
+.line	445	jmp          l13
+.line	445	loadk         r2    k3 ; k3 = 0
+.label	l13
+.line	445	sub           r1    r1    r2
+.line	445	return        r1     2
+.line	446	return        r0     1
+
+.function	main/f19
+
+.source	null
+.linedefined	476
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"score"	0	14
+
+.constant	k0	"units"
+.constant	k1	"experimental"
+.constant	k2	"built"
+.constant	k3	0
+.constant	k4	"lost"
+
+.line	477	gettable      r1    r0    k0 ; k0 = "units"
+.line	477	gettable      r1    r1    k1 ; k1 = "experimental"
+.line	477	gettable      r1    r1    k2 ; k2 = "built"
+.line	477	test          r1    r1     1
+.line	477	jmp           l7
+.line	477	loadk         r1    k3 ; k3 = 0
+.label	l7
+.line	477	gettable      r2    r0    k0 ; k0 = "units"
+.line	477	gettable      r2    r2    k1 ; k1 = "experimental"
+.line	477	gettable      r2    r2    k4 ; k4 = "lost"
+.line	477	test          r2    r2     1
+.line	477	jmp          l13
+.line	477	loadk         r2    k3 ; k3 = 0
+.label	l13
+.line	477	sub           r1    r1    r2
+.line	477	return        r1     2
+.line	478	return        r0     1
+
+.function	main/f20
+
+.source	null
+.linedefined	496
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"armyScore"	0	2
+
+.constant	k0	0
+
+.line	496	loadk         r1    k0 ; k0 = 0
+.line	496	return        r1     2
+.line	496	return        r0     1
+

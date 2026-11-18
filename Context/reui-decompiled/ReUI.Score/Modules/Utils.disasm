@@ -1,0 +1,575 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/utils.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	5
+
+.local	"MathAbs"	2	29
+.local	"StringFormat"	4	29
+.local	"Text"	8	29
+.local	"armiesFormattedTable"	15	29
+
+.constant	k0	"math"
+.constant	k1	"abs"
+.constant	k2	"string"
+.constant	k3	"format"
+.constant	k4	"ReUI"
+.constant	k5	"UI"
+.constant	k6	"Controls"
+.constant	k7	"Text"
+.constant	k8	"GetFactionIcon"
+.constant	k9	"GetWhiteFactionIcon"
+.constant	k10	"ShortAIName"
+.constant	k11	"GetArmiesFormattedTable"
+.constant	k12	"FormatNumber"
+.constant	k13	"FormatRatioNumber"
+.constant	k14	"TextWidth"
+
+.line	1	getglobal     r0    k0 ; k0 = "math"
+.line	1	gettable      r0    r0    k1 ; k1 = "abs"
+.line	2	getglobal     r1    k2 ; k2 = "string"
+.line	2	gettable      r1    r1    k3 ; k3 = "format"
+.line	4	getglobal     r2    k4 ; k4 = "ReUI"
+.line	4	gettable      r2    r2    k5 ; k5 = "UI"
+.line	4	gettable      r2    r2    k6 ; k6 = "Controls"
+.line	4	gettable      r2    r2    k7 ; k7 = "Text"
+.line	11	closure       r3    f0
+.line	9	setglobal     r3    k8 ; k8 = "GetFactionIcon"
+.line	24	closure       r3    f1
+.line	16	setglobal     r3    k9 ; k9 = "GetWhiteFactionIcon"
+.line	30	closure       r3    f2
+.line	28	setglobal     r3   k10 ; k10 = "ShortAIName"
+.line	45	loadnil       r3    r3
+.line	107	closure       r4    f3
+.line	107	move          r0    r3 ; upvalue declaration
+.line	48	setglobal     r4   k11 ; k11 = "GetArmiesFormattedTa" (truncated)
+.line	125	closure       r4    f4
+.line	125	move          r0    r0 ; upvalue declaration
+.line	125	move          r0    r1 ; upvalue declaration
+.line	112	setglobal     r4   k12 ; k12 = "FormatNumber"
+.line	138	closure       r4    f5
+.line	138	move          r0    r0 ; upvalue declaration
+.line	138	move          r0    r1 ; upvalue declaration
+.line	130	setglobal     r4   k13 ; k13 = "FormatRatioNumber"
+.line	153	closure       r4    f6
+.line	153	move          r0    r2 ; upvalue declaration
+.line	145	setglobal     r4   k14 ; k14 = "TextWidth"
+.line	153	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"factionIndex"	0	8
+
+.constant	k0	"import"
+.constant	k1	"/lua/factions.lua"
+.constant	k2	"Factions"
+.constant	k3	1
+.constant	k4	"LargeIcon"
+
+.line	10	getglobal     r1    k0 ; k0 = "import"
+.line	10	loadk         r2    k1 ; k1 = "/lua/factions.lua"
+.line	10	call          r1     2     2
+.line	10	gettable      r1    r1    k2 ; k2 = "Factions"
+.line	10	add           r2    r0    k3 ; k3 = 1
+.line	10	gettable      r1    r1    r2
+.line	10	gettable      r1    r1    k4 ; k4 = "LargeIcon"
+.line	10	return        r1     2
+.line	11	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	16
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"factionIndex"	0	9
+.local	"icons"	6	9
+
+.constant	k0	"/mods/ReUI.Score/Icons/uef_ico.dds"
+.constant	k1	"/mods/ReUI.Score/Icons/aeon_ico.dds"
+.constant	k2	"/mods/ReUI.Score/Icons/cybran_ico.dds"
+.constant	k3	"/mods/ReUI.Score/Icons/seraphim_ico.dds"
+.constant	k4	1
+
+.line	17	newtable      r1     4     0
+.line	18	loadk         r2    k0 ; k0 = "/mods/ReUI.Score/Ico" (truncated)
+.line	19	loadk         r3    k1 ; k1 = "/mods/ReUI.Score/Ico" (truncated)
+.line	20	loadk         r4    k2 ; k2 = "/mods/ReUI.Score/Ico" (truncated)
+.line	22	loadk         r5    k3 ; k3 = "/mods/ReUI.Score/Ico" (truncated)
+.line	22	setlist       r1     3
+.line	23	add           r2    r0    k4 ; k4 = 1
+.line	23	gettable      r2    r1    r2
+.line	23	return        r2     2
+.line	24	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	28
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"name"	0	7
+
+.constant	k0	"string"
+.constant	k1	"gsub"
+.constant	k2	"^.*%((AI[Xx]?.*)%)$"
+.constant	k3	"%1"
+
+.line	29	getglobal     r1    k0 ; k0 = "string"
+.line	29	gettable      r1    r1    k1 ; k1 = "gsub"
+.line	29	move          r2    r0
+.line	29	loadk         r3    k2 ; k2 = "^.*%((AI[Xx]?.*)%)$"
+.line	29	loadk         r4    k3 ; k3 = "%1"
+.line	29	call          r1     4     2
+.line	29	return        r1     2
+.line	30	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	48
+.numparams	0
+.is_vararg	0
+.maxstacksize	15
+
+.local	"options"	11	155
+.local	"sessionInfo"	13	155
+.local	"focusArmy"	15	155
+.local	"(for generator)"	20	91
+.local	"(for state)"	20	91
+.local	"armyIndex"	20	91
+.local	"armyData"	20	91
+.local	"nickname"	27	89
+.local	"clanTag"	33	89
+.local	"name"	34	89
+.local	"data"	84	89
+.local	"teams"	92	155
+.local	"(for generator)"	95	153
+.local	"(for state)"	95	153
+.local	"_"	95	153
+.local	"armyData"	95	153
+.local	"(for generator)"	116	137
+.local	"(for state)"	116	137
+.local	"_"	116	137
+.local	"team"	116	137
+
+.upvalue	"armiesFormattedTable"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"Options"
+.constant	k2	"Mods"
+.constant	k3	"ReUI.Score"
+.constant	k4	"SessionGetScenarioInfo"
+.constant	k5	"GetFocusArmy"
+.constant	k6	"GetArmiesTable"
+.constant	k7	"armiesTable"
+.constant	k8	"civilian"
+.constant	k9	"showScore"
+.constant	k10	"nickname"
+.constant	k11	"ClanTags"
+.constant	k12	""
+.constant	k13	"shortenAINickName"
+.constant	k14	"ShortAIName"
+.constant	k15	"[%s] %s"
+.constant	k16	"format"
+.constant	k17	"faction"
+.constant	k18	"name"
+.constant	k19	"color"
+.constant	k20	"isAlly"
+.constant	k21	"IsObserver"
+.constant	k22	"IsAlly"
+.constant	k23	"id"
+.constant	k24	"rating"
+.constant	k25	"Ratings"
+.constant	k26	0
+.constant	k27	"division"
+.constant	k28	"Divisions"
+.constant	k29	"table"
+.constant	k30	"insert"
+.constant	k31	"empty"
+.constant	k32	"teamColor"
+.constant	k33	"teamId"
+.constant	k34	1
+
+.line	49	getupval      r0    u0
+.line	49	test          r0    r0     0
+.line	49	jmp           l6
+.line	50	getupval      r0    u0
+.line	50	return        r0     2
+.label	l6
+.line	53	newtable      r0     0     0
+.line	53	setupval      r0    u0
+.line	55	getglobal     r0    k0 ; k0 = "ReUI"
+.line	55	gettable      r0    r0    k1 ; k1 = "Options"
+.line	55	gettable      r0    r0    k2 ; k2 = "Mods"
+.line	55	gettable      r0    r0    k3 ; k3 = "ReUI.Score"
+.line	56	getglobal     r1    k4 ; k4 = "SessionGetScenarioIn" (truncated)
+.line	56	call          r1     1     2
+.line	57	getglobal     r2    k5 ; k5 = "GetFocusArmy"
+.line	57	call          r2     1     2
+.line	58	getglobal     r3    k6 ; k6 = "GetArmiesTable"
+.line	58	call          r3     1     2
+.line	58	gettable      r3    r3    k7 ; k7 = "armiesTable"
+.line	58	loadnil       r4    r6
+.line	58	tforprep      r3   l90
+.label	l21
+.line	59	gettable      r7    r6    k8 ; k8 = "civilian"
+.line	59	test          r7    r7     1
+.line	59	jmp          l90
+.line	59	gettable      r7    r6    k9 ; k9 = "showScore"
+.line	59	test          r7    r7     0
+.line	59	jmp          l90
+.line	60	gettable      r7    r6   k10 ; k10 = "nickname"
+.line	61	gettable      r8    r1    k1 ; k1 = "Options"
+.line	61	gettable      r8    r8   k11 ; k11 = "ClanTags"
+.line	61	gettable      r8    r8    r7
+.line	61	test          r8    r8     1
+.line	61	jmp          l34
+.line	61	loadk         r8   k12 ; k12 = ""
+.label	l34
+.line	62	move          r9    r7
+.line	63	gettable     r10    r0   k13 ; k13 = "shortenAINickName"
+.line	63	call         r10     1     2
+.line	63	test         r10   r10     0
+.line	63	jmp          l43
+.line	64	getglobal    r10   k14 ; k14 = "ShortAIName"
+.line	64	move         r11    r9
+.line	64	call         r10     2     2
+.line	64	move          r9   r10
+.label	l43
+.line	66	eq             1    r8   k12 ; k12 = ""
+.line	66	jmp          l51
+.line	67	loadk        r10   k15 ; k15 = "[%s] %s"
+.line	67	self         r10   r10   k16 ; k16 = "format"
+.line	67	move         r12    r8
+.line	67	move         r13    r7
+.line	67	call         r10     4     2
+.line	67	move          r9   r10
+.label	l51
+.line	69	newtable     r10     0     4
+.line	70	gettable     r11    r6   k17 ; k17 = "faction"
+.line	70	settable     r10   k17   r11 ; k17 = "faction"
+.line	71	settable     r10   k18    r9 ; k18 = "name"
+.line	72	settable     r10   k10    r7 ; k10 = "nickname"
+.line	73	gettable     r11    r6   k19 ; k19 = "color"
+.line	73	settable     r10   k19   r11 ; k19 = "color"
+.line	74	getglobal    r11   k21 ; k21 = "IsObserver"
+.line	74	call         r11     1     2
+.line	74	test         r11   r11     1
+.line	74	jmp          l67
+.line	74	getglobal    r11   k22 ; k22 = "IsAlly"
+.line	74	move         r12    r2
+.line	74	move         r13    r5
+.line	74	call         r11     3     2
+.line	74	jmp          l69
+.label	l67
+.line	74	loadbool     r11     0     1
+.line	74	loadbool     r11     1     0
+.label	l69
+.line	74	settable     r10   k20   r11 ; k20 = "isAlly"
+.line	75	settable     r10   k23    r5 ; k23 = "id"
+.line	76	gettable     r11    r1    k1 ; k1 = "Options"
+.line	76	gettable     r11   r11   k25 ; k25 = "Ratings"
+.line	76	gettable     r11   r11    r7
+.line	76	test         r11   r11     1
+.line	76	jmp          l77
+.line	76	loadk        r11   k26 ; k26 = 0
+.label	l77
+.line	76	settable     r10   k24   r11 ; k24 = "rating"
+.line	77	gettable     r11    r1    k1 ; k1 = "Options"
+.line	77	gettable     r11   r11   k28 ; k28 = "Divisions"
+.line	77	gettable     r11   r11    r7
+.line	77	test         r11   r11     1
+.line	77	jmp          l84
+.line	77	loadk        r11   k12 ; k12 = ""
+.label	l84
+.line	77	settable     r10   k27   r11 ; k27 = "division"
+.line	79	getglobal    r11   k29 ; k29 = "table"
+.line	79	gettable     r11   r11   k30 ; k30 = "insert"
+.line	79	getupval     r12    u0
+.line	79	move         r13   r10
+.line	79	call         r11     3     1
+.label	l90
+.line	58	tforloop      r3     1
+.line	80	jmp          l21
+.line	83	newtable      r3     0     0
+.line	84	getupval      r4    u0
+.line	84	loadnil       r5    r7
+.line	84	tforprep      r4  l152
+.label	l96
+.line	85	getglobal     r8   k29 ; k29 = "table"
+.line	85	gettable      r8    r8   k31 ; k31 = "empty"
+.line	85	move          r9    r3
+.line	85	call          r8     2     2
+.line	85	test          r8    r8     0
+.line	85	jmp         l114
+.line	86	gettable      r8    r7   k19 ; k19 = "color"
+.line	86	settable      r7   k32    r8 ; k32 = "teamColor"
+.line	87	gettable      r8    r7   k23 ; k23 = "id"
+.line	87	settable      r7   k33    r8 ; k33 = "teamId"
+.line	88	getglobal     r8   k29 ; k29 = "table"
+.line	88	gettable      r8    r8   k30 ; k30 = "insert"
+.line	88	move          r9    r3
+.line	88	newtable     r10     1     0
+.line	88	move         r11    r7
+.line	88	setlist      r10     0
+.line	88	call          r8     3     1
+.line	88	jmp         l152
+.label	l114
+.line	90	move          r8    r3
+.line	90	loadnil       r9   r11
+.line	90	tforprep      r8  l136
+.label	l117
+.line	91	getglobal    r12   k22 ; k22 = "IsAlly"
+.line	91	gettable     r13   r11   k34 ; k34 = 1
+.line	91	gettable     r13   r13   k23 ; k23 = "id"
+.line	91	gettable     r14    r7   k23 ; k23 = "id"
+.line	91	call         r12     3     2
+.line	91	test         r12   r12     0
+.line	91	jmp         l136
+.line	92	gettable     r12   r11   k34 ; k34 = 1
+.line	92	gettable     r12   r12   k32 ; k32 = "teamColor"
+.line	92	settable      r7   k32   r12 ; k32 = "teamColor"
+.line	93	gettable     r12   r11   k34 ; k34 = 1
+.line	93	gettable     r12   r12   k33 ; k33 = "teamId"
+.line	93	settable      r7   k33   r12 ; k33 = "teamId"
+.line	94	getglobal    r12   k29 ; k29 = "table"
+.line	94	gettable     r12   r12   k30 ; k30 = "insert"
+.line	94	move         r13   r11
+.line	94	move         r14    r7
+.line	94	call         r12     3     1
+.line	95	jmp         l138
+.label	l136
+.line	90	tforloop      r8     1
+.line	96	jmp         l117
+.label	l138
+.line	98	gettable      r8    r7   k32 ; k32 = "teamColor"
+.line	98	test          r8    r8     1
+.line	98	jmp         l152
+.line	99	gettable      r8    r7   k19 ; k19 = "color"
+.line	99	settable      r7   k32    r8 ; k32 = "teamColor"
+.line	100	gettable      r8    r7   k23 ; k23 = "id"
+.line	100	settable      r7   k33    r8 ; k33 = "teamId"
+.line	101	getglobal     r8   k29 ; k29 = "table"
+.line	101	gettable      r8    r8   k30 ; k30 = "insert"
+.line	101	move          r9    r3
+.line	101	newtable     r10     1     0
+.line	101	move         r11    r7
+.line	101	setlist      r10     0
+.line	101	call          r8     3     1
+.label	l152
+.line	84	tforloop      r4     1
+.line	103	jmp          l96
+.line	106	getupval      r4    u0
+.line	106	return        r4     2
+.line	107	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	112
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"n"	0	36
+.local	"an"	7	36
+
+.upvalue	"MathAbs"	0	false
+.upvalue	"StringFormat"	0	false
+
+.constant	k0	nil
+.constant	k1	""
+.constant	k2	1000
+.constant	k3	"%01.0f"
+.constant	k4	10000
+.constant	k5	"%01.1fk"
+.constant	k6	1000000
+.constant	k7	"%01.0fk"
+.constant	k8	"%01.1fm"
+
+.line	113	eq             0    r0    k0 ; k0 = nil
+.line	113	jmp           l5
+.line	113	loadk         r1    k1 ; k1 = ""
+.line	113	return        r1     2
+.label	l5
+.line	115	getupval      r1    u0
+.line	115	move          r2    r0
+.line	115	call          r1     2     2
+.line	116	lt             0    r1    k2 ; k2 = 1000
+.line	116	jmp          l16
+.line	117	getupval      r2    u1
+.line	117	loadk         r3    k3 ; k3 = "%01.0f"
+.line	117	move          r4    r0
+.line	117	tailcall      r2     3
+.line	117	return        r2     0
+.line	117	jmp          l37
+.label	l16
+.line	118	lt             0    r1    k4 ; k4 = 10000
+.line	118	jmp          l24
+.line	119	getupval      r2    u1
+.line	119	loadk         r3    k5 ; k5 = "%01.1fk"
+.line	119	div           r4    r0    k2 ; k2 = 1000
+.line	119	tailcall      r2     3
+.line	119	return        r2     0
+.line	119	jmp          l37
+.label	l24
+.line	120	lt             0    r1    k6 ; k6 = 1000000
+.line	120	jmp          l32
+.line	121	getupval      r2    u1
+.line	121	loadk         r3    k7 ; k7 = "%01.0fk"
+.line	121	div           r4    r0    k2 ; k2 = 1000
+.line	121	tailcall      r2     3
+.line	121	return        r2     0
+.line	121	jmp          l37
+.label	l32
+.line	123	getupval      r2    u1
+.line	123	loadk         r3    k8 ; k8 = "%01.1fm"
+.line	123	div           r4    r0    k6 ; k6 = 1000000
+.line	123	tailcall      r2     3
+.line	123	return        r2     0
+.label	l37
+.line	125	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	130
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"n"	0	18
+
+.upvalue	"MathAbs"	0	false
+.upvalue	"StringFormat"	0	false
+
+.constant	k0	nil
+.constant	k1	""
+.constant	k2	10
+.constant	k3	"%01.2f"
+.constant	k4	"FormatNumber"
+
+.line	131	eq             0    r0    k0 ; k0 = nil
+.line	131	jmp           l5
+.line	131	loadk         r1    k1 ; k1 = ""
+.line	131	return        r1     2
+.label	l5
+.line	133	getupval      r1    u0
+.line	133	move          r2    r0
+.line	133	call          r1     2     2
+.line	133	lt             0    r1    k2 ; k2 = 10
+.line	133	jmp          l15
+.line	134	getupval      r1    u1
+.line	134	loadk         r2    k3 ; k3 = "%01.2f"
+.line	134	move          r3    r0
+.line	134	tailcall      r1     3
+.line	134	return        r1     0
+.label	l15
+.line	137	getglobal     r1    k4 ; k4 = "FormatNumber"
+.line	137	move          r2    r0
+.line	137	tailcall      r1     2
+.line	137	return        r1     0
+.line	138	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	145
+.numparams	4
+.is_vararg	0
+.maxstacksize	9
+
+.local	"parent"	0	17
+.local	"str"	0	17
+.local	"font"	0	17
+.local	"size"	0	17
+.local	"dummy"	3	17
+.local	"width"	14	17
+
+.upvalue	"Text"	0	false
+
+.constant	k0	"Hide"
+.constant	k1	"SetFont"
+.constant	k2	"SetText"
+.constant	k3	"Width"
+.constant	k4	"Destroy"
+
+.line	146	getupval      r4    u0
+.line	146	move          r5    r0
+.line	146	call          r4     2     2
+.line	147	self          r5    r4    k0 ; k0 = "Hide"
+.line	147	call          r5     2     1
+.line	148	self          r5    r4    k1 ; k1 = "SetFont"
+.line	148	move          r7    r2
+.line	148	move          r8    r3
+.line	148	call          r5     4     1
+.line	149	self          r5    r4    k2 ; k2 = "SetText"
+.line	149	move          r7    r1
+.line	149	call          r5     3     1
+.line	150	gettable      r5    r4    k3 ; k3 = "Width"
+.line	150	call          r5     1     2
+.line	151	self          r6    r4    k4 ; k4 = "Destroy"
+.line	151	call          r6     2     1
+.line	152	return        r5     2
+.line	153	return        r0     1
+

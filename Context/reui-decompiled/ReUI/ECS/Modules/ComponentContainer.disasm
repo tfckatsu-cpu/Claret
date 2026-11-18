@@ -1,0 +1,344 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ecs/modules/componentcontainer.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.local	"next"	1	26
+.local	"EnabledComponentsIterator"	3	26
+.local	"ComponentsIterator"	5	26
+
+.constant	k0	"next"
+.constant	k1	"ComponentContainer"
+.constant	k2	"Class"
+.constant	k3	"GetComponents"
+.constant	k4	"IterateComponents"
+.constant	k5	"IterateEnabledComponents"
+.constant	k6	"GetComponent"
+.constant	k7	"AddComponent"
+.constant	k8	"RemoveComponent"
+.constant	k9	"DestroyComponents"
+
+.line	4	getglobal     r0    k0 ; k0 = "next"
+.line	18	closure       r1    f0
+.line	18	move          r0    r0 ; upvalue declaration
+.line	28	closure       r2    f1
+.line	28	move          r0    r0 ; upvalue declaration
+.line	32	getglobal     r3    k2 ; k2 = "Class"
+.line	32	call          r3     1     2
+.line	32	newtable      r4     0     3
+.line	38	closure       r5    f2
+.line	38	settable      r4    k3    r5 ; k3 = "GetComponents"
+.line	46	closure       r5    f3
+.line	46	move          r0    r2 ; upvalue declaration
+.line	46	settable      r4    k4    r5 ; k4 = "IterateComponents"
+.line	55	closure       r5    f4
+.line	55	move          r0    r1 ; upvalue declaration
+.line	55	settable      r4    k5    r5 ; k5 = "IterateEnabledCompon" (truncated)
+.line	62	closure       r5    f5
+.line	62	settable      r4    k6    r5 ; k6 = "GetComponent"
+.line	73	closure       r5    f6
+.line	73	settable      r4    k7    r5 ; k7 = "AddComponent"
+.line	88	closure       r5    f7
+.line	88	settable      r4    k8    r5 ; k8 = "RemoveComponent"
+.line	100	closure       r5    f8
+.line	100	settable      r4    k9    r5 ; k9 = "DestroyComponents"
+.line	33	call          r3     2     2
+.line	101	setglobal     r3    k1 ; k1 = "ComponentContainer"
+.line	101	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"components"	0	17
+.local	"key"	0	17
+.local	"(for generator)"	7	15
+.local	"(for state)"	7	15
+.local	"name"	7	15
+.local	"component"	7	15
+
+.upvalue	"next"	0	false
+
+.constant	k0	"enabled"
+
+.line	10	test          r0    r0     0
+.line	10	jmp          l16
+.line	11	getupval      r2    u0
+.line	11	move          r3    r0
+.line	11	move          r4    r1
+.line	11	loadnil       r5    r5
+.line	11	tforprep      r2   l14
+.label	l8
+.line	12	gettable      r6    r5    k0 ; k0 = "enabled"
+.line	12	test          r6    r6     0
+.line	12	jmp          l14
+.line	13	move          r6    r4
+.line	13	move          r7    r5
+.line	13	return        r6     3
+.label	l14
+.line	11	tforloop      r2     1
+.line	14	jmp           l8
+.label	l16
+.line	17	loadnil       r2    r3
+.line	17	return        r2     3
+.line	18	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	23
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"components"	0	9
+.local	"key"	0	9
+
+.upvalue	"next"	0	false
+
+.line	24	test          r0    r0     0
+.line	24	jmp           l8
+.line	25	getupval      r2    u0
+.line	25	move          r3    r0
+.line	25	move          r4    r1
+.line	25	tailcall      r2     3
+.line	25	return        r2     0
+.label	l8
+.line	27	loadnil       r2    r3
+.line	27	return        r2     3
+.line	28	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	36
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_components"
+
+.line	37	gettable      r1    r0    k0 ; k0 = "_components"
+.line	37	return        r1     2
+.line	38	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	44
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	4
+
+.upvalue	"ComponentsIterator"	0	false
+
+.constant	k0	"_components"
+
+.line	45	getupval      r1    u0
+.line	45	gettable      r2    r0    k0 ; k0 = "_components"
+.line	45	loadnil       r3    r3
+.line	45	return        r1     4
+.line	46	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	53
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	4
+
+.upvalue	"EnabledComponentsIterator"	0	false
+
+.constant	k0	"_components"
+
+.line	54	getupval      r1    u0
+.line	54	gettable      r2    r0    k0 ; k0 = "_components"
+.line	54	loadnil       r3    r3
+.line	54	return        r1     4
+.line	55	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	60
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	3
+.local	"name"	0	3
+
+.constant	k0	"_components"
+
+.line	61	gettable      r2    r0    k0 ; k0 = "_components"
+.line	61	gettable      r2    r2    r1
+.line	61	return        r2     2
+.line	62	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	67
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	17
+.local	"name"	0	17
+.local	"component"	0	17
+
+.constant	k0	"_components"
+.constant	k1	nil
+.constant	k2	"error"
+.constant	k3	"Component '%s' already exists"
+.constant	k4	"format"
+
+.line	68	gettable      r3    r0    k0 ; k0 = "_components"
+.line	68	eq             0    r3    k1 ; k1 = nil
+.line	68	jmp           l6
+.line	68	newtable      r3     0     0
+.line	68	settable      r0    k0    r3 ; k0 = "_components"
+.label	l6
+.line	69	gettable      r3    r0    k0 ; k0 = "_components"
+.line	69	gettable      r3    r3    r1
+.line	69	eq             1    r3    k1 ; k1 = nil
+.line	69	jmp          l16
+.line	70	getglobal     r3    k2 ; k2 = "error"
+.line	70	loadk         r4    k3 ; k3 = "Component '%s' alrea" (truncated)
+.line	70	self          r4    r4    k4 ; k4 = "format"
+.line	70	move          r6    r1
+.line	70	call          r4     3     0
+.line	70	call          r3     0     1
+.label	l16
+.line	72	gettable      r3    r0    k0 ; k0 = "_components"
+.line	72	settable      r3    r1    r2
+.line	73	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	77
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	11
+.local	"name"	0	11
+.local	"components"	1	11
+.local	"component"	5	11
+
+.constant	k0	"_components"
+.constant	k1	nil
+.constant	k2	"Destroy"
+
+.line	78	gettable      r2    r0    k0 ; k0 = "_components"
+.line	79	eq             0    r2    k1 ; k1 = nil
+.line	79	jmp           l5
+.line	80	return        r0     1
+.label	l5
+.line	82	gettable      r3    r2    r1
+.line	83	eq             0    r3    k1 ; k1 = nil
+.line	83	jmp           l9
+.line	84	return        r0     1
+.label	l9
+.line	86	self          r4    r3    k2 ; k2 = "Destroy"
+.line	86	call          r4     2     1
+.line	87	settable      r2    r1    k1 ; k1 = nil
+.line	88	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	91
+.numparams	1
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	12
+.local	"(for generator)"	7	11
+.local	"(for state)"	7	11
+.local	"_"	7	11
+.local	"component"	7	11
+
+.constant	k0	"_components"
+.constant	k1	nil
+.constant	k2	"Destroy"
+
+.line	92	gettable      r1    r0    k0 ; k0 = "_components"
+.line	92	eq             0    r1    k1 ; k1 = nil
+.line	92	jmp           l5
+.line	93	return        r0     1
+.label	l5
+.line	96	gettable      r1    r0    k0 ; k0 = "_components"
+.line	96	loadnil       r2    r4
+.line	96	tforprep      r1   l10
+.label	l8
+.line	97	self          r5    r4    k2 ; k2 = "Destroy"
+.line	97	call          r5     2     1
+.label	l10
+.line	96	tforloop      r1     1
+.line	97	jmp           l8
+.line	99	settable      r0    k0    k1 ; k1 = nil
+.line	100	return        r0     1
+

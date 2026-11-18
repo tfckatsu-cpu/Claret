@@ -1,0 +1,522 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.construction.templates/factorytemplatepreview.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	11
+
+.local	"Bitmap"	4	64
+.local	"Text"	8	64
+.local	"CheckBox"	12	64
+.local	"Group"	16	64
+.local	"BaseGridPanel"	21	64
+.local	"MAX_COLUMNS"	22	64
+.local	"UIUtil"	25	64
+.local	"Icon"	41	64
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Bitmap"
+.constant	k4	"Text"
+.constant	k5	"CheckBox"
+.constant	k6	"Group"
+.constant	k7	"Views"
+.constant	k8	"Grid"
+.constant	k9	"BaseGridPanel"
+.constant	k10	10
+.constant	k11	"import"
+.constant	k12	"/lua/ui/uiutil.lua"
+.constant	k13	"Core"
+.constant	k14	"Class"
+.constant	k15	"__init"
+.constant	k16	"InitLayout"
+.constant	k17	"Set"
+.constant	k18	"FactoryTemplatePreview"
+.constant	k19	"ItemClass"
+.constant	k20	"PositionItem"
+.constant	k21	"DisplayTemplate"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "UI"
+.line	1	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	1	gettable      r0    r0    k3 ; k3 = "Bitmap"
+.line	2	getglobal     r1    k0 ; k0 = "ReUI"
+.line	2	gettable      r1    r1    k1 ; k1 = "UI"
+.line	2	gettable      r1    r1    k2 ; k2 = "Controls"
+.line	2	gettable      r1    r1    k4 ; k4 = "Text"
+.line	3	getglobal     r2    k0 ; k0 = "ReUI"
+.line	3	gettable      r2    r2    k1 ; k1 = "UI"
+.line	3	gettable      r2    r2    k2 ; k2 = "Controls"
+.line	3	gettable      r2    r2    k5 ; k5 = "CheckBox"
+.line	4	getglobal     r3    k0 ; k0 = "ReUI"
+.line	4	gettable      r3    r3    k1 ; k1 = "UI"
+.line	4	gettable      r3    r3    k2 ; k2 = "Controls"
+.line	4	gettable      r3    r3    k6 ; k6 = "Group"
+.line	6	getglobal     r4    k0 ; k0 = "ReUI"
+.line	6	gettable      r4    r4    k1 ; k1 = "UI"
+.line	6	gettable      r4    r4    k7 ; k7 = "Views"
+.line	6	gettable      r4    r4    k8 ; k8 = "Grid"
+.line	6	gettable      r4    r4    k9 ; k9 = "BaseGridPanel"
+.line	8	loadk         r5   k10 ; k10 = 10
+.line	10	getglobal     r6   k11 ; k11 = "import"
+.line	10	loadk         r7   k12 ; k12 = "/lua/ui/uiutil.lua"
+.line	10	call          r6     2     2
+.line	15	getglobal     r7    k0 ; k0 = "ReUI"
+.line	15	gettable      r7    r7   k13 ; k13 = "Core"
+.line	15	gettable      r7    r7   k14 ; k14 = "Class"
+.line	15	move          r8    r0
+.line	15	call          r7     2     2
+.line	15	newtable      r8     0     2
+.line	24	closure       r9    f0
+.line	24	move          r0    r0 ; upvalue declaration
+.line	24	move          r0    r1 ; upvalue declaration
+.line	24	settable      r8   k15    r9 ; k15 = "__init"
+.line	34	closure       r9    f1
+.line	34	settable      r8   k16    r9 ; k16 = "InitLayout"
+.line	41	closure       r9    f2
+.line	41	move          r0    r6 ; upvalue declaration
+.line	41	settable      r8   k17    r9 ; k17 = "Set"
+.line	16	call          r7     2     2
+.line	46	getglobal     r8    k0 ; k0 = "ReUI"
+.line	46	gettable      r8    r8   k13 ; k13 = "Core"
+.line	46	gettable      r8    r8   k14 ; k14 = "Class"
+.line	46	move          r9    r4
+.line	46	call          r8     2     2
+.line	46	newtable      r9     0     3
+.line	49	settable      r9   k19    r7 ; k19 = "ItemClass"
+.line	68	closure      r10    f3
+.line	68	move          r0    r4 ; upvalue declaration
+.line	68	move          r0    r1 ; upvalue declaration
+.line	68	settable      r9   k15   r10 ; k15 = "__init"
+.line	81	closure      r10    f4
+.line	81	move          r0    r4 ; upvalue declaration
+.line	81	settable      r9   k20   r10 ; k20 = "PositionItem"
+.line	97	closure      r10    f5
+.line	97	move          r0    r4 ; upvalue declaration
+.line	97	move          r0    r6 ; upvalue declaration
+.line	97	settable      r9   k16   r10 ; k16 = "InitLayout"
+.line	127	closure      r10    f6
+.line	127	move          r0    r5 ; upvalue declaration
+.line	127	settable      r9   k21   r10 ; k21 = "DisplayTemplate"
+.line	47	call          r8     2     2
+.line	128	setglobal     r8   k18 ; k18 = "FactoryTemplatePrevi" (truncated)
+.line	128	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	19
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	14
+.local	"parent"	0	14
+
+.upvalue	"Bitmap"	0	false
+.upvalue	"Text"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"count"
+.constant	k2	"SetFont"
+.constant	k3	"Arial"
+.constant	k4	20
+
+.line	20	getupval      r2    u0
+.line	20	gettable      r2    r2    k0 ; k0 = "__init"
+.line	20	move          r3    r0
+.line	20	move          r4    r1
+.line	20	call          r2     3     1
+.line	22	getupval      r2    u1
+.line	22	move          r3    r0
+.line	22	call          r2     2     2
+.line	22	settable      r0    k1    r2 ; k1 = "count"
+.line	23	gettable      r2    r0    k1 ; k1 = "count"
+.line	23	self          r2    r2    k2 ; k2 = "SetFont"
+.line	23	loadk         r4    k3 ; k3 = "Arial"
+.line	23	loadk         r5    k4 ; k4 = 20
+.line	23	call          r2     4     1
+.line	24	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	28
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	16
+.local	"layouter"	0	16
+
+.constant	k0	"count"
+.constant	k1	"Color"
+.constant	k2	"ffff00"
+.constant	k3	"DropShadow"
+.constant	k4	"AtRightBottomIn"
+.constant	k5	1
+.constant	k6	"DisableHitTest"
+
+.line	29	move          r2    r1
+.line	29	gettable      r3    r0    k0 ; k0 = "count"
+.line	29	call          r2     2     2
+.line	30	self          r2    r2    k1 ; k1 = "Color"
+.line	30	loadk         r4    k2 ; k2 = "ffff00"
+.line	30	call          r2     3     2
+.line	31	self          r2    r2    k3 ; k3 = "DropShadow"
+.line	31	loadbool      r4     1     0
+.line	31	call          r2     3     2
+.line	32	self          r2    r2    k4 ; k4 = "AtRightBottomIn"
+.line	32	move          r4    r0
+.line	32	loadk         r5    k5 ; k5 = 1
+.line	32	loadk         r6    k5 ; k5 = 1
+.line	32	call          r2     5     2
+.line	33	self          r2    r2    k6 ; k6 = "DisableHitTest"
+.line	33	call          r2     2     1
+.line	34	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	38
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	13
+.local	"data"	0	13
+
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"SetTexture"
+.constant	k1	"SkinnableFile"
+.constant	k2	"/icons/units/"
+.constant	k3	"id"
+.constant	k4	"_icon.dds"
+.constant	k5	"count"
+.constant	k6	"SetText"
+
+.line	39	self          r2    r0    k0 ; k0 = "SetTexture"
+.line	39	getupval      r4    u0
+.line	39	gettable      r4    r4    k1 ; k1 = "SkinnableFile"
+.line	39	loadk         r5    k2 ; k2 = "/icons/units/"
+.line	39	gettable      r6    r1    k3 ; k3 = "id"
+.line	39	loadk         r7    k4 ; k4 = "_icon.dds"
+.line	39	concat        r5    r5    r7
+.line	39	call          r4     2     0
+.line	39	call          r2     0     1
+.line	40	gettable      r2    r0    k5 ; k5 = "count"
+.line	40	self          r2    r2    k6 ; k6 = "SetText"
+.line	40	gettable      r4    r1    k5 ; k5 = "count"
+.line	40	call          r2     3     1
+.line	41	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	53
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	20
+.local	"parent"	0	20
+
+.upvalue	"BaseGridPanel"	0	false
+.upvalue	"Text"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_title"
+.constant	k2	"SetFont"
+.constant	k3	"Arial"
+.constant	k4	16
+.constant	k5	"Rows"
+.constant	k6	1
+.constant	k7	"Columns"
+.constant	k8	"ColumnWidth"
+.constant	k9	48
+.constant	k10	"RowHeight"
+.constant	k11	"HorizontalSpacing"
+.constant	k12	2
+.constant	k13	"VerticalSpacing"
+
+.line	54	getupval      r2    u0
+.line	54	gettable      r2    r2    k0 ; k0 = "__init"
+.line	54	move          r3    r0
+.line	54	move          r4    r1
+.line	54	call          r2     3     1
+.line	57	getupval      r2    u1
+.line	57	move          r3    r0
+.line	57	call          r2     2     2
+.line	57	settable      r0    k1    r2 ; k1 = "_title"
+.line	58	gettable      r2    r0    k1 ; k1 = "_title"
+.line	58	self          r2    r2    k2 ; k2 = "SetFont"
+.line	58	loadk         r4    k3 ; k3 = "Arial"
+.line	58	loadk         r5    k4 ; k4 = 16
+.line	58	call          r2     4     1
+.line	60	settable      r0    k5    k6 ; k6 = 1
+.line	61	settable      r0    k7    k6 ; k6 = 1
+.line	63	settable      r0    k8    k9 ; k9 = 48
+.line	64	settable      r0   k10    k9 ; k9 = 48
+.line	66	settable      r0   k11   k12 ; k12 = 2
+.line	67	settable      r0   k13   k12 ; k12 = 2
+.line	68	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	74
+.numparams	4
+.is_vararg	0
+.maxstacksize	10
+
+.local	"self"	0	23
+.local	"item"	0	23
+.local	"row"	0	23
+.local	"column"	0	23
+.local	"layouter"	8	23
+
+.upvalue	"BaseGridPanel"	0	false
+
+.constant	k0	"PositionItem"
+.constant	k1	"Layouter"
+.constant	k2	"Width"
+.constant	k3	"ScaleVar"
+.constant	k4	"_columnWidth"
+.constant	k5	"Height"
+.constant	k6	"_rowHeight"
+.constant	k7	"DisableHitTest"
+
+.line	75	getupval      r4    u0
+.line	75	gettable      r4    r4    k0 ; k0 = "PositionItem"
+.line	75	move          r5    r0
+.line	75	move          r6    r1
+.line	75	move          r7    r2
+.line	75	move          r8    r3
+.line	75	call          r4     5     1
+.line	76	gettable      r4    r0    k1 ; k1 = "Layouter"
+.line	77	move          r5    r4
+.line	77	move          r6    r1
+.line	77	call          r5     2     2
+.line	78	self          r5    r5    k2 ; k2 = "Width"
+.line	78	self          r7    r4    k3 ; k3 = "ScaleVar"
+.line	78	gettable      r9    r0    k4 ; k4 = "_columnWidth"
+.line	78	call          r7     3     0
+.line	78	call          r5     0     2
+.line	79	self          r5    r5    k5 ; k5 = "Height"
+.line	79	self          r7    r4    k3 ; k3 = "ScaleVar"
+.line	79	gettable      r9    r0    k6 ; k6 = "_rowHeight"
+.line	79	call          r7     3     0
+.line	79	call          r5     0     2
+.line	80	self          r5    r5    k7 ; k7 = "DisableHitTest"
+.line	80	call          r5     2     1
+.line	81	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	85
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	30
+.local	"layouter"	0	30
+
+.upvalue	"BaseGridPanel"	0	false
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"InitLayout"
+.constant	k1	"_title"
+.constant	k2	"Above"
+.constant	k3	2
+.constant	k4	"Color"
+.constant	k5	"factionTextColor"
+.constant	k6	"DropShadow"
+.constant	k7	"DisableHitTest"
+.constant	k8	"Depth"
+.constant	k9	1000
+
+.line	86	getupval      r2    u0
+.line	86	gettable      r2    r2    k0 ; k0 = "InitLayout"
+.line	86	move          r3    r0
+.line	86	move          r4    r1
+.line	86	call          r2     3     1
+.line	88	move          r2    r1
+.line	88	gettable      r3    r0    k1 ; k1 = "_title"
+.line	88	call          r2     2     2
+.line	89	self          r2    r2    k2 ; k2 = "Above"
+.line	89	move          r4    r0
+.line	89	loadk         r5    k3 ; k3 = 2
+.line	89	call          r2     4     2
+.line	90	self          r2    r2    k4 ; k4 = "Color"
+.line	90	getupval      r4    u1
+.line	90	gettable      r4    r4    k5 ; k5 = "factionTextColor"
+.line	90	call          r2     3     2
+.line	91	self          r2    r2    k6 ; k6 = "DropShadow"
+.line	91	loadbool      r4     1     0
+.line	91	call          r2     3     2
+.line	92	self          r2    r2    k7 ; k7 = "DisableHitTest"
+.line	92	call          r2     2     1
+.line	94	move          r2    r1
+.line	94	move          r3    r0
+.line	94	call          r2     2     2
+.line	95	self          r2    r2    k8 ; k8 = "Depth"
+.line	95	loadk         r4    k9 ; k9 = 1000
+.line	95	call          r2     3     2
+.line	96	self          r2    r2    k7 ; k7 = "DisableHitTest"
+.line	96	loadbool      r4     1     0
+.line	96	call          r2     3     1
+.line	97	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	101
+.numparams	2
+.is_vararg	0
+.maxstacksize	10
+
+.local	"self"	0	26
+.local	"template"	0	26
+.local	"data"	5	26
+.local	"count"	9	26
+.local	"columns"	14	26
+.local	"rows"	18	26
+.local	"i"	21	26
+
+.upvalue	"MAX_COLUMNS"	0	false
+
+.constant	k0	"_title"
+.constant	k1	"SetText"
+.constant	k2	"name"
+.constant	k3	"templateData"
+.constant	k4	"table"
+.constant	k5	"getn"
+.constant	k6	"math"
+.constant	k7	"min"
+.constant	k8	"ceil"
+.constant	k9	"Rows"
+.constant	k10	"Columns"
+.constant	k11	1
+.constant	k12	"IterateItemsVertically"
+
+.line	103	gettable      r2    r0    k0 ; k0 = "_title"
+.line	103	self          r2    r2    k1 ; k1 = "SetText"
+.line	103	gettable      r4    r1    k2 ; k2 = "name"
+.line	103	call          r2     3     1
+.line	105	gettable      r2    r1    k3 ; k3 = "templateData"
+.line	106	getglobal     r3    k4 ; k4 = "table"
+.line	106	gettable      r3    r3    k5 ; k5 = "getn"
+.line	106	move          r4    r2
+.line	106	call          r3     2     2
+.line	108	getglobal     r4    k6 ; k6 = "math"
+.line	108	gettable      r4    r4    k7 ; k7 = "min"
+.line	108	move          r5    r3
+.line	108	getupval      r6    u0
+.line	108	call          r4     3     2
+.line	109	getglobal     r5    k6 ; k6 = "math"
+.line	109	gettable      r5    r5    k8 ; k8 = "ceil"
+.line	109	div           r6    r3    r4
+.line	109	call          r5     2     2
+.line	111	settable      r0    k9    r5 ; k9 = "Rows"
+.line	112	settable      r0   k10    r4 ; k10 = "Columns"
+.line	114	loadk         r6   k11 ; k11 = 1
+.line	116	self          r7    r0   k12 ; k12 = "IterateItemsVertical" (truncated)
+.line	125	closure       r9    f0
+.line	125	move          r0    r2 ; upvalue declaration
+.line	125	move          r0    r6 ; upvalue declaration
+.line	116	call          r7     3     1
+.line	127	return        r0     1
+
+.function	main/f6/f0
+
+.source	null
+.linedefined	116
+.numparams	4
+.is_vararg	0
+.maxstacksize	8
+
+.local	"grid"	0	16
+.local	"item"	0	16
+.local	"row"	0	16
+.local	"column"	0	16
+.local	"itemData"	3	16
+
+.upvalue	"data"	0	false
+.upvalue	"i"	0	false
+
+.constant	k0	"Show"
+.constant	k1	"Set"
+.constant	k2	"Hide"
+.constant	k3	1
+
+.line	117	getupval      r4    u0
+.line	117	getupval      r5    u1
+.line	117	gettable      r4    r4    r5
+.line	118	test          r4    r4     0
+.line	118	jmp          l12
+.line	119	self          r5    r1    k0 ; k0 = "Show"
+.line	119	call          r5     2     1
+.line	120	self          r5    r1    k1 ; k1 = "Set"
+.line	120	move          r7    r4
+.line	120	call          r5     3     1
+.line	120	jmp          l14
+.label	l12
+.line	122	self          r5    r1    k2 ; k2 = "Hide"
+.line	122	call          r5     2     1
+.label	l14
+.line	124	getupval      r5    u1
+.line	124	add           r5    r5    k3 ; k3 = 1
+.line	124	setupval      r5    u1
+.line	125	return        r0     1
+

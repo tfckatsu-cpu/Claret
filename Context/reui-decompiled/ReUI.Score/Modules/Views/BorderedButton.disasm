@@ -1,0 +1,533 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/views/borderedbutton.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	9
+
+.local	"Bitmap"	4	48
+.local	"Group"	8	48
+.local	"BorderedText"	12	48
+.local	"LazyVar"	16	48
+.local	"Text"	20	48
+.local	"Dragger"	24	48
+
+.constant	k0	"import"
+.constant	k1	"/lua/maui/bitmap.lua"
+.constant	k2	"Bitmap"
+.constant	k3	"/lua/maui/group.lua"
+.constant	k4	"Group"
+.constant	k5	"BorderedText.lua"
+.constant	k6	"BorderedText"
+.constant	k7	"/lua/lazyvar.lua"
+.constant	k8	"Create"
+.constant	k9	"/lua/maui/text.lua"
+.constant	k10	"Text"
+.constant	k11	"/lua/maui/dragger.lua"
+.constant	k12	"Dragger"
+.constant	k13	"BorderedButton"
+.constant	k14	"Class"
+.constant	k15	"__init"
+.constant	k16	"SetNewColors"
+.constant	k17	"ApplyColors"
+.constant	k18	"OnDisable"
+.constant	k19	"OnEnable"
+.constant	k20	"HandleEvent"
+.constant	k21	"OnRolloverEvent"
+.constant	k22	"OnClick"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "/lua/maui/bitmap.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "Bitmap"
+.line	2	getglobal     r1    k0 ; k0 = "import"
+.line	2	loadk         r2    k3 ; k3 = "/lua/maui/group.lua"
+.line	2	call          r1     2     2
+.line	2	gettable      r1    r1    k4 ; k4 = "Group"
+.line	3	getglobal     r2    k0 ; k0 = "import"
+.line	3	loadk         r3    k5 ; k5 = "BorderedText.lua"
+.line	3	call          r2     2     2
+.line	3	gettable      r2    r2    k6 ; k6 = "BorderedText"
+.line	4	getglobal     r3    k0 ; k0 = "import"
+.line	4	loadk         r4    k7 ; k7 = "/lua/lazyvar.lua"
+.line	4	call          r3     2     2
+.line	4	gettable      r3    r3    k8 ; k8 = "Create"
+.line	5	getglobal     r4    k0 ; k0 = "import"
+.line	5	loadk         r5    k9 ; k9 = "/lua/maui/text.lua"
+.line	5	call          r4     2     2
+.line	5	gettable      r4    r4   k10 ; k10 = "Text"
+.line	6	getglobal     r5    k0 ; k0 = "import"
+.line	6	loadk         r6   k11 ; k11 = "/lua/maui/dragger.lu" (truncated)
+.line	6	call          r5     2     2
+.line	6	gettable      r5    r5   k12 ; k12 = "Dragger"
+.line	10	getglobal     r6   k14 ; k14 = "Class"
+.line	10	move          r7    r2
+.line	10	call          r6     2     2
+.line	10	newtable      r7     0     4
+.line	22	closure       r8    f0
+.line	22	move          r0    r2 ; upvalue declaration
+.line	22	settable      r7   k15    r8 ; k15 = "__init"
+.line	29	closure       r8    f1
+.line	29	settable      r7   k16    r8 ; k16 = "SetNewColors"
+.line	37	closure       r8    f2
+.line	37	settable      r7   k17    r8 ; k17 = "ApplyColors"
+.line	41	closure       r8    f3
+.line	41	settable      r7   k18    r8 ; k18 = "OnDisable"
+.line	45	closure       r8    f4
+.line	45	settable      r7   k19    r8 ; k19 = "OnEnable"
+.line	98	closure       r8    f5
+.line	98	move          r0    r5 ; upvalue declaration
+.line	98	settable      r7   k20    r8 ; k20 = "HandleEvent"
+.line	100	closure       r8    f6
+.line	100	settable      r7   k21    r8 ; k21 = "OnRolloverEvent"
+.line	102	closure       r8    f7
+.line	102	settable      r7   k22    r8 ; k22 = "OnClick"
+.line	11	call          r6     2     2
+.line	103	setglobal     r6   k13 ; k13 = "BorderedButton"
+.line	103	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	12
+.numparams	9
+.is_vararg	0
+.maxstacksize	14
+
+.local	"self"	0	13
+.local	"parent"	0	13
+.local	"normal"	0	13
+.local	"active"	0	13
+.local	"highlight"	0	13
+.local	"disabled"	0	13
+.local	"clickCue"	0	13
+.local	"rolloverCue"	0	13
+.local	"borderWidth"	0	13
+
+.upvalue	"BorderedText"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_normal"
+.constant	k2	"_active"
+.constant	k3	"_highlight"
+.constant	k4	"_disabled"
+.constant	k5	"_clickCue"
+.constant	k6	"_rolloverCue"
+
+.line	13	getupval      r9    u0
+.line	13	gettable      r9    r9    k0 ; k0 = "__init"
+.line	13	move         r10    r0
+.line	13	move         r11    r1
+.line	13	move         r12    r2
+.line	13	move         r13    r8
+.line	13	call          r9     5     1
+.line	15	settable      r0    k1    r2 ; k1 = "_normal"
+.line	16	settable      r0    k2    r3 ; k2 = "_active"
+.line	17	settable      r0    k3    r4 ; k3 = "_highlight"
+.line	18	settable      r0    k4    r5 ; k4 = "_disabled"
+.line	20	settable      r0    k5    r6 ; k5 = "_clickCue"
+.line	21	settable      r0    k6    r7 ; k6 = "_rolloverCue"
+.line	22	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	24
+.numparams	5
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"normal"	0	4
+.local	"active"	0	4
+.local	"highlight"	0	4
+.local	"disabled"	0	4
+
+.constant	k0	"_normal"
+.constant	k1	"_active"
+.constant	k2	"_highlight"
+.constant	k3	"_disabled"
+
+.line	25	settable      r0    k0    r1 ; k0 = "_normal"
+.line	26	settable      r0    k1    r2 ; k1 = "_active"
+.line	27	settable      r0    k2    r3 ; k2 = "_highlight"
+.line	28	settable      r0    k3    r4 ; k3 = "_disabled"
+.line	29	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	31
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	16
+
+.constant	k0	"_isDisabled"
+.constant	k1	"_disabled"
+.constant	k2	"SetColor"
+.constant	k3	"_normal"
+
+.line	32	gettable      r1    r0    k0 ; k0 = "_isDisabled"
+.line	32	test          r1    r1     0
+.line	32	jmp          l11
+.line	32	gettable      r1    r0    k1 ; k1 = "_disabled"
+.line	32	test          r1    r1     0
+.line	32	jmp          l11
+.line	33	self          r1    r0    k2 ; k2 = "SetColor"
+.line	33	gettable      r3    r0    k1 ; k1 = "_disabled"
+.line	33	call          r1     3     1
+.line	33	jmp          l17
+.label	l11
+.line	34	gettable      r1    r0    k3 ; k3 = "_normal"
+.line	34	test          r1    r1     0
+.line	34	jmp          l17
+.line	35	self          r1    r0    k2 ; k2 = "SetColor"
+.line	35	gettable      r3    r0    k3 ; k3 = "_normal"
+.line	35	call          r1     3     1
+.label	l17
+.line	37	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	39
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+
+.constant	k0	"ApplyColors"
+
+.line	40	self          r1    r0    k0 ; k0 = "ApplyColors"
+.line	40	call          r1     2     1
+.line	41	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	43
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+
+.constant	k0	"ApplyColors"
+
+.line	44	self          r1    r0    k0 ; k0 = "ApplyColors"
+.line	44	call          r1     2     1
+.line	45	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	47
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	97
+.local	"event"	0	97
+.local	"dragger"	62	95
+
+.upvalue	"Dragger"	0	false
+
+.constant	k0	"_isDisabled"
+.constant	k1	"Type"
+.constant	k2	"MouseEnter"
+.constant	k3	"_dragger"
+.constant	k4	"SetColor"
+.constant	k5	"_active"
+.constant	k6	"OnRolloverEvent"
+.constant	k7	"enter"
+.constant	k8	"_highlight"
+.constant	k9	"_rolloverCue"
+.constant	k10	"PlaySound"
+.constant	k11	"Sound"
+.constant	k12	"Cue"
+.constant	k13	"Bank"
+.constant	k14	"Interface"
+.constant	k15	"_mouseOver"
+.constant	k16	"MouseExit"
+.constant	k17	"_normal"
+.constant	k18	"exit"
+.constant	k19	"ButtonPress"
+.constant	k20	"ButtonDClick"
+.constant	k21	"OnRelease"
+.constant	k22	"OnCancel"
+.constant	k23	"_clickCue"
+.constant	k24	"down"
+.constant	k25	"PostDragger"
+.constant	k26	"GetRootFrame"
+.constant	k27	"KeyCode"
+
+.line	48	gettable      r2    r0    k0 ; k0 = "_isDisabled"
+.line	48	test          r2    r2     0
+.line	48	jmp           l6
+.line	48	loadbool      r2     1     0
+.line	48	return        r2     2
+.label	l6
+.line	51	gettable      r2    r1    k1 ; k1 = "Type"
+.line	51	eq             0    r2    k2 ; k2 = "MouseEnter"
+.line	51	jmp          l41
+.line	52	gettable      r2    r0    k3 ; k3 = "_dragger"
+.line	52	test          r2    r2     0
+.line	52	jmp          l19
+.line	53	self          r2    r0    k4 ; k4 = "SetColor"
+.line	53	gettable      r4    r0    k5 ; k5 = "_active"
+.line	53	call          r2     3     1
+.line	54	self          r2    r0    k6 ; k6 = "OnRolloverEvent"
+.line	54	loadk         r4    k7 ; k7 = "enter"
+.line	54	call          r2     3     1
+.line	54	jmp          l36
+.label	l19
+.line	56	self          r2    r0    k4 ; k4 = "SetColor"
+.line	56	gettable      r4    r0    k8 ; k8 = "_highlight"
+.line	56	call          r2     3     1
+.line	57	self          r2    r0    k6 ; k6 = "OnRolloverEvent"
+.line	57	loadk         r4    k7 ; k7 = "enter"
+.line	57	call          r2     3     1
+.line	58	gettable      r2    r0    k9 ; k9 = "_rolloverCue"
+.line	58	test          r2    r2     0
+.line	58	jmp          l36
+.line	59	getglobal     r2   k10 ; k10 = "PlaySound"
+.line	59	getglobal     r3   k11 ; k11 = "Sound"
+.line	59	newtable      r4     0     2
+.line	59	gettable      r5    r0    k9 ; k9 = "_rolloverCue"
+.line	59	settable      r4   k12    r5 ; k12 = "Cue"
+.line	59	settable      r4   k13   k14 ; k14 = "Interface"
+.line	59	call          r3     2     0
+.line	59	call          r2     0     1
+.label	l36
+.line	62	loadbool      r2     1     0
+.line	62	settable      r0   k15    r2 ; k15 = "_mouseOver"
+.line	63	loadbool      r2     1     0
+.line	63	return        r2     2
+.line	63	jmp          l96
+.label	l41
+.line	64	gettable      r2    r1    k1 ; k1 = "Type"
+.line	64	eq             0    r2   k16 ; k16 = "MouseExit"
+.line	64	jmp          l55
+.line	65	self          r2    r0    k4 ; k4 = "SetColor"
+.line	65	gettable      r4    r0   k17 ; k17 = "_normal"
+.line	65	call          r2     3     1
+.line	66	self          r2    r0    k6 ; k6 = "OnRolloverEvent"
+.line	66	loadk         r4   k18 ; k18 = "exit"
+.line	66	call          r2     3     1
+.line	67	loadbool      r2     0     0
+.line	67	settable      r0   k15    r2 ; k15 = "_mouseOver"
+.line	68	loadbool      r2     1     0
+.line	68	return        r2     2
+.line	68	jmp          l96
+.label	l55
+.line	69	gettable      r2    r1    k1 ; k1 = "Type"
+.line	69	eq             1    r2   k19 ; k19 = "ButtonPress"
+.line	69	jmp          l61
+.line	69	gettable      r2    r1    k1 ; k1 = "Type"
+.line	69	eq             0    r2   k20 ; k20 = "ButtonDClick"
+.line	69	jmp          l96
+.label	l61
+.line	70	getupval      r2    u0
+.line	70	call          r2     1     2
+.line	79	closure       r3    f0
+.line	79	move          r0    r0 ; upvalue declaration
+.line	79	move          r0    r1 ; upvalue declaration
+.line	79	settable      r2   k21    r3 ; k21 = "OnRelease"
+.line	86	closure       r3    f1
+.line	86	move          r0    r0 ; upvalue declaration
+.line	86	settable      r2   k22    r3 ; k22 = "OnCancel"
+.line	87	settable      r0    k3    r2 ; k3 = "_dragger"
+.line	88	gettable      r3    r0   k23 ; k23 = "_clickCue"
+.line	88	test          r3    r3     0
+.line	88	jmp          l82
+.line	89	getglobal     r3   k10 ; k10 = "PlaySound"
+.line	89	getglobal     r4   k11 ; k11 = "Sound"
+.line	89	newtable      r5     0     2
+.line	89	gettable      r6    r0   k23 ; k23 = "_clickCue"
+.line	89	settable      r5   k12    r6 ; k12 = "Cue"
+.line	89	settable      r5   k13   k14 ; k14 = "Interface"
+.line	89	call          r4     2     0
+.line	89	call          r3     0     1
+.label	l82
+.line	91	self          r3    r0    k4 ; k4 = "SetColor"
+.line	91	gettable      r5    r0    k5 ; k5 = "_active"
+.line	91	call          r3     3     1
+.line	92	self          r3    r0    k6 ; k6 = "OnRolloverEvent"
+.line	92	loadk         r5   k24 ; k24 = "down"
+.line	92	call          r3     3     1
+.line	93	getglobal     r3   k25 ; k25 = "PostDragger"
+.line	93	self          r4    r0   k26 ; k26 = "GetRootFrame"
+.line	93	call          r4     2     2
+.line	93	gettable      r5    r1   k27 ; k27 = "KeyCode"
+.line	93	move          r6    r2
+.line	93	call          r3     4     1
+.line	94	loadbool      r3     1     0
+.line	94	return        r3     2
+.label	l96
+.line	97	loadbool      r2     0     0
+.line	97	return        r2     2
+.line	98	return        r0     1
+
+.function	main/f5/f0
+
+.source	null
+.linedefined	71
+.numparams	3
+.is_vararg	0
+.maxstacksize	6
+
+.local	"dragger"	0	22
+.local	"x"	0	22
+.local	"y"	0	22
+
+.upvalue	"self"	0	false
+.upvalue	"event"	0	false
+
+.constant	k0	"Destroy"
+.constant	k1	"_dragger"
+.constant	k2	nil
+.constant	k3	"_mouseOver"
+.constant	k4	"SetTexture"
+.constant	k5	"_highlight"
+.constant	k6	"OnRolloverEvent"
+.constant	k7	"exit"
+.constant	k8	"OnClick"
+.constant	k9	"Modifiers"
+
+.line	72	self          r3    r0    k0 ; k0 = "Destroy"
+.line	72	call          r3     2     1
+.line	73	getupval      r3    u0
+.line	73	settable      r3    k1    k2 ; k2 = nil
+.line	74	getupval      r3    u0
+.line	74	gettable      r3    r3    k3 ; k3 = "_mouseOver"
+.line	74	test          r3    r3     0
+.line	74	jmp          l23
+.line	75	getupval      r3    u0
+.line	75	self          r3    r3    k4 ; k4 = "SetTexture"
+.line	75	getupval      r5    u0
+.line	75	gettable      r5    r5    k5 ; k5 = "_highlight"
+.line	75	call          r3     3     1
+.line	76	getupval      r3    u0
+.line	76	self          r3    r3    k6 ; k6 = "OnRolloverEvent"
+.line	76	loadk         r5    k7 ; k7 = "exit"
+.line	76	call          r3     3     1
+.line	77	getupval      r3    u0
+.line	77	self          r3    r3    k8 ; k8 = "OnClick"
+.line	77	getupval      r5    u1
+.line	77	gettable      r5    r5    k9 ; k9 = "Modifiers"
+.line	77	call          r3     3     1
+.label	l23
+.line	79	return        r0     1
+
+.function	main/f5/f1
+
+.source	null
+.linedefined	80
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"dragger"	0	13
+
+.upvalue	"self"	0	false
+
+.constant	k0	"_mouseOver"
+.constant	k1	"SetColor"
+.constant	k2	"_highlight"
+.constant	k3	"Destroy"
+.constant	k4	"_dragger"
+.constant	k5	nil
+
+.line	81	getupval      r1    u0
+.line	81	gettable      r1    r1    k0 ; k0 = "_mouseOver"
+.line	81	test          r1    r1     0
+.line	81	jmp          l10
+.line	82	getupval      r1    u0
+.line	82	self          r1    r1    k1 ; k1 = "SetColor"
+.line	82	getupval      r3    u0
+.line	82	gettable      r3    r3    k2 ; k2 = "_highlight"
+.line	82	call          r1     3     1
+.label	l10
+.line	84	self          r1    r0    k3 ; k3 = "Destroy"
+.line	84	call          r1     2     1
+.line	85	getupval      r1    u0
+.line	85	settable      r1    k4    k5 ; k5 = nil
+.line	86	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	100
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"state"	0	0
+
+.line	100	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	102
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"modifiers"	0	0
+
+.line	102	return        r0     1
+

@@ -1,0 +1,427 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/infopanel.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	14
+
+.local	"UIUtil"	3	50
+.local	"Tooltip"	6	50
+.local	"Group"	10	50
+.local	"Bitmap"	14	50
+.local	"Text"	18	50
+.local	"options"	22	50
+.local	"textSize"	23	50
+.local	"panelWidth"	24	50
+.local	"panelHeight"	25	50
+.local	"GetSizeInKM"	26	50
+.local	"FormatMapName"	27	50
+
+.constant	k0	"import"
+.constant	k1	"/lua/ui/uiutil.lua"
+.constant	k2	"/lua/ui/game/tooltip.lua"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Controls"
+.constant	k6	"Group"
+.constant	k7	"Bitmap"
+.constant	k8	"Text"
+.constant	k9	"Options"
+.constant	k10	"Mods"
+.constant	k11	"ReUI.Score"
+.constant	k12	12
+.constant	k13	300
+.constant	k14	20
+.constant	k15	"InfoPanel"
+.constant	k16	"Core"
+.constant	k17	"Class"
+.constant	k18	"__init"
+.constant	k19	"InitLayout"
+.constant	k20	"Setup"
+
+.line	7	getglobal     r0    k0 ; k0 = "import"
+.line	7	loadk         r1    k1 ; k1 = "/lua/ui/uiutil.lua"
+.line	7	call          r0     2     2
+.line	8	getglobal     r1    k0 ; k0 = "import"
+.line	8	loadk         r2    k2 ; k2 = "/lua/ui/game/tooltip" (truncated)
+.line	8	call          r1     2     2
+.line	13	getglobal     r2    k3 ; k3 = "ReUI"
+.line	13	gettable      r2    r2    k4 ; k4 = "UI"
+.line	13	gettable      r2    r2    k5 ; k5 = "Controls"
+.line	13	gettable      r2    r2    k6 ; k6 = "Group"
+.line	14	getglobal     r3    k3 ; k3 = "ReUI"
+.line	14	gettable      r3    r3    k4 ; k4 = "UI"
+.line	14	gettable      r3    r3    k5 ; k5 = "Controls"
+.line	14	gettable      r3    r3    k7 ; k7 = "Bitmap"
+.line	15	getglobal     r4    k3 ; k3 = "ReUI"
+.line	15	gettable      r4    r4    k4 ; k4 = "UI"
+.line	15	gettable      r4    r4    k5 ; k5 = "Controls"
+.line	15	gettable      r4    r4    k8 ; k8 = "Text"
+.line	24	getglobal     r5    k3 ; k3 = "ReUI"
+.line	24	gettable      r5    r5    k9 ; k9 = "Options"
+.line	24	gettable      r5    r5   k10 ; k10 = "Mods"
+.line	24	gettable      r5    r5   k11 ; k11 = "ReUI.Score"
+.line	26	loadk         r6   k12 ; k12 = 12
+.line	27	loadk         r7   k13 ; k13 = 300
+.line	28	loadk         r8   k14 ; k14 = 20
+.line	38	closure       r9    f0
+.line	49	closure      r10    f1
+.line	54	getglobal    r11    k3 ; k3 = "ReUI"
+.line	54	gettable     r11   r11   k16 ; k16 = "Core"
+.line	54	gettable     r11   r11   k17 ; k17 = "Class"
+.line	54	move         r12    r2
+.line	54	call         r11     2     2
+.line	54	newtable     r12     0     2
+.line	63	closure      r13    f2
+.line	63	move          r0    r2 ; upvalue declaration
+.line	63	move          r0    r4 ; upvalue declaration
+.line	63	settable     r12   k18   r13 ; k18 = "__init"
+.line	84	closure      r13    f3
+.line	84	move          r0    r5 ; upvalue declaration
+.line	84	move          r0    r6 ; upvalue declaration
+.line	84	move          r0    r8 ; upvalue declaration
+.line	84	settable     r12   k19   r13 ; k19 = "InitLayout"
+.line	115	closure      r13    f4
+.line	115	move          r0    r9 ; upvalue declaration
+.line	115	move          r0   r10 ; upvalue declaration
+.line	115	move          r0    r0 ; upvalue declaration
+.line	115	move          r0    r1 ; upvalue declaration
+.line	115	settable     r12   k20   r13 ; k20 = "Setup"
+.line	55	call         r11     2     2
+.line	117	setglobal    r11   k15 ; k15 = "InfoPanel"
+.line	117	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	36
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"size"	0	3
+
+.constant	k0	512
+.constant	k1	10
+
+.line	37	div           r1    r0    k0 ; k0 = 512
+.line	37	mul           r1    r1    k1 ; k1 = 10
+.line	37	return        r1     2
+.line	38	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	44
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"name"	0	11
+
+.constant	k0	"find"
+.constant	k1	"neroxis_map_generator"
+.constant	k2	"Neroxis Map Generator"
+
+.line	45	self          r1    r0    k0 ; k0 = "find"
+.line	45	loadk         r3    k1 ; k1 = "neroxis_map_generato" (truncated)
+.line	45	call          r1     3     2
+.line	45	test          r1    r1     0
+.line	45	jmp           l9
+.line	46	loadk         r1    k2 ; k2 = "Neroxis Map Generato" (truncated)
+.line	46	loadbool      r2     1     0
+.line	46	return        r1     3
+.label	l9
+.line	48	move          r1    r0
+.line	48	loadbool      r2     0     0
+.line	48	return        r1     3
+.line	49	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	58
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	13
+.local	"parent"	0	13
+
+.upvalue	"Group"	0	false
+.upvalue	"Text"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_mapName"
+.constant	k2	"_mapSize"
+
+.line	59	getupval      r2    u0
+.line	59	gettable      r2    r2    k0 ; k0 = "__init"
+.line	59	move          r3    r0
+.line	59	move          r4    r1
+.line	59	call          r2     3     1
+.line	61	getupval      r2    u1
+.line	61	move          r3    r0
+.line	61	call          r2     2     2
+.line	61	settable      r0    k1    r2 ; k1 = "_mapName"
+.line	62	getupval      r2    u1
+.line	62	move          r3    r0
+.line	62	call          r2     2     2
+.line	62	settable      r0    k2    r2 ; k2 = "_mapSize"
+.line	63	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	67
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	51
+.local	"layouter"	0	51
+.local	"parent"	2	51
+
+.upvalue	"options"	0	false
+.upvalue	"textSize"	0	false
+.upvalue	"panelHeight"	0	false
+
+.constant	k0	"GetParent"
+.constant	k1	"_mapName"
+.constant	k2	"SetFont"
+.constant	k3	"title"
+.constant	k4	"font"
+.constant	k5	"mapName"
+.constant	k6	"Raw"
+.constant	k7	"AtCenterIn"
+.constant	k8	"_mapSize"
+.constant	k9	"mapSize"
+.constant	k10	"AtVerticalCenterIn"
+.constant	k11	"AtRightIn"
+.constant	k12	10
+.constant	k13	"DisableHitTest"
+.constant	k14	"Width"
+.constant	k15	"Height"
+
+.line	68	self          r2    r0    k0 ; k0 = "GetParent"
+.line	68	call          r2     2     2
+.line	70	gettable      r3    r0    k1 ; k1 = "_mapName"
+.line	70	self          r3    r3    k2 ; k2 = "SetFont"
+.line	70	getupval      r5    u0
+.line	70	gettable      r5    r5    k3 ; k3 = "title"
+.line	70	gettable      r5    r5    k4 ; k4 = "font"
+.line	70	gettable      r5    r5    k5 ; k5 = "mapName"
+.line	70	self          r5    r5    k6 ; k6 = "Raw"
+.line	70	call          r5     2     2
+.line	70	getupval      r6    u1
+.line	70	call          r3     4     1
+.line	71	move          r3    r1
+.line	71	gettable      r4    r0    k1 ; k1 = "_mapName"
+.line	71	call          r3     2     2
+.line	72	self          r3    r3    k7 ; k7 = "AtCenterIn"
+.line	72	move          r5    r0
+.line	72	call          r3     3     1
+.line	74	gettable      r3    r0    k8 ; k8 = "_mapSize"
+.line	74	self          r3    r3    k2 ; k2 = "SetFont"
+.line	74	getupval      r5    u0
+.line	74	gettable      r5    r5    k3 ; k3 = "title"
+.line	74	gettable      r5    r5    k4 ; k4 = "font"
+.line	74	gettable      r5    r5    k9 ; k9 = "mapSize"
+.line	74	self          r5    r5    k6 ; k6 = "Raw"
+.line	74	call          r5     2     2
+.line	74	getupval      r6    u1
+.line	74	call          r3     4     1
+.line	75	move          r3    r1
+.line	75	gettable      r4    r0    k8 ; k8 = "_mapSize"
+.line	75	call          r3     2     2
+.line	76	self          r3    r3   k10 ; k10 = "AtVerticalCenterIn"
+.line	76	move          r5    r0
+.line	76	call          r3     3     2
+.line	77	self          r3    r3   k11 ; k11 = "AtRightIn"
+.line	77	move          r5    r0
+.line	77	loadk         r6   k12 ; k12 = 10
+.line	77	call          r3     4     2
+.line	78	self          r3    r3   k13 ; k13 = "DisableHitTest"
+.line	78	call          r3     2     1
+.line	80	move          r3    r1
+.line	80	move          r4    r0
+.line	80	call          r3     2     2
+.line	81	self          r3    r3   k14 ; k14 = "Width"
+.line	81	gettable      r5    r2   k14 ; k14 = "Width"
+.line	81	call          r3     3     2
+.line	82	self          r3    r3   k15 ; k15 = "Height"
+.line	82	getupval      r5    u2
+.line	82	call          r3     3     2
+.line	83	self          r3    r3   k13 ; k13 = "DisableHitTest"
+.line	83	call          r3     2     1
+.line	84	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	87
+.numparams	1
+.is_vararg	0
+.maxstacksize	16
+
+.local	"self"	0	68
+.local	"sessionInfo"	2	68
+.local	"mapWidth"	4	68
+.local	"mapHeight"	6	68
+.local	"areaData"	8	68
+.local	"mapName"	31	68
+.local	"isMapGen"	31	68
+.local	"mapDescription"	32	68
+
+.upvalue	"GetSizeInKM"	0	false
+.upvalue	"FormatMapName"	0	false
+.upvalue	"UIUtil"	0	false
+.upvalue	"Tooltip"	0	false
+
+.constant	k0	"SessionGetScenarioInfo"
+.constant	k1	"size"
+.constant	k2	1
+.constant	k3	2
+.constant	k4	"Sync"
+.constant	k5	"NewPlayableArea"
+.constant	k6	3
+.constant	k7	4
+.constant	k8	"_mapSize"
+.constant	k9	"SetText"
+.constant	k10	"%.1f x %.1f"
+.constant	k11	"format"
+.constant	k12	"name"
+.constant	k13	"description"
+.constant	k14	""
+.constant	k15	"No description set by the author."
+.constant	k16	"%s\r\n\r\n%s: %s\r\n%s: %s"
+.constant	k17	"LOC"
+.constant	k18	"<LOC map_version>Map version"
+.constant	k19	"tostring"
+.constant	k20	"map_version"
+.constant	k21	"<LOC replay_id>Replay ID"
+.constant	k22	"GetReplayId"
+.constant	k23	"_mapName"
+.constant	k24	"AddForcedControlTooltipManual"
+
+.line	88	getglobal     r1    k0 ; k0 = "SessionGetScenarioIn" (truncated)
+.line	88	call          r1     1     2
+.line	89	gettable      r2    r1    k1 ; k1 = "size"
+.line	89	gettable      r2    r2    k2 ; k2 = 1
+.line	90	gettable      r3    r1    k1 ; k1 = "size"
+.line	90	gettable      r3    r3    k3 ; k3 = 2
+.line	91	getglobal     r4    k4 ; k4 = "Sync"
+.line	91	gettable      r4    r4    k5 ; k5 = "NewPlayableArea"
+.line	92	test          r4    r4     0
+.line	92	jmp          l17
+.line	93	gettable      r5    r4    k6 ; k6 = 3
+.line	93	gettable      r6    r4    k2 ; k2 = 1
+.line	93	sub           r2    r5    r6
+.line	94	gettable      r5    r4    k7 ; k7 = 4
+.line	94	gettable      r6    r4    k3 ; k3 = 2
+.line	94	sub           r3    r5    r6
+.label	l17
+.line	96	gettable      r5    r0    k8 ; k8 = "_mapSize"
+.line	96	self          r5    r5    k9 ; k9 = "SetText"
+.line	96	loadk         r7   k10 ; k10 = "%.1f x %.1f"
+.line	96	self          r7    r7   k11 ; k11 = "format"
+.line	96	getupval      r9    u0
+.line	96	move         r10    r2
+.line	96	call          r9     2     2
+.line	96	getupval     r10    u0
+.line	96	move         r11    r3
+.line	96	call         r10     2     0
+.line	96	call          r7     0     0
+.line	96	call          r5     0     1
+.line	99	getupval      r5    u1
+.line	99	gettable      r6    r1   k12 ; k12 = "name"
+.line	99	call          r5     2     3
+.line	100	gettable      r7    r1   k13 ; k13 = "description"
+.line	101	test          r7    r7     0
+.line	101	jmp          l37
+.line	101	eq             0    r7   k14 ; k14 = ""
+.line	101	jmp          l38
+.label	l37
+.line	102	loadk         r7   k15 ; k15 = "No description set b" (truncated)
+.label	l38
+.line	105	loadk         r8   k16 ; k16 = "%s\r\n\r\n%s: %s\r\n%s: %s"
+.line	105	self          r8    r8   k11 ; k11 = "format"
+.line	106	getglobal    r10   k17 ; k17 = "LOC"
+.line	106	move         r11    r7
+.line	106	call         r10     2     2
+.line	107	getglobal    r11   k17 ; k17 = "LOC"
+.line	107	loadk        r12   k18 ; k18 = "<LOC map_version>Map" (truncated)
+.line	107	call         r11     2     2
+.line	108	getglobal    r12   k19 ; k19 = "tostring"
+.line	108	gettable     r13    r1   k20 ; k20 = "map_version"
+.line	108	call         r12     2     2
+.line	109	getglobal    r13   k17 ; k17 = "LOC"
+.line	109	loadk        r14   k21 ; k21 = "<LOC replay_id>Repla" (truncated)
+.line	109	call         r13     2     2
+.line	110	getglobal    r14   k19 ; k19 = "tostring"
+.line	110	getupval     r15    u2
+.line	110	gettable     r15   r15   k22 ; k22 = "GetReplayId"
+.line	110	call         r15     1     0
+.line	110	call         r14     0     0
+.line	105	call          r8     0     2
+.line	111	move          r7    r8
+.line	112	gettable      r8    r0   k23 ; k23 = "_mapName"
+.line	112	self          r8    r8    k9 ; k9 = "SetText"
+.line	112	move         r10    r5
+.line	112	call          r8     3     1
+.line	114	getupval      r8    u3
+.line	114	gettable      r8    r8   k24 ; k24 = "AddForcedControlTool" (truncated)
+.line	114	gettable      r9    r0   k23 ; k23 = "_mapName"
+.line	114	gettable     r10    r1   k12 ; k12 = "name"
+.line	114	move         r11    r7
+.line	114	call          r8     4     1
+.line	115	return        r0     1
+

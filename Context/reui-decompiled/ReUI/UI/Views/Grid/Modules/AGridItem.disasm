@@ -1,0 +1,371 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ui/views/grid/modules/agriditem.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	5
+
+.local	"Bitmap"	4	38
+.local	"ALazyComponentContainer"	7	38
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Bitmap"
+.constant	k4	"ECS"
+.constant	k5	"ALazyComponentContainer"
+.constant	k6	"AGridItem"
+.constant	k7	"Core"
+.constant	k8	"Class"
+.constant	k9	"__init"
+.constant	k10	"InitLayout"
+.constant	k11	"EnableComponent"
+.constant	k12	"DisableComponents"
+.constant	k13	"OnDisable"
+.constant	k14	"GetActiveComponent"
+.constant	k15	"SetActiveComponent"
+.constant	k16	"HandleEvent"
+.constant	k17	"OnFrame"
+.constant	k18	"OnDestroy"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "UI"
+.line	1	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	1	gettable      r0    r0    k3 ; k3 = "Bitmap"
+.line	3	getglobal     r1    k0 ; k0 = "ReUI"
+.line	3	gettable      r1    r1    k4 ; k4 = "ECS"
+.line	3	gettable      r1    r1    k5 ; k5 = "ALazyComponentContai" (truncated)
+.line	7	getglobal     r2    k0 ; k0 = "ReUI"
+.line	7	gettable      r2    r2    k7 ; k7 = "Core"
+.line	7	gettable      r2    r2    k8 ; k8 = "Class"
+.line	7	move          r3    r0
+.line	7	move          r4    r1
+.line	7	call          r2     3     2
+.line	7	newtable      r3     0     4
+.line	14	closure       r4    f0
+.line	14	move          r0    r0 ; upvalue declaration
+.line	14	settable      r3    k9    r4 ; k9 = "__init"
+.line	23	closure       r4    f1
+.line	23	settable      r3   k10    r4 ; k10 = "InitLayout"
+.line	35	closure       r4    f2
+.line	35	settable      r3   k11    r4 ; k11 = "EnableComponent"
+.line	47	closure       r4    f3
+.line	47	settable      r3   k12    r4 ; k12 = "DisableComponents"
+.line	52	closure       r4    f4
+.line	52	settable      r3   k13    r4 ; k13 = "OnDisable"
+.line	59	closure       r4    f5
+.line	59	settable      r3   k14    r4 ; k14 = "GetActiveComponent"
+.line	65	closure       r4    f6
+.line	65	settable      r3   k15    r4 ; k15 = "SetActiveComponent"
+.line	74	closure       r4    f7
+.line	74	settable      r3   k16    r4 ; k16 = "HandleEvent"
+.line	83	closure       r4    f8
+.line	83	settable      r3   k17    r4 ; k17 = "OnFrame"
+.line	89	closure       r4    f9
+.line	89	move          r0    r0 ; upvalue declaration
+.line	89	settable      r3   k18    r4 ; k18 = "OnDestroy"
+.line	8	call          r2     2     2
+.line	90	setglobal     r2    k6 ; k6 = "AGridItem"
+.line	90	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	11
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	6
+.local	"parent"	0	6
+
+.upvalue	"Bitmap"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_activeComponent"
+.constant	k2	nil
+
+.line	12	getupval      r2    u0
+.line	12	gettable      r2    r2    k0 ; k0 = "__init"
+.line	12	move          r3    r0
+.line	12	move          r4    r1
+.line	12	call          r2     3     1
+.line	13	settable      r0    k1    k2 ; k2 = nil
+.line	14	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	18
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	12
+.local	"layouter"	0	12
+
+.constant	k0	"Width"
+.constant	k1	0
+.constant	k2	"Height"
+.constant	k3	"Color"
+.constant	k4	"99000000"
+
+.line	19	move          r2    r1
+.line	19	move          r3    r0
+.line	19	call          r2     2     2
+.line	20	self          r2    r2    k0 ; k0 = "Width"
+.line	20	loadk         r4    k1 ; k1 = 0
+.line	20	call          r2     3     2
+.line	21	self          r2    r2    k2 ; k2 = "Height"
+.line	21	loadk         r4    k1 ; k1 = 0
+.line	21	call          r2     3     2
+.line	22	self          r2    r2    k3 ; k3 = "Color"
+.line	22	loadk         r4    k4 ; k4 = "99000000"
+.line	22	call          r2     3     1
+.line	23	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	29
+.numparams	4
+.is_vararg	0
+.maxstacksize	10
+
+.local	"self"	0	14
+.local	"name"	0	14
+.local	"action"	0	14
+.local	"context"	0	14
+.local	"component"	9	14
+
+.constant	k0	"DisableComponents"
+.constant	k1	"SetActiveComponent"
+.constant	k2	"Enable"
+.constant	k3	"GetActiveComponent"
+
+.line	30	self          r4    r0    k0 ; k0 = "DisableComponents"
+.line	30	call          r4     2     1
+.line	31	self          r4    r0    k1 ; k1 = "SetActiveComponent"
+.line	31	move          r6    r1
+.line	31	call          r4     3     1
+.line	32	self          r4    r0    k2 ; k2 = "Enable"
+.line	32	call          r4     2     1
+.line	33	self          r4    r0    k3 ; k3 = "GetActiveComponent"
+.line	33	call          r4     2     2
+.line	34	self          r5    r4    k2 ; k2 = "Enable"
+.line	34	move          r7    r0
+.line	34	move          r8    r2
+.line	34	move          r9    r3
+.line	34	call          r5     5     1
+.line	35	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	38
+.numparams	1
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	13
+.local	"components"	2	13
+.local	"(for generator)"	8	13
+.local	"(for state)"	8	13
+.local	"_"	8	13
+.local	"component"	8	13
+
+.constant	k0	"GetComponents"
+.constant	k1	"Disable"
+
+.line	39	self          r1    r0    k0 ; k0 = "GetComponents"
+.line	39	call          r1     2     2
+.line	40	test          r1    r1     1
+.line	40	jmp           l6
+.line	41	return        r0     1
+.label	l6
+.line	44	move          r2    r1
+.line	44	loadnil       r3    r5
+.line	44	tforprep      r2   l12
+.label	l9
+.line	45	self          r6    r5    k1 ; k1 = "Disable"
+.line	45	move          r8    r0
+.line	45	call          r6     3     1
+.label	l12
+.line	44	tforloop      r2     1
+.line	45	jmp           l9
+.line	47	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	50
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+
+.constant	k0	"DisableComponents"
+
+.line	51	self          r1    r0    k0 ; k0 = "DisableComponents"
+.line	51	call          r1     2     1
+.line	52	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	57
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	4
+
+.constant	k0	"GetComponent"
+.constant	k1	"_activeComponent"
+
+.line	58	self          r1    r0    k0 ; k0 = "GetComponent"
+.line	58	gettable      r3    r0    k1 ; k1 = "_activeComponent"
+.line	58	tailcall      r1     3
+.line	58	return        r1     0
+.line	59	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	63
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	1
+.local	"name"	0	1
+
+.constant	k0	"_activeComponent"
+
+.line	64	settable      r0    k0    r1 ; k0 = "_activeComponent"
+.line	65	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	69
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	8
+.local	"event"	0	8
+.local	"component"	2	8
+
+.constant	k0	"GetActiveComponent"
+.constant	k1	"HandleEvent"
+
+.line	70	self          r2    r0    k0 ; k0 = "GetActiveComponent"
+.line	70	call          r2     2     2
+.line	71	test          r2    r2     0
+.line	71	jmp           l9
+.line	72	self          r3    r2    k1 ; k1 = "HandleEvent"
+.line	72	move          r5    r0
+.line	72	move          r6    r1
+.line	72	call          r3     4     1
+.label	l9
+.line	74	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	78
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	8
+.local	"delta"	0	8
+.local	"component"	2	8
+
+.constant	k0	"GetActiveComponent"
+.constant	k1	"OnFrame"
+
+.line	79	self          r2    r0    k0 ; k0 = "GetActiveComponent"
+.line	79	call          r2     2     2
+.line	80	test          r2    r2     0
+.line	80	jmp           l9
+.line	81	self          r3    r2    k1 ; k1 = "OnFrame"
+.line	81	move          r5    r0
+.line	81	move          r6    r1
+.line	81	call          r3     4     1
+.label	l9
+.line	83	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	86
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	6
+
+.upvalue	"Bitmap"	0	false
+
+.constant	k0	"DestroyComponents"
+.constant	k1	"OnDestroy"
+
+.line	87	self          r1    r0    k0 ; k0 = "DestroyComponents"
+.line	87	call          r1     2     1
+.line	88	getupval      r1    u0
+.line	88	gettable      r1    r1    k1 ; k1 = "OnDestroy"
+.line	88	move          r2    r0
+.line	88	call          r1     2     1
+.line	89	return        r0     1
+

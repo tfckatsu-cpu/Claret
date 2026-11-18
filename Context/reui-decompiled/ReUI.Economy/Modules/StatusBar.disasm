@@ -1,0 +1,449 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.economy/modules/statusbar.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	9
+
+.local	"LazyVar"	4	76
+.local	"Group"	8	76
+.local	"Bitmap"	12	76
+.local	"Text"	16	76
+
+.constant	k0	"import"
+.constant	k1	"/lua/lazyvar.lua"
+.constant	k2	"Create"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Controls"
+.constant	k6	"Group"
+.constant	k7	"Bitmap"
+.constant	k8	"Text"
+.constant	k9	"StatusBar"
+.constant	k10	"Core"
+.constant	k11	"Class"
+.constant	k12	"__init"
+.constant	k13	"Percent"
+.constant	k14	"Property"
+.constant	k15	"get"
+.constant	k16	"Value"
+.constant	k17	"set"
+.constant	k18	"Max"
+.constant	k19	"Min"
+.constant	k20	"BarColor"
+.constant	k21	"InitLayout"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "/lua/lazyvar.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "Create"
+.line	3	getglobal     r1    k3 ; k3 = "ReUI"
+.line	3	gettable      r1    r1    k4 ; k4 = "UI"
+.line	3	gettable      r1    r1    k5 ; k5 = "Controls"
+.line	3	gettable      r1    r1    k6 ; k6 = "Group"
+.line	4	getglobal     r2    k3 ; k3 = "ReUI"
+.line	4	gettable      r2    r2    k4 ; k4 = "UI"
+.line	4	gettable      r2    r2    k5 ; k5 = "Controls"
+.line	4	gettable      r2    r2    k7 ; k7 = "Bitmap"
+.line	5	getglobal     r3    k3 ; k3 = "ReUI"
+.line	5	gettable      r3    r3    k4 ; k4 = "UI"
+.line	5	gettable      r3    r3    k5 ; k5 = "Controls"
+.line	5	gettable      r3    r3    k8 ; k8 = "Text"
+.line	13	getglobal     r4    k3 ; k3 = "ReUI"
+.line	13	gettable      r4    r4   k10 ; k10 = "Core"
+.line	13	gettable      r4    r4   k11 ; k11 = "Class"
+.line	13	move          r5    r2
+.line	13	call          r4     2     2
+.line	13	newtable      r5     0     3
+.line	25	closure       r6    f0
+.line	25	move          r0    r2 ; upvalue declaration
+.line	25	move          r0    r0 ; upvalue declaration
+.line	25	settable      r5   k12    r6 ; k12 = "__init"
+.line	27	getglobal     r6    k3 ; k3 = "ReUI"
+.line	27	gettable      r6    r6   k10 ; k10 = "Core"
+.line	27	gettable      r6    r6   k14 ; k14 = "Property"
+.line	27	newtable      r7     0     1
+.line	43	closure       r8    f1
+.line	43	settable      r7   k15    r8 ; k15 = "get"
+.line	28	call          r6     2     2
+.line	44	settable      r5   k13    r6 ; k13 = "Percent"
+.line	47	getglobal     r6    k3 ; k3 = "ReUI"
+.line	47	gettable      r6    r6   k10 ; k10 = "Core"
+.line	47	gettable      r6    r6   k14 ; k14 = "Property"
+.line	47	newtable      r7     0     2
+.line	52	closure       r8    f2
+.line	52	settable      r7   k15    r8 ; k15 = "get"
+.line	57	closure       r8    f3
+.line	57	settable      r7   k17    r8 ; k17 = "set"
+.line	48	call          r6     2     2
+.line	58	settable      r5   k16    r6 ; k16 = "Value"
+.line	61	getglobal     r6    k3 ; k3 = "ReUI"
+.line	61	gettable      r6    r6   k10 ; k10 = "Core"
+.line	61	gettable      r6    r6   k14 ; k14 = "Property"
+.line	61	newtable      r7     0     2
+.line	67	closure       r8    f4
+.line	67	settable      r7   k15    r8 ; k15 = "get"
+.line	73	closure       r8    f5
+.line	73	settable      r7   k17    r8 ; k17 = "set"
+.line	62	call          r6     2     2
+.line	74	settable      r5   k18    r6 ; k18 = "Max"
+.line	77	getglobal     r6    k3 ; k3 = "ReUI"
+.line	77	gettable      r6    r6   k10 ; k10 = "Core"
+.line	77	gettable      r6    r6   k14 ; k14 = "Property"
+.line	77	newtable      r7     0     2
+.line	83	closure       r8    f6
+.line	83	settable      r7   k15    r8 ; k15 = "get"
+.line	89	closure       r8    f7
+.line	89	settable      r7   k17    r8 ; k17 = "set"
+.line	78	call          r6     2     2
+.line	90	settable      r5   k19    r6 ; k19 = "Min"
+.line	93	getglobal     r6    k3 ; k3 = "ReUI"
+.line	93	gettable      r6    r6   k10 ; k10 = "Core"
+.line	93	gettable      r6    r6   k14 ; k14 = "Property"
+.line	93	newtable      r7     0     1
+.line	99	closure       r8    f8
+.line	99	settable      r7   k17    r8 ; k17 = "set"
+.line	94	call          r6     2     2
+.line	100	settable      r5   k20    r6 ; k20 = "BarColor"
+.line	115	closure       r6    f9
+.line	115	settable      r5   k21    r6 ; k21 = "InitLayout"
+.line	14	call          r4     2     2
+.line	116	setglobal     r4    k9 ; k9 = "StatusBar"
+.line	116	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	17
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	21
+.local	"parent"	0	21
+
+.upvalue	"Bitmap"	0	false
+.upvalue	"LazyVar"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_min"
+.constant	k2	0
+.constant	k3	"_max"
+.constant	k4	1
+.constant	k5	"_value"
+.constant	k6	"_bar"
+
+.line	18	getupval      r2    u0
+.line	18	gettable      r2    r2    k0 ; k0 = "__init"
+.line	18	move          r3    r0
+.line	18	move          r4    r1
+.line	18	call          r2     3     1
+.line	20	getupval      r2    u1
+.line	20	loadk         r3    k2 ; k2 = 0
+.line	20	call          r2     2     2
+.line	20	settable      r0    k1    r2 ; k1 = "_min"
+.line	21	getupval      r2    u1
+.line	21	loadk         r3    k4 ; k4 = 1
+.line	21	call          r2     2     2
+.line	21	settable      r0    k3    r2 ; k3 = "_max"
+.line	22	getupval      r2    u1
+.line	22	loadk         r3    k2 ; k2 = 0
+.line	22	call          r2     2     2
+.line	22	settable      r0    k5    r2 ; k5 = "_value"
+.line	24	getupval      r2    u0
+.line	24	move          r3    r0
+.line	24	call          r2     2     2
+.line	24	settable      r0    k6    r2 ; k6 = "_bar"
+.line	25	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	31
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	14
+.local	"min"	2	14
+.local	"max"	4	14
+.local	"range"	5	14
+.local	"value"	11	14
+
+.constant	k0	"_min"
+.constant	k1	"_max"
+.constant	k2	0
+.constant	k3	"_value"
+
+.line	32	gettable      r1    r0    k0 ; k0 = "_min"
+.line	32	call          r1     1     2
+.line	33	gettable      r2    r0    k1 ; k1 = "_max"
+.line	33	call          r2     1     2
+.line	34	sub           r3    r2    r1
+.line	36	eq             0    r3    k2 ; k2 = 0
+.line	36	jmp          l10
+.line	37	loadk         r4    k2 ; k2 = 0
+.line	37	return        r4     2
+.label	l10
+.line	40	gettable      r4    r0    k3 ; k3 = "_value"
+.line	40	call          r4     1     2
+.line	42	sub           r5    r4    r1
+.line	42	div           r5    r5    r3
+.line	42	return        r5     2
+.line	43	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	50
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"_value"
+
+.line	51	gettable      r1    r0    k0 ; k0 = "_value"
+.line	51	tailcall      r1     1
+.line	51	return        r1     0
+.line	52	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	55
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	11
+.local	"value"	0	11
+
+.constant	k0	"_value"
+.constant	k1	"Set"
+.constant	k2	"math"
+.constant	k3	"clamp"
+.constant	k4	"_min"
+.constant	k5	"_max"
+
+.line	56	gettable      r2    r0    k0 ; k0 = "_value"
+.line	56	self          r2    r2    k1 ; k1 = "Set"
+.line	56	getglobal     r4    k2 ; k2 = "math"
+.line	56	gettable      r4    r4    k3 ; k3 = "clamp"
+.line	56	move          r5    r1
+.line	56	gettable      r6    r0    k4 ; k4 = "_min"
+.line	56	call          r6     1     2
+.line	56	gettable      r7    r0    k5 ; k5 = "_max"
+.line	56	call          r7     1     0
+.line	56	call          r4     0     0
+.line	56	call          r2     0     1
+.line	57	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	65
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"_max"
+
+.line	66	gettable      r1    r0    k0 ; k0 = "_max"
+.line	66	tailcall      r1     1
+.line	66	return        r1     0
+.line	67	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	71
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"value"	0	4
+
+.constant	k0	"_max"
+.constant	k1	"Set"
+
+.line	72	gettable      r2    r0    k0 ; k0 = "_max"
+.line	72	self          r2    r2    k1 ; k1 = "Set"
+.line	72	move          r4    r1
+.line	72	call          r2     3     1
+.line	73	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	81
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"_min"
+
+.line	82	gettable      r1    r0    k0 ; k0 = "_min"
+.line	82	tailcall      r1     1
+.line	82	return        r1     0
+.line	83	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	87
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"value"	0	4
+
+.constant	k0	"_min"
+.constant	k1	"Set"
+
+.line	88	gettable      r2    r0    k0 ; k0 = "_min"
+.line	88	self          r2    r2    k1 ; k1 = "Set"
+.line	88	move          r4    r1
+.line	88	call          r2     3     1
+.line	89	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	97
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"color"	0	4
+
+.constant	k0	"_bar"
+.constant	k1	"SetSolidColor"
+
+.line	98	gettable      r2    r0    k0 ; k0 = "_bar"
+.line	98	self          r2    r2    k1 ; k1 = "SetSolidColor"
+.line	98	move          r4    r1
+.line	98	call          r2     3     1
+.line	99	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	104
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	22
+.local	"layouter"	0	22
+
+.constant	k0	"_bar"
+.constant	k1	"Left"
+.constant	k2	"Top"
+.constant	k3	"Bottom"
+.constant	k4	"Width"
+.constant	k5	"Color"
+.constant	k6	"ff000000"
+
+.line	105	move          r2    r1
+.line	105	gettable      r3    r0    k0 ; k0 = "_bar"
+.line	105	call          r2     2     2
+.line	106	self          r2    r2    k1 ; k1 = "Left"
+.line	106	gettable      r4    r0    k1 ; k1 = "Left"
+.line	106	call          r2     3     2
+.line	107	self          r2    r2    k2 ; k2 = "Top"
+.line	107	gettable      r4    r0    k2 ; k2 = "Top"
+.line	107	call          r2     3     2
+.line	108	self          r2    r2    k3 ; k3 = "Bottom"
+.line	108	gettable      r4    r0    k3 ; k3 = "Bottom"
+.line	108	call          r2     3     2
+.line	109	self          r2    r2    k4 ; k4 = "Width"
+.line	111	closure       r4    f0
+.line	111	move          r0    r0 ; upvalue declaration
+.line	109	call          r2     3     1
+.line	113	move          r2    r1
+.line	113	move          r3    r0
+.line	113	call          r2     2     2
+.line	114	self          r2    r2    k5 ; k5 = "Color"
+.line	114	loadk         r4    k6 ; k6 = "ff000000"
+.line	114	call          r2     3     1
+.line	115	return        r0     1
+
+.function	main/f9/f0
+
+.source	null
+.linedefined	109
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"self"	0	false
+
+.constant	k0	"Percent"
+.constant	k1	"Width"
+
+.line	110	getupval      r0    u0
+.line	110	gettable      r0    r0    k0 ; k0 = "Percent"
+.line	110	getupval      r1    u0
+.line	110	gettable      r1    r1    k1 ; k1 = "Width"
+.line	110	call          r1     1     2
+.line	110	mul           r0    r0    r1
+.line	110	return        r0     2
+.line	111	return        r0     1
+

@@ -1,0 +1,128 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/selection/options.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.local	"Options"	3	18
+.local	"Opt"	6	18
+
+.constant	k0	"ReUI"
+.constant	k1	"Options"
+.constant	k2	"Builder"
+.constant	k3	"OptionValue"
+.constant	k4	"Mods"
+.constant	k5	"ReUI.Selection"
+.constant	k6	"enabled"
+.constant	k7	"Main"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "Options"
+.line	1	gettable      r0    r0    k2 ; k2 = "Builder"
+.line	2	getglobal     r1    k0 ; k0 = "ReUI"
+.line	2	gettable      r1    r1    k1 ; k1 = "Options"
+.line	2	gettable      r1    r1    k3 ; k3 = "OptionValue"
+.line	5	getglobal     r2    k0 ; k0 = "ReUI"
+.line	5	gettable      r2    r2    k1 ; k1 = "Options"
+.line	5	gettable      r2    r2    k4 ; k4 = "Mods"
+.line	5	newtable      r3     0     1
+.line	6	move          r4    r1
+.line	6	loadbool      r5     1     0
+.line	6	call          r4     2     2
+.line	6	settable      r3    k6    r4 ; k6 = "enabled"
+.line	7	settable      r2    k5    r3 ; k5 = "ReUI.Selection"
+.line	14	closure       r2    f0
+.line	14	move          r0    r0 ; upvalue declaration
+.line	9	setglobal     r2    k7 ; k7 = "Main"
+.line	14	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	0
+.is_vararg	0
+.maxstacksize	9
+
+.local	"options"	4	17
+
+.upvalue	"Options"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"Options"
+.constant	k2	"Mods"
+.constant	k3	"ReUI.Selection"
+.constant	k4	"AddOptions"
+.constant	k5	"Filter"
+.constant	k6	"Mod enabled"
+.constant	k7	"enabled"
+.constant	k8	4
+
+.line	10	getglobal     r0    k0 ; k0 = "ReUI"
+.line	10	gettable      r0    r0    k1 ; k1 = "Options"
+.line	10	gettable      r0    r0    k2 ; k2 = "Mods"
+.line	10	gettable      r0    r0    k3 ; k3 = "ReUI.Selection"
+.line	11	getupval      r1    u0
+.line	11	gettable      r1    r1    k4 ; k4 = "AddOptions"
+.line	11	loadk         r2    k3 ; k3 = "ReUI.Selection"
+.line	11	loadk         r3    k3 ; k3 = "ReUI.Selection"
+.line	11	newtable      r4     1     0
+.line	12	getupval      r5    u0
+.line	12	gettable      r5    r5    k5 ; k5 = "Filter"
+.line	12	loadk         r6    k6 ; k6 = "Mod enabled"
+.line	12	gettable      r7    r0    k7 ; k7 = "enabled"
+.line	12	loadk         r8    k8 ; k8 = 4
+.line	12	call          r5     4     0
+.line	13	setlisto      r4     0
+.line	11	call          r1     4     1
+.line	14	return        r0     1
+

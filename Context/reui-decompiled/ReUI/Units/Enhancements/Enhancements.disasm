@@ -1,0 +1,1146 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/units/enhancements/enhancements.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	5
+
+.constant	k0	"Version"
+.constant	k1	"1.2.1"
+.constant	k2	"ReUI"
+.constant	k3	"Require"
+.constant	k4	"ReUI.Core >= 1.2.0"
+.constant	k5	"ReUI.Units >= 1.0.0"
+.constant	k6	"ReUI.LINQ >= 1.3.0"
+.constant	k7	"Main"
+
+.line	1	loadk         r0    k1 ; k1 = "1.2.1"
+.line	1	setglobal     r0    k0 ; k0 = "Version"
+.line	3	getglobal     r0    k2 ; k2 = "ReUI"
+.line	3	gettable      r0    r0    k3 ; k3 = "Require"
+.line	3	newtable      r1     3     0
+.line	5	loadk         r2    k4 ; k4 = "ReUI.Core >= 1.2.0"
+.line	6	loadk         r3    k5 ; k5 = "ReUI.Units >= 1.0.0"
+.line	8	loadk         r4    k6 ; k6 = "ReUI.LINQ >= 1.3.0"
+.line	8	setlist       r1     2
+.line	4	call          r0     2     1
+.line	340	closure       r0    f0
+.line	11	setglobal     r0    k7 ; k7 = "Main"
+.line	340	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	11
+.numparams	1
+.is_vararg	0
+.maxstacksize	24
+
+.local	"isReplay"	0	88
+.local	"TableInsert"	2	88
+.local	"TableEmpty"	4	88
+.local	"TableGetN"	6	88
+.local	"Enumerate"	9	88
+.local	"IPairsEnumerator"	12	88
+.local	"ContainsPrerequisite"	17	88
+.local	"Reverse"	21	88
+.local	"EnhanceCommon"	24	88
+.local	"EnhancementQueueFile"	27	88
+.local	"HasOrderedUpgrades"	29	88
+.local	"processed"	35	88
+.local	"GetBluePrintEnhancements"	37	88
+.local	"GetAllInstalledEnhancements"	41	88
+.local	"IsPrerequisite"	43	88
+.local	"IsInstalled"	47	88
+.local	"IsQueued"	50	88
+.local	"HasPrerequisite"	53	88
+.local	"IsOccupiedSlotFor"	59	88
+.local	"OrderUnitEnhancement"	71	88
+.local	"OrderEnhancement"	73	88
+.local	"resolved"	74	88
+.local	"ResolveUpgradeChains"	78	88
+
+.constant	k0	"table"
+.constant	k1	"insert"
+.constant	k2	"empty"
+.constant	k3	"getn"
+.constant	k4	"ReUI"
+.constant	k5	"LINQ"
+.constant	k6	"Enumerate"
+.constant	k7	"IPairsEnumerator"
+.constant	k8	"Select"
+.constant	k9	"ID"
+.constant	k10	"Contains"
+.constant	k11	"Reverse"
+.constant	k12	"ToArray"
+.constant	k13	"import"
+.constant	k14	"/lua/enhancementcommon.lua"
+.constant	k15	"/lua/ui/notify/enhancementqueue.lua"
+.constant	k16	"Core"
+.constant	k17	"Weak"
+.constant	k18	"Key"
+.constant	k19	"GetAllInstalledEnhancements"
+.constant	k20	"IsInstalled"
+.constant	k21	"IsOccupiedSlotFor"
+.constant	k22	"IsQueued"
+.constant	k23	"OrderUnitEnhancement"
+.constant	k24	"HasPrerequisite"
+.constant	k25	"OrderEnhancement"
+.constant	k26	"ResolveUpgradeChains"
+
+.line	12	getglobal     r1    k0 ; k0 = "table"
+.line	12	gettable      r1    r1    k1 ; k1 = "insert"
+.line	13	getglobal     r2    k0 ; k0 = "table"
+.line	13	gettable      r2    r2    k2 ; k2 = "empty"
+.line	14	getglobal     r3    k0 ; k0 = "table"
+.line	14	gettable      r3    r3    k3 ; k3 = "getn"
+.line	16	getglobal     r4    k4 ; k4 = "ReUI"
+.line	16	gettable      r4    r4    k5 ; k5 = "LINQ"
+.line	16	gettable      r4    r4    k6 ; k6 = "Enumerate"
+.line	17	getglobal     r5    k4 ; k4 = "ReUI"
+.line	17	gettable      r5    r5    k5 ; k5 = "LINQ"
+.line	17	gettable      r5    r5    k7 ; k7 = "IPairsEnumerator"
+.line	20	self          r6    r5    k8 ; k8 = "Select"
+.line	20	loadk         r8    k9 ; k9 = "ID"
+.line	20	call          r6     3     2
+.line	21	self          r6    r6   k10 ; k10 = "Contains"
+.line	21	call          r6     2     2
+.line	23	self          r7    r5   k11 ; k11 = "Reverse"
+.line	23	call          r7     2     2
+.line	23	self          r7    r7   k12 ; k12 = "ToArray"
+.line	23	call          r7     2     2
+.line	25	getglobal     r8   k13 ; k13 = "import"
+.line	25	loadk         r9   k14 ; k14 = "/lua/enhancementcomm" (truncated)
+.line	25	call          r8     2     2
+.line	26	getglobal     r9   k13 ; k13 = "import"
+.line	26	loadk        r10   k15 ; k15 = "/lua/ui/notify/enhan" (truncated)
+.line	26	call          r9     2     2
+.line	41	closure      r10    f0
+.line	41	move          r0    r9 ; upvalue declaration
+.line	43	getglobal    r11    k4 ; k4 = "ReUI"
+.line	43	gettable     r11   r11   k16 ; k16 = "Core"
+.line	43	gettable     r11   r11   k17 ; k17 = "Weak"
+.line	43	gettable     r11   r11   k18 ; k18 = "Key"
+.line	43	newtable     r12     0     0
+.line	43	call         r11     2     2
+.line	66	closure      r12    f1
+.line	66	move          r0   r11 ; upvalue declaration
+.line	91	closure      r13    f2
+.line	91	move          r0   r12 ; upvalue declaration
+.line	91	move          r0    r8 ; upvalue declaration
+.line	91	move          r0    r1 ; upvalue declaration
+.line	111	closure      r14    f3
+.line	111	move          r0   r12 ; upvalue declaration
+.line	137	closure      r15    f4
+.line	137	move          r0   r12 ; upvalue declaration
+.line	137	move          r0    r8 ; upvalue declaration
+.line	137	move          r0   r14 ; upvalue declaration
+.line	146	closure      r16    f5
+.line	146	move          r0    r9 ; upvalue declaration
+.line	146	move          r0    r6 ; upvalue declaration
+.line	152	closure      r17    f6
+.line	152	move          r0   r15 ; upvalue declaration
+.line	152	move          r0   r16 ; upvalue declaration
+.line	185	closure      r18    f7
+.line	185	move          r0   r12 ; upvalue declaration
+.line	185	move          r0    r8 ; upvalue declaration
+.line	185	move          r0    r2 ; upvalue declaration
+.line	185	move          r0   r15 ; upvalue declaration
+.line	185	move          r0   r14 ; upvalue declaration
+.line	240	closure      r19    f8
+.line	240	move          r0   r12 ; upvalue declaration
+.line	240	move          r0   r15 ; upvalue declaration
+.line	240	move          r0   r16 ; upvalue declaration
+.line	240	move          r0    r1 ; upvalue declaration
+.line	240	move          r0   r17 ; upvalue declaration
+.line	240	move          r0    r8 ; upvalue declaration
+.line	240	move          r0    r2 ; upvalue declaration
+.line	240	move          r0   r14 ; upvalue declaration
+.line	240	move          r0   r10 ; upvalue declaration
+.line	240	move          r0    r9 ; upvalue declaration
+.line	240	move          r0    r3 ; upvalue declaration
+.line	248	closure      r20    f9
+.line	248	move          r0   r19 ; upvalue declaration
+.line	254	newtable     r21     0     0
+.line	328	closure      r22   f10
+.line	328	move          r0   r21 ; upvalue declaration
+.line	328	move          r0    r7 ; upvalue declaration
+.line	328	move          r0    r3 ; upvalue declaration
+.line	330	newtable     r23     0     4
+.line	331	settable     r23   k19   r13 ; k19 = "GetAllInstalledEnhan" (truncated)
+.line	332	settable     r23   k20   r15 ; k20 = "IsInstalled"
+.line	333	settable     r23   k21   r18 ; k21 = "IsOccupiedSlotFor"
+.line	334	settable     r23   k22   r16 ; k22 = "IsQueued"
+.line	335	settable     r23   k23   r19 ; k23 = "OrderUnitEnhancement"
+.line	336	settable     r23   k24   r17 ; k24 = "HasPrerequisite"
+.line	337	settable     r23   k25   r20 ; k25 = "OrderEnhancement"
+.line	338	settable     r23   k26   r22 ; k26 = "ResolveUpgradeChains"
+.line	339	return       r23     2
+.line	340	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	30
+.numparams	1
+.is_vararg	0
+.maxstacksize	8
+
+.local	"unit"	0	38
+.local	"cmdqueue"	6	36
+.local	"enhancementQueue"	12	36
+
+.upvalue	"EnhancementQueueFile"	0	false
+
+.constant	k0	"IsIdle"
+.constant	k1	"GetCommandQueue"
+.constant	k2	"getEnhancementQueue"
+.constant	k3	"GetEntityId"
+.constant	k4	1
+.constant	k5	"type"
+.constant	k6	"Script"
+.constant	k7	"string"
+.constant	k8	"find"
+.constant	k9	"ID"
+.constant	k10	"Remove"
+
+.line	31	self          r1    r0    k0 ; k0 = "IsIdle"
+.line	31	call          r1     2     2
+.line	31	test          r1    r1     1
+.line	31	jmp          l37
+.line	32	self          r1    r0    k1 ; k1 = "GetCommandQueue"
+.line	32	call          r1     2     2
+.line	33	getupval      r2    u0
+.line	33	gettable      r2    r2    k2 ; k2 = "getEnhancementQueue"
+.line	33	call          r2     1     2
+.line	33	self          r3    r0    k3 ; k3 = "GetEntityId"
+.line	33	call          r3     2     2
+.line	33	gettable      r2    r2    r3
+.line	34	test          r1    r1     0
+.line	34	jmp          l37
+.line	34	gettable      r3    r1    k4 ; k4 = 1
+.line	34	test          r3    r3     0
+.line	34	jmp          l37
+.line	34	gettable      r3    r1    k4 ; k4 = 1
+.line	34	gettable      r3    r3    k5 ; k5 = "type"
+.line	34	eq             0    r3    k6 ; k6 = "Script"
+.line	34	jmp          l37
+.line	35	gettable      r3    r2    k4 ; k4 = 1
+.line	36	test          r3    r3     0
+.line	36	jmp          l37
+.line	36	getglobal     r3    k7 ; k7 = "string"
+.line	36	gettable      r3    r3    k8 ; k8 = "find"
+.line	36	gettable      r4    r2    k4 ; k4 = 1
+.line	36	gettable      r4    r4    k9 ; k9 = "ID"
+.line	36	loadk         r5   k10 ; k10 = "Remove"
+.line	36	loadk         r6    k4 ; k4 = 1
+.line	36	loadbool      r7     1     0
+.line	36	call          r3     5     2
+.line	36	test          r3    r3     1
+.line	36	jmp          l37
+.line	37	loadbool      r3     1     0
+.line	37	return        r3     2
+.label	l37
+.line	40	loadbool      r1     0     0
+.line	40	return        r1     2
+.line	41	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	46
+.numparams	1
+.is_vararg	0
+.maxstacksize	8
+
+.local	"bp"	0	27
+.local	"(for generator)"	18	25
+.local	"(for state)"	18	25
+.local	"name"	18	25
+.local	"tbl"	18	25
+
+.upvalue	"processed"	0	false
+
+.constant	k0	"Enhancements"
+.constant	k1	"BlueprintId"
+.constant	k2	"Slots"
+.constant	k3	"ID"
+.constant	k4	"UnitID"
+
+.line	47	gettable      r1    r0    k0 ; k0 = "Enhancements"
+.line	47	test          r1    r1     1
+.line	47	jmp           l5
+.line	48	return        r0     1
+.label	l5
+.line	51	getupval      r1    u0
+.line	51	gettable      r2    r0    k1 ; k1 = "BlueprintId"
+.line	51	gettable      r1    r1    r2
+.line	51	test          r1    r1     0
+.line	51	jmp          l12
+.line	52	gettable      r1    r0    k0 ; k0 = "Enhancements"
+.line	52	return        r1     2
+.label	l12
+.line	54	getupval      r1    u0
+.line	54	gettable      r2    r0    k1 ; k1 = "BlueprintId"
+.line	54	loadbool      r3     1     0
+.line	54	settable      r1    r2    r3
+.line	58	gettable      r1    r0    k0 ; k0 = "Enhancements"
+.line	58	loadnil       r2    r4
+.line	58	tforprep      r1   l24
+.label	l19
+.line	59	eq             1    r3    k2 ; k2 = "Slots"
+.line	59	jmp          l24
+.line	60	settable      r4    k3    r3 ; k3 = "ID"
+.line	61	gettable      r5    r0    k1 ; k1 = "BlueprintId"
+.line	61	settable      r4    k4    r5 ; k4 = "UnitID"
+.label	l24
+.line	58	tforloop      r1     1
+.line	62	jmp          l19
+.line	65	gettable      r1    r0    k0 ; k0 = "Enhancements"
+.line	65	return        r1     2
+.line	66	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	72
+.numparams	1
+.is_vararg	0
+.maxstacksize	13
+
+.local	"unit"	0	32
+.local	"id"	2	32
+.local	"bpEnhancements"	9	32
+.local	"existingEnhancements"	16	32
+.local	"enhancements"	17	32
+.local	"(for generator)"	20	31
+.local	"(for state)"	20	31
+.local	"_"	20	31
+.local	"enh"	20	31
+.local	"prerequisite"	21	29
+
+.upvalue	"GetBluePrintEnhancements"	0	false
+.upvalue	"EnhanceCommon"	0	false
+.upvalue	"TableInsert"	0	false
+
+.constant	k0	"GetEntityId"
+.constant	k1	"GetBlueprint"
+.constant	k2	"GetEnhancements"
+.constant	k3	"Prerequisite"
+
+.line	74	self          r1    r0    k0 ; k0 = "GetEntityId"
+.line	74	call          r1     2     2
+.line	76	getupval      r2    u0
+.line	76	self          r3    r0    k1 ; k1 = "GetBlueprint"
+.line	76	call          r3     2     0
+.line	76	call          r2     0     2
+.line	76	test          r2    r2     1
+.line	76	jmp          l10
+.line	76	newtable      r2     0     0
+.label	l10
+.line	77	getupval      r3    u1
+.line	77	gettable      r3    r3    k2 ; k2 = "GetEnhancements"
+.line	77	move          r4    r1
+.line	77	call          r3     2     2
+.line	77	test          r3    r3     1
+.line	77	jmp          l17
+.line	77	newtable      r3     0     0
+.label	l17
+.line	79	newtable      r4     0     0
+.line	82	move          r5    r3
+.line	82	loadnil       r6    r8
+.line	82	tforprep      r5   l30
+.label	l21
+.line	83	move          r9    r8
+.label	l22
+.line	85	getupval     r10    u2
+.line	85	move         r11    r4
+.line	85	move         r12    r9
+.line	85	call         r10     3     1
+.line	86	gettable     r10    r2    r9
+.line	86	gettable      r9   r10    k3 ; k3 = "Prerequisite"
+.line	87	test          r9    r9     1
+.line	87	jmp          l22
+.label	l30
+.line	82	tforloop      r5     1
+.line	87	jmp          l21
+.line	90	return        r4     2
+.line	91	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	97
+.numparams	3
+.is_vararg	0
+.maxstacksize	6
+
+.local	"bp"	0	18
+.local	"enhancement"	0	18
+.local	"possiblePrerequisite"	0	18
+.local	"bpEnhancements"	3	18
+.local	"prerequisite"	8	18
+
+.upvalue	"GetBluePrintEnhancements"	0	false
+
+.constant	k0	"Prerequisite"
+
+.line	98	getupval      r3    u0
+.line	98	move          r4    r0
+.line	98	call          r3     2     2
+.line	99	test          r3    r3     1
+.line	99	jmp           l8
+.line	100	loadbool      r4     0     0
+.line	100	return        r4     2
+.label	l8
+.line	103	move          r4    r1
+.label	l9
+.line	105	eq             0    r2    r4
+.line	105	jmp          l13
+.line	106	loadbool      r5     1     0
+.line	106	return        r5     2
+.label	l13
+.line	108	gettable      r5    r3    r4
+.line	108	gettable      r4    r5    k0 ; k0 = "Prerequisite"
+.line	109	test          r4    r4     1
+.line	109	jmp           l9
+.line	110	loadbool      r5     0     0
+.line	110	return        r5     2
+.line	111	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	116
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"unit"	0	31
+.local	"upgrade"	0	31
+.local	"bp"	2	31
+.local	"bpEnhancements"	5	31
+.local	"existingEnhancements"	14	31
+.local	"slot"	20	31
+.local	"installedEnh"	21	31
+
+.upvalue	"GetBluePrintEnhancements"	0	false
+.upvalue	"EnhanceCommon"	0	false
+.upvalue	"IsPrerequisite"	0	false
+
+.constant	k0	"GetBlueprint"
+.constant	k1	"GetEnhancements"
+.constant	k2	"GetEntityId"
+.constant	k3	"Slot"
+
+.line	118	self          r2    r0    k0 ; k0 = "GetBlueprint"
+.line	118	call          r2     2     2
+.line	119	getupval      r3    u0
+.line	119	move          r4    r2
+.line	119	call          r3     2     2
+.line	120	test          r3    r3     1
+.line	120	jmp          l10
+.line	121	loadbool      r4     0     0
+.line	121	return        r4     2
+.label	l10
+.line	124	getupval      r4    u1
+.line	124	gettable      r4    r4    k1 ; k1 = "GetEnhancements"
+.line	124	self          r5    r0    k2 ; k2 = "GetEntityId"
+.line	124	call          r5     2     0
+.line	124	call          r4     0     2
+.line	125	test          r4    r4     1
+.line	125	jmp          l19
+.line	126	loadbool      r5     0     0
+.line	126	return        r5     2
+.label	l19
+.line	129	gettable      r5    r3    r1
+.line	129	gettable      r5    r5    k3 ; k3 = "Slot"
+.line	130	gettable      r6    r4    r5
+.line	132	test          r6    r6     1
+.line	132	jmp          l26
+.line	133	loadbool      r7     0     0
+.line	133	return        r7     2
+.label	l26
+.line	136	getupval      r7    u2
+.line	136	move          r8    r2
+.line	136	move          r9    r6
+.line	136	move         r10    r1
+.line	136	tailcall      r7     4
+.line	136	return        r7     0
+.line	137	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	142
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"unit"	0	13
+.local	"enhancement"	0	13
+.local	"id"	2	13
+.local	"orderedEnhancements"	6	13
+
+.upvalue	"EnhancementQueueFile"	0	false
+.upvalue	"ContainsPrerequisite"	0	false
+
+.constant	k0	"GetEntityId"
+.constant	k1	"getEnhancementQueue"
+
+.line	143	self          r2    r0    k0 ; k0 = "GetEntityId"
+.line	143	call          r2     2     2
+.line	144	getupval      r3    u0
+.line	144	gettable      r3    r3    k1 ; k1 = "getEnhancementQueue"
+.line	144	call          r3     1     2
+.line	144	gettable      r3    r3    r2
+.line	145	test          r4    r3     0
+.line	145	jmp          l13
+.line	145	getupval      r4    u1
+.line	145	move          r5    r3
+.line	145	move          r6    r1
+.line	145	call          r4     3     2
+.label	l13
+.line	145	return        r4     2
+.line	146	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	150
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"unit"	0	11
+.local	"prerequisite"	0	11
+
+.upvalue	"IsInstalled"	0	false
+.upvalue	"IsQueued"	0	false
+
+.line	151	getupval      r2    u0
+.line	151	move          r3    r0
+.line	151	move          r4    r1
+.line	151	call          r2     3     2
+.line	151	test          r2    r2     1
+.line	151	jmp          l11
+.line	151	getupval      r2    u1
+.line	151	move          r3    r0
+.line	151	move          r4    r1
+.line	151	call          r2     3     2
+.label	l11
+.line	151	return        r2     2
+.line	152	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	157
+.numparams	2
+.is_vararg	0
+.maxstacksize	12
+
+.local	"unit"	0	52
+.local	"enhancement"	0	52
+.local	"bp"	2	52
+.local	"bpEnhancements"	5	52
+.local	"id"	16	52
+.local	"existingEnhancements"	20	52
+.local	"slot"	29	52
+.local	"installedEnh"	30	52
+
+.upvalue	"GetBluePrintEnhancements"	0	false
+.upvalue	"EnhanceCommon"	0	false
+.upvalue	"TableEmpty"	0	false
+.upvalue	"IsInstalled"	0	false
+.upvalue	"IsPrerequisite"	0	false
+
+.constant	k0	"GetBlueprint"
+.constant	k1	"GetEntityId"
+.constant	k2	"GetEnhancements"
+.constant	k3	"Slot"
+.constant	k4	"Name"
+
+.line	158	self          r2    r0    k0 ; k0 = "GetBlueprint"
+.line	158	call          r2     2     2
+.line	159	getupval      r3    u0
+.line	159	move          r4    r2
+.line	159	call          r3     2     2
+.line	160	test          r3    r3     1
+.line	160	jmp          l10
+.line	160	loadbool      r4     0     0
+.line	160	return        r4     2
+.label	l10
+.line	162	gettable      r4    r3    r1
+.line	162	test          r4    r4     1
+.line	162	jmp          l15
+.line	163	loadbool      r4     0     0
+.line	163	return        r4     2
+.label	l15
+.line	166	self          r4    r0    k1 ; k1 = "GetEntityId"
+.line	166	call          r4     2     2
+.line	167	getupval      r5    u1
+.line	167	gettable      r5    r5    k2 ; k2 = "GetEnhancements"
+.line	167	move          r6    r4
+.line	167	call          r5     2     2
+.line	168	getupval      r6    u2
+.line	168	move          r7    r5
+.line	168	call          r6     2     2
+.line	168	test          r6    r6     0
+.line	168	jmp          l28
+.line	169	loadbool      r6     0     0
+.line	169	return        r6     2
+.label	l28
+.line	174	gettable      r6    r3    r1
+.line	174	gettable      r6    r6    k3 ; k3 = "Slot"
+.line	175	gettable      r7    r5    r6
+.line	176	test          r7    r7     1
+.line	176	jmp          l35
+.line	177	loadbool      r8     0     0
+.line	177	return        r8     2
+.label	l35
+.line	180	getupval      r8    u3
+.line	180	move          r9    r0
+.line	180	move         r10    r1
+.line	180	call          r8     3     2
+.line	180	test          r8    r8     1
+.line	180	jmp          l48
+.line	180	getupval      r8    u4
+.line	180	move          r9    r2
+.line	180	move         r10    r1
+.line	180	move         r11    r7
+.line	180	call          r8     4     2
+.line	180	test          r8    r8     0
+.line	180	jmp          l50
+.label	l48
+.line	181	loadbool      r8     0     0
+.line	181	return        r8     2
+.label	l50
+.line	184	gettable      r8    r3    r7
+.line	184	gettable      r8    r8    k4 ; k4 = "Name"
+.line	184	return        r8     2
+.line	185	return        r0     1
+
+.function	main/f0/f8
+
+.source	null
+.linedefined	190
+.numparams	3
+.is_vararg	0
+.maxstacksize	17
+
+.local	"unit"	0	109
+.local	"enhancement"	0	109
+.local	"noClear"	0	109
+.local	"bpEnhancements"	4	109
+.local	"id"	26	109
+.local	"orders"	27	109
+.local	"prerequisite"	33	109
+.local	"existingEnhancements"	53	109
+.local	"slot"	60	77
+.local	"installedEnh"	61	77
+.local	"cleanOrder"	86	109
+.local	"i"	99	109
+.local	"(for limit)"	99	109
+.local	"(for step)"	99	109
+.local	"order"	100	108
+
+.upvalue	"GetBluePrintEnhancements"	0	false
+.upvalue	"IsInstalled"	0	false
+.upvalue	"IsQueued"	0	false
+.upvalue	"TableInsert"	0	false
+.upvalue	"HasPrerequisite"	0	false
+.upvalue	"EnhanceCommon"	0	false
+.upvalue	"TableEmpty"	0	false
+.upvalue	"IsPrerequisite"	0	false
+.upvalue	"HasOrderedUpgrades"	0	false
+.upvalue	"EnhancementQueueFile"	0	false
+.upvalue	"TableGetN"	0	false
+
+.constant	k0	"GetBlueprint"
+.constant	k1	"GetEntityId"
+.constant	k2	"Prerequisite"
+.constant	k3	"GetEnhancements"
+.constant	k4	"Slot"
+.constant	k5	"Remove"
+.constant	k6	"getEnhancementQueue"
+.constant	k7	nil
+.constant	k8	1
+.constant	k9	-1
+.constant	k10	"IssueCommand"
+.constant	k11	"UNITCOMMAND_Script"
+.constant	k12	"TaskName"
+.constant	k13	"EnhanceTask"
+.constant	k14	"Enhancement"
+
+.line	192	getupval      r3    u0
+.line	192	self          r4    r0    k0 ; k0 = "GetBlueprint"
+.line	192	call          r4     2     0
+.line	192	call          r3     0     2
+.line	193	test          r3    r3     1
+.line	193	jmp           l8
+.line	193	return        r0     1
+.label	l8
+.line	195	gettable      r4    r3    r1
+.line	195	test          r4    r4     1
+.line	195	jmp          l12
+.line	195	return        r0     1
+.label	l12
+.line	197	getupval      r4    u1
+.line	197	move          r5    r0
+.line	197	move          r6    r1
+.line	197	call          r4     3     2
+.line	197	test          r4    r4     1
+.line	197	jmp          l24
+.line	197	getupval      r4    u2
+.line	197	move          r5    r0
+.line	197	move          r6    r1
+.line	197	call          r4     3     2
+.line	197	test          r4    r4     0
+.line	197	jmp          l25
+.label	l24
+.line	197	return        r0     1
+.label	l25
+.line	199	self          r4    r0    k1 ; k1 = "GetEntityId"
+.line	199	call          r4     2     2
+.line	201	newtable      r5     0     0
+.line	202	getupval      r6    u3
+.line	202	move          r7    r5
+.line	202	move          r8    r1
+.line	202	call          r6     3     1
+.line	204	gettable      r6    r3    r1
+.line	204	gettable      r6    r6    k2 ; k2 = "Prerequisite"
+.line	205	jmp          l48
+.label	l35
+.line	206	getupval      r7    u4
+.line	206	move          r8    r0
+.line	206	move          r9    r6
+.line	206	call          r7     3     2
+.line	206	test          r7    r7     0
+.line	206	jmp          l42
+.line	207	jmp          l50
+.label	l42
+.line	209	getupval      r7    u3
+.line	209	move          r8    r5
+.line	209	move          r9    r6
+.line	209	call          r7     3     1
+.line	210	gettable      r7    r3    r6
+.line	210	gettable      r6    r7    k2 ; k2 = "Prerequisite"
+.label	l48
+.line	205	test          r6    r6     1
+.line	205	jmp          l35
+.label	l50
+.line	213	getupval      r7    u5
+.line	213	gettable      r7    r7    k3 ; k3 = "GetEnhancements"
+.line	213	move          r8    r4
+.line	213	call          r7     2     2
+.line	214	getupval      r8    u6
+.line	214	move          r9    r7
+.line	214	call          r8     2     2
+.line	214	test          r8    r8     1
+.line	214	jmp          l78
+.line	217	gettable      r8    r3    r1
+.line	217	gettable      r8    r8    k4 ; k4 = "Slot"
+.line	218	gettable      r9    r7    r8
+.line	219	test          r9    r9     0
+.line	219	jmp          l78
+.line	219	getupval     r10    u7
+.line	219	self         r11    r0    k0 ; k0 = "GetBlueprint"
+.line	219	call         r11     2     2
+.line	219	move         r12    r1
+.line	219	move         r13    r9
+.line	219	call         r10     4     2
+.line	219	test         r10   r10     1
+.line	219	jmp          l78
+.line	220	getupval     r10    u3
+.line	220	move         r11    r5
+.line	220	move         r12    r9
+.line	220	loadk        r13    k5 ; k5 = "Remove"
+.line	220	concat       r12   r12   r13
+.line	220	call         r10     3     1
+.label	l78
+.line	224	getupval      r8    u8
+.line	224	move          r9    r0
+.line	224	call          r8     2     2
+.line	224	test          r8    r8     1
+.line	224	jmp          l85
+.line	224	not           r8    r2
+.line	224	jmp          l87
+.label	l85
+.line	224	loadbool      r8     0     1
+.line	224	loadbool      r8     1     0
+.label	l87
+.line	226	test          r8    r8     0
+.line	226	jmp          l93
+.line	227	getupval      r9    u9
+.line	227	gettable      r9    r9    k6 ; k6 = "getEnhancementQueue"
+.line	227	call          r9     1     2
+.line	227	settable      r9    r4    k7 ; k7 = nil
+.label	l93
+.line	230	getupval      r9   u10
+.line	230	move         r10    r5
+.line	230	call          r9     2     2
+.line	230	loadk        r10    k8 ; k8 = 1
+.line	230	loadk        r11    k9 ; k9 = -1
+.line	230	sub           r9    r9   r11
+.line	230	jmp         l109
+.label	l100
+.line	231	gettable     r12    r5    r9
+.line	232	getglobal    r13   k10 ; k10 = "IssueCommand"
+.line	232	loadk        r14   k11 ; k11 = "UNITCOMMAND_Script"
+.line	232	newtable     r15     0     2
+.line	234	settable     r15   k12   k13 ; k13 = "EnhanceTask"
+.line	235	settable     r15   k14   r12 ; k14 = "Enhancement"
+.line	237	move         r16    r8
+.line	232	call         r13     4     1
+.line	238	loadbool      r8     0     0
+.label	l109
+.line	230	forloop       r9  l100
+.line	240	return        r0     1
+
+.function	main/f0/f9
+
+.source	null
+.linedefined	244
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"enhancement"	0	8
+.local	"noClearOrders"	0	8
+
+.upvalue	"OrderUnitEnhancement"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"Units"
+.constant	k2	"ApplyToSelectedUnits"
+
+.line	245	getglobal     r2    k0 ; k0 = "ReUI"
+.line	245	gettable      r2    r2    k1 ; k1 = "Units"
+.line	245	gettable      r2    r2    k2 ; k2 = "ApplyToSelectedUnits"
+.line	247	closure       r3    f0
+.line	247	getupval      r0    u0 ; upvalue declaration
+.line	247	move          r0    r0 ; upvalue declaration
+.line	247	move          r0    r1 ; upvalue declaration
+.line	245	call          r2     2     1
+.line	248	return        r0     1
+
+.function	main/f0/f9/f0
+
+.source	null
+.linedefined	245
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"unit"	0	5
+
+.upvalue	"OrderUnitEnhancement"	0	false
+.upvalue	"enhancement"	0	false
+.upvalue	"noClearOrders"	0	false
+
+.line	246	getupval      r1    u0
+.line	246	move          r2    r0
+.line	246	getupval      r3    u1
+.line	246	getupval      r4    u2
+.line	246	call          r1     4     1
+.line	247	return        r0     1
+
+.function	main/f0/f10
+
+.source	null
+.linedefined	259
+.numparams	1
+.is_vararg	0
+.maxstacksize	13
+
+.local	"bp"	0	47
+.local	"enhancements"	1	47
+.local	"id"	5	47
+.local	"resolvedChains"	7	47
+.local	"chains"	11	47
+.local	"visited"	12	47
+.local	"DFS"	19	47
+.local	"(for generator)"	22	38
+.local	"(for state)"	22	38
+.local	"upgrade"	22	38
+
+.upvalue	"resolved"	0	false
+.upvalue	"Reverse"	0	false
+.upvalue	"TableGetN"	0	false
+
+.constant	k0	"Enhancements"
+.constant	k1	"BlueprintId"
+.constant	k2	"StringEnds"
+.constant	k3	"Remove"
+.constant	k4	"Slots"
+.constant	k5	"table"
+.constant	k6	"sort"
+
+.line	260	gettable      r1    r0    k0 ; k0 = "Enhancements"
+.line	261	test          r1    r1     1
+.line	261	jmp           l5
+.line	262	return        r0     1
+.label	l5
+.line	264	gettable      r2    r0    k1 ; k1 = "BlueprintId"
+.line	265	getupval      r3    u0
+.line	265	gettable      r3    r3    r2
+.line	267	test          r3    r3     0
+.line	267	jmp          l11
+.line	268	return        r3     2
+.label	l11
+.line	271	newtable      r4     0     0
+.line	272	newtable      r5     0     0
+.line	310	closure       r6    f0
+.line	310	move          r0    r1 ; upvalue declaration
+.line	310	getupval      r0    u1 ; upvalue declaration
+.line	310	getupval      r0    u2 ; upvalue declaration
+.line	310	move          r0    r4 ; upvalue declaration
+.line	310	move          r0    r5 ; upvalue declaration
+.line	310	move          r0    r6 ; upvalue declaration
+.line	312	move          r7    r1
+.line	312	loadnil       r8    r9
+.line	312	tforprep      r7   l37
+.label	l23
+.line	313	getglobal    r10    k2 ; k2 = "StringEnds"
+.line	313	move         r11    r9
+.line	313	loadk        r12    k3 ; k3 = "Remove"
+.line	313	call         r10     3     2
+.line	313	test         r10   r10     1
+.line	313	jmp          l37
+.line	313	eq             1    r9    k4 ; k4 = "Slots"
+.line	313	jmp          l37
+.line	314	newtable     r10     0     0
+.line	314	move          r5   r10
+.line	315	move         r10    r6
+.line	315	move         r11    r9
+.line	315	newtable     r12     0     0
+.line	315	call         r10     3     1
+.label	l37
+.line	312	tforloop      r7     0
+.line	316	jmp          l23
+.line	319	getupval      r7    u0
+.line	319	settable      r7    r2    r4
+.line	321	getglobal     r7    k5 ; k5 = "table"
+.line	321	gettable      r7    r7    k6 ; k6 = "sort"
+.line	321	move          r8    r4
+.line	325	closure       r9    f1
+.line	325	move          r0    r1 ; upvalue declaration
+.line	321	call          r7     3     1
+.line	327	return        r4     2
+.line	328	return        r0     1
+
+.function	main/f0/f10/f0
+
+.source	null
+.linedefined	274
+.numparams	2
+.is_vararg	0
+.maxstacksize	16
+
+.local	"currentUpgrade"	0	74
+.local	"currentChain"	0	74
+.local	"prereq"	8	74
+.local	"chainCopy"	13	56
+.local	"l2"	16	56
+.local	"foundEqual"	17	56
+.local	"(for generator)"	20	49
+.local	"(for state)"	20	49
+.local	"j"	20	49
+.local	"chain"	20	49
+.local	"l1"	24	47
+.local	"i"	33	40
+.local	"(for limit)"	33	40
+.local	"(for step)"	33	40
+
+.upvalue	"enhancements"	0	false
+.upvalue	"Reverse"	0	false
+.upvalue	"TableGetN"	0	false
+.upvalue	"chains"	0	false
+.upvalue	"visited"	0	false
+.upvalue	"DFS"	0	false
+
+.constant	k0	"table"
+.constant	k1	"insert"
+.constant	k2	"Prerequisite"
+.constant	k3	1
+.constant	k4	"math"
+.constant	k5	"min"
+.constant	k6	nil
+.constant	k7	"remove"
+
+.line	275	getglobal     r2    k0 ; k0 = "table"
+.line	275	gettable      r2    r2    k1 ; k1 = "insert"
+.line	275	move          r3    r1
+.line	275	move          r4    r0
+.line	275	call          r2     3     1
+.line	277	getupval      r2    u0
+.line	277	gettable      r2    r2    r0
+.line	277	gettable      r2    r2    k2 ; k2 = "Prerequisite"
+.line	278	test          r2    r2     1
+.line	278	jmp          l58
+.line	279	getupval      r3    u1
+.line	279	move          r4    r1
+.line	279	call          r3     2     2
+.line	280	getupval      r4    u2
+.line	280	move          r5    r3
+.line	280	call          r4     2     2
+.line	282	loadbool      r5     0     0
+.line	284	getupval      r6    u3
+.line	284	loadnil       r7    r9
+.line	284	tforprep      r6   l48
+.label	l21
+.line	285	loadbool      r5     1     0
+.line	286	getupval     r10    u2
+.line	286	move         r11    r9
+.line	286	call         r10     2     2
+.line	287	loadk        r11    k3 ; k3 = 1
+.line	287	getglobal    r12    k4 ; k4 = "math"
+.line	287	gettable     r12   r12    k5 ; k5 = "min"
+.line	287	move         r13   r10
+.line	287	move         r14    r4
+.line	287	call         r12     3     2
+.line	287	loadk        r13    k3 ; k3 = 1
+.line	287	sub          r11   r11   r13
+.line	287	jmp          l40
+.label	l34
+.line	288	gettable     r14    r9   r11
+.line	288	gettable     r15    r3   r11
+.line	288	eq             1   r14   r15
+.line	288	jmp          l40
+.line	289	loadbool      r5     0     0
+.line	290	jmp          l41
+.label	l40
+.line	287	forloop      r11   l34
+.label	l41
+.line	293	test          r5    r5     0
+.line	293	jmp          l48
+.line	294	lt             0   r10    r4
+.line	294	jmp          l50
+.line	295	getupval     r11    u3
+.line	295	settable     r11    r8    r3
+.line	297	jmp          l50
+.label	l48
+.line	284	tforloop      r6     1
+.line	298	jmp          l21
+.label	l50
+.line	300	test          r5    r5     1
+.line	300	jmp          l71
+.line	301	getglobal     r6    k0 ; k0 = "table"
+.line	301	gettable      r6    r6    k1 ; k1 = "insert"
+.line	301	getupval      r7    u3
+.line	301	move          r8    r3
+.line	301	call          r6     3     1
+.line	302	jmp          l71
+.label	l58
+.line	303	getupval      r3    u4
+.line	303	gettable      r3    r3    r2
+.line	303	test          r3    r3     1
+.line	303	jmp          l71
+.line	304	getupval      r3    u4
+.line	304	loadbool      r4     1     0
+.line	304	settable      r3    r2    r4
+.line	305	getupval      r3    u5
+.line	305	move          r4    r2
+.line	305	move          r5    r1
+.line	305	call          r3     3     1
+.line	306	getupval      r3    u4
+.line	306	settable      r3    r2    k6 ; k6 = nil
+.label	l71
+.line	309	getglobal     r3    k0 ; k0 = "table"
+.line	309	gettable      r3    r3    k7 ; k7 = "remove"
+.line	309	move          r4    r1
+.line	309	call          r3     2     1
+.line	310	return        r0     1
+
+.function	main/f0/f10/f1
+
+.source	null
+.linedefined	321
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"a"	0	19
+.local	"b"	0	19
+.local	"enh1"	6	19
+.local	"enh2"	6	19
+
+.upvalue	"enhancements"	0	false
+
+.constant	k0	1
+.constant	k1	"BuildCostMass"
+.constant	k2	0
+
+.line	322	getupval      r2    u0
+.line	322	gettable      r3    r0    k0 ; k0 = 1
+.line	322	gettable      r2    r2    r3
+.line	322	getupval      r3    u0
+.line	322	gettable      r4    r1    k0 ; k0 = 1
+.line	322	gettable      r3    r3    r4
+.line	324	gettable      r4    r2    k1 ; k1 = "BuildCostMass"
+.line	324	test          r4    r4     1
+.line	324	jmp          l11
+.line	324	loadk         r4    k2 ; k2 = 0
+.label	l11
+.line	324	gettable      r5    r3    k1 ; k1 = "BuildCostMass"
+.line	324	test          r5    r5     1
+.line	324	jmp          l15
+.line	324	loadk         r5    k2 ; k2 = 0
+.label	l15
+.line	324	lt             1    r4    r5
+.line	324	jmp          l18
+.line	324	loadbool      r4     0     1
+.label	l18
+.line	324	loadbool      r4     1     0
+.line	324	return        r4     2
+.line	325	return        r0     1
+

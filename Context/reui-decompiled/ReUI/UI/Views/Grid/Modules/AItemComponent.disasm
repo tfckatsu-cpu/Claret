@@ -1,0 +1,185 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ui/views/grid/modules/aitemcomponent.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.constant	k0	"AItemComponent"
+.constant	k1	"Class"
+.constant	k2	"__init"
+.constant	k3	"Create"
+.constant	k4	"HandleEvent"
+.constant	k5	"OnFrame"
+.constant	k6	"Enable"
+.constant	k7	"Disable"
+.constant	k8	"Destroy"
+
+.line	3	getglobal     r0    k1 ; k1 = "Class"
+.line	3	call          r0     1     2
+.line	3	newtable      r1     0     3
+.line	9	closure       r2    f0
+.line	9	settable      r1    k2    r2 ; k2 = "__init"
+.line	15	closure       r2    f1
+.line	15	settable      r1    k3    r2 ; k3 = "Create"
+.line	22	closure       r2    f2
+.line	22	settable      r1    k4    r2 ; k4 = "HandleEvent"
+.line	29	closure       r2    f3
+.line	29	settable      r1    k5    r2 ; k5 = "OnFrame"
+.line	37	closure       r2    f4
+.line	37	settable      r1    k6    r2 ; k6 = "Enable"
+.line	43	closure       r2    f5
+.line	43	settable      r1    k7    r2 ; k7 = "Disable"
+.line	48	closure       r2    f6
+.line	48	settable      r1    k8    r2 ; k8 = "Destroy"
+.line	4	call          r0     2     2
+.line	49	setglobal     r0    k0 ; k0 = "AItemComponent"
+.line	49	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	7
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	3
+.local	"item"	0	3
+
+.constant	k0	"Create"
+
+.line	8	self          r2    r0    k0 ; k0 = "Create"
+.line	8	move          r4    r1
+.line	8	call          r2     3     1
+.line	9	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	14
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"item"	0	0
+
+.line	15	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	21
+.numparams	3
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	0
+.local	"item"	0	0
+.local	"event"	0	0
+
+.line	22	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	28
+.numparams	3
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	0
+.local	"item"	0	0
+.local	"delta"	0	0
+
+.line	29	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	36
+.numparams	4
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	0
+.local	"item"	0	0
+.local	"action"	0	0
+.local	"context"	0	0
+
+.line	37	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	42
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"item"	0	0
+
+.line	43	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	47
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+
+.line	48	return        r0     1
+

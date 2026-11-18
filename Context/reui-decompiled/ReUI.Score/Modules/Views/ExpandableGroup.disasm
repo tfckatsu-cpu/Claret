@@ -1,0 +1,772 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/views/expandablegroup.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	16
+
+.local	"Group"	4	112
+.local	"Bitmap"	8	112
+.local	"Text"	12	112
+.local	"Animation"	15	112
+.local	"Functions"	18	112
+.local	"alphaAnimationFactory"	20	112
+.local	"animationFactory"	22	112
+.local	"expandSpeed"	23	112
+.local	"expandAnimation"	35	112
+.local	"contractAnimation"	46	112
+.local	"duration"	47	112
+.local	"appearAnimation"	65	112
+.local	"fadeAnimation"	83	112
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Group"
+.constant	k4	"Bitmap"
+.constant	k5	"Text"
+.constant	k6	"Animation"
+.constant	k7	"LayoutFunctions"
+.constant	k8	"Factory"
+.constant	k9	"Alpha"
+.constant	k10	"Base"
+.constant	k11	500
+.constant	k12	"OnStart"
+.constant	k13	"OnFrame"
+.constant	k14	"OnFinish"
+.constant	k15	"Create"
+.constant	k16	0.05
+.constant	k17	"StartWith"
+.constant	k18	0
+.constant	k19	"ToAppear"
+.constant	k20	"For"
+.constant	k21	"EndWith"
+.constant	k22	1
+.constant	k23	"ApplyToChildren"
+.constant	k24	"ToFade"
+.constant	k25	"ExpandableGroup"
+.constant	k26	"Core"
+.constant	k27	"Class"
+.constant	k28	"__init"
+.constant	k29	"__post_init"
+.constant	k30	"AddControls"
+.constant	k31	"ClearControls"
+.constant	k32	"Expand"
+.constant	k33	"Contract"
+.constant	k34	"OnExpandControl"
+.constant	k35	"OnContractControl"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "UI"
+.line	1	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	1	gettable      r0    r0    k3 ; k3 = "Group"
+.line	2	getglobal     r1    k0 ; k0 = "ReUI"
+.line	2	gettable      r1    r1    k1 ; k1 = "UI"
+.line	2	gettable      r1    r1    k2 ; k2 = "Controls"
+.line	2	gettable      r1    r1    k4 ; k4 = "Bitmap"
+.line	3	getglobal     r2    k0 ; k0 = "ReUI"
+.line	3	gettable      r2    r2    k1 ; k1 = "UI"
+.line	3	gettable      r2    r2    k2 ; k2 = "Controls"
+.line	3	gettable      r2    r2    k5 ; k5 = "Text"
+.line	4	getglobal     r3    k0 ; k0 = "ReUI"
+.line	4	gettable      r3    r3    k1 ; k1 = "UI"
+.line	4	gettable      r3    r3    k6 ; k6 = "Animation"
+.line	5	getglobal     r4    k0 ; k0 = "ReUI"
+.line	5	gettable      r4    r4    k1 ; k1 = "UI"
+.line	5	gettable      r4    r4    k7 ; k7 = "LayoutFunctions"
+.line	8	gettable      r5    r3    k8 ; k8 = "Factory"
+.line	8	gettable      r5    r5    k9 ; k9 = "Alpha"
+.line	9	gettable      r6    r3    k8 ; k8 = "Factory"
+.line	9	gettable      r6    r6   k10 ; k10 = "Base"
+.line	11	loadk         r7   k11 ; k11 = 500
+.line	14	self          r8    r6   k12 ; k12 = "OnStart"
+.line	14	call          r8     2     2
+.line	15	self          r8    r8   k13 ; k13 = "OnFrame"
+.line	28	closure      r10    f0
+.line	28	move          r0    r7 ; upvalue declaration
+.line	15	call          r8     3     2
+.line	29	self          r8    r8   k14 ; k14 = "OnFinish"
+.line	33	closure      r10    f1
+.line	33	move          r0    r4 ; upvalue declaration
+.line	29	call          r8     3     2
+.line	34	self          r8    r8   k15 ; k15 = "Create"
+.line	34	call          r8     2     2
+.line	37	self          r9    r6   k12 ; k12 = "OnStart"
+.line	37	call          r9     2     2
+.line	38	self          r9    r9   k13 ; k13 = "OnFrame"
+.line	51	closure      r11    f2
+.line	51	move          r0    r7 ; upvalue declaration
+.line	38	call          r9     3     2
+.line	52	self          r9    r9   k14 ; k14 = "OnFinish"
+.line	55	closure      r11    f3
+.line	52	call          r9     3     2
+.line	56	self          r9    r9   k15 ; k15 = "Create"
+.line	56	call          r9     2     2
+.line	58	loadk        r10   k16 ; k16 = 0.05
+.line	61	self         r11    r5   k17 ; k17 = "StartWith"
+.line	61	loadk        r13   k18 ; k18 = 0
+.line	61	call         r11     3     2
+.line	62	self         r11   r11   k19 ; k19 = "ToAppear"
+.line	62	call         r11     2     2
+.line	63	self         r11   r11   k20 ; k20 = "For"
+.line	63	move         r13   r10
+.line	63	call         r11     3     2
+.line	64	self         r11   r11   k21 ; k21 = "EndWith"
+.line	64	loadk        r13   k22 ; k22 = 1
+.line	64	call         r11     3     2
+.line	65	self         r11   r11   k23 ; k23 = "ApplyToChildren"
+.line	65	call         r11     2     2
+.line	66	self         r11   r11   k12 ; k12 = "OnStart"
+.line	68	closure      r13    f4
+.line	66	call         r11     3     2
+.line	69	self         r11   r11   k15 ; k15 = "Create"
+.line	69	call         r11     2     2
+.line	72	self         r12    r5   k17 ; k17 = "StartWith"
+.line	72	loadk        r14   k22 ; k22 = 1
+.line	72	call         r12     3     2
+.line	73	self         r12   r12   k24 ; k24 = "ToFade"
+.line	73	call         r12     2     2
+.line	74	self         r12   r12   k20 ; k20 = "For"
+.line	74	move         r14   r10
+.line	74	call         r12     3     2
+.line	75	self         r12   r12   k21 ; k21 = "EndWith"
+.line	75	loadk        r14   k18 ; k18 = 0
+.line	75	call         r12     3     2
+.line	76	self         r12   r12   k23 ; k23 = "ApplyToChildren"
+.line	76	call         r12     2     2
+.line	77	self         r12   r12   k14 ; k14 = "OnFinish"
+.line	81	closure      r14    f5
+.line	77	call         r12     3     2
+.line	82	self         r12   r12   k15 ; k15 = "Create"
+.line	82	call         r12     2     2
+.line	85	getglobal    r13    k0 ; k0 = "ReUI"
+.line	85	gettable     r13   r13   k26 ; k26 = "Core"
+.line	85	gettable     r13   r13   k27 ; k27 = "Class"
+.line	85	move         r14    r0
+.line	85	call         r13     2     2
+.line	85	newtable     r14     0     4
+.line	96	closure      r15    f6
+.line	96	move          r0    r0 ; upvalue declaration
+.line	96	settable     r14   k28   r15 ; k28 = "__init"
+.line	108	closure      r15    f7
+.line	108	settable     r14   k29   r15 ; k29 = "__post_init"
+.line	127	closure      r15    f8
+.line	127	settable     r14   k30   r15 ; k30 = "AddControls"
+.line	135	closure      r15    f9
+.line	135	settable     r14   k31   r15 ; k31 = "ClearControls"
+.line	139	closure      r15   f10
+.line	139	move          r0    r8 ; upvalue declaration
+.line	139	settable     r14   k32   r15 ; k32 = "Expand"
+.line	143	closure      r15   f11
+.line	143	move          r0    r9 ; upvalue declaration
+.line	143	settable     r14   k33   r15 ; k33 = "Contract"
+.line	154	closure      r15   f12
+.line	154	move          r0   r11 ; upvalue declaration
+.line	154	settable     r14   k34   r15 ; k34 = "OnExpandControl"
+.line	160	closure      r15   f13
+.line	160	move          r0   r12 ; upvalue declaration
+.line	160	settable     r14   k35   r15 ; k35 = "OnContractControl"
+.line	86	call         r13     2     2
+.line	163	setglobal    r13   k25 ; k25 = "ExpandableGroup"
+.line	163	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	15
+.numparams	2
+.is_vararg	0
+.maxstacksize	10
+
+.local	"control"	0	35
+.local	"delta"	0	35
+.local	"n"	5	35
+.local	"height"	7	35
+.local	"expandHeight"	10	35
+
+.upvalue	"expandSpeed"	0	false
+
+.constant	k0	"table"
+.constant	k1	"getn"
+.constant	k2	"_controls"
+.constant	k3	1
+.constant	k4	"Height"
+.constant	k5	"_expand"
+.constant	k6	"_animationIndex"
+.constant	k7	"OnExpandControl"
+.constant	k8	"Set"
+.constant	k9	"Layouter"
+.constant	k10	"ScaleNumber"
+
+.line	16	getglobal     r2    k0 ; k0 = "table"
+.line	16	gettable      r2    r2    k1 ; k1 = "getn"
+.line	16	gettable      r3    r0    k2 ; k2 = "_controls"
+.line	16	call          r2     2     2
+.line	16	add           r2    r2    k3 ; k3 = 1
+.line	17	gettable      r3    r0    k4 ; k4 = "Height"
+.line	17	call          r3     1     2
+.line	18	gettable      r4    r0    k5 ; k5 = "_expand"
+.line	18	gettable      r4    r4    k4 ; k4 = "Height"
+.line	18	call          r4     1     2
+.line	19	gettable      r5    r0    k6 ; k6 = "_animationIndex"
+.line	19	add           r5    r5    k3 ; k3 = 1
+.line	19	mul           r5    r5    r3
+.line	19	lt             0    r5    r4
+.line	19	jmp          l21
+.line	20	self          r5    r0    k7 ; k7 = "OnExpandControl"
+.line	20	call          r5     2     1
+.line	21	gettable      r5    r0    k6 ; k6 = "_animationIndex"
+.line	21	add           r5    r5    k3 ; k3 = 1
+.line	21	settable      r0    k6    r5 ; k6 = "_animationIndex"
+.label	l21
+.line	24	mul           r5    r2    r3
+.line	24	lt             0    r5    r4
+.line	24	jmp          l26
+.line	25	loadbool      r5     1     0
+.line	25	return        r5     2
+.label	l26
+.line	27	gettable      r5    r0    k5 ; k5 = "_expand"
+.line	27	gettable      r5    r5    k4 ; k4 = "Height"
+.line	27	self          r5    r5    k8 ; k8 = "Set"
+.line	27	gettable      r7    r0    k9 ; k9 = "Layouter"
+.line	27	self          r7    r7   k10 ; k10 = "ScaleNumber"
+.line	27	getupval      r9    u0
+.line	27	call          r7     3     2
+.line	27	mul           r7    r1    r7
+.line	27	add           r7    r4    r7
+.line	27	call          r5     3     1
+.line	28	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	29
+.numparams	1
+.is_vararg	0
+.maxstacksize	7
+
+.local	"control"	0	16
+.local	"n"	5	16
+
+.upvalue	"Functions"	0	false
+
+.constant	k0	"table"
+.constant	k1	"getn"
+.constant	k2	"_controls"
+.constant	k3	1
+.constant	k4	"_expand"
+.constant	k5	"Height"
+.constant	k6	"Set"
+.constant	k7	"Mult"
+.constant	k8	"_isExpanded"
+
+.line	30	getglobal     r1    k0 ; k0 = "table"
+.line	30	gettable      r1    r1    k1 ; k1 = "getn"
+.line	30	gettable      r2    r0    k2 ; k2 = "_controls"
+.line	30	call          r1     2     2
+.line	30	add           r1    r1    k3 ; k3 = 1
+.line	31	gettable      r2    r0    k4 ; k4 = "_expand"
+.line	31	gettable      r2    r2    k5 ; k5 = "Height"
+.line	31	self          r2    r2    k6 ; k6 = "Set"
+.line	31	getupval      r4    u0
+.line	31	gettable      r4    r4    k7 ; k7 = "Mult"
+.line	31	move          r5    r1
+.line	31	gettable      r6    r0    k5 ; k5 = "Height"
+.line	31	call          r4     3     0
+.line	31	call          r2     0     1
+.line	32	loadbool      r2     1     0
+.line	32	settable      r0    k8    r2 ; k8 = "_isExpanded"
+.line	33	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	38
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"control"	0	29
+.local	"delta"	0	29
+.local	"height"	2	29
+.local	"expandHeight"	5	29
+
+.upvalue	"expandSpeed"	0	false
+
+.constant	k0	"Height"
+.constant	k1	"_expand"
+.constant	k2	"_animationIndex"
+.constant	k3	1
+.constant	k4	"OnContractControl"
+.constant	k5	"Set"
+.constant	k6	"Layouter"
+.constant	k7	"ScaleNumber"
+
+.line	39	gettable      r2    r0    k0 ; k0 = "Height"
+.line	39	call          r2     1     2
+.line	40	gettable      r3    r0    k1 ; k1 = "_expand"
+.line	40	gettable      r3    r3    k0 ; k0 = "Height"
+.line	40	call          r3     1     2
+.line	41	gettable      r4    r0    k2 ; k2 = "_animationIndex"
+.line	41	sub           r4    r4    k3 ; k3 = 1
+.line	41	mul           r4    r4    r2
+.line	41	lt             0    r3    r4
+.line	41	jmp          l16
+.line	42	gettable      r4    r0    k2 ; k2 = "_animationIndex"
+.line	42	sub           r4    r4    k3 ; k3 = 1
+.line	42	settable      r0    k2    r4 ; k2 = "_animationIndex"
+.line	43	self          r4    r0    k4 ; k4 = "OnContractControl"
+.line	43	call          r4     2     1
+.label	l16
+.line	46	lt             0    r3    r2
+.line	46	jmp          l20
+.line	47	loadbool      r4     1     0
+.line	47	return        r4     2
+.label	l20
+.line	49	gettable      r4    r0    k1 ; k1 = "_expand"
+.line	49	gettable      r4    r4    k0 ; k0 = "Height"
+.line	49	self          r4    r4    k5 ; k5 = "Set"
+.line	49	gettable      r6    r0    k6 ; k6 = "Layouter"
+.line	49	self          r6    r6    k7 ; k7 = "ScaleNumber"
+.line	49	getupval      r8    u0
+.line	49	call          r6     3     2
+.line	49	mul           r6    r1    r6
+.line	49	sub           r6    r3    r6
+.line	49	call          r4     3     1
+.line	51	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	52
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"control"	0	7
+
+.constant	k0	"_expand"
+.constant	k1	"Height"
+.constant	k2	"Set"
+.constant	k3	"_isExpanded"
+
+.line	53	gettable      r1    r0    k0 ; k0 = "_expand"
+.line	53	gettable      r1    r1    k1 ; k1 = "Height"
+.line	53	self          r1    r1    k2 ; k2 = "Set"
+.line	53	gettable      r3    r0    k1 ; k1 = "Height"
+.line	53	call          r1     3     1
+.line	54	loadbool      r1     0     0
+.line	54	settable      r0    k3    r1 ; k3 = "_isExpanded"
+.line	55	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	66
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"control"	0	2
+
+.constant	k0	"Show"
+
+.line	67	self          r1    r0    k0 ; k0 = "Show"
+.line	67	call          r1     2     1
+.line	68	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	77
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	9
+
+.constant	k0	"Layouter"
+.constant	k1	"AtCenterIn"
+.constant	k2	"GetParent"
+.constant	k3	"Hide"
+
+.line	78	gettable      r1    r0    k0 ; k0 = "Layouter"
+.line	78	move          r2    r0
+.line	78	call          r1     2     2
+.line	79	self          r1    r1    k1 ; k1 = "AtCenterIn"
+.line	79	self          r3    r0    k2 ; k2 = "GetParent"
+.line	79	call          r3     2     0
+.line	79	call          r1     0     1
+.line	80	self          r1    r0    k3 ; k3 = "Hide"
+.line	80	call          r1     2     1
+.line	81	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	87
+.numparams	4
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	16
+.local	"parent"	0	16
+.local	"width"	0	16
+.local	"height"	0	16
+
+.upvalue	"Group"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_expand"
+.constant	k2	"_controls"
+.constant	k3	"_active"
+.constant	k4	"_animationIndex"
+.constant	k5	1
+.constant	k6	"_isExpanded"
+
+.line	88	getupval      r4    u0
+.line	88	gettable      r4    r4    k0 ; k0 = "__init"
+.line	88	move          r5    r0
+.line	88	move          r6    r1
+.line	88	call          r4     3     1
+.line	90	getupval      r4    u0
+.line	90	move          r5    r0
+.line	90	call          r4     2     2
+.line	90	settable      r0    k1    r4 ; k1 = "_expand"
+.line	92	newtable      r4     0     0
+.line	92	settable      r0    k2    r4 ; k2 = "_controls"
+.line	93	loadbool      r4     0     0
+.line	93	settable      r0    k3    r4 ; k3 = "_active"
+.line	94	settable      r0    k4    k5 ; k5 = 1
+.line	95	loadbool      r4     0     0
+.line	95	settable      r0    k6    r4 ; k6 = "_isExpanded"
+.line	96	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	98
+.numparams	4
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	22
+.local	"parent"	0	22
+.local	"width"	0	22
+.local	"height"	0	22
+.local	"layouter"	1	22
+
+.constant	k0	"Layouter"
+.constant	k1	"Width"
+.constant	k2	"Height"
+.constant	k3	"_expand"
+.constant	k4	"AtLeftTopIn"
+
+.line	99	gettable      r4    r0    k0 ; k0 = "Layouter"
+.line	100	move          r5    r4
+.line	100	move          r6    r0
+.line	100	call          r5     2     2
+.line	101	self          r5    r5    k1 ; k1 = "Width"
+.line	101	move          r7    r2
+.line	101	call          r5     3     2
+.line	102	self          r5    r5    k2 ; k2 = "Height"
+.line	102	move          r7    r3
+.line	102	call          r5     3     1
+.line	104	move          r5    r4
+.line	104	gettable      r6    r0    k3 ; k3 = "_expand"
+.line	104	call          r5     2     2
+.line	105	self          r5    r5    k1 ; k1 = "Width"
+.line	105	move          r7    r2
+.line	105	call          r5     3     2
+.line	106	self          r5    r5    k2 ; k2 = "Height"
+.line	106	move          r7    r3
+.line	106	call          r5     3     2
+.line	107	self          r5    r5    k4 ; k4 = "AtLeftTopIn"
+.line	107	move          r7    r0
+.line	107	call          r5     3     1
+.line	108	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	111
+.numparams	3
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	36
+.local	"controls"	0	36
+.local	"default"	0	36
+.local	"(for generator)"	8	36
+.local	"(for state)"	8	36
+.local	"i"	8	36
+.local	"control"	8	36
+
+.constant	k0	1
+.constant	k1	"_controls"
+.constant	k2	"Layouter"
+.constant	k3	"Over"
+.constant	k4	5
+.constant	k5	"_active"
+.constant	k6	"Show"
+.constant	k7	"table"
+.constant	k8	"insert"
+.constant	k9	"Hide"
+.constant	k10	"AtCenterIn"
+
+.line	112	test          r2    r2     1
+.line	112	jmp           l4
+.line	112	loadk         r2    k0 ; k0 = 1
+.label	l4
+.line	114	newtable      r3     0     0
+.line	114	settable      r0    k1    r3 ; k1 = "_controls"
+.line	115	move          r3    r1
+.line	115	loadnil       r4    r6
+.line	115	tforprep      r3   l35
+.label	l9
+.line	116	gettable      r7    r0    k2 ; k2 = "Layouter"
+.line	116	move          r8    r6
+.line	116	call          r7     2     2
+.line	116	self          r7    r7    k3 ; k3 = "Over"
+.line	116	move          r9    r0
+.line	116	loadk        r10    k4 ; k4 = 5
+.line	116	call          r7     4     1
+.line	117	eq             0    r5    r2
+.line	117	jmp          l22
+.line	118	settable      r0    k5    r6 ; k5 = "_active"
+.line	119	self          r7    r6    k6 ; k6 = "Show"
+.line	119	call          r7     2     1
+.line	119	jmp          l29
+.label	l22
+.line	121	getglobal     r7    k7 ; k7 = "table"
+.line	121	gettable      r7    r7    k8 ; k8 = "insert"
+.line	121	gettable      r8    r0    k1 ; k1 = "_controls"
+.line	121	move          r9    r6
+.line	121	call          r7     3     1
+.line	122	self          r7    r6    k9 ; k9 = "Hide"
+.line	122	call          r7     2     1
+.label	l29
+.line	124	gettable      r7    r0    k2 ; k2 = "Layouter"
+.line	124	move          r8    r6
+.line	124	call          r7     2     2
+.line	124	self          r7    r7   k10 ; k10 = "AtCenterIn"
+.line	124	move          r9    r0
+.line	124	call          r7     3     1
+.label	l35
+.line	115	tforloop      r3     1
+.line	124	jmp           l9
+.line	127	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	129
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+.local	"doDestroy"	0	3
+
+.line	130	test          r1    r1     0
+.line	130	jmp           l4
+.line	130	jmp           l4
+.label	l4
+.line	135	return        r0     1
+
+.function	main/f10
+
+.source	null
+.linedefined	137
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	4
+
+.upvalue	"expandAnimation"	0	false
+
+.constant	k0	"Apply"
+
+.line	138	getupval      r1    u0
+.line	138	self          r1    r1    k0 ; k0 = "Apply"
+.line	138	move          r3    r0
+.line	138	call          r1     3     1
+.line	139	return        r0     1
+
+.function	main/f11
+
+.source	null
+.linedefined	141
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	4
+
+.upvalue	"contractAnimation"	0	false
+
+.constant	k0	"Apply"
+
+.line	142	getupval      r1    u0
+.line	142	self          r1    r1    k0 ; k0 = "Apply"
+.line	142	move          r3    r0
+.line	142	call          r1     3     1
+.line	143	return        r0     1
+
+.function	main/f12
+
+.source	null
+.linedefined	145
+.numparams	1
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	22
+.local	"index"	1	22
+.local	"control"	3	22
+.local	"indexOffset"	4	22
+
+.upvalue	"appearAnimation"	0	false
+
+.constant	k0	"_animationIndex"
+.constant	k1	"_controls"
+.constant	k2	0.5
+.constant	k3	"Layouter"
+.constant	k4	"AtHorizontalCenterIn"
+.constant	k5	"Top"
+.constant	k6	"Show"
+.constant	k7	"Apply"
+
+.line	146	gettable      r1    r0    k0 ; k0 = "_animationIndex"
+.line	147	gettable      r2    r0    k1 ; k1 = "_controls"
+.line	147	gettable      r2    r2    r1
+.line	148	add           r3    r1    k2 ; k2 = 0.5
+.line	149	gettable      r4    r0    k3 ; k3 = "Layouter"
+.line	149	move          r5    r2
+.line	149	call          r4     2     2
+.line	150	self          r4    r4    k4 ; k4 = "AtHorizontalCenterIn"
+.line	150	move          r6    r0
+.line	150	call          r4     3     2
+.line	151	self          r4    r4    k5 ; k5 = "Top"
+.line	151	closure       r6    f0
+.line	151	move          r0    r0 ; upvalue declaration
+.line	151	move          r0    r3 ; upvalue declaration
+.line	151	move          r0    r2 ; upvalue declaration
+.line	151	call          r4     3     1
+.line	152	self          r4    r2    k6 ; k6 = "Show"
+.line	152	call          r4     2     1
+.line	153	getupval      r4    u0
+.line	153	self          r4    r4    k7 ; k7 = "Apply"
+.line	153	move          r6    r2
+.line	153	call          r4     3     1
+.line	154	return        r0     1
+
+.function	main/f12/f0
+
+.source	null
+.linedefined	151
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.upvalue	"self"	0	false
+.upvalue	"indexOffset"	0	false
+.upvalue	"control"	0	false
+
+.constant	k0	"Top"
+.constant	k1	"Height"
+.constant	k2	0.5
+
+.line	151	getupval      r0    u0
+.line	151	gettable      r0    r0    k0 ; k0 = "Top"
+.line	151	call          r0     1     2
+.line	151	getupval      r1    u1
+.line	151	getupval      r2    u0
+.line	151	gettable      r2    r2    k1 ; k1 = "Height"
+.line	151	call          r2     1     2
+.line	151	mul           r1    r1    r2
+.line	151	add           r0    r0    r1
+.line	151	getupval      r1    u2
+.line	151	gettable      r1    r1    k1 ; k1 = "Height"
+.line	151	call          r1     1     2
+.line	151	mul           r1    k2    r1 ; k2 = 0.5
+.line	151	sub           r0    r0    r1
+.line	151	return        r0     2
+.line	151	return        r0     1
+
+.function	main/f13
+
+.source	null
+.linedefined	156
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	7
+.local	"index"	1	7
+.local	"control"	3	7
+
+.upvalue	"fadeAnimation"	0	false
+
+.constant	k0	"_animationIndex"
+.constant	k1	"_controls"
+.constant	k2	"Apply"
+
+.line	157	gettable      r1    r0    k0 ; k0 = "_animationIndex"
+.line	158	gettable      r2    r0    k1 ; k1 = "_controls"
+.line	158	gettable      r2    r2    r1
+.line	159	getupval      r3    u0
+.line	159	self          r3    r3    k2 ; k2 = "Apply"
+.line	159	move          r5    r2
+.line	159	call          r3     3     1
+.line	160	return        r0     1
+

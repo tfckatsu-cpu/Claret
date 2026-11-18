@@ -1,0 +1,680 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/options.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"Opt"	3	158
+
+.constant	k0	"ReUI"
+.constant	k1	"Options"
+.constant	k2	"Opt"
+.constant	k3	"Mods"
+.constant	k4	"ReUI.Score"
+.constant	k5	"title"
+.constant	k6	"font"
+.constant	k7	"gameSpeed"
+.constant	k8	"Arial"
+.constant	k9	"totalUnits"
+.constant	k10	"time"
+.constant	k11	"mapName"
+.constant	k12	"mapSize"
+.constant	k13	"quality"
+.constant	k14	"color"
+.constant	k15	"ff00dbff"
+.constant	k16	"ffff9900"
+.constant	k17	"bg"
+.constant	k18	"66000000"
+.constant	k19	"player"
+.constant	k20	"name"
+.constant	k21	"rating"
+.constant	k22	"focus"
+.constant	k23	"mass"
+.constant	k24	"energy"
+.constant	k25	"data"
+.constant	k26	"plain"
+.constant	k27	"player color"
+.constant	k28	"icon"
+.constant	k29	"observer"
+.constant	k30	"line"
+.constant	k31	"ffffffff"
+.constant	k32	"style"
+.constant	k33	"glow border"
+.constant	k34	"replayStyle"
+.constant	k35	"teamScoreSort"
+.constant	k36	"displayMode"
+.constant	k37	"default"
+.constant	k38	"teamColorAsBG"
+.constant	k39	"teamColorAlpha"
+.constant	k40	45
+.constant	k41	"useDivisions"
+.constant	k42	"useNickNameArmyColor"
+.constant	k43	"scoreboardScale"
+.constant	k44	100
+.constant	k45	"shortenAINickName"
+.constant	k46	"Main"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "Options"
+.line	1	gettable      r0    r0    k2 ; k2 = "Opt"
+.line	3	getglobal     r1    k0 ; k0 = "ReUI"
+.line	3	gettable      r1    r1    k1 ; k1 = "Options"
+.line	3	gettable      r1    r1    k3 ; k3 = "Mods"
+.line	3	newtable      r2     0     4
+.line	4	newtable      r3     0     2
+.line	5	newtable      r4     0     3
+.line	6	move          r5    r0
+.line	6	loadk         r6    k8 ; k8 = "Arial"
+.line	6	call          r5     2     2
+.line	6	settable      r4    k7    r5 ; k7 = "gameSpeed"
+.line	7	move          r5    r0
+.line	7	loadk         r6    k8 ; k8 = "Arial"
+.line	7	call          r5     2     2
+.line	7	settable      r4    k9    r5 ; k9 = "totalUnits"
+.line	8	move          r5    r0
+.line	8	loadk         r6    k8 ; k8 = "Arial"
+.line	8	call          r5     2     2
+.line	8	settable      r4   k10    r5 ; k10 = "time"
+.line	9	move          r5    r0
+.line	9	loadk         r6    k8 ; k8 = "Arial"
+.line	9	call          r5     2     2
+.line	9	settable      r4   k11    r5 ; k11 = "mapName"
+.line	10	move          r5    r0
+.line	10	loadk         r6    k8 ; k8 = "Arial"
+.line	10	call          r5     2     2
+.line	10	settable      r4   k12    r5 ; k12 = "mapSize"
+.line	11	move          r5    r0
+.line	11	loadk         r6    k8 ; k8 = "Arial"
+.line	11	call          r5     2     2
+.line	11	settable      r4   k13    r5 ; k13 = "quality"
+.line	12	settable      r3    k6    r4 ; k6 = "font"
+.line	13	newtable      r4     0     3
+.line	14	move          r5    r0
+.line	14	loadk         r6   k15 ; k15 = "ff00dbff"
+.line	14	call          r5     2     2
+.line	14	settable      r4   k10    r5 ; k10 = "time"
+.line	15	move          r5    r0
+.line	15	loadk         r6   k15 ; k15 = "ff00dbff"
+.line	15	call          r5     2     2
+.line	15	settable      r4    k7    r5 ; k7 = "gameSpeed"
+.line	16	move          r5    r0
+.line	16	loadk         r6   k15 ; k15 = "ff00dbff"
+.line	16	call          r5     2     2
+.line	16	settable      r4   k13    r5 ; k13 = "quality"
+.line	17	move          r5    r0
+.line	17	loadk         r6   k16 ; k16 = "ffff9900"
+.line	17	call          r5     2     2
+.line	17	settable      r4    k9    r5 ; k9 = "totalUnits"
+.line	18	move          r5    r0
+.line	18	loadk         r6   k18 ; k18 = "66000000"
+.line	18	call          r5     2     2
+.line	18	settable      r4   k17    r5 ; k17 = "bg"
+.line	19	settable      r3   k14    r4 ; k14 = "color"
+.line	20	settable      r2    k5    r3 ; k5 = "title"
+.line	22	newtable      r3     0     2
+.line	24	newtable      r4     0     3
+.line	25	move          r5    r0
+.line	25	loadk         r6    k8 ; k8 = "Arial"
+.line	25	call          r5     2     2
+.line	25	settable      r4   k20    r5 ; k20 = "name"
+.line	26	move          r5    r0
+.line	26	loadk         r6    k8 ; k8 = "Arial"
+.line	26	call          r5     2     2
+.line	26	settable      r4   k21    r5 ; k21 = "rating"
+.line	27	move          r5    r0
+.line	27	loadk         r6    k8 ; k8 = "Arial"
+.line	27	call          r5     2     2
+.line	27	settable      r4   k22    r5 ; k22 = "focus"
+.line	28	move          r5    r0
+.line	28	loadk         r6    k8 ; k8 = "Arial"
+.line	28	call          r5     2     2
+.line	28	settable      r4   k23    r5 ; k23 = "mass"
+.line	29	move          r5    r0
+.line	29	loadk         r6    k8 ; k8 = "Arial"
+.line	29	call          r5     2     2
+.line	29	settable      r4   k24    r5 ; k24 = "energy"
+.line	30	move          r5    r0
+.line	30	loadk         r6    k8 ; k8 = "Arial"
+.line	30	call          r5     2     2
+.line	30	settable      r4   k25    r5 ; k25 = "data"
+.line	31	settable      r3    k6    r4 ; k6 = "font"
+.line	33	newtable      r4     0     3
+.line	34	move          r5    r0
+.line	34	loadk         r6   k18 ; k18 = "66000000"
+.line	34	call          r5     2     2
+.line	34	settable      r4   k17    r5 ; k17 = "bg"
+.line	35	move          r5    r0
+.line	35	loadk         r6   k26 ; k26 = "plain"
+.line	35	call          r5     2     2
+.line	35	settable      r4   k21    r5 ; k21 = "rating"
+.line	36	move          r5    r0
+.line	36	loadk         r6   k27 ; k27 = "player color"
+.line	36	call          r5     2     2
+.line	36	settable      r4   k20    r5 ; k20 = "name"
+.line	37	move          r5    r0
+.line	37	loadk         r6   k26 ; k26 = "plain"
+.line	37	call          r5     2     2
+.line	37	settable      r4   k28    r5 ; k28 = "icon"
+.line	38	settable      r3   k14    r4 ; k14 = "color"
+.line	39	settable      r2   k19    r3 ; k19 = "player"
+.line	41	newtable      r3     0     2
+.line	42	move          r4    r0
+.line	42	loadk         r5    k8 ; k8 = "Arial"
+.line	42	call          r4     2     2
+.line	42	settable      r3    k6    r4 ; k6 = "font"
+.line	43	newtable      r4     0     1
+.line	44	move          r5    r0
+.line	44	loadk         r6   k31 ; k31 = "ffffffff"
+.line	44	call          r5     2     2
+.line	44	settable      r4   k30    r5 ; k30 = "line"
+.line	45	settable      r3   k14    r4 ; k14 = "color"
+.line	46	settable      r2   k29    r3 ; k29 = "observer"
+.line	48	move          r3    r0
+.line	48	loadk         r4   k33 ; k33 = "glow border"
+.line	48	call          r3     2     2
+.line	48	settable      r2   k32    r3 ; k32 = "style"
+.line	49	move          r3    r0
+.line	49	loadk         r4   k33 ; k33 = "glow border"
+.line	49	call          r3     2     2
+.line	49	settable      r2   k34    r3 ; k34 = "replayStyle"
+.line	51	move          r3    r0
+.line	51	loadbool      r4     0     0
+.line	51	call          r3     2     2
+.line	51	settable      r2   k35    r3 ; k35 = "teamScoreSort"
+.line	52	move          r3    r0
+.line	52	loadk         r4   k37 ; k37 = "default"
+.line	52	call          r3     2     2
+.line	52	settable      r2   k36    r3 ; k36 = "displayMode"
+.line	53	move          r3    r0
+.line	53	loadbool      r4     1     0
+.line	53	call          r3     2     2
+.line	53	settable      r2   k38    r3 ; k38 = "teamColorAsBG"
+.line	54	move          r3    r0
+.line	54	loadk         r4   k40 ; k40 = 45
+.line	54	call          r3     2     2
+.line	54	settable      r2   k39    r3 ; k39 = "teamColorAlpha"
+.line	55	move          r3    r0
+.line	55	loadbool      r4     0     0
+.line	55	call          r3     2     2
+.line	55	settable      r2   k41    r3 ; k41 = "useDivisions"
+.line	56	move          r3    r0
+.line	56	loadbool      r4     0     0
+.line	56	call          r3     2     2
+.line	56	settable      r2   k42    r3 ; k42 = "useNickNameArmyColor"
+.line	62	move          r3    r0
+.line	62	loadk         r4   k44 ; k44 = 100
+.line	62	call          r3     2     2
+.line	62	settable      r2   k43    r3 ; k43 = "scoreboardScale"
+.line	64	move          r3    r0
+.line	64	loadbool      r4     0     0
+.line	64	call          r3     2     2
+.line	64	settable      r2   k45    r3 ; k45 = "shortenAINickName"
+.line	66	settable      r1    k4    r2 ; k4 = "ReUI.Score"
+.line	140	closure       r1    f0
+.line	68	setglobal     r1   k46 ; k46 = "Main"
+.line	140	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	68
+.numparams	1
+.is_vararg	0
+.maxstacksize	36
+
+.local	"isReplay"	0	296
+.local	"Options"	3	296
+.local	"UIUtil"	6	296
+.local	"options"	10	296
+
+.constant	k0	"ReUI"
+.constant	k1	"Options"
+.constant	k2	"Builder"
+.constant	k3	"import"
+.constant	k4	"/lua/ui/uiutil.lua"
+.constant	k5	"Mods"
+.constant	k6	"ReUI.Score"
+.constant	k7	"AddOptions"
+.constant	k8	"ReUI.Score.General"
+.constant	k9	"ReUI.Score : General"
+.constant	k10	"IsObserver"
+.constant	k11	"Strings"
+.constant	k12	"Replay Scoreboard style"
+.constant	k13	"LINQ"
+.constant	k14	"Enumerate"
+.constant	k15	"Score"
+.constant	k16	"Layouts"
+.constant	k17	"next"
+.constant	k18	"Keys"
+.constant	k19	"ToArray"
+.constant	k20	"replayStyle"
+.constant	k21	4
+.constant	k22	"Scoreboard style"
+.constant	k23	"style"
+.constant	k24	"Filter"
+.constant	k25	"Use divisions instead of rating"
+.constant	k26	"useDivisions"
+.constant	k27	"In team score sorting"
+.constant	k28	"teamScoreSort"
+.constant	k29	"Display mode of resource data"
+.constant	k30	"default"
+.constant	k31	"income+storage"
+.constant	k32	"income+storage+maxstorage"
+.constant	k33	"displayMode"
+.constant	k34	"ColorSlider"
+.constant	k35	"Background"
+.constant	k36	"player"
+.constant	k37	"color"
+.constant	k38	"bg"
+.constant	k39	"Display Team color as background"
+.constant	k40	"teamColorAsBG"
+.constant	k41	"Slider"
+.constant	k42	"Team color alpha"
+.constant	k43	0
+.constant	k44	64
+.constant	k45	1
+.constant	k46	"teamColorAlpha"
+.constant	k47	"ScoreBoard scale, %"
+.constant	k48	50
+.constant	k49	300
+.constant	k50	10
+.constant	k51	"scoreboardScale"
+.constant	k52	"Show only AI type"
+.constant	k53	"shortenAINickName"
+.constant	k54	"ReUI.Score.FontsColors"
+.constant	k55	"ReUI.Score : Fonts / Colors"
+.constant	k56	"Title"
+.constant	k57	"Observer Panel"
+.constant	k58	"factionTextColor"
+.constant	k59	"Fonts"
+.constant	k60	"Font"
+.constant	k61	"observer"
+.constant	k62	"font"
+.constant	k63	"Slider color"
+.constant	k64	"line"
+.constant	k65	"Player"
+.constant	k66	"Faction icon color"
+.constant	k67	"plain"
+.constant	k68	"player color"
+.constant	k69	"team color"
+.constant	k70	"icon"
+.constant	k71	"Name font"
+.constant	k72	"name"
+.constant	k73	"Name color"
+.constant	k74	"Focus"
+.constant	k75	"focus"
+.constant	k76	"Rating font"
+.constant	k77	"rating"
+.constant	k78	"Rating color"
+.constant	k79	"Mass"
+.constant	k80	"mass"
+.constant	k81	"Energy"
+.constant	k82	"energy"
+.constant	k83	"Replay data"
+.constant	k84	"data"
+.constant	k85	"Column"
+.constant	k86	2
+.constant	k87	"Game speed"
+.constant	k88	"title"
+.constant	k89	"gameSpeed"
+.constant	k90	"Unit cap"
+.constant	k91	"totalUnits"
+.constant	k92	"Timer"
+.constant	k93	"time"
+.constant	k94	"Quality"
+.constant	k95	"quality"
+.constant	k96	"Map name"
+.constant	k97	"mapName"
+.constant	k98	"Map size"
+.constant	k99	"mapSize"
+
+.line	69	getglobal     r1    k0 ; k0 = "ReUI"
+.line	69	gettable      r1    r1    k1 ; k1 = "Options"
+.line	69	gettable      r1    r1    k2 ; k2 = "Builder"
+.line	70	getglobal     r2    k3 ; k3 = "import"
+.line	70	loadk         r3    k4 ; k4 = "/lua/ui/uiutil.lua"
+.line	70	call          r2     2     2
+.line	72	getglobal     r3    k0 ; k0 = "ReUI"
+.line	72	gettable      r3    r3    k1 ; k1 = "Options"
+.line	72	gettable      r3    r3    k5 ; k5 = "Mods"
+.line	72	gettable      r3    r3    k6 ; k6 = "ReUI.Score"
+.line	74	gettable      r4    r1    k7 ; k7 = "AddOptions"
+.line	74	loadk         r5    k8 ; k8 = "ReUI.Score.General"
+.line	74	loadk         r6    k9 ; k9 = "ReUI.Score : General"
+.line	74	newtable      r7    13     0
+.line	76	test          r0    r0     1
+.line	76	jmp          l21
+.line	76	getglobal     r8   k10 ; k10 = "IsObserver"
+.line	76	call          r8     1     2
+.line	76	test          r8    r8     0
+.line	76	jmp          l40
+.label	l21
+.line	77	gettable      r8    r1   k11 ; k11 = "Strings"
+.line	77	loadk         r9   k12 ; k12 = "Replay Scoreboard st" (truncated)
+.line	78	getglobal    r10    k0 ; k0 = "ReUI"
+.line	78	gettable     r10   r10   k13 ; k13 = "LINQ"
+.line	78	gettable     r10   r10   k14 ; k14 = "Enumerate"
+.line	78	getglobal    r11    k0 ; k0 = "ReUI"
+.line	78	gettable     r11   r11   k15 ; k15 = "Score"
+.line	78	gettable     r11   r11   k16 ; k16 = "Layouts"
+.line	78	getglobal    r12   k17 ; k17 = "next"
+.line	78	call         r10     3     2
+.line	78	self         r10   r10   k18 ; k18 = "Keys"
+.line	78	call         r10     2     2
+.line	78	self         r10   r10   k19 ; k19 = "ToArray"
+.line	78	call         r10     2     2
+.line	79	gettable     r11    r3   k20 ; k20 = "replayStyle"
+.line	79	loadk        r12   k21 ; k21 = 4
+.line	77	call          r8     5     2
+.line	79	test          r8    r8     1
+.line	79	jmp          l57
+.label	l40
+.line	80	gettable      r8    r1   k11 ; k11 = "Strings"
+.line	80	loadk         r9   k22 ; k22 = "Scoreboard style"
+.line	81	getglobal    r10    k0 ; k0 = "ReUI"
+.line	81	gettable     r10   r10   k13 ; k13 = "LINQ"
+.line	81	gettable     r10   r10   k14 ; k14 = "Enumerate"
+.line	81	getglobal    r11    k0 ; k0 = "ReUI"
+.line	81	gettable     r11   r11   k15 ; k15 = "Score"
+.line	81	gettable     r11   r11   k16 ; k16 = "Layouts"
+.line	81	getglobal    r12   k17 ; k17 = "next"
+.line	81	call         r10     3     2
+.line	81	self         r10   r10   k18 ; k18 = "Keys"
+.line	81	call         r10     2     2
+.line	81	self         r10   r10   k19 ; k19 = "ToArray"
+.line	81	call         r10     2     2
+.line	82	gettable     r11    r3   k23 ; k23 = "style"
+.line	82	loadk        r12   k21 ; k21 = 4
+.line	80	call          r8     5     2
+.label	l57
+.line	83	gettable      r9    r1   k24 ; k24 = "Filter"
+.line	83	loadk        r10   k25 ; k25 = "Use divisions instea" (truncated)
+.line	83	gettable     r11    r3   k26 ; k26 = "useDivisions"
+.line	83	loadk        r12   k21 ; k21 = 4
+.line	83	call          r9     4     2
+.line	85	gettable     r10    r1   k24 ; k24 = "Filter"
+.line	85	loadk        r11   k27 ; k27 = "In team score sortin" (truncated)
+.line	85	gettable     r12    r3   k28 ; k28 = "teamScoreSort"
+.line	85	loadk        r13   k21 ; k21 = 4
+.line	85	call         r10     4     2
+.line	86	gettable     r11    r1   k11 ; k11 = "Strings"
+.line	86	loadk        r12   k29 ; k29 = "Display mode of reso" (truncated)
+.line	86	newtable     r13     3     0
+.line	87	loadk        r14   k30 ; k30 = "default"
+.line	88	loadk        r15   k31 ; k31 = "income+storage"
+.line	90	loadk        r16   k32 ; k32 = "income+storage+maxst" (truncated)
+.line	90	setlist      r13     2
+.line	90	gettable     r14    r3   k33 ; k33 = "displayMode"
+.line	90	loadk        r15   k21 ; k21 = 4
+.line	86	call         r11     5     2
+.line	91	gettable     r12    r1   k34 ; k34 = "ColorSlider"
+.line	91	loadk        r13   k35 ; k35 = "Background"
+.line	91	gettable     r14    r3   k36 ; k36 = "player"
+.line	91	gettable     r14   r14   k37 ; k37 = "color"
+.line	91	gettable     r14   r14   k38 ; k38 = "bg"
+.line	91	loadk        r15   k21 ; k21 = 4
+.line	91	call         r12     4     2
+.line	92	gettable     r13    r1   k24 ; k24 = "Filter"
+.line	92	loadk        r14   k39 ; k39 = "Display Team color a" (truncated)
+.line	92	gettable     r15    r3   k40 ; k40 = "teamColorAsBG"
+.line	92	loadk        r16   k21 ; k21 = 4
+.line	92	call         r13     4     2
+.line	93	gettable     r14    r1   k41 ; k41 = "Slider"
+.line	93	loadk        r15   k42 ; k42 = "Team color alpha"
+.line	93	loadk        r16   k43 ; k43 = 0
+.line	93	loadk        r17   k44 ; k44 = 64
+.line	93	loadk        r18   k45 ; k45 = 1
+.line	93	gettable     r19    r3   k46 ; k46 = "teamColorAlpha"
+.line	93	loadk        r20   k21 ; k21 = 4
+.line	93	call         r14     7     2
+.line	94	gettable     r15    r1   k41 ; k41 = "Slider"
+.line	94	loadk        r16   k47 ; k47 = "ScoreBoard scale, %"
+.line	94	loadk        r17   k48 ; k48 = 50
+.line	94	loadk        r18   k49 ; k49 = 300
+.line	94	loadk        r19   k50 ; k50 = 10
+.line	94	gettable     r20    r3   k51 ; k51 = "scoreboardScale"
+.line	94	loadk        r21   k21 ; k21 = 4
+.line	94	call         r15     7     2
+.line	98	gettable     r16    r1   k24 ; k24 = "Filter"
+.line	98	loadk        r17   k52 ; k52 = "Show only AI type"
+.line	98	gettable     r18    r3   k53 ; k53 = "shortenAINickName"
+.line	98	loadk        r19   k21 ; k21 = 4
+.line	98	call         r16     4     0
+.line	99	setlisto      r7     8
+.line	74	call          r4     4     1
+.line	101	gettable      r4    r1    k7 ; k7 = "AddOptions"
+.line	101	loadk         r5   k54 ; k54 = "ReUI.Score.FontsColo" (truncated)
+.line	101	loadk         r6   k55 ; k55 = "ReUI.Score : Fonts /" (truncated)
+.line	101	newtable      r7    23     0
+.line	102	gettable      r8    r1   k56 ; k56 = "Title"
+.line	102	loadk         r9   k57 ; k57 = "Observer Panel"
+.line	102	loadnil      r10   r11
+.line	102	gettable     r12    r2   k58 ; k58 = "factionTextColor"
+.line	102	call          r8     5     2
+.line	103	gettable      r9    r1   k59 ; k59 = "Fonts"
+.line	103	loadk        r10   k60 ; k60 = "Font"
+.line	103	gettable     r11    r3   k61 ; k61 = "observer"
+.line	103	gettable     r11   r11   k62 ; k62 = "font"
+.line	103	loadk        r12   k21 ; k21 = 4
+.line	103	call          r9     4     2
+.line	104	gettable     r10    r1   k34 ; k34 = "ColorSlider"
+.line	104	loadk        r11   k63 ; k63 = "Slider color"
+.line	104	gettable     r12    r3   k61 ; k61 = "observer"
+.line	104	gettable     r12   r12   k37 ; k37 = "color"
+.line	104	gettable     r12   r12   k64 ; k64 = "line"
+.line	104	loadk        r13   k21 ; k21 = 4
+.line	104	call         r10     4     2
+.line	105	gettable     r11    r1   k56 ; k56 = "Title"
+.line	105	loadk        r12   k65 ; k65 = "Player"
+.line	105	loadnil      r13   r14
+.line	105	gettable     r15    r2   k58 ; k58 = "factionTextColor"
+.line	105	call         r11     5     2
+.line	106	gettable     r12    r1   k11 ; k11 = "Strings"
+.line	106	loadk        r13   k66 ; k66 = "Faction icon color"
+.line	106	newtable     r14     3     0
+.line	107	loadk        r15   k67 ; k67 = "plain"
+.line	108	loadk        r16   k68 ; k68 = "player color"
+.line	110	loadk        r17   k69 ; k69 = "team color"
+.line	110	setlist      r14     2
+.line	110	gettable     r15    r3   k36 ; k36 = "player"
+.line	110	gettable     r15   r15   k37 ; k37 = "color"
+.line	110	gettable     r15   r15   k70 ; k70 = "icon"
+.line	110	loadk        r16   k21 ; k21 = 4
+.line	106	call         r12     5     2
+.line	111	gettable     r13    r1   k59 ; k59 = "Fonts"
+.line	111	loadk        r14   k71 ; k71 = "Name font"
+.line	111	gettable     r15    r3   k36 ; k36 = "player"
+.line	111	gettable     r15   r15   k62 ; k62 = "font"
+.line	111	gettable     r15   r15   k72 ; k72 = "name"
+.line	111	loadk        r16   k21 ; k21 = 4
+.line	111	call         r13     4     2
+.line	112	gettable     r14    r1   k11 ; k11 = "Strings"
+.line	112	loadk        r15   k73 ; k73 = "Name color"
+.line	112	newtable     r16     3     0
+.line	113	loadk        r17   k67 ; k67 = "plain"
+.line	114	loadk        r18   k68 ; k68 = "player color"
+.line	116	loadk        r19   k69 ; k69 = "team color"
+.line	116	setlist      r16     2
+.line	116	gettable     r17    r3   k36 ; k36 = "player"
+.line	116	gettable     r17   r17   k37 ; k37 = "color"
+.line	116	gettable     r17   r17   k72 ; k72 = "name"
+.line	116	loadk        r18   k21 ; k21 = 4
+.line	112	call         r14     5     2
+.line	117	gettable     r15    r1   k59 ; k59 = "Fonts"
+.line	117	loadk        r16   k74 ; k74 = "Focus"
+.line	117	gettable     r17    r3   k36 ; k36 = "player"
+.line	117	gettable     r17   r17   k62 ; k62 = "font"
+.line	117	gettable     r17   r17   k75 ; k75 = "focus"
+.line	117	loadk        r18   k21 ; k21 = 4
+.line	117	call         r15     4     2
+.line	118	gettable     r16    r1   k59 ; k59 = "Fonts"
+.line	118	loadk        r17   k76 ; k76 = "Rating font"
+.line	118	gettable     r18    r3   k36 ; k36 = "player"
+.line	118	gettable     r18   r18   k62 ; k62 = "font"
+.line	118	gettable     r18   r18   k77 ; k77 = "rating"
+.line	118	loadk        r19   k21 ; k21 = 4
+.line	118	call         r16     4     2
+.line	119	gettable     r17    r1   k11 ; k11 = "Strings"
+.line	119	loadk        r18   k78 ; k78 = "Rating color"
+.line	119	newtable     r19     3     0
+.line	120	loadk        r20   k67 ; k67 = "plain"
+.line	121	loadk        r21   k68 ; k68 = "player color"
+.line	123	loadk        r22   k69 ; k69 = "team color"
+.line	123	setlist      r19     2
+.line	123	gettable     r20    r3   k36 ; k36 = "player"
+.line	123	gettable     r20   r20   k37 ; k37 = "color"
+.line	123	gettable     r20   r20   k77 ; k77 = "rating"
+.line	123	loadk        r21   k21 ; k21 = 4
+.line	119	call         r17     5     2
+.line	124	gettable     r18    r1   k59 ; k59 = "Fonts"
+.line	124	loadk        r19   k79 ; k79 = "Mass"
+.line	124	gettable     r20    r3   k36 ; k36 = "player"
+.line	124	gettable     r20   r20   k62 ; k62 = "font"
+.line	124	gettable     r20   r20   k80 ; k80 = "mass"
+.line	124	loadk        r21   k21 ; k21 = 4
+.line	124	call         r18     4     2
+.line	125	gettable     r19    r1   k59 ; k59 = "Fonts"
+.line	125	loadk        r20   k81 ; k81 = "Energy"
+.line	125	gettable     r21    r3   k36 ; k36 = "player"
+.line	125	gettable     r21   r21   k62 ; k62 = "font"
+.line	125	gettable     r21   r21   k82 ; k82 = "energy"
+.line	125	loadk        r22   k21 ; k21 = 4
+.line	125	call         r19     4     2
+.line	126	gettable     r20    r1   k59 ; k59 = "Fonts"
+.line	126	loadk        r21   k83 ; k83 = "Replay data"
+.line	126	gettable     r22    r3   k36 ; k36 = "player"
+.line	126	gettable     r22   r22   k62 ; k62 = "font"
+.line	126	gettable     r22   r22   k84 ; k84 = "data"
+.line	126	loadk        r23   k21 ; k21 = 4
+.line	126	call         r20     4     2
+.line	127	gettable     r21    r1   k85 ; k85 = "Column"
+.line	127	loadk        r22   k86 ; k86 = 2
+.line	127	call         r21     2     2
+.line	128	gettable     r22    r1   k56 ; k56 = "Title"
+.line	128	loadk        r23   k56 ; k56 = "Title"
+.line	128	loadnil      r24   r25
+.line	128	gettable     r26    r2   k58 ; k58 = "factionTextColor"
+.line	128	call         r22     5     2
+.line	129	gettable     r23    r1   k59 ; k59 = "Fonts"
+.line	129	loadk        r24   k87 ; k87 = "Game speed"
+.line	129	gettable     r25    r3   k88 ; k88 = "title"
+.line	129	gettable     r25   r25   k62 ; k62 = "font"
+.line	129	gettable     r25   r25   k89 ; k89 = "gameSpeed"
+.line	129	loadk        r26   k21 ; k21 = 4
+.line	129	call         r23     4     2
+.line	130	gettable     r24    r1   k59 ; k59 = "Fonts"
+.line	130	loadk        r25   k90 ; k90 = "Unit cap"
+.line	130	gettable     r26    r3   k88 ; k88 = "title"
+.line	130	gettable     r26   r26   k62 ; k62 = "font"
+.line	130	gettable     r26   r26   k91 ; k91 = "totalUnits"
+.line	130	loadk        r27   k21 ; k21 = 4
+.line	130	call         r24     4     2
+.line	131	gettable     r25    r1   k59 ; k59 = "Fonts"
+.line	131	loadk        r26   k92 ; k92 = "Timer"
+.line	131	gettable     r27    r3   k88 ; k88 = "title"
+.line	131	gettable     r27   r27   k62 ; k62 = "font"
+.line	131	gettable     r27   r27   k93 ; k93 = "time"
+.line	131	loadk        r28   k21 ; k21 = 4
+.line	131	call         r25     4     2
+.line	132	gettable     r26    r1   k59 ; k59 = "Fonts"
+.line	132	loadk        r27   k94 ; k94 = "Quality"
+.line	132	gettable     r28    r3   k88 ; k88 = "title"
+.line	132	gettable     r28   r28   k62 ; k62 = "font"
+.line	132	gettable     r28   r28   k95 ; k95 = "quality"
+.line	132	loadk        r29   k21 ; k21 = 4
+.line	132	call         r26     4     2
+.line	133	gettable     r27    r1   k59 ; k59 = "Fonts"
+.line	133	loadk        r28   k96 ; k96 = "Map name"
+.line	133	gettable     r29    r3   k88 ; k88 = "title"
+.line	133	gettable     r29   r29   k62 ; k62 = "font"
+.line	133	gettable     r29   r29   k97 ; k97 = "mapName"
+.line	133	loadk        r30   k21 ; k21 = 4
+.line	133	call         r27     4     2
+.line	134	gettable     r28    r1   k59 ; k59 = "Fonts"
+.line	134	loadk        r29   k98 ; k98 = "Map size"
+.line	134	gettable     r30    r3   k88 ; k88 = "title"
+.line	134	gettable     r30   r30   k62 ; k62 = "font"
+.line	134	gettable     r30   r30   k99 ; k99 = "mapSize"
+.line	134	loadk        r31   k21 ; k21 = 4
+.line	134	call         r28     4     2
+.line	135	gettable     r29    r1   k34 ; k34 = "ColorSlider"
+.line	135	loadk        r30   k92 ; k92 = "Timer"
+.line	135	gettable     r31    r3   k88 ; k88 = "title"
+.line	135	gettable     r31   r31   k37 ; k37 = "color"
+.line	135	gettable     r31   r31   k93 ; k93 = "time"
+.line	135	loadk        r32   k21 ; k21 = 4
+.line	135	call         r29     4     2
+.line	136	gettable     r30    r1   k34 ; k34 = "ColorSlider"
+.line	136	loadk        r31   k87 ; k87 = "Game speed"
+.line	136	gettable     r32    r3   k88 ; k88 = "title"
+.line	136	gettable     r32   r32   k37 ; k37 = "color"
+.line	136	gettable     r32   r32   k89 ; k89 = "gameSpeed"
+.line	136	loadk        r33   k21 ; k21 = 4
+.line	136	call         r30     4     2
+.line	137	gettable     r31    r1   k34 ; k34 = "ColorSlider"
+.line	137	loadk        r32   k90 ; k90 = "Unit cap"
+.line	137	gettable     r33    r3   k88 ; k88 = "title"
+.line	137	gettable     r33   r33   k37 ; k37 = "color"
+.line	137	gettable     r33   r33   k91 ; k91 = "totalUnits"
+.line	137	loadk        r34   k21 ; k21 = 4
+.line	137	call         r31     4     2
+.line	138	gettable     r32    r1   k34 ; k34 = "ColorSlider"
+.line	138	loadk        r33   k94 ; k94 = "Quality"
+.line	138	gettable     r34    r3   k88 ; k88 = "title"
+.line	138	gettable     r34   r34   k37 ; k37 = "color"
+.line	138	gettable     r34   r34   k95 ; k95 = "quality"
+.line	138	loadk        r35   k21 ; k21 = 4
+.line	138	call         r32     4     0
+.line	139	setlisto      r7    24
+.line	101	call          r4     4     1
+.line	140	return        r0     1
+

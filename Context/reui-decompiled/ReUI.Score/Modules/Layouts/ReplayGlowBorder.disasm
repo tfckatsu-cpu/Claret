@@ -1,0 +1,366 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/layouts/replayglowborder.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"Animations"	3	17
+.local	"contractAnimation"	4	17
+.local	"expandAnimation"	5	17
+.local	"animationSpeed"	6	17
+.local	"Clear"	7	17
+.local	"InitialAnimation"	10	17
+
+.constant	k0	"import"
+.constant	k1	"../Animations.lua"
+.constant	k2	"contractAnimation"
+.constant	k3	"expandAnimation"
+.constant	k4	500
+.constant	k5	"Layout"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "../Animations.lua"
+.line	1	call          r0     2     2
+.line	3	gettable      r1    r0    k2 ; k2 = "contractAnimation"
+.line	4	gettable      r2    r0    k3 ; k3 = "expandAnimation"
+.line	6	loadk         r3    k4 ; k4 = 500
+.line	22	closure       r4    f0
+.line	28	closure       r5    f1
+.line	28	move          r0    r0 ; upvalue declaration
+.line	28	move          r0    r3 ; upvalue declaration
+.line	84	closure       r6    f2
+.line	84	move          r0    r5 ; upvalue declaration
+.line	84	move          r0    r2 ; upvalue declaration
+.line	84	move          r0    r3 ; upvalue declaration
+.line	84	move          r0    r1 ; upvalue declaration
+.line	84	move          r0    r4 ; upvalue declaration
+.line	84	setglobal     r6    k5 ; k5 = "Layout"
+.line	84	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	13
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"scoreboard"	0	12
+
+.constant	k0	"_border"
+.constant	k1	"Destroy"
+.constant	k2	nil
+.constant	k3	"_bracket"
+.constant	k4	"_arrow"
+
+.line	14	gettable      r1    r0    k0 ; k0 = "_border"
+.line	14	self          r1    r1    k1 ; k1 = "Destroy"
+.line	14	call          r1     2     1
+.line	15	settable      r0    k0    k2 ; k2 = nil
+.line	17	gettable      r1    r0    k3 ; k3 = "_bracket"
+.line	17	self          r1    r1    k1 ; k1 = "Destroy"
+.line	17	call          r1     2     1
+.line	18	settable      r0    k3    k2 ; k2 = nil
+.line	20	gettable      r1    r0    k4 ; k4 = "_arrow"
+.line	20	self          r1    r1    k1 ; k1 = "Destroy"
+.line	20	call          r1     2     1
+.line	21	settable      r0    k4    k2 ; k2 = nil
+.line	22	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	26
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"scoreboard"	0	7
+
+.upvalue	"Animations"	0	false
+.upvalue	"animationSpeed"	0	false
+
+.constant	k0	"slideAnimation"
+.constant	k1	"Apply"
+.constant	k2	25
+
+.line	27	getupval      r1    u0
+.line	27	gettable      r1    r1    k0 ; k0 = "slideAnimation"
+.line	27	self          r1    r1    k1 ; k1 = "Apply"
+.line	27	move          r3    r0
+.line	27	getupval      r4    u1
+.line	27	loadk         r5    k2 ; k2 = 25
+.line	27	call          r1     5     1
+.line	28	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	36
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"scoreboard"	0	106
+.local	"layouter"	0	106
+
+.upvalue	"InitialAnimation"	0	false
+.upvalue	"expandAnimation"	0	false
+.upvalue	"animationSpeed"	0	false
+.upvalue	"contractAnimation"	0	false
+.upvalue	"Clear"	0	false
+
+.constant	k0	"InitLayout"
+.constant	k1	"InitialAnimation"
+.constant	k2	"_bracket"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Views"
+.constant	k6	"Brackets"
+.constant	k7	"FactionRight"
+.constant	k8	"_border"
+.constant	k9	"GlowBorder"
+.constant	k10	"_arrow"
+.constant	k11	"VerticalCollapseArrow"
+.constant	k12	"AtTopIn"
+.constant	k13	10
+.constant	k14	"DefaultScale"
+.constant	k15	"Over"
+.constant	k16	20
+.constant	k17	"OnCheck"
+.constant	k18	13
+.constant	k19	-13
+.constant	k20	"AtBottomIn"
+.constant	k21	"AtRightIn"
+.constant	k22	26
+.constant	k23	-26
+.constant	k24	"FillFixedBorder"
+.constant	k25	-10
+.constant	k26	"DisableHitTest"
+.constant	k27	"_dataPanel"
+.constant	k28	"Width"
+.constant	k29	"_title"
+.constant	k30	"GetFrame"
+.constant	k31	0
+.constant	k32	25
+
+.line	38	self          r2    r0    k0 ; k0 = "InitLayout"
+.line	38	move          r4    r1
+.line	38	call          r2     3     1
+.line	39	getupval      r2    u0
+.line	39	settable      r0    k1    r2 ; k1 = "InitialAnimation"
+.line	41	getglobal     r2    k3 ; k3 = "ReUI"
+.line	41	gettable      r2    r2    k4 ; k4 = "UI"
+.line	41	gettable      r2    r2    k5 ; k5 = "Views"
+.line	41	gettable      r2    r2    k6 ; k6 = "Brackets"
+.line	41	gettable      r2    r2    k7 ; k7 = "FactionRight"
+.line	41	move          r3    r0
+.line	41	call          r2     2     2
+.line	41	settable      r0    k2    r2 ; k2 = "_bracket"
+.line	42	getglobal     r2    k3 ; k3 = "ReUI"
+.line	42	gettable      r2    r2    k4 ; k4 = "UI"
+.line	42	gettable      r2    r2    k5 ; k5 = "Views"
+.line	42	gettable      r2    r2    k9 ; k9 = "GlowBorder"
+.line	42	move          r3    r0
+.line	42	call          r2     2     2
+.line	42	settable      r0    k8    r2 ; k8 = "_border"
+.line	43	getglobal     r2    k3 ; k3 = "ReUI"
+.line	43	gettable      r2    r2    k4 ; k4 = "UI"
+.line	43	gettable      r2    r2    k5 ; k5 = "Views"
+.line	43	gettable      r2    r2   k11 ; k11 = "VerticalCollapseArro" (truncated)
+.line	43	move          r3    r0
+.line	43	call          r2     2     2
+.line	43	settable      r0   k10    r2 ; k10 = "_arrow"
+.line	45	move          r2    r1
+.line	45	gettable      r3    r0   k10 ; k10 = "_arrow"
+.line	45	call          r2     2     2
+.line	46	self          r2    r2   k12 ; k12 = "AtTopIn"
+.line	46	move          r4    r0
+.line	46	loadk         r5   k13 ; k13 = 10
+.line	46	call          r2     4     2
+.line	47	self          r2    r2   k14 ; k14 = "DefaultScale"
+.line	49	closure       r4    f0
+.line	47	call          r2     3     2
+.line	50	self          r2    r2   k15 ; k15 = "Over"
+.line	50	move          r4    r0
+.line	50	loadk         r5   k16 ; k16 = 20
+.line	50	call          r2     4     1
+.line	52	gettable      r2    r0   k10 ; k10 = "_arrow"
+.line	58	closure       r3    f1
+.line	58	getupval      r0    u1 ; upvalue declaration
+.line	58	move          r0    r0 ; upvalue declaration
+.line	58	getupval      r0    u2 ; upvalue declaration
+.line	58	getupval      r0    u3 ; upvalue declaration
+.line	58	settable      r2   k17    r3 ; k17 = "OnCheck"
+.line	60	move          r2    r1
+.line	60	gettable      r3    r0    k2 ; k2 = "_bracket"
+.line	60	call          r2     2     2
+.line	61	self          r2    r2   k12 ; k12 = "AtTopIn"
+.line	61	move          r4    r0
+.line	61	loadk         r5   k19 ; k19 = -13
+.line	61	call          r2     4     2
+.line	62	self          r2    r2   k20 ; k20 = "AtBottomIn"
+.line	62	move          r4    r0
+.line	62	loadk         r5   k19 ; k19 = -13
+.line	62	call          r2     4     2
+.line	63	self          r2    r2   k21 ; k21 = "AtRightIn"
+.line	63	move          r4    r0
+.line	63	loadk         r5   k23 ; k23 = -26
+.line	63	call          r2     4     2
+.line	64	self          r2    r2   k15 ; k15 = "Over"
+.line	64	move          r4    r0
+.line	64	loadk         r5   k13 ; k13 = 10
+.line	64	call          r2     4     1
+.line	67	move          r2    r1
+.line	67	gettable      r3    r0    k8 ; k8 = "_border"
+.line	67	call          r2     2     2
+.line	68	self          r2    r2   k24 ; k24 = "FillFixedBorder"
+.line	68	move          r4    r0
+.line	68	loadk         r5   k25 ; k25 = -10
+.line	68	call          r2     4     2
+.line	69	self          r2    r2   k15 ; k15 = "Over"
+.line	69	move          r4    r0
+.line	69	call          r2     3     2
+.line	70	self          r2    r2   k26 ; k26 = "DisableHitTest"
+.line	70	loadbool      r4     1     0
+.line	70	call          r2     3     1
+.line	72	move          r2    r1
+.line	72	gettable      r3    r0   k27 ; k27 = "_dataPanel"
+.line	72	call          r2     2     2
+.line	73	self          r2    r2   k28 ; k28 = "Width"
+.line	73	gettable      r4    r0   k28 ; k28 = "Width"
+.line	73	call          r2     3     1
+.line	74	gettable      r2    r0   k29 ; k29 = "_title"
+.line	74	test          r2    r2     0
+.line	74	jmp          l96
+.line	75	move          r2    r1
+.line	75	gettable      r3    r0   k29 ; k29 = "_title"
+.line	75	call          r2     2     2
+.line	76	self          r2    r2   k28 ; k28 = "Width"
+.line	76	gettable      r4    r0   k28 ; k28 = "Width"
+.line	76	call          r2     3     1
+.label	l96
+.line	78	move          r2    r1
+.line	78	move          r3    r0
+.line	78	call          r2     2     2
+.line	79	self          r2    r2   k21 ; k21 = "AtRightIn"
+.line	79	getglobal     r4   k30 ; k30 = "GetFrame"
+.line	79	loadk         r5   k31 ; k31 = 0
+.line	79	call          r4     2     2
+.line	79	loadk         r5   k32 ; k32 = 25
+.line	79	call          r2     4     1
+.line	83	getupval      r2    u4
+.line	83	return        r2     2
+.line	84	return        r0     1
+
+.function	main/f2/f0
+
+.source	null
+.linedefined	47
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"_layouter"	0	6
+
+.constant	k0	"AtRightIn"
+.constant	k1	"GetFrame"
+.constant	k2	0
+.constant	k3	3
+.constant	k4	-3
+
+.line	48	self          r1    r0    k0 ; k0 = "AtRightIn"
+.line	48	getglobal     r3    k1 ; k1 = "GetFrame"
+.line	48	loadk         r4    k2 ; k2 = 0
+.line	48	call          r3     2     2
+.line	48	loadk         r4    k4 ; k4 = -3
+.line	48	call          r1     4     1
+.line	49	return        r0     1
+
+.function	main/f2/f1
+
+.source	null
+.linedefined	52
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"arrow"	0	15
+.local	"checked"	0	15
+
+.upvalue	"expandAnimation"	0	false
+.upvalue	"scoreboard"	0	false
+.upvalue	"animationSpeed"	0	false
+.upvalue	"contractAnimation"	0	false
+
+.constant	k0	"Apply"
+.constant	k1	25
+
+.line	53	test          r1    r1     1
+.line	53	jmp          l10
+.line	54	getupval      r2    u0
+.line	54	self          r2    r2    k0 ; k0 = "Apply"
+.line	54	getupval      r4    u1
+.line	54	getupval      r5    u2
+.line	54	loadk         r6    k1 ; k1 = 25
+.line	54	call          r2     5     1
+.line	54	jmp          l16
+.label	l10
+.line	56	getupval      r2    u3
+.line	56	self          r2    r2    k0 ; k0 = "Apply"
+.line	56	getupval      r4    u1
+.line	56	getupval      r5    u2
+.line	56	loadk         r6    k1 ; k1 = 25
+.line	56	call          r2     5     1
+.label	l16
+.line	58	return        r0     1
+

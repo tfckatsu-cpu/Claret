@@ -1,0 +1,139 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ecs/modules/alazycomponentcontainer.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	4
+
+.local	"ComponentContainer"	4	15
+
+.constant	k0	"import"
+.constant	k1	"ComponentContainer.lua"
+.constant	k2	"ComponentContainer"
+.constant	k3	"ALazyComponentContainer"
+.constant	k4	"Class"
+.constant	k5	"GetComponent"
+.constant	k6	"CreateComponent"
+
+.line	2	getglobal     r0    k0 ; k0 = "import"
+.line	2	loadk         r1    k1 ; k1 = "ComponentContainer.l" (truncated)
+.line	2	call          r0     2     2
+.line	2	gettable      r0    r0    k2 ; k2 = "ComponentContainer"
+.line	5	getglobal     r1    k4 ; k4 = "Class"
+.line	5	move          r2    r0
+.line	5	call          r1     2     2
+.line	5	newtable      r2     0     2
+.line	19	closure       r3    f0
+.line	19	move          r0    r0 ; upvalue declaration
+.line	19	settable      r2    k5    r3 ; k5 = "GetComponent"
+.line	26	closure       r3    f1
+.line	26	settable      r2    k6    r3 ; k6 = "CreateComponent"
+.line	6	call          r1     2     2
+.line	27	setglobal     r1    k3 ; k3 = "ALazyComponentContai" (truncated)
+.line	27	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	10
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	16
+.local	"name"	0	16
+.local	"component"	5	16
+
+.upvalue	"ComponentContainer"	0	false
+
+.constant	k0	"GetComponent"
+.constant	k1	nil
+.constant	k2	"CreateComponent"
+.constant	k3	"AddComponent"
+
+.line	11	getupval      r2    u0
+.line	11	gettable      r2    r2    k0 ; k0 = "GetComponent"
+.line	11	move          r3    r0
+.line	11	move          r4    r1
+.line	11	call          r2     3     2
+.line	13	eq             0    r2    k1 ; k1 = nil
+.line	13	jmp          l16
+.line	14	self          r3    r0    k2 ; k2 = "CreateComponent"
+.line	14	move          r5    r1
+.line	14	call          r3     3     2
+.line	14	move          r2    r3
+.line	15	self          r3    r0    k3 ; k3 = "AddComponent"
+.line	15	move          r5    r1
+.line	15	move          r6    r2
+.line	15	call          r3     4     1
+.label	l16
+.line	18	return        r2     2
+.line	19	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	24
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	3
+.local	"name"	0	3
+
+.constant	k0	"error"
+.constant	k1	"'ALazyComponentContainer.CreateComponent' Must be implemented!!"
+
+.line	25	getglobal     r2    k0 ; k0 = "error"
+.line	25	loadk         r3    k1 ; k1 = "'ALazyComponentConta" (truncated)
+.line	25	call          r2     2     1
+.line	26	return        r0     1
+

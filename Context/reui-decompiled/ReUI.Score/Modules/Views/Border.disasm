@@ -1,0 +1,412 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/views/border.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"LazyVar"	4	38
+.local	"Group"	8	38
+.local	"Bitmap"	12	38
+.local	"Text"	16	38
+
+.constant	k0	"import"
+.constant	k1	"/lua/lazyvar.lua"
+.constant	k2	"Create"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Controls"
+.constant	k6	"Group"
+.constant	k7	"Bitmap"
+.constant	k8	"Text"
+.constant	k9	"Border"
+.constant	k10	"Core"
+.constant	k11	"Class"
+.constant	k12	"__init"
+.constant	k13	"SetColor"
+.constant	k14	"GetColor"
+.constant	k15	"SetAlpha"
+.constant	k16	"OnDestroy"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "/lua/lazyvar.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "Create"
+.line	3	getglobal     r1    k3 ; k3 = "ReUI"
+.line	3	gettable      r1    r1    k4 ; k4 = "UI"
+.line	3	gettable      r1    r1    k5 ; k5 = "Controls"
+.line	3	gettable      r1    r1    k6 ; k6 = "Group"
+.line	4	getglobal     r2    k3 ; k3 = "ReUI"
+.line	4	gettable      r2    r2    k4 ; k4 = "UI"
+.line	4	gettable      r2    r2    k5 ; k5 = "Controls"
+.line	4	gettable      r2    r2    k7 ; k7 = "Bitmap"
+.line	5	getglobal     r3    k3 ; k3 = "ReUI"
+.line	5	gettable      r3    r3    k4 ; k4 = "UI"
+.line	5	gettable      r3    r3    k5 ; k5 = "Controls"
+.line	5	gettable      r3    r3    k8 ; k8 = "Text"
+.line	8	getglobal     r4    k3 ; k3 = "ReUI"
+.line	8	gettable      r4    r4   k10 ; k10 = "Core"
+.line	8	gettable      r4    r4   k11 ; k11 = "Class"
+.line	8	move          r5    r1
+.line	8	call          r4     2     2
+.line	8	newtable      r5     0     3
+.line	60	closure       r6    f0
+.line	60	move          r0    r1 ; upvalue declaration
+.line	60	move          r0    r2 ; upvalue declaration
+.line	60	move          r0    r0 ; upvalue declaration
+.line	60	settable      r5   k12    r6 ; k12 = "__init"
+.line	64	closure       r6    f1
+.line	64	settable      r5   k13    r6 ; k13 = "SetColor"
+.line	68	closure       r6    f2
+.line	68	settable      r5   k14    r6 ; k14 = "GetColor"
+.line	76	closure       r6    f3
+.line	76	move          r0    r1 ; upvalue declaration
+.line	76	settable      r5   k15    r6 ; k15 = "SetAlpha"
+.line	83	closure       r6    f4
+.line	83	settable      r5   k16    r6 ; k16 = "OnDestroy"
+.line	9	call          r4     2     2
+.line	84	setglobal     r4    k9 ; k9 = "Border"
+.line	84	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	10
+.numparams	4
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	106
+.local	"parent"	0	106
+.local	"color"	0	106
+.local	"borderWidth"	0	106
+.local	"layouter"	38	106
+
+.upvalue	"Group"	0	false
+.upvalue	"Bitmap"	0	false
+.upvalue	"LazyVar"	0	false
+
+.constant	k0	1
+.constant	k1	"__init"
+.constant	k2	"_leftBitmap"
+.constant	k3	"_topBitmap"
+.constant	k4	"_rightBitmap"
+.constant	k5	"_bottomBitmap"
+.constant	k6	"_color"
+.constant	k7	"OnDirty"
+.constant	k8	"Set"
+.constant	k9	"Layouter"
+.constant	k10	"Left"
+.constant	k11	"Top"
+.constant	k12	"Bottom"
+.constant	k13	"Width"
+.constant	k14	"DisableHitTest"
+.constant	k15	"Right"
+.constant	k16	"Height"
+
+.line	11	test          r3    r3     1
+.line	11	jmp           l4
+.line	11	loadk         r3    k0 ; k0 = 1
+.label	l4
+.line	12	getupval      r4    u0
+.line	12	gettable      r4    r4    k1 ; k1 = "__init"
+.line	12	move          r5    r0
+.line	12	move          r6    r1
+.line	12	call          r4     3     1
+.line	14	getupval      r4    u1
+.line	14	move          r5    r0
+.line	14	call          r4     2     2
+.line	14	settable      r0    k2    r4 ; k2 = "_leftBitmap"
+.line	15	getupval      r4    u1
+.line	15	move          r5    r0
+.line	15	call          r4     2     2
+.line	15	settable      r0    k3    r4 ; k3 = "_topBitmap"
+.line	16	getupval      r4    u1
+.line	16	move          r5    r0
+.line	16	call          r4     2     2
+.line	16	settable      r0    k4    r4 ; k4 = "_rightBitmap"
+.line	17	getupval      r4    u1
+.line	17	move          r5    r0
+.line	17	call          r4     2     2
+.line	17	settable      r0    k5    r4 ; k5 = "_bottomBitmap"
+.line	20	getupval      r4    u2
+.line	20	call          r4     1     2
+.line	20	settable      r0    k6    r4 ; k6 = "_color"
+.line	21	gettable      r4    r0    k6 ; k6 = "_color"
+.line	27	closure       r5    f0
+.line	27	move          r0    r0 ; upvalue declaration
+.line	27	settable      r4    k7    r5 ; k7 = "OnDirty"
+.line	28	test          r2    r2     0
+.line	28	jmp          l38
+.line	29	gettable      r4    r0    k6 ; k6 = "_color"
+.line	29	self          r4    r4    k8 ; k8 = "Set"
+.line	29	move          r6    r2
+.line	29	call          r4     3     1
+.label	l38
+.line	32	gettable      r4    r0    k9 ; k9 = "Layouter"
+.line	33	move          r5    r4
+.line	33	gettable      r6    r0    k2 ; k2 = "_leftBitmap"
+.line	33	call          r5     2     2
+.line	34	self          r5    r5   k10 ; k10 = "Left"
+.line	34	gettable      r7    r0   k10 ; k10 = "Left"
+.line	34	call          r5     3     2
+.line	35	self          r5    r5   k11 ; k11 = "Top"
+.line	35	gettable      r7    r0   k11 ; k11 = "Top"
+.line	35	call          r5     3     2
+.line	36	self          r5    r5   k12 ; k12 = "Bottom"
+.line	36	gettable      r7    r0   k12 ; k12 = "Bottom"
+.line	36	call          r5     3     2
+.line	37	self          r5    r5   k13 ; k13 = "Width"
+.line	37	move          r7    r3
+.line	37	call          r5     3     2
+.line	38	self          r5    r5   k14 ; k14 = "DisableHitTest"
+.line	38	call          r5     2     1
+.line	40	move          r5    r4
+.line	40	gettable      r6    r0    k3 ; k3 = "_topBitmap"
+.line	40	call          r5     2     2
+.line	41	self          r5    r5   k10 ; k10 = "Left"
+.line	41	gettable      r7    r0   k10 ; k10 = "Left"
+.line	41	call          r5     3     2
+.line	42	self          r5    r5   k11 ; k11 = "Top"
+.line	42	gettable      r7    r0   k11 ; k11 = "Top"
+.line	42	call          r5     3     2
+.line	43	self          r5    r5   k15 ; k15 = "Right"
+.line	43	gettable      r7    r0   k15 ; k15 = "Right"
+.line	43	call          r5     3     2
+.line	44	self          r5    r5   k16 ; k16 = "Height"
+.line	44	move          r7    r3
+.line	44	call          r5     3     2
+.line	45	self          r5    r5   k14 ; k14 = "DisableHitTest"
+.line	45	call          r5     2     1
+.line	47	move          r5    r4
+.line	47	gettable      r6    r0    k4 ; k4 = "_rightBitmap"
+.line	47	call          r5     2     2
+.line	48	self          r5    r5   k15 ; k15 = "Right"
+.line	48	gettable      r7    r0   k15 ; k15 = "Right"
+.line	48	call          r5     3     2
+.line	49	self          r5    r5   k11 ; k11 = "Top"
+.line	49	gettable      r7    r0   k11 ; k11 = "Top"
+.line	49	call          r5     3     2
+.line	50	self          r5    r5   k12 ; k12 = "Bottom"
+.line	50	gettable      r7    r0   k12 ; k12 = "Bottom"
+.line	50	call          r5     3     2
+.line	51	self          r5    r5   k13 ; k13 = "Width"
+.line	51	move          r7    r3
+.line	51	call          r5     3     2
+.line	52	self          r5    r5   k14 ; k14 = "DisableHitTest"
+.line	52	call          r5     2     1
+.line	54	move          r5    r4
+.line	54	gettable      r6    r0    k5 ; k5 = "_bottomBitmap"
+.line	54	call          r5     2     2
+.line	55	self          r5    r5   k10 ; k10 = "Left"
+.line	55	gettable      r7    r0   k10 ; k10 = "Left"
+.line	55	call          r5     3     2
+.line	56	self          r5    r5   k12 ; k12 = "Bottom"
+.line	56	gettable      r7    r0   k12 ; k12 = "Bottom"
+.line	56	call          r5     3     2
+.line	57	self          r5    r5   k15 ; k15 = "Right"
+.line	57	gettable      r7    r0   k15 ; k15 = "Right"
+.line	57	call          r5     3     2
+.line	58	self          r5    r5   k16 ; k16 = "Height"
+.line	58	move          r7    r3
+.line	58	call          r5     3     2
+.line	59	self          r5    r5   k14 ; k14 = "DisableHitTest"
+.line	59	call          r5     2     1
+.line	60	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	21
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"var"	0	22
+.local	"color"	2	22
+
+.upvalue	"self"	0	false
+
+.constant	k0	"_leftBitmap"
+.constant	k1	"SetSolidColor"
+.constant	k2	"_topBitmap"
+.constant	k3	"_rightBitmap"
+.constant	k4	"_bottomBitmap"
+
+.line	22	move          r1    r0
+.line	22	call          r1     1     2
+.line	23	getupval      r2    u0
+.line	23	gettable      r2    r2    k0 ; k0 = "_leftBitmap"
+.line	23	self          r2    r2    k1 ; k1 = "SetSolidColor"
+.line	23	move          r4    r1
+.line	23	call          r2     3     1
+.line	24	getupval      r2    u0
+.line	24	gettable      r2    r2    k2 ; k2 = "_topBitmap"
+.line	24	self          r2    r2    k1 ; k1 = "SetSolidColor"
+.line	24	move          r4    r1
+.line	24	call          r2     3     1
+.line	25	getupval      r2    u0
+.line	25	gettable      r2    r2    k3 ; k3 = "_rightBitmap"
+.line	25	self          r2    r2    k1 ; k1 = "SetSolidColor"
+.line	25	move          r4    r1
+.line	25	call          r2     3     1
+.line	26	getupval      r2    u0
+.line	26	gettable      r2    r2    k4 ; k4 = "_bottomBitmap"
+.line	26	self          r2    r2    k1 ; k1 = "SetSolidColor"
+.line	26	move          r4    r1
+.line	26	call          r2     3     1
+.line	27	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	62
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"color"	0	4
+
+.constant	k0	"_color"
+.constant	k1	"Set"
+
+.line	63	gettable      r2    r0    k0 ; k0 = "_color"
+.line	63	self          r2    r2    k1 ; k1 = "Set"
+.line	63	move          r4    r1
+.line	63	call          r2     3     1
+.line	64	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	66
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"_color"
+
+.line	67	gettable      r1    r0    k0 ; k0 = "_color"
+.line	67	tailcall      r1     1
+.line	67	return        r1     0
+.line	68	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	70
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	26
+.local	"alpha"	0	26
+.local	"applyToChildren"	0	26
+
+.upvalue	"Group"	0	false
+
+.constant	k0	"SetAlpha"
+.constant	k1	"_leftBitmap"
+.constant	k2	"_topBitmap"
+.constant	k3	"_rightBitmap"
+.constant	k4	"_bottomBitmap"
+
+.line	71	getupval      r3    u0
+.line	71	gettable      r3    r3    k0 ; k0 = "SetAlpha"
+.line	71	move          r4    r0
+.line	71	move          r5    r1
+.line	71	move          r6    r2
+.line	71	call          r3     4     1
+.line	72	gettable      r3    r0    k1 ; k1 = "_leftBitmap"
+.line	72	self          r3    r3    k0 ; k0 = "SetAlpha"
+.line	72	move          r5    r1
+.line	72	move          r6    r2
+.line	72	call          r3     4     1
+.line	73	gettable      r3    r0    k2 ; k2 = "_topBitmap"
+.line	73	self          r3    r3    k0 ; k0 = "SetAlpha"
+.line	73	move          r5    r1
+.line	73	move          r6    r2
+.line	73	call          r3     4     1
+.line	74	gettable      r3    r0    k3 ; k3 = "_rightBitmap"
+.line	74	self          r3    r3    k0 ; k0 = "SetAlpha"
+.line	74	move          r5    r1
+.line	74	move          r6    r2
+.line	74	call          r3     4     1
+.line	75	gettable      r3    r0    k4 ; k4 = "_bottomBitmap"
+.line	75	self          r3    r3    k0 ; k0 = "SetAlpha"
+.line	75	move          r5    r1
+.line	75	move          r6    r2
+.line	75	call          r3     4     1
+.line	76	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	80
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	4
+
+.constant	k0	"_color"
+.constant	k1	"Destroy"
+.constant	k2	nil
+
+.line	81	gettable      r1    r0    k0 ; k0 = "_color"
+.line	81	self          r1    r1    k1 ; k1 = "Destroy"
+.line	81	call          r1     2     1
+.line	82	settable      r0    k0    k2 ; k2 = nil
+.line	83	return        r0     1
+

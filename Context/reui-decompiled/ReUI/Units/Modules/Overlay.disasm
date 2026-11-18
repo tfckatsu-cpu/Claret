@@ -1,0 +1,388 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/units/modules/overlay.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"Group"	4	37
+.local	"Bitmap"	8	37
+.local	"Text"	12	37
+.local	"LazyVar"	16	37
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Group"
+.constant	k4	"Bitmap"
+.constant	k5	"Text"
+.constant	k6	"import"
+.constant	k7	"/lua/lazyvar.lua"
+.constant	k8	"Create"
+.constant	k9	"Overlay"
+.constant	k10	"Core"
+.constant	k11	"Class"
+.constant	k12	"__init"
+.constant	k13	"InitLayout"
+.constant	k14	"GetUnitPosition"
+.constant	k15	"Update"
+.constant	k16	"OnDestroy"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "UI"
+.line	1	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	1	gettable      r0    r0    k3 ; k3 = "Group"
+.line	2	getglobal     r1    k0 ; k0 = "ReUI"
+.line	2	gettable      r1    r1    k1 ; k1 = "UI"
+.line	2	gettable      r1    r1    k2 ; k2 = "Controls"
+.line	2	gettable      r1    r1    k4 ; k4 = "Bitmap"
+.line	3	getglobal     r2    k0 ; k0 = "ReUI"
+.line	3	gettable      r2    r2    k1 ; k1 = "UI"
+.line	3	gettable      r2    r2    k2 ; k2 = "Controls"
+.line	3	gettable      r2    r2    k5 ; k5 = "Text"
+.line	5	getglobal     r3    k6 ; k6 = "import"
+.line	5	loadk         r4    k7 ; k7 = "/lua/lazyvar.lua"
+.line	5	call          r3     2     2
+.line	5	gettable      r3    r3    k8 ; k8 = "Create"
+.line	15	getglobal     r4    k0 ; k0 = "ReUI"
+.line	15	gettable      r4    r4   k10 ; k10 = "Core"
+.line	15	gettable      r4    r4   k11 ; k11 = "Class"
+.line	15	move          r5    r1
+.line	15	call          r4     2     2
+.line	15	newtable      r5     0     3
+.line	32	closure       r6    f0
+.line	32	move          r0    r1 ; upvalue declaration
+.line	32	move          r0    r3 ; upvalue declaration
+.line	32	settable      r5   k12    r6 ; k12 = "__init"
+.line	49	closure       r6    f1
+.line	49	settable      r5   k13    r6 ; k13 = "InitLayout"
+.line	55	closure       r6    f2
+.line	55	settable      r5   k14    r6 ; k14 = "GetUnitPosition"
+.line	68	closure       r6    f3
+.line	68	settable      r5   k15    r6 ; k15 = "Update"
+.line	86	closure       r6    f4
+.line	86	move          r0    r1 ; upvalue declaration
+.line	86	settable      r5   k16    r6 ; k16 = "OnDestroy"
+.line	16	call          r4     2     2
+.line	87	setglobal     r4    k9 ; k9 = "Overlay"
+.line	87	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	22
+.numparams	4
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	18
+.local	"parent"	0	18
+.local	"unit"	0	18
+.local	"worldView"	0	18
+
+.upvalue	"Bitmap"	0	false
+.upvalue	"LazyVar"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_worldView"
+.constant	k2	"id"
+.constant	k3	"GetEntityId"
+.constant	k4	"unit"
+.constant	k5	"offsetX"
+.constant	k6	0
+.constant	k7	"offsetY"
+.constant	k8	"PosX"
+.constant	k9	"PosY"
+
+.line	23	getupval      r4    u0
+.line	23	gettable      r4    r4    k0 ; k0 = "__init"
+.line	23	move          r5    r0
+.line	23	move          r6    r1
+.line	23	call          r4     3     1
+.line	25	settable      r0    k1    r3 ; k1 = "_worldView"
+.line	26	self          r4    r2    k3 ; k3 = "GetEntityId"
+.line	26	call          r4     2     2
+.line	26	settable      r0    k2    r4 ; k2 = "id"
+.line	27	settable      r0    k4    r2 ; k4 = "unit"
+.line	28	settable      r0    k5    k6 ; k6 = 0
+.line	29	settable      r0    k7    k6 ; k6 = 0
+.line	30	getupval      r4    u1
+.line	30	call          r4     1     2
+.line	30	settable      r0    k8    r4 ; k8 = "PosX"
+.line	31	getupval      r4    u1
+.line	31	call          r4     1     2
+.line	31	settable      r0    k9    r4 ; k9 = "PosY"
+.line	32	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	36
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	20
+.local	"layouter"	0	20
+.local	"worldView"	1	20
+
+.constant	k0	"_worldView"
+.constant	k1	"Left"
+.constant	k2	"Set"
+.constant	k3	"Top"
+.constant	k4	"Hide"
+.constant	k5	"DisableHitTest"
+.constant	k6	"SetNeedsFrameUpdate"
+
+.line	38	gettable      r2    r0    k0 ; k0 = "_worldView"
+.line	39	gettable      r3    r0    k1 ; k1 = "Left"
+.line	39	self          r3    r3    k2 ; k2 = "Set"
+.line	41	closure       r5    f0
+.line	41	move          r0    r2 ; upvalue declaration
+.line	41	move          r0    r0 ; upvalue declaration
+.line	39	call          r3     3     1
+.line	42	gettable      r3    r0    k3 ; k3 = "Top"
+.line	42	self          r3    r3    k2 ; k2 = "Set"
+.line	44	closure       r5    f1
+.line	44	move          r0    r2 ; upvalue declaration
+.line	44	move          r0    r0 ; upvalue declaration
+.line	42	call          r3     3     1
+.line	46	self          r3    r0    k4 ; k4 = "Hide"
+.line	46	call          r3     2     1
+.line	47	self          r3    r0    k5 ; k5 = "DisableHitTest"
+.line	47	call          r3     2     1
+.line	48	self          r3    r0    k6 ; k6 = "SetNeedsFrameUpdate"
+.line	48	loadbool      r5     1     0
+.line	48	call          r3     3     1
+.line	49	return        r0     1
+
+.function	main/f1/f0
+
+.source	null
+.linedefined	39
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"worldView"	0	false
+.upvalue	"self"	0	false
+
+.constant	k0	"Left"
+.constant	k1	"PosX"
+.constant	k2	"Width"
+.constant	k3	0.5
+.constant	k4	"offsetX"
+
+.line	40	getupval      r0    u0
+.line	40	gettable      r0    r0    k0 ; k0 = "Left"
+.line	40	call          r0     1     2
+.line	40	getupval      r1    u1
+.line	40	gettable      r1    r1    k1 ; k1 = "PosX"
+.line	40	call          r1     1     2
+.line	40	add           r0    r0    r1
+.line	40	getupval      r1    u1
+.line	40	gettable      r1    r1    k2 ; k2 = "Width"
+.line	40	call          r1     1     2
+.line	40	mul           r1    r1    k3 ; k3 = 0.5
+.line	40	sub           r0    r0    r1
+.line	40	getupval      r1    u1
+.line	40	gettable      r1    r1    k4 ; k4 = "offsetX"
+.line	40	add           r0    r0    r1
+.line	40	return        r0     2
+.line	41	return        r0     1
+
+.function	main/f1/f1
+
+.source	null
+.linedefined	42
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"worldView"	0	false
+.upvalue	"self"	0	false
+
+.constant	k0	"Top"
+.constant	k1	"PosY"
+.constant	k2	"Height"
+.constant	k3	0.5
+.constant	k4	"offsetY"
+
+.line	43	getupval      r0    u0
+.line	43	gettable      r0    r0    k0 ; k0 = "Top"
+.line	43	call          r0     1     2
+.line	43	getupval      r1    u1
+.line	43	gettable      r1    r1    k1 ; k1 = "PosY"
+.line	43	call          r1     1     2
+.line	43	add           r0    r0    r1
+.line	43	getupval      r1    u1
+.line	43	gettable      r1    r1    k2 ; k2 = "Height"
+.line	43	call          r1     1     2
+.line	43	mul           r1    r1    k3 ; k3 = 0.5
+.line	43	sub           r0    r0    r1
+.line	43	getupval      r1    u1
+.line	43	gettable      r1    r1    k4 ; k4 = "offsetY"
+.line	43	add           r0    r0    r1
+.line	43	return        r0     2
+.line	44	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	53
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	5
+
+.constant	k0	"_worldView"
+.constant	k1	"GetScreenPos"
+.constant	k2	"unit"
+
+.line	54	gettable      r1    r0    k0 ; k0 = "_worldView"
+.line	54	self          r1    r1    k1 ; k1 = "GetScreenPos"
+.line	54	gettable      r3    r0    k2 ; k2 = "unit"
+.line	54	tailcall      r1     3
+.line	54	return        r1     0
+.line	55	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	59
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	17
+.local	"pos"	2	17
+
+.constant	k0	"GetUnitPosition"
+.constant	k1	"PosX"
+.constant	k2	"Set"
+.constant	k3	"x"
+.constant	k4	"PosY"
+.constant	k5	"y"
+.constant	k6	"Show"
+.constant	k7	"Hide"
+
+.line	60	self          r1    r0    k0 ; k0 = "GetUnitPosition"
+.line	60	call          r1     2     2
+.line	61	test          r1    r1     0
+.line	61	jmp          l16
+.line	62	gettable      r2    r0    k1 ; k1 = "PosX"
+.line	62	self          r2    r2    k2 ; k2 = "Set"
+.line	62	gettable      r4    r1    k3 ; k3 = "x"
+.line	62	call          r2     3     1
+.line	63	gettable      r2    r0    k4 ; k4 = "PosY"
+.line	63	self          r2    r2    k2 ; k2 = "Set"
+.line	63	gettable      r4    r1    k5 ; k5 = "y"
+.line	63	call          r2     3     1
+.line	64	self          r2    r0    k6 ; k6 = "Show"
+.line	64	call          r2     2     1
+.line	64	jmp          l18
+.label	l16
+.line	66	self          r2    r0    k7 ; k7 = "Hide"
+.line	66	call          r2     2     1
+.label	l18
+.line	68	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	71
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	23
+
+.upvalue	"Bitmap"	0	false
+
+.constant	k0	"PosX"
+.constant	k1	"Destroy"
+.constant	k2	nil
+.constant	k3	"PosY"
+.constant	k4	"id"
+.constant	k5	"unit"
+.constant	k6	"offsetX"
+.constant	k7	"offsetY"
+.constant	k8	"_worldView"
+.constant	k9	"OnDestroy"
+
+.line	72	gettable      r1    r0    k0 ; k0 = "PosX"
+.line	72	test          r1    r1     0
+.line	72	jmp           l8
+.line	73	gettable      r1    r0    k0 ; k0 = "PosX"
+.line	73	self          r1    r1    k1 ; k1 = "Destroy"
+.line	73	call          r1     2     1
+.line	74	settable      r0    k0    k2 ; k2 = nil
+.label	l8
+.line	76	gettable      r1    r0    k3 ; k3 = "PosY"
+.line	76	test          r1    r1     0
+.line	76	jmp          l15
+.line	77	gettable      r1    r0    k3 ; k3 = "PosY"
+.line	77	self          r1    r1    k1 ; k1 = "Destroy"
+.line	77	call          r1     2     1
+.line	78	settable      r0    k3    k2 ; k2 = nil
+.label	l15
+.line	80	settable      r0    k4    k2 ; k2 = nil
+.line	81	settable      r0    k5    k2 ; k2 = nil
+.line	82	settable      r0    k6    k2 ; k2 = nil
+.line	83	settable      r0    k7    k2 ; k2 = nil
+.line	84	settable      r0    k8    k2 ; k2 = nil
+.line	85	getupval      r1    u0
+.line	85	gettable      r1    r1    k9 ; k9 = "OnDestroy"
+.line	85	move          r2    r0
+.line	85	call          r1     2     1
+.line	86	return        r0     1
+

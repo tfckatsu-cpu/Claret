@@ -1,0 +1,682 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/resourcedisplay.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.local	"IsKeyDown"	1	63
+.local	"Utils"	4	63
+.local	"FormatNumber"	5	63
+
+.constant	k0	"IsKeyDown"
+.constant	k1	"import"
+.constant	k2	"Utils.lua"
+.constant	k3	"FormatNumber"
+.constant	k4	"IResourceDisplay"
+.constant	k5	"Class"
+.constant	k6	"Width"
+.constant	k7	0
+.constant	k8	"Update"
+.constant	k9	"GetResourceStrings"
+.constant	k10	"Apply"
+.constant	k11	"DefaultResourceDisplay"
+.constant	k12	160
+.constant	k13	"__init"
+.constant	k14	"FullResourceDisplay"
+.constant	k15	260
+.constant	k16	"PairResourceDisplay"
+.constant	k17	220
+
+.line	1	getglobal     r0    k0 ; k0 = "IsKeyDown"
+.line	2	getglobal     r1    k1 ; k1 = "import"
+.line	2	loadk         r2    k2 ; k2 = "Utils.lua"
+.line	2	call          r1     2     2
+.line	3	gettable      r2    r1    k3 ; k3 = "FormatNumber"
+.line	6	getglobal     r3    k5 ; k5 = "Class"
+.line	6	call          r3     1     2
+.line	6	newtable      r4     0     3
+.line	8	settable      r4    k6    k7 ; k7 = 0
+.line	14	closure       r5    f0
+.line	14	settable      r4    k8    r5 ; k8 = "Update"
+.line	22	closure       r5    f1
+.line	22	settable      r4    k9    r5 ; k9 = "GetResourceStrings"
+.line	27	closure       r5    f2
+.line	27	settable      r4   k10    r5 ; k10 = "Apply"
+.line	7	call          r3     2     2
+.line	28	setglobal     r3    k4 ; k4 = "IResourceDisplay"
+.line	32	getglobal     r3    k5 ; k5 = "Class"
+.line	32	getglobal     r4    k4 ; k4 = "IResourceDisplay"
+.line	32	call          r3     2     2
+.line	32	newtable      r4     0     3
+.line	34	settable      r4    k6   k12 ; k12 = 160
+.line	39	closure       r5    f3
+.line	39	settable      r4   k13    r5 ; k13 = "__init"
+.line	59	closure       r5    f4
+.line	59	move          r0    r0 ; upvalue declaration
+.line	59	settable      r4    k8    r5 ; k8 = "Update"
+.line	75	closure       r5    f5
+.line	75	move          r0    r2 ; upvalue declaration
+.line	75	settable      r4    k9    r5 ; k9 = "GetResourceStrings"
+.line	87	closure       r5    f6
+.line	87	settable      r4   k10    r5 ; k10 = "Apply"
+.line	33	call          r3     2     2
+.line	88	setglobal     r3   k11 ; k11 = "DefaultResourceDispl" (truncated)
+.line	92	getglobal     r3    k5 ; k5 = "Class"
+.line	92	getglobal     r4    k4 ; k4 = "IResourceDisplay"
+.line	92	call          r3     2     2
+.line	92	newtable      r4     0     2
+.line	94	settable      r4    k6   k15 ; k15 = 260
+.line	110	closure       r5    f7
+.line	110	move          r0    r2 ; upvalue declaration
+.line	110	settable      r4    k9    r5 ; k9 = "GetResourceStrings"
+.line	122	closure       r5    f8
+.line	122	settable      r4   k10    r5 ; k10 = "Apply"
+.line	93	call          r3     2     2
+.line	123	setglobal     r3   k14 ; k14 = "FullResourceDisplay"
+.line	127	getglobal     r3    k5 ; k5 = "Class"
+.line	127	getglobal     r4    k4 ; k4 = "IResourceDisplay"
+.line	127	call          r3     2     2
+.line	127	newtable      r4     0     3
+.line	129	settable      r4    k6   k17 ; k17 = 220
+.line	134	closure       r5    f9
+.line	134	settable      r4   k13    r5 ; k13 = "__init"
+.line	151	closure       r5   f10
+.line	151	move          r0    r0 ; upvalue declaration
+.line	151	settable      r4    k8    r5 ; k8 = "Update"
+.line	177	closure       r5   f11
+.line	177	move          r0    r2 ; upvalue declaration
+.line	177	settable      r4    k9    r5 ; k9 = "GetResourceStrings"
+.line	189	closure       r5   f12
+.line	189	settable      r4   k10    r5 ; k10 = "Apply"
+.line	128	call          r3     2     2
+.line	190	setglobal     r3   k16 ; k16 = "PairResourceDisplay"
+.line	190	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	12
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+.local	"scoreboard"	0	2
+
+.line	13	loadbool      r2     0     0
+.line	13	return        r2     2
+.line	14	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	20
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	3
+.local	"resources"	0	3
+
+.constant	k0	""
+
+.line	21	loadk         r2    k0 ; k0 = ""
+.line	21	loadk         r3    k0 ; k0 = ""
+.line	21	return        r2     3
+.line	22	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	26
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"allyView"	0	0
+
+.line	27	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	37
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	1
+
+.constant	k0	"_mode"
+.constant	k1	"income"
+
+.line	38	settable      r0    k0    k1 ; k1 = "income"
+.line	39	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	43
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	35
+.local	"scoreboard"	0	35
+.local	"mode"	1	35
+.local	"isCtrl"	4	35
+
+.upvalue	"IsKeyDown"	0	false
+
+.constant	k0	"_mode"
+.constant	k1	"control"
+.constant	k2	"isHovered"
+.constant	k3	"storage"
+.constant	k4	"maxstorage"
+.constant	k5	"income"
+
+.line	44	gettable      r2    r0    k0 ; k0 = "_mode"
+.line	45	getupval      r3    u0
+.line	45	loadk         r4    k1 ; k1 = "control"
+.line	45	call          r3     2     2
+.line	47	test          r3    r3     1
+.line	47	jmp          l16
+.line	47	gettable      r4    r1    k2 ; k2 = "isHovered"
+.line	47	test          r4    r4     0
+.line	47	jmp          l16
+.line	47	eq             1    r2    k3 ; k3 = "storage"
+.line	47	jmp          l16
+.line	48	settable      r0    k0    k3 ; k3 = "storage"
+.line	49	loadbool      r4     1     0
+.line	49	return        r4     2
+.line	49	jmp          l34
+.label	l16
+.line	50	test          r3    r3     0
+.line	50	jmp          l24
+.line	50	eq             1    r2    k4 ; k4 = "maxstorage"
+.line	50	jmp          l24
+.line	51	settable      r0    k0    k4 ; k4 = "maxstorage"
+.line	52	loadbool      r4     1     0
+.line	52	return        r4     2
+.line	52	jmp          l34
+.label	l24
+.line	53	test          r3    r3     1
+.line	53	jmp          l34
+.line	53	gettable      r4    r1    k2 ; k2 = "isHovered"
+.line	53	test          r4    r4     1
+.line	53	jmp          l34
+.line	53	eq             1    r2    k5 ; k5 = "income"
+.line	53	jmp          l34
+.line	54	settable      r0    k0    k5 ; k5 = "income"
+.line	55	loadbool      r4     1     0
+.line	55	return        r4     2
+.label	l34
+.line	58	loadbool      r4     0     0
+.line	58	return        r4     2
+.line	59	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	65
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	41
+.local	"resources"	0	41
+.local	"mode"	1	41
+
+.upvalue	"FormatNumber"	0	false
+
+.constant	k0	"_mode"
+.constant	k1	"income"
+.constant	k2	"massin"
+.constant	k3	"rate"
+.constant	k4	10
+.constant	k5	"energyin"
+.constant	k6	"storage"
+.constant	k7	"storedMass"
+.constant	k8	"storedEnergy"
+.constant	k9	"maxstorage"
+.constant	k10	"maxMass"
+.constant	k11	"maxEnergy"
+.constant	k12	""
+
+.line	66	gettable      r2    r0    k0 ; k0 = "_mode"
+.line	67	eq             0    r2    k1 ; k1 = "income"
+.line	67	jmp          l16
+.line	68	getupval      r3    u0
+.line	68	gettable      r4    r1    k2 ; k2 = "massin"
+.line	68	gettable      r4    r4    k3 ; k3 = "rate"
+.line	68	mul           r4    r4    k4 ; k4 = 10
+.line	68	call          r3     2     2
+.line	68	getupval      r4    u0
+.line	68	gettable      r5    r1    k5 ; k5 = "energyin"
+.line	68	gettable      r5    r5    k3 ; k3 = "rate"
+.line	68	mul           r5    r5    k4 ; k4 = 10
+.line	68	call          r4     2     0
+.line	68	return        r3     0
+.line	68	jmp          l39
+.label	l16
+.line	69	eq             0    r2    k6 ; k6 = "storage"
+.line	69	jmp          l28
+.line	70	getupval      r3    u0
+.line	70	gettable      r4    r1    k6 ; k6 = "storage"
+.line	70	gettable      r4    r4    k7 ; k7 = "storedMass"
+.line	70	call          r3     2     2
+.line	70	getupval      r4    u0
+.line	70	gettable      r5    r1    k6 ; k6 = "storage"
+.line	70	gettable      r5    r5    k8 ; k8 = "storedEnergy"
+.line	70	call          r4     2     0
+.line	70	return        r3     0
+.line	70	jmp          l39
+.label	l28
+.line	71	eq             0    r2    k9 ; k9 = "maxstorage"
+.line	71	jmp          l39
+.line	72	getupval      r3    u0
+.line	72	gettable      r4    r1    k6 ; k6 = "storage"
+.line	72	gettable      r4    r4   k10 ; k10 = "maxMass"
+.line	72	call          r3     2     2
+.line	72	getupval      r4    u0
+.line	72	gettable      r5    r1    k6 ; k6 = "storage"
+.line	72	gettable      r5    r5   k11 ; k11 = "maxEnergy"
+.line	72	call          r4     2     0
+.line	72	return        r3     0
+.label	l39
+.line	74	loadk         r3   k12 ; k12 = ""
+.line	74	loadk         r4   k12 ; k12 = ""
+.line	74	return        r3     3
+.line	75	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	79
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	20
+.local	"allyView"	0	20
+.local	"layouter"	1	20
+
+.constant	k0	"Layouter"
+.constant	k1	"_massBtn"
+.constant	k2	"Width"
+.constant	k3	35
+.constant	k4	"_energyBtn"
+.constant	k5	"_mass"
+.constant	k6	"AtRightIn"
+.constant	k7	50
+
+.line	80	gettable      r2    r1    k0 ; k0 = "Layouter"
+.line	81	move          r3    r2
+.line	81	gettable      r4    r1    k1 ; k1 = "_massBtn"
+.line	81	call          r3     2     2
+.line	82	self          r3    r3    k2 ; k2 = "Width"
+.line	82	loadk         r5    k3 ; k3 = 35
+.line	82	call          r3     3     1
+.line	83	move          r3    r2
+.line	83	gettable      r4    r1    k4 ; k4 = "_energyBtn"
+.line	83	call          r3     2     2
+.line	84	self          r3    r3    k2 ; k2 = "Width"
+.line	84	loadk         r5    k3 ; k3 = 35
+.line	84	call          r3     3     1
+.line	85	move          r3    r2
+.line	85	gettable      r4    r1    k5 ; k5 = "_mass"
+.line	85	call          r3     2     2
+.line	86	self          r3    r3    k6 ; k6 = "AtRightIn"
+.line	86	move          r5    r1
+.line	86	loadk         r6    k7 ; k7 = 50
+.line	86	call          r3     4     1
+.line	87	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	100
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	33
+.local	"resources"	0	33
+
+.upvalue	"FormatNumber"	0	false
+
+.constant	k0	"%s / %s +%s"
+.constant	k1	"format"
+.constant	k2	"storage"
+.constant	k3	"storedMass"
+.constant	k4	"maxMass"
+.constant	k5	"massin"
+.constant	k6	"rate"
+.constant	k7	10
+.constant	k8	"storedEnergy"
+.constant	k9	"maxEnergy"
+.constant	k10	"energyin"
+
+.line	101	loadk         r2    k0 ; k0 = "%s / %s +%s"
+.line	101	self          r2    r2    k1 ; k1 = "format"
+.line	102	getupval      r4    u0
+.line	102	gettable      r5    r1    k2 ; k2 = "storage"
+.line	102	gettable      r5    r5    k3 ; k3 = "storedMass"
+.line	102	call          r4     2     2
+.line	103	getupval      r5    u0
+.line	103	gettable      r6    r1    k2 ; k2 = "storage"
+.line	103	gettable      r6    r6    k4 ; k4 = "maxMass"
+.line	103	call          r5     2     2
+.line	104	getupval      r6    u0
+.line	104	gettable      r7    r1    k5 ; k5 = "massin"
+.line	104	gettable      r7    r7    k6 ; k6 = "rate"
+.line	104	mul           r7    r7    k7 ; k7 = 10
+.line	104	call          r6     2     0
+.line	101	call          r2     0     2
+.line	105	loadk         r3    k0 ; k0 = "%s / %s +%s"
+.line	105	self          r3    r3    k1 ; k1 = "format"
+.line	106	getupval      r5    u0
+.line	106	gettable      r6    r1    k2 ; k2 = "storage"
+.line	106	gettable      r6    r6    k8 ; k8 = "storedEnergy"
+.line	106	call          r5     2     2
+.line	107	getupval      r6    u0
+.line	107	gettable      r7    r1    k2 ; k2 = "storage"
+.line	107	gettable      r7    r7    k9 ; k9 = "maxEnergy"
+.line	107	call          r6     2     2
+.line	108	getupval      r7    u0
+.line	108	gettable      r8    r1   k10 ; k10 = "energyin"
+.line	108	gettable      r8    r8    k6 ; k6 = "rate"
+.line	108	mul           r8    r8    k7 ; k7 = 10
+.line	108	call          r7     2     0
+.line	105	call          r3     0     0
+.line	109	return        r2     0
+.line	110	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	114
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	20
+.local	"allyView"	0	20
+.local	"layouter"	1	20
+
+.constant	k0	"Layouter"
+.constant	k1	"_massBtn"
+.constant	k2	"Width"
+.constant	k3	85
+.constant	k4	"_energyBtn"
+.constant	k5	"_mass"
+.constant	k6	"AtRightIn"
+.constant	k7	110
+
+.line	115	gettable      r2    r1    k0 ; k0 = "Layouter"
+.line	116	move          r3    r2
+.line	116	gettable      r4    r1    k1 ; k1 = "_massBtn"
+.line	116	call          r3     2     2
+.line	117	self          r3    r3    k2 ; k2 = "Width"
+.line	117	loadk         r5    k3 ; k3 = 85
+.line	117	call          r3     3     1
+.line	118	move          r3    r2
+.line	118	gettable      r4    r1    k4 ; k4 = "_energyBtn"
+.line	118	call          r3     2     2
+.line	119	self          r3    r3    k2 ; k2 = "Width"
+.line	119	loadk         r5    k3 ; k3 = 85
+.line	119	call          r3     3     1
+.line	120	move          r3    r2
+.line	120	gettable      r4    r1    k5 ; k5 = "_mass"
+.line	120	call          r3     2     2
+.line	121	self          r3    r3    k6 ; k6 = "AtRightIn"
+.line	121	move          r5    r1
+.line	121	loadk         r6    k7 ; k7 = 110
+.line	121	call          r3     4     1
+.line	122	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	132
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	1
+
+.constant	k0	"_mode"
+.constant	k1	"income"
+
+.line	133	settable      r0    k0    k1 ; k1 = "income"
+.line	134	return        r0     1
+
+.function	main/f10
+
+.source	null
+.linedefined	138
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	21
+.local	"scoreboard"	0	21
+.local	"mode"	1	21
+.local	"isCtrl"	4	21
+
+.upvalue	"IsKeyDown"	0	false
+
+.constant	k0	"_mode"
+.constant	k1	"control"
+.constant	k2	"storage"
+.constant	k3	"income"
+
+.line	139	gettable      r2    r0    k0 ; k0 = "_mode"
+.line	140	getupval      r3    u0
+.line	140	loadk         r4    k1 ; k1 = "control"
+.line	140	call          r3     2     2
+.line	142	test          r3    r3     0
+.line	142	jmp          l13
+.line	142	eq             1    r2    k2 ; k2 = "storage"
+.line	142	jmp          l13
+.line	143	settable      r0    k0    k2 ; k2 = "storage"
+.line	144	loadbool      r4     1     0
+.line	144	return        r4     2
+.line	144	jmp          l20
+.label	l13
+.line	145	test          r3    r3     1
+.line	145	jmp          l20
+.line	145	eq             1    r2    k3 ; k3 = "income"
+.line	145	jmp          l20
+.line	146	settable      r0    k0    k3 ; k3 = "income"
+.line	147	loadbool      r4     1     0
+.line	147	return        r4     2
+.label	l20
+.line	150	loadbool      r4     0     0
+.line	150	return        r4     2
+.line	151	return        r0     1
+
+.function	main/f11
+
+.source	null
+.linedefined	157
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	57
+.local	"resources"	0	57
+.local	"mode"	1	57
+
+.upvalue	"FormatNumber"	0	false
+
+.constant	k0	"_mode"
+.constant	k1	"income"
+.constant	k2	"+%s | %s"
+.constant	k3	"format"
+.constant	k4	"massin"
+.constant	k5	"rate"
+.constant	k6	10
+.constant	k7	"storage"
+.constant	k8	"storedMass"
+.constant	k9	"energyin"
+.constant	k10	"storedEnergy"
+.constant	k11	"%s / %s"
+.constant	k12	"maxMass"
+.constant	k13	"maxEnergy"
+.constant	k14	""
+
+.line	158	gettable      r2    r0    k0 ; k0 = "_mode"
+.line	159	eq             0    r2    k1 ; k1 = "income"
+.line	159	jmp          l30
+.line	160	loadk         r3    k2 ; k2 = "+%s | %s"
+.line	160	self          r3    r3    k3 ; k3 = "format"
+.line	161	getupval      r5    u0
+.line	161	gettable      r6    r1    k4 ; k4 = "massin"
+.line	161	gettable      r6    r6    k5 ; k5 = "rate"
+.line	161	mul           r6    r6    k6 ; k6 = 10
+.line	161	call          r5     2     2
+.line	162	getupval      r6    u0
+.line	162	gettable      r7    r1    k7 ; k7 = "storage"
+.line	162	gettable      r7    r7    k8 ; k8 = "storedMass"
+.line	162	call          r6     2     0
+.line	160	call          r3     0     2
+.line	163	loadk         r4    k2 ; k2 = "+%s | %s"
+.line	163	self          r4    r4    k3 ; k3 = "format"
+.line	164	getupval      r6    u0
+.line	164	gettable      r7    r1    k9 ; k9 = "energyin"
+.line	164	gettable      r7    r7    k5 ; k5 = "rate"
+.line	164	mul           r7    r7    k6 ; k6 = 10
+.line	164	call          r6     2     2
+.line	165	getupval      r7    u0
+.line	165	gettable      r8    r1    k7 ; k7 = "storage"
+.line	165	gettable      r8    r8   k10 ; k10 = "storedEnergy"
+.line	165	call          r7     2     0
+.line	163	call          r4     0     0
+.line	166	return        r3     0
+.line	166	jmp          l55
+.label	l30
+.line	167	eq             0    r2    k7 ; k7 = "storage"
+.line	167	jmp          l55
+.line	168	loadk         r3   k11 ; k11 = "%s / %s"
+.line	168	self          r3    r3    k3 ; k3 = "format"
+.line	169	getupval      r5    u0
+.line	169	gettable      r6    r1    k7 ; k7 = "storage"
+.line	169	gettable      r6    r6    k8 ; k8 = "storedMass"
+.line	169	call          r5     2     2
+.line	170	getupval      r6    u0
+.line	170	gettable      r7    r1    k7 ; k7 = "storage"
+.line	170	gettable      r7    r7   k12 ; k12 = "maxMass"
+.line	170	call          r6     2     0
+.line	168	call          r3     0     2
+.line	171	loadk         r4   k11 ; k11 = "%s / %s"
+.line	171	self          r4    r4    k3 ; k3 = "format"
+.line	172	getupval      r6    u0
+.line	172	gettable      r7    r1    k7 ; k7 = "storage"
+.line	172	gettable      r7    r7   k10 ; k10 = "storedEnergy"
+.line	172	call          r6     2     2
+.line	173	getupval      r7    u0
+.line	173	gettable      r8    r1    k7 ; k7 = "storage"
+.line	173	gettable      r8    r8   k13 ; k13 = "maxEnergy"
+.line	173	call          r7     2     0
+.line	171	call          r4     0     0
+.line	174	return        r3     0
+.label	l55
+.line	176	loadk         r3   k14 ; k14 = ""
+.line	176	loadk         r4   k14 ; k14 = ""
+.line	176	return        r3     3
+.line	177	return        r0     1
+
+.function	main/f12
+
+.source	null
+.linedefined	181
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	20
+.local	"allyView"	0	20
+.local	"layouter"	1	20
+
+.constant	k0	"Layouter"
+.constant	k1	"_massBtn"
+.constant	k2	"Width"
+.constant	k3	65
+.constant	k4	"_energyBtn"
+.constant	k5	"_mass"
+.constant	k6	"AtRightIn"
+.constant	k7	90
+
+.line	182	gettable      r2    r1    k0 ; k0 = "Layouter"
+.line	183	move          r3    r2
+.line	183	gettable      r4    r1    k1 ; k1 = "_massBtn"
+.line	183	call          r3     2     2
+.line	184	self          r3    r3    k2 ; k2 = "Width"
+.line	184	loadk         r5    k3 ; k3 = 65
+.line	184	call          r3     3     1
+.line	185	move          r3    r2
+.line	185	gettable      r4    r1    k4 ; k4 = "_energyBtn"
+.line	185	call          r3     2     2
+.line	186	self          r3    r3    k2 ; k2 = "Width"
+.line	186	loadk         r5    k3 ; k3 = 65
+.line	186	call          r3     3     1
+.line	187	move          r3    r2
+.line	187	gettable      r4    r1    k5 ; k5 = "_mass"
+.line	187	call          r3     2     2
+.line	188	self          r3    r3    k6 ; k6 = "AtRightIn"
+.line	188	move          r5    r1
+.line	188	loadk         r6    k7 ; k7 = 90
+.line	188	call          r3     4     1
+.line	189	return        r0     1
+

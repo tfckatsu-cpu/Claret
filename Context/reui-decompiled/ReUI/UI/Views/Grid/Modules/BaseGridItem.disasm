@@ -1,0 +1,219 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ui/views/grid/modules/basegriditem.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.local	"AGridItem"	4	30
+
+.constant	k0	"import"
+.constant	k1	"AGridItem.lua"
+.constant	k2	"AGridItem"
+.constant	k3	"BaseGridItem"
+.constant	k4	"ReUI"
+.constant	k5	"Core"
+.constant	k6	"Class"
+.constant	k7	"__init"
+.constant	k8	"ComponentClasses"
+.constant	k9	"Property"
+.constant	k10	"get"
+.constant	k11	"set"
+.constant	k12	"CreateComponent"
+.constant	k13	"OnDestroy"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "AGridItem.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "AGridItem"
+.line	5	getglobal     r1    k4 ; k4 = "ReUI"
+.line	5	gettable      r1    r1    k5 ; k5 = "Core"
+.line	5	gettable      r1    r1    k6 ; k6 = "Class"
+.line	5	move          r2    r0
+.line	5	call          r1     2     2
+.line	5	newtable      r2     0     3
+.line	12	closure       r3    f0
+.line	12	move          r0    r0 ; upvalue declaration
+.line	12	settable      r2    k7    r3 ; k7 = "__init"
+.line	15	getglobal     r3    k4 ; k4 = "ReUI"
+.line	15	gettable      r3    r3    k5 ; k5 = "Core"
+.line	15	gettable      r3    r3    k9 ; k9 = "Property"
+.line	15	newtable      r4     0     2
+.line	20	closure       r5    f1
+.line	20	settable      r4   k10    r5 ; k10 = "get"
+.line	26	closure       r5    f2
+.line	26	settable      r4   k11    r5 ; k11 = "set"
+.line	16	call          r3     2     2
+.line	27	settable      r2    k8    r3 ; k8 = "ComponentClasses"
+.line	38	closure       r3    f3
+.line	38	settable      r2   k12    r3 ; k12 = "CreateComponent"
+.line	44	closure       r3    f4
+.line	44	move          r0    r0 ; upvalue declaration
+.line	44	settable      r2   k13    r3 ; k13 = "OnDestroy"
+.line	6	call          r1     2     2
+.line	45	setglobal     r1    k3 ; k3 = "BaseGridItem"
+.line	45	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	7
+.local	"parent"	0	7
+
+.upvalue	"AGridItem"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_componentClasses"
+
+.line	10	getupval      r2    u0
+.line	10	gettable      r2    r2    k0 ; k0 = "__init"
+.line	10	move          r3    r0
+.line	10	move          r4    r1
+.line	10	call          r2     3     1
+.line	11	newtable      r2     0     0
+.line	11	settable      r0    k1    r2 ; k1 = "_componentClasses"
+.line	12	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	18
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_componentClasses"
+
+.line	19	gettable      r1    r0    k0 ; k0 = "_componentClasses"
+.line	19	return        r1     2
+.line	20	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	24
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	1
+.local	"value"	0	1
+
+.constant	k0	"_componentClasses"
+
+.line	25	settable      r0    k0    r1 ; k0 = "_componentClasses"
+.line	26	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	32
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	14
+.local	"name"	0	14
+.local	"class"	2	14
+
+.constant	k0	"_componentClasses"
+.constant	k1	nil
+.constant	k2	"error"
+.constant	k3	"There is no class for component '%s'"
+.constant	k4	"format"
+
+.line	33	gettable      r2    r0    k0 ; k0 = "_componentClasses"
+.line	33	gettable      r2    r2    r1
+.line	34	eq             0    r2    k1 ; k1 = nil
+.line	34	jmp          l11
+.line	35	getglobal     r3    k2 ; k2 = "error"
+.line	35	loadk         r4    k3 ; k3 = "There is no class fo" (truncated)
+.line	35	self          r4    r4    k4 ; k4 = "format"
+.line	35	move          r6    r1
+.line	35	call          r4     3     0
+.line	35	call          r3     0     1
+.label	l11
+.line	37	move          r3    r2
+.line	37	move          r4    r0
+.line	37	tailcall      r3     2
+.line	37	return        r3     0
+.line	38	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	41
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	5
+
+.upvalue	"AGridItem"	0	false
+
+.constant	k0	"_componentClasses"
+.constant	k1	nil
+.constant	k2	"OnDestroy"
+
+.line	42	settable      r0    k0    k1 ; k1 = nil
+.line	43	getupval      r1    u0
+.line	43	gettable      r1    r1    k2 ; k2 = "OnDestroy"
+.line	43	move          r2    r0
+.line	43	call          r1     2     1
+.line	44	return        r0     1
+

@@ -1,0 +1,538 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/units/units.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.constant	k0	"Version"
+.constant	k1	"1.1.0"
+.constant	k2	"ReUI"
+.constant	k3	"Require"
+.constant	k4	"ReUI.Core >= 1.4.0"
+.constant	k5	"ReUI.UI >= 1.4.0"
+.constant	k6	"ReUI.UI.Controls >= 1.0.0"
+.constant	k7	"ReUI.Selection >= 1.0.0"
+.constant	k8	"Main"
+
+.line	1	loadk         r0    k1 ; k1 = "1.1.0"
+.line	1	setglobal     r0    k0 ; k0 = "Version"
+.line	3	getglobal     r0    k2 ; k2 = "ReUI"
+.line	3	gettable      r0    r0    k3 ; k3 = "Require"
+.line	3	newtable      r1     4     0
+.line	5	loadk         r2    k4 ; k4 = "ReUI.Core >= 1.4.0"
+.line	6	loadk         r3    k5 ; k5 = "ReUI.UI >= 1.4.0"
+.line	7	loadk         r4    k6 ; k6 = "ReUI.UI.Controls >= " (truncated)
+.line	9	loadk         r5    k7 ; k7 = "ReUI.Selection >= 1." (truncated)
+.line	9	setlist       r1     3
+.line	4	call          r0     2     1
+.line	142	closure       r0    f0
+.line	12	setglobal     r0    k8 ; k8 = "Main"
+.line	142	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	12
+.numparams	1
+.is_vararg	0
+.maxstacksize	26
+
+.local	"isReplay"	0	62
+.local	"updateCacheTicks"	1	62
+.local	"updateAllTicks"	2	62
+.local	"GetSelectedUnits"	3	62
+.local	"SelectUnits"	4	62
+.local	"GetFocusArmy"	5	62
+.local	"GameTick"	6	62
+.local	"UISelectionByCategory"	7	62
+.local	"GameMain"	10	62
+.local	"CommandMode"	13	62
+.local	"HiddenSelect"	18	62
+.local	"ApplyToSelectedUnits"	22	62
+.local	"currentArmy"	23	62
+.local	"units"	23	62
+.local	"prevReset"	24	62
+.local	"prevUpdate"	25	62
+.local	"ProcessAllUnits"	29	62
+.local	"UpdateAllUnits"	32	62
+.local	"OnArmyChanged"	33	62
+.local	"focused"	34	62
+.local	"UpdateUnits"	37	62
+.local	"Update"	49	62
+.local	"Get"	52	62
+
+.constant	k0	10
+.constant	k1	50
+.constant	k2	"GetSelectedUnits"
+.constant	k3	"SelectUnits"
+.constant	k4	"GetFocusArmy"
+.constant	k5	"GameTick"
+.constant	k6	"UISelectionByCategory"
+.constant	k7	"import"
+.constant	k8	"/lua/ui/game/gamemain.lua"
+.constant	k9	"/lua/ui/game/commandmode.lua"
+.constant	k10	0
+.constant	k11	"HiddenSelect"
+.constant	k12	"ApplyToSelectedUnits"
+.constant	k13	"Get"
+.constant	k14	"Overlay"
+.constant	k15	"Modules/Overlay.lua"
+
+.line	14	loadk         r1    k0 ; k0 = 10
+.line	15	loadk         r2    k1 ; k1 = 50
+.line	17	getglobal     r3    k2 ; k2 = "GetSelectedUnits"
+.line	18	getglobal     r4    k3 ; k3 = "SelectUnits"
+.line	19	getglobal     r5    k4 ; k4 = "GetFocusArmy"
+.line	20	getglobal     r6    k5 ; k5 = "GameTick"
+.line	21	getglobal     r7    k6 ; k6 = "UISelectionByCategor" (truncated)
+.line	23	getglobal     r8    k7 ; k7 = "import"
+.line	23	loadk         r9    k8 ; k8 = "/lua/ui/game/gamemai" (truncated)
+.line	23	call          r8     2     2
+.line	24	getglobal     r9    k7 ; k7 = "import"
+.line	24	loadk        r10    k9 ; k9 = "/lua/ui/game/command" (truncated)
+.line	24	call          r9     2     2
+.line	35	closure      r10    f0
+.line	35	move          r0    r9 ; upvalue declaration
+.line	35	move          r0    r8 ; upvalue declaration
+.line	35	move          r0    r3 ; upvalue declaration
+.line	35	move          r0    r4 ; upvalue declaration
+.line	50	closure      r11    f1
+.line	50	move          r0    r3 ; upvalue declaration
+.line	50	move          r0   r10 ; upvalue declaration
+.line	50	move          r0    r4 ; upvalue declaration
+.line	53	loadnil      r12   r13
+.line	58	loadk        r14   k10 ; k10 = 0
+.line	59	loadk        r15   k10 ; k10 = 0
+.line	71	closure      r16    f2
+.line	71	move          r0    r7 ; upvalue declaration
+.line	71	move          r0    r3 ; upvalue declaration
+.line	71	move          r0   r13 ; upvalue declaration
+.line	75	closure      r17    f3
+.line	75	move          r0   r10 ; upvalue declaration
+.line	75	move          r0   r16 ; upvalue declaration
+.line	78	closure      r18    f4
+.line	80	newtable     r19     0     0
+.line	104	closure      r20    f5
+.line	104	move          r0   r13 ; upvalue declaration
+.line	104	move          r0   r19 ; upvalue declaration
+.line	127	closure      r21    f6
+.line	127	move          r0    r6 ; upvalue declaration
+.line	127	move          r0    r5 ; upvalue declaration
+.line	127	move          r0   r12 ; upvalue declaration
+.line	127	move          r0   r14 ; upvalue declaration
+.line	127	move          r0   r15 ; upvalue declaration
+.line	127	move          r0   r13 ; upvalue declaration
+.line	127	move          r0   r18 ; upvalue declaration
+.line	127	move          r0    r1 ; upvalue declaration
+.line	127	move          r0    r2 ; upvalue declaration
+.line	127	move          r0   r17 ; upvalue declaration
+.line	127	move          r0   r20 ; upvalue declaration
+.line	133	closure      r22    f7
+.line	133	move          r0   r21 ; upvalue declaration
+.line	133	move          r0   r13 ; upvalue declaration
+.line	135	newtable     r23     0     3
+.line	136	settable     r23   k11   r10 ; k11 = "HiddenSelect"
+.line	137	settable     r23   k12   r11 ; k12 = "ApplyToSelectedUnits"
+.line	138	settable     r23   k13   r22 ; k13 = "Get"
+.line	139	getglobal    r24    k7 ; k7 = "import"
+.line	139	loadk        r25   k15 ; k15 = "Modules/Overlay.lua"
+.line	139	call         r24     2     2
+.line	139	gettable     r24   r24   k14 ; k14 = "Overlay"
+.line	139	settable     r23   k14   r24 ; k14 = "Overlay"
+.line	140	return       r23     2
+.line	142	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	27
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"callback"	0	23
+.local	"oldSelection"	9	23
+
+.upvalue	"CommandMode"	0	false
+.upvalue	"GameMain"	0	false
+.upvalue	"GetSelectedUnits"	0	false
+.upvalue	"SelectUnits"	0	false
+
+.constant	k0	"CacheAndClearCommandMode"
+.constant	k1	"SetIgnoreSelection"
+.constant	k2	"RestoreCommandMode"
+
+.line	28	getupval      r1    u0
+.line	28	gettable      r1    r1    k0 ; k0 = "CacheAndClearCommand" (truncated)
+.line	28	call          r1     1     1
+.line	29	getupval      r1    u1
+.line	29	gettable      r1    r1    k1 ; k1 = "SetIgnoreSelection"
+.line	29	loadbool      r2     1     0
+.line	29	call          r1     2     1
+.line	30	getupval      r1    u2
+.line	30	call          r1     1     2
+.line	31	move          r2    r0
+.line	31	move          r3    r1
+.line	31	call          r2     2     1
+.line	32	getupval      r2    u3
+.line	32	move          r3    r1
+.line	32	call          r2     2     1
+.line	33	getupval      r2    u1
+.line	33	gettable      r2    r2    k1 ; k1 = "SetIgnoreSelection"
+.line	33	loadbool      r3     0     0
+.line	33	call          r2     2     1
+.line	34	getupval      r2    u0
+.line	34	gettable      r2    r2    k2 ; k2 = "RestoreCommandMode"
+.line	34	loadbool      r3     1     0
+.line	34	call          r2     2     1
+.line	35	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	38
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"fn"	0	10
+.local	"selection"	2	10
+
+.upvalue	"GetSelectedUnits"	0	false
+.upvalue	"HiddenSelect"	0	false
+.upvalue	"SelectUnits"	0	false
+
+.line	39	getupval      r1    u0
+.line	39	call          r1     1     2
+.line	40	test          r1    r1     1
+.line	40	jmp           l6
+.line	40	return        r0     1
+.label	l6
+.line	42	getupval      r2    u1
+.line	49	closure       r3    f0
+.line	49	getupval      r0    u2 ; upvalue declaration
+.line	49	move          r0    r0 ; upvalue declaration
+.line	42	call          r2     2     1
+.line	50	return        r0     1
+
+.function	main/f0/f1/f0
+
+.source	null
+.linedefined	42
+.numparams	1
+.is_vararg	0
+.maxstacksize	9
+
+.local	"currentSelection"	0	13
+.local	"cachedTable"	1	13
+.local	"(for generator)"	4	13
+.local	"(for state)"	4	13
+.local	"_"	4	13
+.local	"unit"	4	13
+
+.upvalue	"SelectUnits"	0	false
+.upvalue	"fn"	0	false
+
+.constant	k0	1
+
+.line	43	newtable      r1     0     0
+.line	44	move          r2    r0
+.line	44	loadnil       r3    r5
+.line	44	tforprep      r2   l12
+.label	l5
+.line	45	settable      r1    k0    r5 ; k0 = 1
+.line	46	getupval      r6    u0
+.line	46	move          r7    r1
+.line	46	call          r6     2     1
+.line	47	getupval      r6    u1
+.line	47	move          r7    r5
+.line	47	call          r6     2     1
+.label	l12
+.line	44	tforloop      r2     1
+.line	47	jmp           l5
+.line	49	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	61
+.numparams	0
+.is_vararg	0
+.maxstacksize	8
+
+.local	"selection"	9	21
+.local	"(for generator)"	15	21
+.local	"(for state)"	15	21
+.local	"_"	15	21
+.local	"unit"	15	21
+
+.upvalue	"UISelectionByCategory"	0	false
+.upvalue	"GetSelectedUnits"	0	false
+.upvalue	"units"	0	false
+
+.constant	k0	"ALLUNITS"
+.constant	k1	"GetEntityId"
+
+.line	62	getupval      r0    u0
+.line	62	loadk         r1    k0 ; k0 = "ALLUNITS"
+.line	62	loadbool      r2     0     0
+.line	62	loadbool      r3     0     0
+.line	62	loadbool      r4     0     0
+.line	62	loadbool      r5     0     0
+.line	62	call          r0     6     1
+.line	63	getupval      r0    u1
+.line	63	call          r0     1     2
+.line	64	test          r0    r0     1
+.line	64	jmp          l13
+.line	65	return        r0     1
+.label	l13
+.line	68	move          r1    r0
+.line	68	loadnil       r2    r4
+.line	68	tforprep      r1   l20
+.label	l16
+.line	69	getupval      r5    u2
+.line	69	self          r6    r4    k1 ; k1 = "GetEntityId"
+.line	69	call          r6     2     2
+.line	69	settable      r5    r6    r4
+.label	l20
+.line	68	tforloop      r1     1
+.line	69	jmp          l16
+.line	71	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	73
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"HiddenSelect"	0	false
+.upvalue	"ProcessAllUnits"	0	false
+
+.line	74	getupval      r0    u0
+.line	74	getupval      r1    u1
+.line	74	call          r0     2     1
+.line	75	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	77
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.line	78	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	81
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"(for generator)"	3	27
+.local	"(for state)"	3	27
+.local	"id"	3	27
+.local	"unit"	3	27
+.local	"focus"	12	25
+.local	"focusId"	20	25
+.local	"(for generator)"	30	36
+.local	"(for state)"	30	36
+.local	"id"	30	36
+.local	"unit"	30	36
+
+.upvalue	"units"	0	false
+.upvalue	"focused"	0	false
+
+.constant	k0	"IsDead"
+.constant	k1	nil
+.constant	k2	"GetFocus"
+.constant	k3	"GetEntityId"
+
+.line	84	getupval      r0    u0
+.line	84	loadnil       r1    r3
+.line	84	tforprep      r0   l26
+.label	l4
+.line	85	self          r4    r3    k0 ; k0 = "IsDead"
+.line	85	call          r4     2     2
+.line	85	test          r4    r4     0
+.line	85	jmp          l11
+.line	86	getupval      r4    u0
+.line	86	settable      r4    r2    k1 ; k1 = nil
+.line	86	jmp          l26
+.label	l11
+.line	88	self          r4    r3    k2 ; k2 = "GetFocus"
+.line	88	call          r4     2     2
+.line	89	test          r4    r4     0
+.line	89	jmp          l26
+.line	89	self          r5    r4    k0 ; k0 = "IsDead"
+.line	89	call          r5     2     2
+.line	89	test          r5    r5     1
+.line	89	jmp          l26
+.line	90	self          r5    r4    k3 ; k3 = "GetEntityId"
+.line	90	call          r5     2     2
+.line	91	gettable      r6    r3    r5
+.line	91	test          r6    r6     1
+.line	91	jmp          l26
+.line	92	getupval      r6    u1
+.line	92	settable      r6    r5    r4
+.label	l26
+.line	84	tforloop      r0     1
+.line	95	jmp           l4
+.line	100	getupval      r0    u1
+.line	100	loadnil       r1    r3
+.line	100	tforprep      r0   l35
+.label	l31
+.line	101	getupval      r4    u0
+.line	101	settable      r4    r2    r3
+.line	102	getupval      r4    u1
+.line	102	settable      r4    r2    k1 ; k1 = nil
+.label	l35
+.line	100	tforloop      r0     1
+.line	102	jmp          l31
+.line	104	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	106
+.numparams	0
+.is_vararg	0
+.maxstacksize	4
+
+.local	"currentTick"	2	39
+.local	"army"	4	39
+
+.upvalue	"GameTick"	0	false
+.upvalue	"GetFocusArmy"	0	false
+.upvalue	"currentArmy"	0	false
+.upvalue	"prevReset"	0	false
+.upvalue	"prevUpdate"	0	false
+.upvalue	"units"	0	false
+.upvalue	"OnArmyChanged"	0	false
+.upvalue	"updateCacheTicks"	0	false
+.upvalue	"updateAllTicks"	0	false
+.upvalue	"UpdateAllUnits"	0	false
+.upvalue	"UpdateUnits"	0	false
+
+.constant	k0	0
+.constant	k1	"ReUI"
+.constant	k2	"Core"
+.constant	k3	"Weak"
+.constant	k4	"Value"
+.constant	k5	1
+.constant	k6	-1
+
+.line	107	getupval      r0    u0
+.line	107	call          r0     1     2
+.line	108	getupval      r1    u1
+.line	108	call          r1     1     2
+.line	110	getupval      r2    u2
+.line	110	eq             1    r1    r2
+.line	110	jmp          l22
+.line	111	loadk         r2    k0 ; k0 = 0
+.line	111	setupval      r2    u3
+.line	112	loadk         r2    k0 ; k0 = 0
+.line	112	setupval      r2    u4
+.line	113	setupval      r1    u2
+.line	114	getglobal     r2    k1 ; k1 = "ReUI"
+.line	114	gettable      r2    r2    k2 ; k2 = "Core"
+.line	114	gettable      r2    r2    k3 ; k3 = "Weak"
+.line	114	gettable      r2    r2    k4 ; k4 = "Value"
+.line	114	newtable      r3     0     0
+.line	114	call          r2     2     2
+.line	114	setupval      r2    u5
+.line	115	getupval      r2    u6
+.line	115	call          r2     1     1
+.label	l22
+.line	118	eq             1    r1    k6 ; k6 = -1
+.line	118	jmp          l40
+.line	118	getupval      r2    u7
+.line	118	sub           r2    r0    r2
+.line	118	getupval      r3    u4
+.line	118	le             0    r3    r2
+.line	118	jmp          l40
+.line	119	getupval      r2    u8
+.line	119	sub           r2    r0    r2
+.line	119	getupval      r3    u3
+.line	119	lt             0    r3    r2
+.line	119	jmp          l37
+.line	120	getupval      r2    u9
+.line	120	call          r2     1     1
+.line	121	setupval      r0    u3
+.label	l37
+.line	124	getupval      r2   u10
+.line	124	call          r2     1     1
+.line	125	setupval      r0    u4
+.label	l40
+.line	127	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	130
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"Update"	0	false
+.upvalue	"units"	0	false
+
+.line	131	getupval      r0    u0
+.line	131	call          r0     1     1
+.line	132	getupval      r0    u1
+.line	132	return        r0     2
+.line	133	return        r0     1
+

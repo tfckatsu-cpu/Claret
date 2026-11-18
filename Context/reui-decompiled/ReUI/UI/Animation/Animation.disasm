@@ -1,0 +1,2041 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ui/animation/animation.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	4
+
+.constant	k0	"Version"
+.constant	k1	"1.1.0"
+.constant	k2	"ReUI"
+.constant	k3	"Require"
+.constant	k4	"ReUI.UI >= 1.0.0"
+.constant	k5	"ReUI.UI.Color >= 1.0.0"
+.constant	k6	"Main"
+
+.line	1	loadk         r0    k1 ; k1 = "1.1.0"
+.line	1	setglobal     r0    k0 ; k0 = "Version"
+.line	3	getglobal     r0    k2 ; k2 = "ReUI"
+.line	3	gettable      r0    r0    k3 ; k3 = "Require"
+.line	3	newtable      r1     2     0
+.line	5	loadk         r2    k4 ; k4 = "ReUI.UI >= 1.0.0"
+.line	7	loadk         r3    k5 ; k5 = "ReUI.UI.Color >= 1.0" (truncated)
+.line	7	setlist       r1     1
+.line	4	call          r0     2     1
+.line	554	closure       r0    f0
+.line	9	setglobal     r0    k6 ; k6 = "Main"
+.line	554	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	1
+.is_vararg	0
+.maxstacksize	33
+
+.local	"isReplay"	0	164
+.local	"MAX_DELTA_ALLOWED"	1	164
+.local	"unpack"	2	164
+.local	"setmetatable"	3	164
+.local	"IsDestroyed"	4	164
+.local	"StringUpper"	6	164
+.local	"math"	7	164
+.local	"MathClamp"	8	164
+.local	"MathFloor"	9	164
+.local	"MathMax"	10	164
+.local	"MathMin"	11	164
+.local	"ColorUtils"	14	164
+.local	"Group"	18	164
+.local	"emptyFunc"	19	164
+.local	"Animator"	41	164
+.local	"globalAnimator"	43	164
+.local	"ApplyAnimation"	47	164
+.local	"StopAnimation"	50	164
+.local	"AnimationMetaTable"	51	164
+.local	"CreateAnimation"	60	164
+.local	"BaseAnimationFactory"	76	164
+.local	"AlphaAnimationFactory"	99	164
+.local	"ColorAnimationFactory"	121	164
+.local	"DelayedAnimationFactory"	131	164
+.local	"baseFactory"	133	164
+.local	"alphaAnimationFactory"	135	164
+.local	"colorAnimationFactory"	137	164
+.local	"delayedAnimationFactory"	139	164
+.local	"delayAnimation"	141	164
+.local	"ApplySequentialAnimation"	143	164
+.local	"SequentialAnimation"	151	164
+
+.constant	k0	0.05
+.constant	k1	"unpack"
+.constant	k2	"setmetatable"
+.constant	k3	"IsDestroyed"
+.constant	k4	"string"
+.constant	k5	"upper"
+.constant	k6	"math"
+.constant	k7	"clamp"
+.constant	k8	"floor"
+.constant	k9	"max"
+.constant	k10	"min"
+.constant	k11	"ReUI"
+.constant	k12	"UI"
+.constant	k13	"Color"
+.constant	k14	"import"
+.constant	k15	"/lua/maui/group.lua"
+.constant	k16	"Group"
+.constant	k17	"Class"
+.constant	k18	"__init"
+.constant	k19	"AnimateControls"
+.constant	k20	"OnFrame"
+.constant	k21	"Add"
+.constant	k22	"Remove"
+.constant	k23	"OnDestroy"
+.constant	k24	"__index"
+.constant	k25	"Apply"
+.constant	k26	"ClassSimple"
+.constant	k27	"OnStart"
+.constant	k28	"OnFinish"
+.constant	k29	"Create"
+.constant	k30	"StartWith"
+.constant	k31	"ToAppear"
+.constant	k32	"ToFade"
+.constant	k33	"EndWith"
+.constant	k34	"For"
+.constant	k35	"ApplyToChildren"
+.constant	k36	"Delay"
+.constant	k37	"Factory"
+.constant	k38	"Base"
+.constant	k39	"Alpha"
+.constant	k40	"Sequential"
+.constant	k41	"Animator"
+.constant	k42	"ApplyAnimation"
+.constant	k43	"StopAnimation"
+.constant	k44	"CreateAnimation"
+
+.line	10	loadk         r1    k0 ; k0 = 0.05
+.line	13	getglobal     r2    k1 ; k1 = "unpack"
+.line	14	getglobal     r3    k2 ; k2 = "setmetatable"
+.line	15	getglobal     r4    k3 ; k3 = "IsDestroyed"
+.line	16	getglobal     r5    k4 ; k4 = "string"
+.line	16	gettable      r5    r5    k5 ; k5 = "upper"
+.line	17	getglobal     r6    k6 ; k6 = "math"
+.line	18	gettable      r7    r6    k7 ; k7 = "clamp"
+.line	19	gettable      r8    r6    k8 ; k8 = "floor"
+.line	20	gettable      r9    r6    k9 ; k9 = "max"
+.line	21	gettable     r10    r6   k10 ; k10 = "min"
+.line	23	getglobal    r11   k11 ; k11 = "ReUI"
+.line	23	gettable     r11   r11   k12 ; k12 = "UI"
+.line	23	gettable     r11   r11   k13 ; k13 = "Color"
+.line	25	getglobal    r12   k14 ; k14 = "import"
+.line	25	loadk        r13   k15 ; k15 = "/lua/maui/group.lua"
+.line	25	call         r12     2     2
+.line	25	gettable     r12   r12   k16 ; k16 = "Group"
+.line	27	closure      r13    f0
+.line	34	getglobal    r14   k17 ; k17 = "Class"
+.line	34	move         r15   r12
+.line	34	call         r14     2     2
+.line	34	newtable     r15     0     3
+.line	45	closure      r16    f1
+.line	45	move          r0   r12 ; upvalue declaration
+.line	45	settable     r15   k18   r16 ; k18 = "__init"
+.line	58	closure      r16    f2
+.line	58	move          r0    r4 ; upvalue declaration
+.line	58	settable     r15   k19   r16 ; k19 = "AnimateControls"
+.line	72	closure      r16    f3
+.line	72	move          r0    r1 ; upvalue declaration
+.line	72	move          r0    r6 ; upvalue declaration
+.line	72	settable     r15   k20   r16 ; k20 = "OnFrame"
+.line	84	closure      r16    f4
+.line	84	move          r0    r2 ; upvalue declaration
+.line	84	settable     r15   k21   r16 ; k21 = "Add"
+.line	105	closure      r16    f5
+.line	105	settable     r15   k22   r16 ; k22 = "Remove"
+.line	111	closure      r16    f6
+.line	111	settable     r15   k23   r16 ; k23 = "OnDestroy"
+.line	35	call         r14     2     2
+.line	115	move         r15   r14
+.line	115	call         r15     1     2
+.line	128	closure      r16    f7
+.line	128	move          r0    r4 ; upvalue declaration
+.line	128	move          r0   r15 ; upvalue declaration
+.line	128	move          r0    r2 ; upvalue declaration
+.line	138	closure      r17    f8
+.line	138	move          r0    r4 ; upvalue declaration
+.line	138	move          r0   r15 ; upvalue declaration
+.line	156	newtable     r18     0     0
+.line	157	settable     r18   k24   r18 ; k24 = "__index"
+.line	168	closure      r19    f9
+.line	168	move          r0    r4 ; upvalue declaration
+.line	168	move          r0   r16 ; upvalue declaration
+.line	168	move          r0    r2 ; upvalue declaration
+.line	162	settable     r18   k25   r19 ; k25 = "Apply"
+.line	185	closure      r19   f10
+.line	185	move          r0    r3 ; upvalue declaration
+.line	185	move          r0   r18 ; upvalue declaration
+.line	196	getglobal    r20   k26 ; k26 = "ClassSimple"
+.line	196	newtable     r21     0     3
+.line	202	closure      r22   f11
+.line	202	settable     r21   k18   r22 ; k18 = "__init"
+.line	210	closure      r22   f12
+.line	210	settable     r21   k20   r22 ; k20 = "OnFrame"
+.line	218	closure      r22   f13
+.line	218	move          r0   r13 ; upvalue declaration
+.line	218	settable     r21   k27   r22 ; k27 = "OnStart"
+.line	226	closure      r22   f14
+.line	226	move          r0   r13 ; upvalue declaration
+.line	226	settable     r21   k28   r22 ; k28 = "OnFinish"
+.line	242	closure      r22   f15
+.line	242	move          r0   r19 ; upvalue declaration
+.line	242	settable     r21   k29   r22 ; k29 = "Create"
+.line	197	call         r20     2     2
+.line	245	getglobal    r21   k17 ; k17 = "Class"
+.line	245	move         r22   r20
+.line	245	call         r21     2     2
+.line	245	newtable     r22     0     3
+.line	254	closure      r23   f16
+.line	254	move          r0    r7 ; upvalue declaration
+.line	254	settable     r22   k30   r23 ; k30 = "StartWith"
+.line	261	closure      r23   f17
+.line	261	settable     r22   k31   r23 ; k31 = "ToAppear"
+.line	268	closure      r23   f18
+.line	268	settable     r22   k32   r23 ; k32 = "ToFade"
+.line	276	closure      r23   f19
+.line	276	move          r0    r7 ; upvalue declaration
+.line	276	settable     r22   k33   r23 ; k33 = "EndWith"
+.line	286	closure      r23   f20
+.line	286	settable     r22   k34   r23 ; k34 = "For"
+.line	293	closure      r23   f21
+.line	293	settable     r22   k35   r23 ; k35 = "ApplyToChildren"
+.line	368	closure      r23   f22
+.line	368	move          r0    r7 ; upvalue declaration
+.line	368	move          r0   r20 ; upvalue declaration
+.line	368	settable     r22   k29   r23 ; k29 = "Create"
+.line	246	call         r21     2     2
+.line	373	getglobal    r22   k17 ; k17 = "Class"
+.line	373	move         r23   r20
+.line	373	call         r22     2     2
+.line	373	newtable     r23     0     3
+.line	382	closure      r24   f23
+.line	382	move          r0    r5 ; upvalue declaration
+.line	382	settable     r23   k30   r24 ; k30 = "StartWith"
+.line	391	closure      r24   f24
+.line	391	move          r0    r5 ; upvalue declaration
+.line	391	settable     r23   k33   r24 ; k33 = "EndWith"
+.line	398	closure      r24   f25
+.line	398	settable     r23   k34   r24 ; k34 = "For"
+.line	458	closure      r24   f26
+.line	458	move          r0    r5 ; upvalue declaration
+.line	458	move          r0   r11 ; upvalue declaration
+.line	458	move          r0    r7 ; upvalue declaration
+.line	458	move          r0   r10 ; upvalue declaration
+.line	458	move          r0    r9 ; upvalue declaration
+.line	458	move          r0    r8 ; upvalue declaration
+.line	458	move          r0   r20 ; upvalue declaration
+.line	458	settable     r23   k29   r24 ; k29 = "Create"
+.line	374	call         r22     2     2
+.line	463	getglobal    r23   k17 ; k17 = "Class"
+.line	463	move         r24   r20
+.line	463	call         r23     2     2
+.line	463	newtable     r24     0     2
+.line	471	closure      r25   f27
+.line	471	settable     r24   k36   r25 ; k36 = "Delay"
+.line	497	closure      r25   f28
+.line	497	move          r0   r20 ; upvalue declaration
+.line	497	settable     r24   k29   r25 ; k29 = "Create"
+.line	464	call         r23     2     2
+.line	500	move         r24   r20
+.line	500	call         r24     1     2
+.line	501	move         r25   r21
+.line	501	call         r25     1     2
+.line	502	move         r26   r22
+.line	502	call         r26     1     2
+.line	503	move         r27   r23
+.line	503	call         r27     1     2
+.line	506	self         r28   r27   k29 ; k29 = "Create"
+.line	506	call         r28     2     2
+.line	514	closure      r29   f29
+.line	514	move          r0   r28 ; upvalue declaration
+.line	520	getglobal    r30   k26 ; k26 = "ClassSimple"
+.line	520	newtable     r31     0     2
+.line	530	closure      r32   f30
+.line	530	settable     r31   k18   r32 ; k18 = "__init"
+.line	536	closure      r32   f31
+.line	536	move          r0   r29 ; upvalue declaration
+.line	536	settable     r31   k25   r32 ; k25 = "Apply"
+.line	520	call         r30     2     2
+.line	541	newtable     r31     0     3
+.line	542	newtable     r32     0     3
+.line	543	settable     r32   k38   r24 ; k38 = "Base"
+.line	544	settable     r32   k13   r26 ; k13 = "Color"
+.line	545	settable     r32   k39   r25 ; k39 = "Alpha"
+.line	546	settable     r32   k36   r27 ; k36 = "Delay"
+.line	547	settable     r31   k37   r32 ; k37 = "Factory"
+.line	548	settable     r31   k40   r30 ; k40 = "Sequential"
+.line	549	settable     r31   k41   r14 ; k41 = "Animator"
+.line	550	settable     r31   k42   r16 ; k42 = "ApplyAnimation"
+.line	551	settable     r31   k43   r17 ; k43 = "StopAnimation"
+.line	552	settable     r31   k44   r19 ; k44 = "CreateAnimation"
+.line	553	return       r31     2
+.line	554	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	27
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.line	27	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	36
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	31
+.local	"parent"	0	31
+
+.upvalue	"Group"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"GetFrame"
+.constant	k2	0
+.constant	k3	"_controls"
+.constant	k4	"_controlsStates"
+.constant	k5	"Left"
+.constant	k6	"Set"
+.constant	k7	"Top"
+.constant	k8	"Width"
+.constant	k9	"Height"
+.constant	k10	"DisableHitTest"
+
+.line	37	getupval      r2    u0
+.line	37	gettable      r2    r2    k0 ; k0 = "__init"
+.line	37	move          r3    r0
+.line	37	test          r4    r1     1
+.line	37	jmp           l9
+.line	37	getglobal     r4    k1 ; k1 = "GetFrame"
+.line	37	loadk         r5    k2 ; k2 = 0
+.line	37	call          r4     2     2
+.label	l9
+.line	37	call          r2     3     1
+.line	38	newtable      r2     0     0
+.line	38	settable      r0    k3    r2 ; k3 = "_controls"
+.line	39	newtable      r2     0     0
+.line	39	settable      r0    k4    r2 ; k4 = "_controlsStates"
+.line	40	gettable      r2    r0    k5 ; k5 = "Left"
+.line	40	self          r2    r2    k6 ; k6 = "Set"
+.line	40	loadk         r4    k2 ; k2 = 0
+.line	40	call          r2     3     1
+.line	41	gettable      r2    r0    k7 ; k7 = "Top"
+.line	41	self          r2    r2    k6 ; k6 = "Set"
+.line	41	loadk         r4    k2 ; k2 = 0
+.line	41	call          r2     3     1
+.line	42	gettable      r2    r0    k8 ; k8 = "Width"
+.line	42	self          r2    r2    k6 ; k6 = "Set"
+.line	42	loadk         r4    k2 ; k2 = 0
+.line	42	call          r2     3     1
+.line	43	gettable      r2    r0    k9 ; k9 = "Height"
+.line	43	self          r2    r2    k6 ; k6 = "Set"
+.line	43	loadk         r4    k2 ; k2 = 0
+.line	43	call          r2     3     1
+.line	44	self          r2    r0   k10 ; k10 = "DisableHitTest"
+.line	44	call          r2     2     1
+.line	45	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	49
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	26
+.local	"delta"	0	26
+.local	"controlsStates"	1	26
+.local	"(for generator)"	4	26
+.local	"(for state)"	4	26
+.local	"control"	4	26
+.local	"animation"	4	26
+
+.upvalue	"IsDestroyed"	0	false
+
+.constant	k0	"_controlsStates"
+.constant	k1	"_controls"
+.constant	k2	"Remove"
+.constant	k3	"OnFrame"
+
+.line	50	gettable      r2    r0    k0 ; k0 = "_controlsStates"
+.line	51	gettable      r3    r0    k1 ; k1 = "_controls"
+.line	51	loadnil       r4    r6
+.line	51	tforprep      r3   l25
+.label	l5
+.line	52	getupval      r7    u0
+.line	52	move          r8    r5
+.line	52	call          r7     2     2
+.line	52	test          r7    r7     0
+.line	52	jmp          l15
+.line	53	self          r7    r0    k2 ; k2 = "Remove"
+.line	53	move          r9    r5
+.line	53	loadbool     r10     1     0
+.line	53	call          r7     4     1
+.line	53	jmp          l25
+.label	l15
+.line	54	gettable      r7    r6    k3 ; k3 = "OnFrame"
+.line	54	move          r8    r5
+.line	54	move          r9    r1
+.line	54	gettable     r10    r2    r5
+.line	54	call          r7     4     2
+.line	54	test          r7    r7     0
+.line	54	jmp          l25
+.line	55	self          r7    r0    k2 ; k2 = "Remove"
+.line	55	move          r9    r5
+.line	55	call          r7     3     1
+.label	l25
+.line	51	tforloop      r3     1
+.line	56	jmp           l5
+.line	58	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	62
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	22
+.local	"delta"	0	22
+.local	"n"	8	18
+.local	"_"	14	18
+.local	"(for limit)"	14	18
+.local	"(for step)"	14	18
+
+.upvalue	"MAX_DELTA_ALLOWED"	0	false
+.upvalue	"math"	0	false
+
+.constant	k0	"ceil"
+.constant	k1	1
+.constant	k2	"AnimateControls"
+
+.line	63	getupval      r2    u0
+.line	63	lt             0    r2    r1
+.line	63	jmp          l20
+.line	64	getupval      r2    u1
+.line	64	gettable      r2    r2    k0 ; k0 = "ceil"
+.line	64	getupval      r3    u0
+.line	64	div           r3    r1    r3
+.line	64	call          r2     2     2
+.line	65	div           r1    r1    r2
+.line	66	loadk         r3    k1 ; k1 = 1
+.line	66	move          r4    r2
+.line	66	loadk         r5    k1 ; k1 = 1
+.line	66	sub           r3    r3    r5
+.line	66	jmp          l18
+.label	l15
+.line	67	self          r6    r0    k2 ; k2 = "AnimateControls"
+.line	67	move          r8    r1
+.line	67	call          r6     3     1
+.label	l18
+.line	66	forloop       r3   l15
+.line	68	jmp          l23
+.label	l20
+.line	70	self          r2    r0    k2 ; k2 = "AnimateControls"
+.line	70	move          r4    r1
+.line	70	call          r2     3     1
+.label	l23
+.line	72	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	78
+.numparams	3
+.is_vararg	1
+.maxstacksize	10
+
+.local	"self"	0	19
+.local	"control"	0	19
+.local	"animation"	0	19
+.local	"arg"	0	19
+
+.upvalue	"unpack"	0	false
+
+.constant	k0	"_controls"
+.constant	k1	"_controlsStates"
+.constant	k2	"OnStart"
+.constant	k3	"NeedsFrameUpdate"
+.constant	k4	"SetNeedsFrameUpdate"
+
+.line	79	gettable      r4    r0    k0 ; k0 = "_controls"
+.line	79	settable      r4    r1    r2
+.line	80	gettable      r4    r0    k1 ; k1 = "_controlsStates"
+.line	80	gettable      r5    r2    k2 ; k2 = "OnStart"
+.line	80	move          r6    r1
+.line	80	gettable      r7    r0    k1 ; k1 = "_controlsStates"
+.line	80	gettable      r7    r7    r1
+.line	80	getupval      r8    u0
+.line	80	move          r9    r3
+.line	80	call          r8     2     0
+.line	80	call          r5     0     2
+.line	80	settable      r4    r1    r5
+.line	81	self          r4    r0    k3 ; k3 = "NeedsFrameUpdate"
+.line	81	call          r4     2     2
+.line	81	test          r4    r4     1
+.line	81	jmp          l20
+.line	82	self          r4    r0    k4 ; k4 = "SetNeedsFrameUpdate"
+.line	82	loadbool      r6     1     0
+.line	82	call          r4     3     1
+.label	l20
+.line	84	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	89
+.numparams	3
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	29
+.local	"control"	0	29
+.local	"skip"	0	29
+.local	"animation"	2	29
+.local	"controlState"	4	29
+
+.constant	k0	"_controls"
+.constant	k1	"_controlsStates"
+.constant	k2	nil
+.constant	k3	"OnFinish"
+.constant	k4	"table"
+.constant	k5	"empty"
+.constant	k6	"NeedsFrameUpdate"
+.constant	k7	"SetNeedsFrameUpdate"
+
+.line	90	gettable      r3    r0    k0 ; k0 = "_controls"
+.line	90	gettable      r3    r3    r1
+.line	91	gettable      r4    r0    k1 ; k1 = "_controlsStates"
+.line	91	gettable      r4    r4    r1
+.line	93	gettable      r5    r0    k0 ; k0 = "_controls"
+.line	93	settable      r5    r1    k2 ; k2 = nil
+.line	94	gettable      r5    r0    k1 ; k1 = "_controlsStates"
+.line	94	settable      r5    r1    k2 ; k2 = nil
+.line	96	test          r2    r2     1
+.line	96	jmp          l17
+.line	97	test          r3    r3     0
+.line	97	jmp          l17
+.line	98	gettable      r5    r3    k3 ; k3 = "OnFinish"
+.line	98	move          r6    r1
+.line	98	move          r7    r4
+.line	98	call          r5     3     1
+.label	l17
+.line	102	getglobal     r5    k4 ; k4 = "table"
+.line	102	gettable      r5    r5    k5 ; k5 = "empty"
+.line	102	gettable      r6    r0    k0 ; k0 = "_controls"
+.line	102	call          r5     2     2
+.line	102	test          r5    r5     0
+.line	102	jmp          l30
+.line	102	self          r5    r0    k6 ; k6 = "NeedsFrameUpdate"
+.line	102	call          r5     2     2
+.line	102	test          r5    r5     0
+.line	102	jmp          l30
+.line	103	self          r5    r0    k7 ; k7 = "SetNeedsFrameUpdate"
+.line	103	loadbool      r7     0     0
+.line	103	call          r5     3     1
+.label	l30
+.line	105	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	108
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_controls"
+.constant	k1	nil
+.constant	k2	"_controlsStates"
+
+.line	109	settable      r0    k0    k1 ; k1 = nil
+.line	110	settable      r0    k2    k1 ; k1 = nil
+.line	111	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	122
+.numparams	2
+.is_vararg	1
+.maxstacksize	9
+
+.local	"control"	0	17
+.local	"animation"	0	17
+.local	"arg"	0	17
+
+.upvalue	"IsDestroyed"	0	false
+.upvalue	"globalAnimator"	0	false
+.upvalue	"unpack"	0	false
+
+.constant	k0	"error"
+.constant	k1	"There is no animator to animate controls"
+.constant	k2	"Add"
+
+.line	123	getupval      r3    u0
+.line	123	getupval      r4    u1
+.line	123	call          r3     2     2
+.line	123	test          r3    r3     0
+.line	123	jmp          l10
+.line	124	getglobal     r3    k0 ; k0 = "error"
+.line	124	loadk         r4    k1 ; k1 = "There is no animator" (truncated)
+.line	124	call          r3     2     1
+.line	124	jmp          l18
+.label	l10
+.line	126	getupval      r3    u1
+.line	126	self          r3    r3    k2 ; k2 = "Add"
+.line	126	move          r5    r0
+.line	126	move          r6    r1
+.line	126	getupval      r7    u2
+.line	126	move          r8    r2
+.line	126	call          r7     2     0
+.line	126	call          r3     0     1
+.label	l18
+.line	128	return        r0     1
+
+.function	main/f0/f8
+
+.source	null
+.linedefined	132
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"control"	0	14
+.local	"skip"	0	14
+
+.upvalue	"IsDestroyed"	0	false
+.upvalue	"globalAnimator"	0	false
+
+.constant	k0	"error"
+.constant	k1	"There is no animator to stop animation"
+.constant	k2	"Remove"
+
+.line	133	getupval      r2    u0
+.line	133	getupval      r3    u1
+.line	133	call          r2     2     2
+.line	133	test          r2    r2     0
+.line	133	jmp          l10
+.line	134	getglobal     r2    k0 ; k0 = "error"
+.line	134	loadk         r3    k1 ; k1 = "There is no animator" (truncated)
+.line	134	call          r2     2     1
+.line	134	jmp          l15
+.label	l10
+.line	136	getupval      r2    u1
+.line	136	self          r2    r2    k2 ; k2 = "Remove"
+.line	136	move          r4    r0
+.line	136	move          r5    r1
+.line	136	call          r2     4     1
+.label	l15
+.line	138	return        r0     1
+
+.function	main/f0/f9
+
+.source	null
+.linedefined	162
+.numparams	2
+.is_vararg	1
+.maxstacksize	9
+
+.local	"self"	0	21
+.local	"control"	0	21
+.local	"arg"	0	21
+
+.upvalue	"IsDestroyed"	0	false
+.upvalue	"ApplyAnimation"	0	false
+.upvalue	"unpack"	0	false
+
+.constant	k0	"_animator"
+.constant	k1	"Add"
+
+.line	163	getupval      r3    u0
+.line	163	gettable      r4    r0    k0 ; k0 = "_animator"
+.line	163	call          r3     2     2
+.line	163	test          r3    r3     0
+.line	163	jmp          l14
+.line	164	getupval      r3    u1
+.line	164	move          r4    r1
+.line	164	move          r5    r0
+.line	164	getupval      r6    u2
+.line	164	move          r7    r2
+.line	164	call          r6     2     0
+.line	164	call          r3     0     1
+.line	164	jmp          l22
+.label	l14
+.line	166	gettable      r3    r0    k0 ; k0 = "_animator"
+.line	166	self          r3    r3    k1 ; k1 = "Add"
+.line	166	move          r5    r1
+.line	166	move          r6    r0
+.line	166	getupval      r7    u2
+.line	166	move          r8    r2
+.line	166	call          r7     2     0
+.line	166	call          r3     0     1
+.label	l22
+.line	168	return        r0     1
+
+.function	main/f0/f10
+
+.source	null
+.linedefined	175
+.numparams	4
+.is_vararg	0
+.maxstacksize	7
+
+.local	"onStart"	0	9
+.local	"onFrame"	0	9
+.local	"onFinish"	0	9
+.local	"animator"	0	9
+
+.upvalue	"setmetatable"	0	false
+.upvalue	"AnimationMetaTable"	0	false
+
+.constant	k0	"OnStart"
+.constant	k1	"OnFrame"
+.constant	k2	"OnFinish"
+.constant	k3	"_animator"
+
+.line	177	getupval      r4    u0
+.line	177	newtable      r5     0     3
+.line	179	settable      r5    k0    r0 ; k0 = "OnStart"
+.line	180	settable      r5    k1    r1 ; k1 = "OnFrame"
+.line	181	settable      r5    k2    r2 ; k2 = "OnFinish"
+.line	182	settable      r5    k3    r3 ; k3 = "_animator"
+.line	184	getupval      r6    u1
+.line	177	tailcall      r4     3
+.line	184	return        r4     0
+.line	185	return        r0     1
+
+.function	main/f0/f11
+
+.source	null
+.linedefined	198
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	6
+
+.constant	k0	"_onFrame"
+.constant	k1	"_onStart"
+.constant	k2	"_onFinish"
+
+.line	199	loadbool      r1     0     0
+.line	199	settable      r0    k0    r1 ; k0 = "_onFrame"
+.line	200	loadbool      r1     0     0
+.line	200	settable      r0    k1    r1 ; k1 = "_onStart"
+.line	201	loadbool      r1     0     0
+.line	201	settable      r0    k2    r1 ; k2 = "_onFinish"
+.line	202	return        r0     1
+
+.function	main/f0/f12
+
+.source	null
+.linedefined	207
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+.local	"func"	0	2
+
+.constant	k0	"_onFrame"
+
+.line	208	settable      r0    k0    r1 ; k0 = "_onFrame"
+.line	209	return        r0     2
+.line	210	return        r0     1
+
+.function	main/f0/f13
+
+.source	null
+.linedefined	215
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	5
+.local	"func"	0	5
+
+.upvalue	"emptyFunc"	0	false
+
+.constant	k0	"_onStart"
+
+.line	216	test          r2    r1     1
+.line	216	jmp           l4
+.line	216	getupval      r2    u0
+.label	l4
+.line	216	settable      r0    k0    r2 ; k0 = "_onStart"
+.line	217	return        r0     2
+.line	218	return        r0     1
+
+.function	main/f0/f14
+
+.source	null
+.linedefined	223
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	5
+.local	"func"	0	5
+
+.upvalue	"emptyFunc"	0	false
+
+.constant	k0	"_onFinish"
+
+.line	224	test          r2    r1     1
+.line	224	jmp           l4
+.line	224	getupval      r2    u0
+.label	l4
+.line	224	settable      r0    k0    r2 ; k0 = "_onFinish"
+.line	225	return        r0     2
+.line	226	return        r0     1
+
+.function	main/f0/f15
+
+.source	null
+.linedefined	231
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	23
+.local	"animator"	0	23
+.local	"animation"	16	23
+
+.upvalue	"CreateAnimation"	0	false
+
+.constant	k0	"assert"
+.constant	k1	"_onStart"
+.constant	k2	"_onFrame"
+.constant	k3	"_onFinish"
+.constant	k4	"Not complete animation"
+
+.line	232	getglobal     r2    k0 ; k0 = "assert"
+.line	232	gettable      r3    r0    k1 ; k1 = "_onStart"
+.line	232	test          r3    r3     0
+.line	232	jmp           l9
+.line	232	gettable      r3    r0    k2 ; k2 = "_onFrame"
+.line	232	test          r3    r3     0
+.line	232	jmp           l9
+.line	232	gettable      r3    r0    k3 ; k3 = "_onFinish"
+.label	l9
+.line	232	loadk         r4    k4 ; k4 = "Not complete animati" (truncated)
+.line	232	call          r2     3     1
+.line	234	getupval      r2    u0
+.line	234	gettable      r3    r0    k1 ; k1 = "_onStart"
+.line	234	gettable      r4    r0    k2 ; k2 = "_onFrame"
+.line	234	gettable      r5    r0    k3 ; k3 = "_onFinish"
+.line	234	move          r6    r1
+.line	234	call          r2     5     2
+.line	236	loadbool      r3     0     0
+.line	236	settable      r0    k1    r3 ; k1 = "_onStart"
+.line	237	loadbool      r3     0     0
+.line	237	settable      r0    k2    r3 ; k2 = "_onFrame"
+.line	238	loadbool      r3     0     0
+.line	238	settable      r0    k3    r3 ; k3 = "_onFinish"
+.line	240	return        r2     2
+.line	242	return        r0     1
+
+.function	main/f0/f16
+
+.source	null
+.linedefined	250
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	9
+.local	"startAlpha"	0	9
+
+.upvalue	"MathClamp"	0	false
+
+.constant	k0	"_startAlpha"
+.constant	k1	0
+.constant	k2	1
+.constant	k3	"_isStart"
+
+.line	251	getupval      r2    u0
+.line	251	move          r3    r1
+.line	251	loadk         r4    k1 ; k1 = 0
+.line	251	loadk         r5    k2 ; k2 = 1
+.line	251	call          r2     4     2
+.line	251	settable      r0    k0    r2 ; k0 = "_startAlpha"
+.line	252	loadbool      r2     1     0
+.line	252	settable      r0    k3    r2 ; k3 = "_isStart"
+.line	253	return        r0     2
+.line	254	return        r0     1
+
+.function	main/f0/f17
+
+.source	null
+.linedefined	258
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_direction"
+.constant	k1	1
+
+.line	259	settable      r0    k0    k1 ; k1 = 1
+.line	260	return        r0     2
+.line	261	return        r0     1
+
+.function	main/f0/f18
+
+.source	null
+.linedefined	265
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_direction"
+.constant	k1	1
+.constant	k2	-1
+
+.line	266	settable      r0    k0    k2 ; k2 = -1
+.line	267	return        r0     2
+.line	268	return        r0     1
+
+.function	main/f0/f19
+
+.source	null
+.linedefined	273
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	7
+.local	"endAlpha"	0	7
+
+.upvalue	"MathClamp"	0	false
+
+.constant	k0	"_endAlpha"
+.constant	k1	0
+.constant	k2	1
+
+.line	274	getupval      r2    u0
+.line	274	move          r3    r1
+.line	274	loadk         r4    k1 ; k1 = 0
+.line	274	loadk         r5    k2 ; k2 = 1
+.line	274	call          r2     4     2
+.line	274	settable      r0    k0    r2 ; k0 = "_endAlpha"
+.line	275	return        r0     2
+.line	276	return        r0     1
+
+.function	main/f0/f20
+
+.source	null
+.linedefined	281
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	9
+.local	"duration"	0	9
+
+.constant	k0	"assert"
+.constant	k1	0
+.constant	k2	"Duration of alpha animation cant be negative or 0"
+.constant	k3	"_duration"
+
+.line	282	getglobal     r2    k0 ; k0 = "assert"
+.line	282	lt             1    k1    r1 ; k1 = 0
+.line	282	jmp           l5
+.line	282	loadbool      r3     0     1
+.label	l5
+.line	282	loadbool      r3     1     0
+.line	282	loadk         r4    k2 ; k2 = "Duration of alpha an" (truncated)
+.line	282	call          r2     3     1
+.line	284	settable      r0    k3    r1 ; k3 = "_duration"
+.line	285	return        r0     2
+.line	286	return        r0     1
+
+.function	main/f0/f21
+
+.source	null
+.linedefined	290
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"_children"
+
+.line	291	loadbool      r1     1     0
+.line	291	settable      r0    k0    r1 ; k0 = "_children"
+.line	292	return        r0     2
+.line	293	return        r0     1
+
+.function	main/f0/f22
+
+.source	null
+.linedefined	298
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	113
+.local	"animator"	0	113
+.local	"startAlpha"	37	113
+.local	"endAlpha"	38	113
+.local	"direction"	39	113
+.local	"duration"	40	113
+.local	"diff"	41	113
+.local	"applyToChildren"	42	113
+.local	"OnStart"	63	68
+.local	"OnFinish"	84	89
+
+.upvalue	"MathClamp"	0	false
+.upvalue	"BaseAnimationFactory"	0	false
+
+.constant	k0	"assert"
+.constant	k1	"_endAlpha"
+.constant	k2	"_direction"
+.constant	k3	"_duration"
+.constant	k4	"Not complete Alpha animation"
+.constant	k5	1
+.constant	k6	"_startAlpha"
+.constant	k7	0
+.constant	k8	"End and Start alphas cant be same and must be correct with Appear/Fade"
+.constant	k9	"_children"
+.constant	k10	"_onFrame"
+.constant	k11	"_onStart"
+.constant	k12	"_isStart"
+.constant	k13	"OnStart"
+.constant	k14	"_onFinish"
+.constant	k15	"Create"
+
+.line	299	getglobal     r2    k0 ; k0 = "assert"
+.line	299	gettable      r3    r0    k1 ; k1 = "_endAlpha"
+.line	299	test          r3    r3     0
+.line	299	jmp           l9
+.line	299	gettable      r3    r0    k2 ; k2 = "_direction"
+.line	299	test          r3    r3     0
+.line	299	jmp           l9
+.line	299	gettable      r3    r0    k3 ; k3 = "_duration"
+.label	l9
+.line	299	loadk         r4    k4 ; k4 = "Not complete Alpha a" (truncated)
+.line	299	call          r2     3     1
+.line	301	gettable      r2    r0    k2 ; k2 = "_direction"
+.line	301	eq             0    r2    k5 ; k5 = 1
+.line	301	jmp          l20
+.line	302	gettable      r2    r0    k6 ; k6 = "_startAlpha"
+.line	302	test          r2    r2     1
+.line	302	jmp          l18
+.line	302	loadk         r2    k7 ; k7 = 0
+.label	l18
+.line	302	settable      r0    k6    r2 ; k6 = "_startAlpha"
+.line	302	jmp          l25
+.label	l20
+.line	304	gettable      r2    r0    k6 ; k6 = "_startAlpha"
+.line	304	test          r2    r2     1
+.line	304	jmp          l24
+.line	304	loadk         r2    k5 ; k5 = 1
+.label	l24
+.line	304	settable      r0    k6    r2 ; k6 = "_startAlpha"
+.label	l25
+.line	307	getglobal     r2    k0 ; k0 = "assert"
+.line	307	gettable      r3    r0    k1 ; k1 = "_endAlpha"
+.line	307	gettable      r4    r0    k6 ; k6 = "_startAlpha"
+.line	307	sub           r3    r3    r4
+.line	307	gettable      r4    r0    k2 ; k2 = "_direction"
+.line	307	mul           r3    r3    r4
+.line	307	lt             1    k7    r3 ; k7 = 0
+.line	307	jmp          l34
+.line	307	loadbool      r3     0     1
+.label	l34
+.line	307	loadbool      r3     1     0
+.line	308	loadk         r4    k8 ; k8 = "End and Start alphas" (truncated)
+.line	307	call          r2     3     1
+.line	310	gettable      r2    r0    k6 ; k6 = "_startAlpha"
+.line	311	gettable      r3    r0    k1 ; k1 = "_endAlpha"
+.line	312	gettable      r4    r0    k2 ; k2 = "_direction"
+.line	313	gettable      r5    r0    k3 ; k3 = "_duration"
+.line	314	sub           r6    r3    r2
+.line	315	gettable      r7    r0    k9 ; k9 = "_children"
+.line	318	eq             0    r4    k5 ; k5 = 1
+.line	318	jmp          l53
+.line	324	closure       r8    f0
+.line	324	move          r0    r3 ; upvalue declaration
+.line	324	getupval      r0    u0 ; upvalue declaration
+.line	324	move          r0    r6 ; upvalue declaration
+.line	324	move          r0    r5 ; upvalue declaration
+.line	324	move          r0    r7 ; upvalue declaration
+.line	324	settable      r0   k10    r8 ; k10 = "_onFrame"
+.line	324	jmp          l60
+.label	l53
+.line	331	closure       r8    f1
+.line	331	move          r0    r3 ; upvalue declaration
+.line	331	getupval      r0    u0 ; upvalue declaration
+.line	331	move          r0    r6 ; upvalue declaration
+.line	331	move          r0    r5 ; upvalue declaration
+.line	331	move          r0    r7 ; upvalue declaration
+.line	331	settable      r0   k10    r8 ; k10 = "_onFrame"
+.label	l60
+.line	333	gettable      r8    r0   k11 ; k11 = "_onStart"
+.line	333	test          r8    r8     0
+.line	333	jmp          l71
+.line	334	gettable      r8    r0   k11 ; k11 = "_onStart"
+.line	338	closure       r9    f2
+.line	338	move          r0    r2 ; upvalue declaration
+.line	338	move          r0    r7 ; upvalue declaration
+.line	338	move          r0    r8 ; upvalue declaration
+.line	338	settable      r0   k11    r9 ; k11 = "_onStart"
+.line	338	close         r8
+.line	338	jmp          l81
+.label	l71
+.line	340	gettable      r8    r0   k12 ; k12 = "_isStart"
+.line	340	test          r8    r8     0
+.line	340	jmp          l79
+.line	343	closure       r8    f3
+.line	343	move          r0    r2 ; upvalue declaration
+.line	343	move          r0    r7 ; upvalue declaration
+.line	343	settable      r0   k11    r8 ; k11 = "_onStart"
+.line	343	jmp          l81
+.label	l79
+.line	345	self          r8    r0   k13 ; k13 = "OnStart"
+.line	345	call          r8     2     1
+.label	l81
+.line	348	gettable      r8    r0   k14 ; k14 = "_onFinish"
+.line	348	test          r8    r8     0
+.line	348	jmp          l92
+.line	349	gettable      r8    r0   k14 ; k14 = "_onFinish"
+.line	353	closure       r9    f4
+.line	353	move          r0    r3 ; upvalue declaration
+.line	353	move          r0    r7 ; upvalue declaration
+.line	353	move          r0    r8 ; upvalue declaration
+.line	353	settable      r0   k14    r9 ; k14 = "_onFinish"
+.line	353	close         r8
+.line	353	jmp          l96
+.label	l92
+.line	357	closure       r8    f5
+.line	357	move          r0    r3 ; upvalue declaration
+.line	357	move          r0    r7 ; upvalue declaration
+.line	357	settable      r0   k14    r8 ; k14 = "_onFinish"
+.label	l96
+.line	361	loadbool      r8     0     0
+.line	361	settable      r0    k6    r8 ; k6 = "_startAlpha"
+.line	362	loadbool      r8     0     0
+.line	362	settable      r0    k1    r8 ; k1 = "_endAlpha"
+.line	363	loadbool      r8     0     0
+.line	363	settable      r0    k2    r8 ; k2 = "_direction"
+.line	364	loadbool      r8     0     0
+.line	364	settable      r0    k3    r8 ; k3 = "_duration"
+.line	365	loadbool      r8     0     0
+.line	365	settable      r0    k9    r8 ; k9 = "_children"
+.line	366	loadbool      r8     0     0
+.line	366	settable      r0   k12    r8 ; k12 = "_isStart"
+.line	367	getupval      r8    u1
+.line	367	gettable      r8    r8   k15 ; k15 = "Create"
+.line	367	move          r9    r0
+.line	367	move         r10    r1
+.line	367	tailcall      r8     3
+.line	367	return        r8     0
+.line	368	return        r0     1
+
+.function	main/f0/f22/f0
+
+.source	null
+.linedefined	319
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"control"	0	21
+.local	"delta"	0	21
+
+.upvalue	"endAlpha"	0	false
+.upvalue	"MathClamp"	0	false
+.upvalue	"diff"	0	false
+.upvalue	"duration"	0	false
+.upvalue	"applyToChildren"	0	false
+
+.constant	k0	"GetAlpha"
+.constant	k1	"SetAlpha"
+.constant	k2	0
+.constant	k3	1
+
+.line	320	self          r2    r0    k0 ; k0 = "GetAlpha"
+.line	320	call          r2     2     2
+.line	320	getupval      r3    u0
+.line	320	le             0    r3    r2
+.line	320	jmp           l8
+.line	321	loadbool      r2     1     0
+.line	321	return        r2     2
+.label	l8
+.line	323	self          r2    r0    k1 ; k1 = "SetAlpha"
+.line	323	getupval      r4    u1
+.line	323	self          r5    r0    k0 ; k0 = "GetAlpha"
+.line	323	call          r5     2     2
+.line	323	getupval      r6    u2
+.line	323	mul           r6    r1    r6
+.line	323	getupval      r7    u3
+.line	323	div           r6    r6    r7
+.line	323	add           r5    r5    r6
+.line	323	loadk         r6    k2 ; k2 = 0
+.line	323	loadk         r7    k3 ; k3 = 1
+.line	323	call          r4     4     2
+.line	323	getupval      r5    u4
+.line	323	call          r2     4     1
+.line	324	return        r0     1
+
+.function	main/f0/f22/f1
+
+.source	null
+.linedefined	326
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"control"	0	21
+.local	"delta"	0	21
+
+.upvalue	"endAlpha"	0	false
+.upvalue	"MathClamp"	0	false
+.upvalue	"diff"	0	false
+.upvalue	"duration"	0	false
+.upvalue	"applyToChildren"	0	false
+
+.constant	k0	"GetAlpha"
+.constant	k1	"SetAlpha"
+.constant	k2	0
+.constant	k3	1
+
+.line	327	self          r2    r0    k0 ; k0 = "GetAlpha"
+.line	327	call          r2     2     2
+.line	327	getupval      r3    u0
+.line	327	le             0    r2    r3
+.line	327	jmp           l8
+.line	328	loadbool      r2     1     0
+.line	328	return        r2     2
+.label	l8
+.line	330	self          r2    r0    k1 ; k1 = "SetAlpha"
+.line	330	getupval      r4    u1
+.line	330	self          r5    r0    k0 ; k0 = "GetAlpha"
+.line	330	call          r5     2     2
+.line	330	getupval      r6    u2
+.line	330	mul           r6    r1    r6
+.line	330	getupval      r7    u3
+.line	330	div           r6    r6    r7
+.line	330	add           r5    r5    r6
+.line	330	loadk         r6    k2 ; k2 = 0
+.line	330	loadk         r7    k3 ; k3 = 1
+.line	330	call          r4     4     2
+.line	330	getupval      r5    u4
+.line	330	call          r2     4     1
+.line	331	return        r0     1
+
+.function	main/f0/f22/f2
+
+.source	null
+.linedefined	335
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	7
+
+.upvalue	"startAlpha"	0	false
+.upvalue	"applyToChildren"	0	false
+.upvalue	"OnStart"	0	false
+
+.constant	k0	"SetAlpha"
+
+.line	336	self          r1    r0    k0 ; k0 = "SetAlpha"
+.line	336	getupval      r3    u0
+.line	336	getupval      r4    u1
+.line	336	call          r1     4     1
+.line	337	getupval      r1    u2
+.line	337	move          r2    r0
+.line	337	call          r1     2     1
+.line	338	return        r0     1
+
+.function	main/f0/f22/f3
+
+.source	null
+.linedefined	341
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	4
+
+.upvalue	"startAlpha"	0	false
+.upvalue	"applyToChildren"	0	false
+
+.constant	k0	"SetAlpha"
+
+.line	342	self          r1    r0    k0 ; k0 = "SetAlpha"
+.line	342	getupval      r3    u0
+.line	342	getupval      r4    u1
+.line	342	call          r1     4     1
+.line	343	return        r0     1
+
+.function	main/f0/f22/f4
+
+.source	null
+.linedefined	350
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	7
+
+.upvalue	"endAlpha"	0	false
+.upvalue	"applyToChildren"	0	false
+.upvalue	"OnFinish"	0	false
+
+.constant	k0	"SetAlpha"
+
+.line	351	self          r1    r0    k0 ; k0 = "SetAlpha"
+.line	351	getupval      r3    u0
+.line	351	getupval      r4    u1
+.line	351	call          r1     4     1
+.line	352	getupval      r1    u2
+.line	352	move          r2    r0
+.line	352	call          r1     2     1
+.line	353	return        r0     1
+
+.function	main/f0/f22/f5
+
+.source	null
+.linedefined	355
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	4
+
+.upvalue	"endAlpha"	0	false
+.upvalue	"applyToChildren"	0	false
+
+.constant	k0	"SetAlpha"
+
+.line	356	self          r1    r0    k0 ; k0 = "SetAlpha"
+.line	356	getupval      r3    u0
+.line	356	getupval      r4    u1
+.line	356	call          r1     4     1
+.line	357	return        r0     1
+
+.function	main/f0/f23
+
+.source	null
+.linedefined	375
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	15
+.local	"color"	0	15
+
+.upvalue	"StringUpper"	0	false
+
+.constant	k0	"iscallable"
+.constant	k1	"_startColor"
+.constant	k2	"_isStart"
+
+.line	376	getglobal     r2    k0 ; k0 = "iscallable"
+.line	376	move          r3    r1
+.line	376	call          r2     2     2
+.line	376	test          r2    r2     0
+.line	376	jmp           l9
+.line	377	move          r2    r1
+.line	377	call          r2     1     2
+.line	377	move          r1    r2
+.label	l9
+.line	379	getupval      r2    u0
+.line	379	move          r3    r1
+.line	379	call          r2     2     2
+.line	379	settable      r0    k1    r2 ; k1 = "_startColor"
+.line	380	loadbool      r2     1     0
+.line	380	settable      r0    k2    r2 ; k2 = "_isStart"
+.line	381	return        r0     2
+.line	382	return        r0     1
+
+.function	main/f0/f24
+
+.source	null
+.linedefined	385
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	13
+.local	"color"	0	13
+
+.upvalue	"StringUpper"	0	false
+
+.constant	k0	"iscallable"
+.constant	k1	"_endColor"
+
+.line	386	getglobal     r2    k0 ; k0 = "iscallable"
+.line	386	move          r3    r1
+.line	386	call          r2     2     2
+.line	386	test          r2    r2     0
+.line	386	jmp           l9
+.line	387	move          r2    r1
+.line	387	call          r2     1     2
+.line	387	move          r1    r2
+.label	l9
+.line	389	getupval      r2    u0
+.line	389	move          r3    r1
+.line	389	call          r2     2     2
+.line	389	settable      r0    k1    r2 ; k1 = "_endColor"
+.line	390	return        r0     2
+.line	391	return        r0     1
+
+.function	main/f0/f25
+
+.source	null
+.linedefined	393
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	9
+.local	"duration"	0	9
+
+.constant	k0	"assert"
+.constant	k1	0
+.constant	k2	"Duration of alpha animation cant be negative or 0"
+.constant	k3	"_duration"
+
+.line	394	getglobal     r2    k0 ; k0 = "assert"
+.line	394	lt             1    k1    r1 ; k1 = 0
+.line	394	jmp           l5
+.line	394	loadbool      r3     0     1
+.label	l5
+.line	394	loadbool      r3     1     0
+.line	394	loadk         r4    k2 ; k2 = "Duration of alpha an" (truncated)
+.line	394	call          r2     3     1
+.line	396	settable      r0    k3    r1 ; k3 = "_duration"
+.line	397	return        r0     2
+.line	398	return        r0     1
+
+.function	main/f0/f26
+
+.source	null
+.linedefined	404
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	29
+.local	"animator"	0	29
+.local	"duration"	1	29
+.local	"_endColor"	2	29
+
+.upvalue	"StringUpper"	0	false
+.upvalue	"ColorUtils"	0	false
+.upvalue	"MathClamp"	0	false
+.upvalue	"MathMin"	0	false
+.upvalue	"MathMax"	0	false
+.upvalue	"MathFloor"	0	false
+.upvalue	"BaseAnimationFactory"	0	false
+
+.constant	k0	"_duration"
+.constant	k1	"_endColor"
+.constant	k2	"_onStart"
+.constant	k3	"_onFrame"
+.constant	k4	"_onFinish"
+.constant	k5	"_startColor"
+.constant	k6	"_isStart"
+.constant	k7	"Create"
+
+.line	405	gettable      r2    r0    k0 ; k0 = "_duration"
+.line	406	gettable      r3    r0    k1 ; k1 = "_endColor"
+.line	439	closure       r4    f0
+.line	439	getupval      r0    u0 ; upvalue declaration
+.line	439	move          r0    r3 ; upvalue declaration
+.line	439	getupval      r0    u1 ; upvalue declaration
+.line	439	move          r0    r2 ; upvalue declaration
+.line	439	settable      r0    k2    r4 ; k2 = "_onStart"
+.line	450	closure       r4    f1
+.line	450	getupval      r0    u2 ; upvalue declaration
+.line	450	getupval      r0    u3 ; upvalue declaration
+.line	450	getupval      r0    u4 ; upvalue declaration
+.line	450	getupval      r0    u1 ; upvalue declaration
+.line	450	getupval      r0    u5 ; upvalue declaration
+.line	450	settable      r0    k3    r4 ; k3 = "_onFrame"
+.line	453	closure       r4    f2
+.line	453	settable      r0    k4    r4 ; k4 = "_onFinish"
+.line	454	loadbool      r4     0     0
+.line	454	settable      r0    k5    r4 ; k5 = "_startColor"
+.line	455	loadbool      r4     0     0
+.line	455	settable      r0    k1    r4 ; k1 = "_endColor"
+.line	456	loadbool      r4     0     0
+.line	456	settable      r0    k6    r4 ; k6 = "_isStart"
+.line	457	getupval      r4    u6
+.line	457	gettable      r4    r4    k7 ; k7 = "Create"
+.line	457	move          r5    r0
+.line	457	move          r6    r1
+.line	457	tailcall      r4     3
+.line	457	return        r4     0
+.line	458	return        r0     1
+
+.function	main/f0/f26/f0
+
+.source	null
+.linedefined	408
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"control"	0	81
+.local	"state"	0	81
+.local	"endColor"	0	81
+.local	"color"	4	81
+
+.upvalue	"StringUpper"	0	false
+.upvalue	"_endColor"	0	false
+.upvalue	"ColorUtils"	0	false
+.upvalue	"duration"	0	false
+
+.constant	k0	"GetColor"
+.constant	k1	"startColor"
+.constant	k2	"alpha"
+.constant	k3	"FF"
+.constant	k4	"sr"
+.constant	k5	"GetRed"
+.constant	k6	"sg"
+.constant	k7	"GetGreen"
+.constant	k8	"sb"
+.constant	k9	"GetBlue"
+.constant	k10	"r"
+.constant	k11	"g"
+.constant	k12	"b"
+.constant	k13	"er"
+.constant	k14	"eg"
+.constant	k15	"eb"
+.constant	k16	"endColor"
+.constant	k17	"duration"
+.constant	k18	"ir"
+.constant	k19	"ig"
+.constant	k20	"ib"
+
+.line	409	getupval      r3    u0
+.line	409	self          r4    r0    k0 ; k0 = "GetColor"
+.line	409	call          r4     2     0
+.line	409	call          r3     0     2
+.line	410	getupval      r4    u0
+.line	410	test          r5    r2     1
+.line	410	jmp           l9
+.line	410	getupval      r5    u1
+.label	l9
+.line	410	call          r4     2     2
+.line	410	move          r2    r4
+.line	412	newtable      r4     0     4
+.line	413	settable      r4    k1    r3 ; k1 = "startColor"
+.line	415	settable      r4    k2    k3 ; k3 = "FF"
+.line	417	getupval      r5    u2
+.line	417	gettable      r5    r5    k5 ; k5 = "GetRed"
+.line	417	move          r6    r3
+.line	417	call          r5     2     2
+.line	417	settable      r4    k4    r5 ; k4 = "sr"
+.line	418	getupval      r5    u2
+.line	418	gettable      r5    r5    k7 ; k7 = "GetGreen"
+.line	418	move          r6    r3
+.line	418	call          r5     2     2
+.line	418	settable      r4    k6    r5 ; k6 = "sg"
+.line	419	getupval      r5    u2
+.line	419	gettable      r5    r5    k9 ; k9 = "GetBlue"
+.line	419	move          r6    r3
+.line	419	call          r5     2     2
+.line	419	settable      r4    k8    r5 ; k8 = "sb"
+.line	421	getupval      r5    u2
+.line	421	gettable      r5    r5    k5 ; k5 = "GetRed"
+.line	421	move          r6    r3
+.line	421	call          r5     2     2
+.line	421	settable      r4   k10    r5 ; k10 = "r"
+.line	422	getupval      r5    u2
+.line	422	gettable      r5    r5    k7 ; k7 = "GetGreen"
+.line	422	move          r6    r3
+.line	422	call          r5     2     2
+.line	422	settable      r4   k11    r5 ; k11 = "g"
+.line	423	getupval      r5    u2
+.line	423	gettable      r5    r5    k9 ; k9 = "GetBlue"
+.line	423	move          r6    r3
+.line	423	call          r5     2     2
+.line	423	settable      r4   k12    r5 ; k12 = "b"
+.line	425	getupval      r5    u2
+.line	425	gettable      r5    r5    k5 ; k5 = "GetRed"
+.line	425	move          r6    r2
+.line	425	call          r5     2     2
+.line	425	settable      r4   k13    r5 ; k13 = "er"
+.line	426	getupval      r5    u2
+.line	426	gettable      r5    r5    k7 ; k7 = "GetGreen"
+.line	426	move          r6    r2
+.line	426	call          r5     2     2
+.line	426	settable      r4   k14    r5 ; k14 = "eg"
+.line	427	getupval      r5    u2
+.line	427	gettable      r5    r5    k9 ; k9 = "GetBlue"
+.line	427	move          r6    r2
+.line	427	call          r5     2     2
+.line	427	settable      r4   k15    r5 ; k15 = "eb"
+.line	429	settable      r4   k16    r2 ; k16 = "endColor"
+.line	431	getupval      r5    u3
+.line	431	settable      r4   k17    r5 ; k17 = "duration"
+.line	432	move          r1    r4
+.line	434	gettable      r4    r1   k13 ; k13 = "er"
+.line	434	gettable      r5    r1    k4 ; k4 = "sr"
+.line	434	sub           r4    r4    r5
+.line	434	getupval      r5    u3
+.line	434	div           r4    r4    r5
+.line	434	settable      r1   k18    r4 ; k18 = "ir"
+.line	435	gettable      r4    r1   k14 ; k14 = "eg"
+.line	435	gettable      r5    r1    k6 ; k6 = "sg"
+.line	435	sub           r4    r4    r5
+.line	435	getupval      r5    u3
+.line	435	div           r4    r4    r5
+.line	435	settable      r1   k19    r4 ; k19 = "ig"
+.line	436	gettable      r4    r1   k15 ; k15 = "eb"
+.line	436	gettable      r5    r1    k8 ; k8 = "sb"
+.line	436	sub           r4    r4    r5
+.line	436	getupval      r5    u3
+.line	436	div           r4    r4    r5
+.line	436	settable      r1   k20    r4 ; k20 = "ib"
+.line	438	return        r1     2
+.line	439	return        r0     1
+
+.function	main/f0/f26/f1
+
+.source	null
+.linedefined	440
+.numparams	3
+.is_vararg	0
+.maxstacksize	9
+
+.local	"control"	0	65
+.local	"delta"	0	65
+.local	"state"	0	65
+.local	"color"	57	65
+
+.upvalue	"MathClamp"	0	false
+.upvalue	"MathMin"	0	false
+.upvalue	"MathMax"	0	false
+.upvalue	"ColorUtils"	0	false
+.upvalue	"MathFloor"	0	false
+
+.constant	k0	"r"
+.constant	k1	"ir"
+.constant	k2	"sr"
+.constant	k3	"er"
+.constant	k4	"g"
+.constant	k5	"ig"
+.constant	k6	"sg"
+.constant	k7	"eg"
+.constant	k8	"b"
+.constant	k9	"ib"
+.constant	k10	"sb"
+.constant	k11	"eb"
+.constant	k12	"ColorRGBA"
+.constant	k13	"endColor"
+.constant	k14	"SetColor"
+
+.line	441	getupval      r3    u0
+.line	441	gettable      r4    r2    k0 ; k0 = "r"
+.line	441	gettable      r5    r2    k1 ; k1 = "ir"
+.line	441	mul           r5    r5    r1
+.line	441	add           r4    r4    r5
+.line	441	getupval      r5    u1
+.line	441	gettable      r6    r2    k2 ; k2 = "sr"
+.line	441	gettable      r7    r2    k3 ; k3 = "er"
+.line	441	call          r5     3     2
+.line	441	getupval      r6    u2
+.line	441	gettable      r7    r2    k2 ; k2 = "sr"
+.line	441	gettable      r8    r2    k3 ; k3 = "er"
+.line	441	call          r6     3     0
+.line	441	call          r3     0     2
+.line	441	settable      r2    k0    r3 ; k0 = "r"
+.line	442	getupval      r3    u0
+.line	442	gettable      r4    r2    k4 ; k4 = "g"
+.line	442	gettable      r5    r2    k5 ; k5 = "ig"
+.line	442	mul           r5    r5    r1
+.line	442	add           r4    r4    r5
+.line	442	getupval      r5    u1
+.line	442	gettable      r6    r2    k6 ; k6 = "sg"
+.line	442	gettable      r7    r2    k7 ; k7 = "eg"
+.line	442	call          r5     3     2
+.line	442	getupval      r6    u2
+.line	442	gettable      r7    r2    k6 ; k6 = "sg"
+.line	442	gettable      r8    r2    k7 ; k7 = "eg"
+.line	442	call          r6     3     0
+.line	442	call          r3     0     2
+.line	442	settable      r2    k4    r3 ; k4 = "g"
+.line	443	getupval      r3    u0
+.line	443	gettable      r4    r2    k8 ; k8 = "b"
+.line	443	gettable      r5    r2    k9 ; k9 = "ib"
+.line	443	mul           r5    r5    r1
+.line	443	add           r4    r4    r5
+.line	443	getupval      r5    u1
+.line	443	gettable      r6    r2   k10 ; k10 = "sb"
+.line	443	gettable      r7    r2   k11 ; k11 = "eb"
+.line	443	call          r5     3     2
+.line	443	getupval      r6    u2
+.line	443	gettable      r7    r2   k10 ; k10 = "sb"
+.line	443	gettable      r8    r2   k11 ; k11 = "eb"
+.line	443	call          r6     3     0
+.line	443	call          r3     0     2
+.line	443	settable      r2    k8    r3 ; k8 = "b"
+.line	445	getupval      r3    u3
+.line	445	gettable      r3    r3   k12 ; k12 = "ColorRGBA"
+.line	445	getupval      r4    u4
+.line	445	gettable      r5    r2    k0 ; k0 = "r"
+.line	445	call          r4     2     2
+.line	445	getupval      r5    u4
+.line	445	gettable      r6    r2    k4 ; k4 = "g"
+.line	445	call          r5     2     2
+.line	445	getupval      r6    u4
+.line	445	gettable      r7    r2    k8 ; k8 = "b"
+.line	445	call          r6     2     0
+.line	445	call          r3     0     2
+.line	446	gettable      r4    r2   k13 ; k13 = "endColor"
+.line	446	eq             0    r3    r4
+.line	446	jmp          l63
+.line	447	loadbool      r4     1     0
+.line	447	return        r4     2
+.label	l63
+.line	449	self          r4    r0   k14 ; k14 = "SetColor"
+.line	449	move          r6    r3
+.line	449	call          r4     3     1
+.line	450	return        r0     1
+
+.function	main/f0/f26/f2
+
+.source	null
+.linedefined	451
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	3
+.local	"state"	0	3
+
+.constant	k0	"SetColor"
+.constant	k1	"endColor"
+
+.line	452	self          r2    r0    k0 ; k0 = "SetColor"
+.line	452	gettable      r4    r1    k1 ; k1 = "endColor"
+.line	452	call          r2     3     1
+.line	453	return        r0     1
+
+.function	main/f0/f27
+
+.source	null
+.linedefined	468
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+.local	"delay"	0	2
+
+.constant	k0	"_delay"
+
+.line	469	settable      r0    k0    r1 ; k0 = "_delay"
+.line	470	return        r0     2
+.line	471	return        r0     1
+
+.function	main/f0/f28
+
+.source	null
+.linedefined	476
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	30
+.local	"animator"	0	30
+.local	"delay"	1	30
+.local	"animation"	4	30
+
+.upvalue	"BaseAnimationFactory"	0	false
+
+.constant	k0	"_delay"
+.constant	k1	"_onFrame"
+.constant	k2	"Create"
+.constant	k3	"OnStart"
+.constant	k4	"OnFrame"
+.constant	k5	"OnFinish"
+
+.line	477	gettable      r2    r0    k0 ; k0 = "_delay"
+.line	479	loadbool      r3     0     0
+.line	479	settable      r0    k0    r3 ; k0 = "_delay"
+.line	480	loadnil       r3    r3
+.line	481	gettable      r4    r0    k1 ; k1 = "_onFrame"
+.line	481	test          r4    r4     0
+.line	481	jmp          l14
+.line	482	getupval      r4    u0
+.line	482	gettable      r4    r4    k2 ; k2 = "Create"
+.line	482	move          r5    r0
+.line	482	move          r6    r1
+.line	482	call          r4     3     2
+.line	482	move          r3    r4
+.label	l14
+.line	486	self          r4    r0    k3 ; k3 = "OnStart"
+.line	488	closure       r6    f0
+.line	488	move          r0    r2 ; upvalue declaration
+.line	488	move          r0    r3 ; upvalue declaration
+.line	486	call          r4     3     2
+.line	489	self          r4    r4    k4 ; k4 = "OnFrame"
+.line	492	closure       r6    f1
+.line	489	call          r4     3     2
+.line	493	self          r4    r4    k5 ; k5 = "OnFinish"
+.line	495	closure       r6    f2
+.line	493	call          r4     3     1
+.line	496	getupval      r4    u0
+.line	496	gettable      r4    r4    k2 ; k2 = "Create"
+.line	496	move          r5    r0
+.line	496	move          r6    r1
+.line	496	tailcall      r4     3
+.line	496	return        r4     0
+.line	497	return        r0     1
+
+.function	main/f0/f28/f0
+
+.source	null
+.linedefined	486
+.numparams	4
+.is_vararg	0
+.maxstacksize	6
+
+.local	"control"	0	11
+.local	"state"	0	11
+.local	"_delay"	0	11
+.local	"_animation"	0	11
+
+.upvalue	"delay"	0	false
+.upvalue	"animation"	0	false
+
+.constant	k0	"time"
+.constant	k1	0
+.constant	k2	"delay"
+.constant	k3	"animation"
+
+.line	487	newtable      r4     0     2
+.line	487	settable      r4    k0    k1 ; k1 = 0
+.line	487	test          r5    r2     1
+.line	487	jmp           l6
+.line	487	getupval      r5    u0
+.label	l6
+.line	487	settable      r4    k2    r5 ; k2 = "delay"
+.line	487	test          r5    r3     1
+.line	487	jmp          l10
+.line	487	getupval      r5    u1
+.label	l10
+.line	487	settable      r4    k3    r5 ; k3 = "animation"
+.line	487	return        r4     2
+.line	488	return        r0     1
+
+.function	main/f0/f28/f1
+
+.source	null
+.linedefined	489
+.numparams	3
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	10
+.local	"delta"	0	10
+.local	"state"	0	10
+
+.constant	k0	"time"
+.constant	k1	"delay"
+
+.line	490	gettable      r3    r2    k0 ; k0 = "time"
+.line	490	add           r3    r3    r1
+.line	490	settable      r2    k0    r3 ; k0 = "time"
+.line	491	gettable      r3    r2    k0 ; k0 = "time"
+.line	491	gettable      r4    r2    k1 ; k1 = "delay"
+.line	491	le             1    r4    r3
+.line	491	jmp           l9
+.line	491	loadbool      r3     0     1
+.label	l9
+.line	491	loadbool      r3     1     0
+.line	491	return        r3     2
+.line	492	return        r0     1
+
+.function	main/f0/f28/f2
+
+.source	null
+.linedefined	493
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	4
+.local	"state"	0	4
+
+.constant	k0	"animation"
+.constant	k1	"Apply"
+
+.line	494	gettable      r2    r1    k0 ; k0 = "animation"
+.line	494	self          r2    r2    k1 ; k1 = "Apply"
+.line	494	move          r4    r0
+.line	494	call          r2     3     1
+.line	495	return        r0     1
+
+.function	main/f0/f29
+
+.source	null
+.linedefined	508
+.numparams	4
+.is_vararg	0
+.maxstacksize	14
+
+.local	"animation"	0	15
+.local	"delay"	0	15
+.local	"controls"	0	15
+.local	"initialDelay"	0	15
+.local	"curDelay"	3	15
+.local	"(for generator)"	6	15
+.local	"(for state)"	6	15
+.local	"i"	6	15
+.local	"control"	6	15
+
+.upvalue	"delayAnimation"	0	false
+
+.constant	k0	0
+.constant	k1	"Apply"
+
+.line	509	test          r4    r3     1
+.line	509	jmp           l4
+.line	509	loadk         r4    k0 ; k0 = 0
+.label	l4
+.line	510	move          r5    r2
+.line	510	loadnil       r6    r8
+.line	510	tforprep      r5   l14
+.label	l7
+.line	511	getupval      r9    u0
+.line	511	self          r9    r9    k1 ; k1 = "Apply"
+.line	511	move         r11    r8
+.line	511	move         r12    r4
+.line	511	move         r13    r0
+.line	511	call          r9     5     1
+.line	512	add           r4    r1    r4
+.label	l14
+.line	510	tforloop      r5     1
+.line	512	jmp           l7
+.line	514	return        r0     1
+
+.function	main/f0/f30
+
+.source	null
+.linedefined	526
+.numparams	4
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	6
+.local	"animation"	0	6
+.local	"delay"	0	6
+.local	"initialDelay"	0	6
+
+.constant	k0	"_delay"
+.constant	k1	"_animation"
+.constant	k2	"_initialDelay"
+.constant	k3	0
+
+.line	527	settable      r0    k0    r2 ; k0 = "_delay"
+.line	528	settable      r0    k1    r1 ; k1 = "_animation"
+.line	529	test          r4    r3     1
+.line	529	jmp           l6
+.line	529	loadk         r4    k3 ; k3 = 0
+.label	l6
+.line	529	settable      r0    k2    r4 ; k2 = "_initialDelay"
+.line	530	return        r0     1
+
+.function	main/f0/f31
+
+.source	null
+.linedefined	534
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	6
+.local	"controls"	0	6
+
+.upvalue	"ApplySequentialAnimation"	0	false
+
+.constant	k0	"_animation"
+.constant	k1	"_delay"
+.constant	k2	"_initialDelay"
+
+.line	535	getupval      r2    u0
+.line	535	gettable      r3    r0    k0 ; k0 = "_animation"
+.line	535	gettable      r4    r0    k1 ; k1 = "_delay"
+.line	535	move          r5    r1
+.line	535	gettable      r6    r0    k2 ; k2 = "_initialDelay"
+.line	535	call          r2     5     1
+.line	536	return        r0     1
+

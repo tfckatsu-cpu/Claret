@@ -1,0 +1,318 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/options/modules/stringselector.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	8
+
+.local	"Group"	4	38
+.local	"UIUtil"	7	38
+.local	"Combo"	11	38
+.local	"LayoutFor"	14	38
+.local	"Contains"	19	38
+
+.constant	k0	"import"
+.constant	k1	"/lua/maui/group.lua"
+.constant	k2	"Group"
+.constant	k3	"/lua/ui/uiutil.lua"
+.constant	k4	"/lua/ui/controls/combo.lua"
+.constant	k5	"Combo"
+.constant	k6	"ReUI"
+.constant	k7	"UI"
+.constant	k8	"FloorLayoutFor"
+.constant	k9	"LINQ"
+.constant	k10	"IPairsEnumerator"
+.constant	k11	"Contains"
+.constant	k12	"StringSelector"
+.constant	k13	"Class"
+.constant	k14	"__init"
+.constant	k15	"__post_init"
+.constant	k16	"InitLayout"
+.constant	k17	"OnDestroy"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "/lua/maui/group.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "Group"
+.line	2	getglobal     r1    k0 ; k0 = "import"
+.line	2	loadk         r2    k3 ; k3 = "/lua/ui/uiutil.lua"
+.line	2	call          r1     2     2
+.line	3	getglobal     r2    k0 ; k0 = "import"
+.line	3	loadk         r3    k4 ; k4 = "/lua/ui/controls/com" (truncated)
+.line	3	call          r2     2     2
+.line	3	gettable      r2    r2    k5 ; k5 = "Combo"
+.line	4	getglobal     r3    k6 ; k6 = "ReUI"
+.line	4	gettable      r3    r3    k7 ; k7 = "UI"
+.line	4	gettable      r3    r3    k8 ; k8 = "FloorLayoutFor"
+.line	7	getglobal     r4    k6 ; k6 = "ReUI"
+.line	7	gettable      r4    r4    k9 ; k9 = "LINQ"
+.line	7	gettable      r4    r4   k10 ; k10 = "IPairsEnumerator"
+.line	7	self          r4    r4   k11 ; k11 = "Contains"
+.line	7	call          r4     2     2
+.line	12	getglobal     r5   k13 ; k13 = "Class"
+.line	12	move          r6    r0
+.line	12	call          r5     2     2
+.line	12	newtable      r6     0     3
+.line	40	closure       r7    f0
+.line	40	move          r0    r0 ; upvalue declaration
+.line	40	move          r0    r1 ; upvalue declaration
+.line	40	move          r0    r2 ; upvalue declaration
+.line	40	move          r0    r4 ; upvalue declaration
+.line	40	settable      r6   k14    r7 ; k14 = "__init"
+.line	44	closure       r7    f1
+.line	44	settable      r6   k15    r7 ; k15 = "__post_init"
+.line	58	closure       r7    f2
+.line	58	move          r0    r3 ; upvalue declaration
+.line	58	settable      r6   k16    r7 ; k16 = "InitLayout"
+.line	62	closure       r7    f3
+.line	62	settable      r6   k17    r7 ; k17 = "OnDestroy"
+.line	13	call          r5     2     2
+.line	64	setglobal     r5   k12 ; k12 = "StringSelector"
+.line	64	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	19
+.numparams	5
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	43
+.local	"parent"	0	43
+.local	"optionVar"	0	43
+.local	"name"	0	43
+.local	"items"	0	43
+.local	"currentItem"	26	43
+.local	"id"	30	43
+
+.upvalue	"Group"	0	false
+.upvalue	"UIUtil"	0	false
+.upvalue	"Combo"	0	false
+.upvalue	"Contains"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_option"
+.constant	k2	"_name"
+.constant	k3	"CreateText"
+.constant	k4	14
+.constant	k5	"Arial"
+.constant	k6	"_combo"
+.constant	k7	13
+.constant	k8	16
+.constant	k9	"OnClick"
+.constant	k10	"Set"
+.constant	k11	1
+.constant	k12	"Save"
+.constant	k13	"AddItems"
+
+.line	20	getupval      r5    u0
+.line	20	gettable      r5    r5    k0 ; k0 = "__init"
+.line	20	move          r6    r0
+.line	20	move          r7    r1
+.line	20	call          r5     3     1
+.line	22	settable      r0    k1    r2 ; k1 = "_option"
+.line	23	getupval      r5    u1
+.line	23	gettable      r5    r5    k3 ; k3 = "CreateText"
+.line	23	move          r6    r0
+.line	23	move          r7    r3
+.line	23	loadk         r8    k4 ; k4 = 14
+.line	23	loadk         r9    k5 ; k5 = "Arial"
+.line	23	call          r5     5     2
+.line	23	settable      r0    k2    r5 ; k2 = "_name"
+.line	24	getupval      r5    u2
+.line	24	move          r6    r0
+.line	24	loadk         r7    k7 ; k7 = 13
+.line	24	loadk         r8    k8 ; k8 = 16
+.line	24	call          r5     4     2
+.line	24	settable      r0    k6    r5 ; k6 = "_combo"
+.line	25	gettable      r5    r0    k6 ; k6 = "_combo"
+.line	28	closure       r6    f0
+.line	28	move          r0    r2 ; upvalue declaration
+.line	28	settable      r5    k9    r6 ; k9 = "OnClick"
+.line	31	move          r5    r2
+.line	31	call          r5     1     2
+.line	33	getupval      r6    u3
+.line	33	move          r7    r4
+.line	33	move          r8    r5
+.line	33	call          r6     3     2
+.line	34	test          r6    r6     1
+.line	34	jmp          l39
+.line	35	self          r7    r2   k10 ; k10 = "Set"
+.line	35	gettable      r9    r4   k11 ; k11 = 1
+.line	35	call          r7     3     1
+.line	36	self          r7    r2   k12 ; k12 = "Save"
+.line	36	call          r7     2     1
+.line	37	loadk         r6   k11 ; k11 = 1
+.label	l39
+.line	39	gettable      r7    r0    k6 ; k6 = "_combo"
+.line	39	self          r7    r7   k13 ; k13 = "AddItems"
+.line	39	move          r9    r4
+.line	39	move         r10    r6
+.line	39	call          r7     4     1
+.line	40	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	25
+.numparams	3
+.is_vararg	0
+.maxstacksize	6
+
+.local	"control"	0	7
+.local	"index"	0	7
+.local	"text"	0	7
+
+.upvalue	"optionVar"	0	false
+
+.constant	k0	"SetItem"
+.constant	k1	"Set"
+
+.line	26	self          r3    r0    k0 ; k0 = "SetItem"
+.line	26	move          r5    r1
+.line	26	call          r3     3     1
+.line	27	getupval      r3    u0
+.line	27	self          r3    r3    k1 ; k1 = "Set"
+.line	27	move          r5    r2
+.line	27	call          r3     3     1
+.line	28	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	42
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	3
+.local	"parent"	0	3
+
+.constant	k0	"InitLayout"
+
+.line	43	self          r2    r0    k0 ; k0 = "InitLayout"
+.line	43	move          r4    r1
+.line	43	call          r2     3     1
+.line	44	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	46
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	30
+.local	"parent"	0	30
+
+.upvalue	"LayoutFor"	0	false
+
+.constant	k0	"_name"
+.constant	k1	"AtLeftTopIn"
+.constant	k2	2
+.constant	k3	"DisableHitTest"
+.constant	k4	"_combo"
+.constant	k5	"Below"
+.constant	k6	"Width"
+.constant	k7	200
+.constant	k8	"Right"
+.constant	k9	"Bottom"
+
+.line	47	getupval      r2    u0
+.line	47	gettable      r3    r0    k0 ; k0 = "_name"
+.line	47	call          r2     2     2
+.line	48	self          r2    r2    k1 ; k1 = "AtLeftTopIn"
+.line	48	move          r4    r0
+.line	48	loadk         r5    k2 ; k2 = 2
+.line	48	call          r2     4     2
+.line	49	self          r2    r2    k3 ; k3 = "DisableHitTest"
+.line	49	call          r2     2     1
+.line	51	getupval      r2    u0
+.line	51	gettable      r3    r0    k4 ; k4 = "_combo"
+.line	51	call          r2     2     2
+.line	52	self          r2    r2    k5 ; k5 = "Below"
+.line	52	gettable      r4    r0    k0 ; k0 = "_name"
+.line	52	loadk         r5    k2 ; k2 = 2
+.line	52	call          r2     4     2
+.line	53	self          r2    r2    k6 ; k6 = "Width"
+.line	53	loadk         r4    k7 ; k7 = 200
+.line	53	call          r2     3     1
+.line	55	getupval      r2    u0
+.line	55	move          r3    r0
+.line	55	call          r2     2     2
+.line	56	self          r2    r2    k8 ; k8 = "Right"
+.line	56	gettable      r4    r0    k4 ; k4 = "_combo"
+.line	56	gettable      r4    r4    k8 ; k8 = "Right"
+.line	56	call          r2     3     2
+.line	57	self          r2    r2    k9 ; k9 = "Bottom"
+.line	57	gettable      r4    r0    k4 ; k4 = "_combo"
+.line	57	gettable      r4    r4    k9 ; k9 = "Bottom"
+.line	57	call          r2     3     1
+.line	58	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	60
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	1
+
+.constant	k0	"_option"
+.constant	k1	nil
+
+.line	61	settable      r0    k0    k1 ; k1 = nil
+.line	62	return        r0     1
+

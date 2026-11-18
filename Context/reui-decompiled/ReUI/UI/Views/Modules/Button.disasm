@@ -1,0 +1,196 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/ui/views/modules/button.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	5
+
+.local	"Bitmap"	4	33
+.local	"_Button"	8	33
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Bitmap"
+.constant	k4	"import"
+.constant	k5	"/lua/maui/button.lua"
+.constant	k6	"Button"
+.constant	k7	"Core"
+.constant	k8	"Class"
+.constant	k9	"__init"
+.constant	k10	"SetNewTextures"
+.constant	k11	"ApplyTextures"
+.constant	k12	"OnDisable"
+.constant	k13	"OnRolloverEvent"
+.constant	k14	"OnEnable"
+.constant	k15	"HandleEvent"
+.constant	k16	"OnClick"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "UI"
+.line	1	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	1	gettable      r0    r0    k3 ; k3 = "Bitmap"
+.line	3	getglobal     r1    k4 ; k4 = "import"
+.line	3	loadk         r2    k5 ; k5 = "/lua/maui/button.lua"
+.line	3	call          r1     2     2
+.line	3	gettable      r1    r1    k6 ; k6 = "Button"
+.line	15	getglobal     r2    k0 ; k0 = "ReUI"
+.line	15	gettable      r2    r2    k7 ; k7 = "Core"
+.line	15	gettable      r2    r2    k8 ; k8 = "Class"
+.line	15	move          r3    r0
+.line	15	call          r2     2     2
+.line	15	newtable      r3     0     4
+.line	40	closure       r4    f0
+.line	40	move          r0    r0 ; upvalue declaration
+.line	40	settable      r3    k9    r4 ; k9 = "__init"
+.line	43	gettable      r4    r1   k10 ; k10 = "SetNewTextures"
+.line	43	settable      r3   k10    r4 ; k10 = "SetNewTextures"
+.line	46	gettable      r4    r1   k11 ; k11 = "ApplyTextures"
+.line	46	settable      r3   k11    r4 ; k11 = "ApplyTextures"
+.line	49	gettable      r4    r1   k12 ; k12 = "OnDisable"
+.line	49	settable      r3   k12    r4 ; k12 = "OnDisable"
+.line	54	closure       r4    f1
+.line	54	settable      r3   k13    r4 ; k13 = "OnRolloverEvent"
+.line	57	gettable      r4    r1   k14 ; k14 = "OnEnable"
+.line	57	settable      r3   k14    r4 ; k14 = "OnEnable"
+.line	59	gettable      r4    r1   k15 ; k15 = "HandleEvent"
+.line	59	settable      r3   k15    r4 ; k15 = "HandleEvent"
+.line	62	closure       r4    f2
+.line	62	settable      r3   k16    r4 ; k16 = "OnClick"
+.line	16	call          r2     2     2
+.line	63	setglobal     r2    k6 ; k6 = "Button"
+.line	63	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	26
+.numparams	9
+.is_vararg	0
+.maxstacksize	13
+
+.local	"self"	0	24
+.local	"parent"	0	24
+.local	"normal"	0	24
+.local	"active"	0	24
+.local	"highlight"	0	24
+.local	"disabled"	0	24
+.local	"clickCue"	0	24
+.local	"rolloverCue"	0	24
+.local	"frameRate"	0	24
+
+.upvalue	"Bitmap"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"mNormal"
+.constant	k2	"mActive"
+.constant	k3	"mHighlight"
+.constant	k4	"mDisabled"
+.constant	k5	"mMouseOver"
+.constant	k6	"mClickCue"
+.constant	k7	"mRolloverCue"
+.constant	k8	"SetFrameRate"
+.constant	k9	"SetLoopPingPongPattern"
+.constant	k10	"Loop"
+
+.line	27	getupval      r9    u0
+.line	27	gettable      r9    r9    k0 ; k0 = "__init"
+.line	27	move         r10    r0
+.line	27	move         r11    r1
+.line	27	move         r12    r2
+.line	27	call          r9     4     1
+.line	28	settable      r0    k1    r2 ; k1 = "mNormal"
+.line	29	settable      r0    k2    r3 ; k2 = "mActive"
+.line	30	settable      r0    k3    r4 ; k3 = "mHighlight"
+.line	31	settable      r0    k4    r5 ; k4 = "mDisabled"
+.line	32	loadbool      r9     0     0
+.line	32	settable      r0    k5    r9 ; k5 = "mMouseOver"
+.line	33	settable      r0    k6    r6 ; k6 = "mClickCue"
+.line	34	settable      r0    k7    r7 ; k7 = "mRolloverCue"
+.line	35	test          r8    r8     0
+.line	35	jmp          l20
+.line	36	self          r9    r0    k8 ; k8 = "SetFrameRate"
+.line	36	move         r11    r8
+.line	36	call          r9     3     1
+.label	l20
+.line	38	self          r9    r0    k9 ; k9 = "SetLoopPingPongPatte" (truncated)
+.line	38	call          r9     2     1
+.line	39	self          r9    r0   k10 ; k10 = "Loop"
+.line	39	loadbool     r11     1     0
+.line	39	call          r9     3     1
+.line	40	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	53
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"state"	0	0
+
+.line	54	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	62
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"modifiers"	0	0
+
+.line	62	return        r0     1
+

@@ -1,0 +1,483 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/observerpanel.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	14
+
+.local	"Group"	4	63
+.local	"Bitmap"	8	63
+.local	"Text"	12	63
+.local	"ColoredIntegerSlider"	16	63
+.local	"options"	20	63
+.local	"obsTextFont"	24	63
+.local	"obsTextSize"	25	63
+.local	"bgColor"	30	63
+.local	"sliderColor"	35	63
+.local	"width"	36	63
+.local	"height"	37	63
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Group"
+.constant	k4	"Bitmap"
+.constant	k5	"Text"
+.constant	k6	"import"
+.constant	k7	"Views/ColoredSlider.lua"
+.constant	k8	"ColoredIntegerSlider"
+.constant	k9	"Options"
+.constant	k10	"Mods"
+.constant	k11	"ReUI.Score"
+.constant	k12	"observer"
+.constant	k13	"font"
+.constant	k14	"Raw"
+.constant	k15	12
+.constant	k16	"player"
+.constant	k17	"color"
+.constant	k18	"bg"
+.constant	k19	"line"
+.constant	k20	300
+.constant	k21	20
+.constant	k22	"ObserverPanel"
+.constant	k23	"Core"
+.constant	k24	"Class"
+.constant	k25	"__init"
+.constant	k26	"InitLayout"
+.constant	k27	"SetGameSpeed"
+.constant	k28	"HandleEvent"
+
+.line	10	getglobal     r0    k0 ; k0 = "ReUI"
+.line	10	gettable      r0    r0    k1 ; k1 = "UI"
+.line	10	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	10	gettable      r0    r0    k3 ; k3 = "Group"
+.line	11	getglobal     r1    k0 ; k0 = "ReUI"
+.line	11	gettable      r1    r1    k1 ; k1 = "UI"
+.line	11	gettable      r1    r1    k2 ; k2 = "Controls"
+.line	11	gettable      r1    r1    k4 ; k4 = "Bitmap"
+.line	12	getglobal     r2    k0 ; k0 = "ReUI"
+.line	12	gettable      r2    r2    k1 ; k1 = "UI"
+.line	12	gettable      r2    r2    k2 ; k2 = "Controls"
+.line	12	gettable      r2    r2    k5 ; k5 = "Text"
+.line	16	getglobal     r3    k6 ; k6 = "import"
+.line	16	loadk         r4    k7 ; k7 = "Views/ColoredSlider." (truncated)
+.line	16	call          r3     2     2
+.line	16	gettable      r3    r3    k8 ; k8 = "ColoredIntegerSlider"
+.line	21	getglobal     r4    k0 ; k0 = "ReUI"
+.line	21	gettable      r4    r4    k9 ; k9 = "Options"
+.line	21	gettable      r4    r4   k10 ; k10 = "Mods"
+.line	21	gettable      r4    r4   k11 ; k11 = "ReUI.Score"
+.line	23	gettable      r5    r4   k12 ; k12 = "observer"
+.line	23	gettable      r5    r5   k13 ; k13 = "font"
+.line	23	self          r5    r5   k14 ; k14 = "Raw"
+.line	23	call          r5     2     2
+.line	24	loadk         r6   k15 ; k15 = 12
+.line	26	gettable      r7    r4   k16 ; k16 = "player"
+.line	26	gettable      r7    r7   k17 ; k17 = "color"
+.line	26	gettable      r7    r7   k18 ; k18 = "bg"
+.line	26	self          r7    r7   k14 ; k14 = "Raw"
+.line	26	call          r7     2     2
+.line	28	gettable      r8    r4   k12 ; k12 = "observer"
+.line	28	gettable      r8    r8   k17 ; k17 = "color"
+.line	28	gettable      r8    r8   k19 ; k19 = "line"
+.line	28	self          r8    r8   k14 ; k14 = "Raw"
+.line	28	call          r8     2     2
+.line	30	loadk         r9   k20 ; k20 = 300
+.line	31	loadk        r10   k21 ; k21 = 20
+.line	41	getglobal    r11    k0 ; k0 = "ReUI"
+.line	41	gettable     r11   r11   k23 ; k23 = "Core"
+.line	41	gettable     r11   r11   k24 ; k24 = "Class"
+.line	41	move         r12    r0
+.line	41	call         r11     2     2
+.line	41	newtable     r12     0     3
+.line	74	closure      r13    f0
+.line	74	move          r0    r0 ; upvalue declaration
+.line	74	move          r0    r1 ; upvalue declaration
+.line	74	move          r0    r3 ; upvalue declaration
+.line	74	move          r0    r8 ; upvalue declaration
+.line	74	move          r0    r2 ; upvalue declaration
+.line	74	move          r0    r5 ; upvalue declaration
+.line	74	move          r0    r6 ; upvalue declaration
+.line	74	settable     r12   k25   r13 ; k25 = "__init"
+.line	108	closure      r13    f1
+.line	108	move          r0    r7 ; upvalue declaration
+.line	108	move          r0   r10 ; upvalue declaration
+.line	108	move          r0    r9 ; upvalue declaration
+.line	108	settable     r12   k26   r13 ; k26 = "InitLayout"
+.line	112	closure      r13    f2
+.line	112	settable     r12   k27   r13 ; k27 = "SetGameSpeed"
+.line	121	closure      r13    f3
+.line	121	settable     r12   k28   r13 ; k28 = "HandleEvent"
+.line	42	call         r11     2     2
+.line	124	setglobal    r11   k22 ; k22 = "ObserverPanel"
+.line	124	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	45
+.numparams	2
+.is_vararg	0
+.maxstacksize	13
+
+.local	"self"	0	57
+.local	"parent"	0	57
+
+.upvalue	"Group"	0	false
+.upvalue	"Bitmap"	0	false
+.upvalue	"ColoredIntegerSlider"	0	false
+.upvalue	"sliderColor"	0	false
+.upvalue	"Text"	0	false
+.upvalue	"obsTextFont"	0	false
+.upvalue	"obsTextSize"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_bg"
+.constant	k2	"_slider"
+.constant	k3	10
+.constant	k4	-10
+.constant	k5	1
+.constant	k6	"ffeeee00"
+.constant	k7	"ffffff00"
+.constant	k8	"ffffbb00"
+.constant	k9	2
+.constant	k10	"OnValueSet"
+.constant	k11	"_speed"
+.constant	k12	"SetFont"
+.constant	k13	"OnValueChanged"
+.constant	k14	"SetValue"
+.constant	k15	0
+.constant	k16	"_observerText"
+.constant	k17	"SetText"
+.constant	k18	"LOC"
+.constant	k19	"<LOC score_0003>Observer"
+
+.line	46	getupval      r2    u0
+.line	46	gettable      r2    r2    k0 ; k0 = "__init"
+.line	46	move          r3    r0
+.line	46	move          r4    r1
+.line	46	call          r2     3     1
+.line	48	getupval      r2    u1
+.line	48	move          r3    r0
+.line	48	call          r2     2     2
+.line	48	settable      r0    k1    r2 ; k1 = "_bg"
+.line	50	getupval      r2    u2
+.line	50	move          r3    r0
+.line	50	loadbool      r4     0     0
+.line	50	loadk         r5    k4 ; k4 = -10
+.line	50	loadk         r6    k3 ; k3 = 10
+.line	50	loadk         r7    k5 ; k5 = 1
+.line	51	getupval      r8    u3
+.line	52	loadk         r9    k6 ; k6 = "ffeeee00"
+.line	53	loadk        r10    k7 ; k7 = "ffffff00"
+.line	54	loadk        r11    k8 ; k8 = "ffffbb00"
+.line	56	loadk        r12    k9 ; k9 = 2
+.line	50	call          r2    11     2
+.line	56	settable      r0    k2    r2 ; k2 = "_slider"
+.line	58	gettable      r2    r0    k2 ; k2 = "_slider"
+.line	60	closure       r3    f0
+.line	60	settable      r2   k10    r3 ; k10 = "OnValueSet"
+.line	62	getupval      r2    u4
+.line	62	move          r3    r0
+.line	62	call          r2     2     2
+.line	62	settable      r0   k11    r2 ; k11 = "_speed"
+.line	63	gettable      r2    r0   k11 ; k11 = "_speed"
+.line	63	self          r2    r2   k12 ; k12 = "SetFont"
+.line	63	getupval      r4    u5
+.line	63	getupval      r5    u6
+.line	63	call          r2     4     1
+.line	65	gettable      r2    r0    k2 ; k2 = "_slider"
+.line	67	closure       r3    f1
+.line	67	move          r0    r0 ; upvalue declaration
+.line	67	settable      r2   k13    r3 ; k13 = "OnValueChanged"
+.line	69	gettable      r2    r0    k2 ; k2 = "_slider"
+.line	69	self          r2    r2   k14 ; k14 = "SetValue"
+.line	69	loadk         r4   k15 ; k15 = 0
+.line	69	call          r2     3     1
+.line	71	getupval      r2    u4
+.line	71	move          r3    r0
+.line	71	call          r2     2     2
+.line	71	settable      r0   k16    r2 ; k16 = "_observerText"
+.line	72	gettable      r2    r0   k16 ; k16 = "_observerText"
+.line	72	self          r2    r2   k17 ; k17 = "SetText"
+.line	72	getglobal     r4   k18 ; k18 = "LOC"
+.line	72	loadk         r5   k19 ; k19 = "<LOC score_0003>Obse" (truncated)
+.line	72	call          r4     2     0
+.line	72	call          r2     0     1
+.line	73	gettable      r2    r0   k16 ; k16 = "_observerText"
+.line	73	self          r2    r2   k12 ; k12 = "SetFont"
+.line	73	getupval      r4    u5
+.line	73	getupval      r5    u6
+.line	73	call          r2     4     1
+.line	74	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	58
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"slider"	0	7
+.local	"newValue"	0	7
+
+.constant	k0	"ConExecute"
+.constant	k1	"WLD_GameSpeed "
+.constant	k2	"tostring"
+
+.line	59	getglobal     r2    k0 ; k0 = "ConExecute"
+.line	59	loadk         r3    k1 ; k1 = "WLD_GameSpeed "
+.line	59	getglobal     r4    k2 ; k2 = "tostring"
+.line	59	move          r5    r1
+.line	59	call          r4     2     2
+.line	59	concat        r3    r3    r4
+.line	59	call          r2     2     1
+.line	60	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	65
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"slider"	0	7
+.local	"newValue"	0	7
+
+.upvalue	"self"	0	false
+
+.constant	k0	"_speed"
+.constant	k1	"SetText"
+.constant	k2	"tostring"
+
+.line	66	getupval      r2    u0
+.line	66	gettable      r2    r2    k0 ; k0 = "_speed"
+.line	66	self          r2    r2    k1 ; k1 = "SetText"
+.line	66	getglobal     r4    k2 ; k2 = "tostring"
+.line	66	move          r5    r1
+.line	66	call          r4     2     0
+.line	66	call          r2     0     1
+.line	67	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	78
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	77
+.local	"layouter"	0	77
+
+.upvalue	"bgColor"	0	false
+.upvalue	"height"	0	false
+.upvalue	"width"	0	false
+
+.constant	k0	"_bg"
+.constant	k1	"Fill"
+.constant	k2	"Color"
+.constant	k3	"DisableHitTest"
+.constant	k4	"_observerText"
+.constant	k5	"AtLeftTopIn"
+.constant	k6	10
+.constant	k7	2
+.constant	k8	"Over"
+.constant	k9	"_slider"
+.constant	k10	"AtVerticalCenterIn"
+.constant	k11	"AtRightIn"
+.constant	k12	25
+.constant	k13	"RightOf"
+.constant	k14	5
+.constant	k15	"Height"
+.constant	k16	4
+.constant	k17	"_speed"
+.constant	k18	"Width"
+.constant	k19	"Min"
+.constant	k20	"GetParent"
+
+.line	80	move          r2    r1
+.line	80	gettable      r3    r0    k0 ; k0 = "_bg"
+.line	80	call          r2     2     2
+.line	81	self          r2    r2    k1 ; k1 = "Fill"
+.line	81	move          r4    r0
+.line	81	call          r2     3     2
+.line	82	self          r2    r2    k2 ; k2 = "Color"
+.line	82	getupval      r4    u0
+.line	82	call          r2     3     2
+.line	83	self          r2    r2    k3 ; k3 = "DisableHitTest"
+.line	83	call          r2     2     1
+.line	86	move          r2    r1
+.line	86	gettable      r3    r0    k4 ; k4 = "_observerText"
+.line	86	call          r2     2     2
+.line	87	self          r2    r2    k5 ; k5 = "AtLeftTopIn"
+.line	87	move          r4    r0
+.line	87	loadk         r5    k6 ; k6 = 10
+.line	87	loadk         r6    k7 ; k7 = 2
+.line	87	call          r2     5     2
+.line	88	self          r2    r2    k8 ; k8 = "Over"
+.line	88	move          r4    r0
+.line	88	loadk         r5    k6 ; k6 = 10
+.line	88	call          r2     4     2
+.line	89	self          r2    r2    k3 ; k3 = "DisableHitTest"
+.line	89	call          r2     2     1
+.line	91	move          r2    r1
+.line	91	gettable      r3    r0    k9 ; k9 = "_slider"
+.line	91	call          r2     2     2
+.line	92	self          r2    r2   k10 ; k10 = "AtVerticalCenterIn"
+.line	92	move          r4    r0
+.line	92	call          r2     3     2
+.line	93	self          r2    r2   k11 ; k11 = "AtRightIn"
+.line	93	move          r4    r0
+.line	93	loadk         r5   k12 ; k12 = 25
+.line	93	call          r2     4     2
+.line	94	self          r2    r2   k13 ; k13 = "RightOf"
+.line	94	gettable      r4    r0    k4 ; k4 = "_observerText"
+.line	94	loadk         r5   k14 ; k14 = 5
+.line	94	call          r2     4     2
+.line	95	self          r2    r2   k15 ; k15 = "Height"
+.line	95	getupval      r4    u1
+.line	95	sub           r4    r4   k16 ; k16 = 4
+.line	95	call          r2     3     2
+.line	96	self          r2    r2    k8 ; k8 = "Over"
+.line	96	move          r4    r0
+.line	96	loadk         r5    k6 ; k6 = 10
+.line	96	call          r2     4     1
+.line	98	move          r2    r1
+.line	98	gettable      r3    r0   k17 ; k17 = "_speed"
+.line	98	call          r2     2     2
+.line	99	self          r2    r2   k10 ; k10 = "AtVerticalCenterIn"
+.line	99	move          r4    r0
+.line	99	call          r2     3     2
+.line	100	self          r2    r2   k13 ; k13 = "RightOf"
+.line	100	gettable      r4    r0    k9 ; k9 = "_slider"
+.line	100	loadk         r5   k14 ; k14 = 5
+.line	100	call          r2     4     2
+.line	101	self          r2    r2    k8 ; k8 = "Over"
+.line	101	move          r4    r0
+.line	101	loadk         r5    k6 ; k6 = 10
+.line	101	call          r2     4     2
+.line	102	self          r2    r2    k3 ; k3 = "DisableHitTest"
+.line	102	call          r2     2     1
+.line	104	move          r2    r1
+.line	104	move          r3    r0
+.line	104	call          r2     2     2
+.line	105	self          r2    r2   k18 ; k18 = "Width"
+.line	105	self          r4    r1   k19 ; k19 = "Min"
+.line	105	self          r6    r0   k20 ; k20 = "GetParent"
+.line	105	call          r6     2     2
+.line	105	gettable      r6    r6   k18 ; k18 = "Width"
+.line	105	getupval      r7    u2
+.line	105	call          r4     4     0
+.line	105	call          r2     0     2
+.line	106	self          r2    r2   k15 ; k15 = "Height"
+.line	106	getupval      r4    u1
+.line	106	call          r2     3     1
+.line	108	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	110
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"newSpeed"	0	4
+
+.constant	k0	"_slider"
+.constant	k1	"SetValue"
+
+.line	111	gettable      r2    r0    k0 ; k0 = "_slider"
+.line	111	self          r2    r2    k1 ; k1 = "SetValue"
+.line	111	move          r4    r1
+.line	111	call          r2     3     1
+.line	112	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	114
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	14
+.local	"event"	0	14
+
+.constant	k0	"Type"
+.constant	k1	"ButtonPress"
+.constant	k2	"Modifiers"
+.constant	k3	"Shift"
+.constant	k4	"Ctrl"
+.constant	k5	"ConExecute"
+.constant	k6	"SetFocusArmy -1"
+
+.line	115	gettable      r2    r1    k0 ; k0 = "Type"
+.line	115	eq             0    r2    k1 ; k1 = "ButtonPress"
+.line	115	jmp          l15
+.line	116	gettable      r2    r1    k2 ; k2 = "Modifiers"
+.line	116	gettable      r2    r2    k3 ; k3 = "Shift"
+.line	117	test          r2    r2     1
+.line	117	jmp          l15
+.line	117	gettable      r2    r1    k2 ; k2 = "Modifiers"
+.line	117	gettable      r2    r2    k4 ; k4 = "Ctrl"
+.line	117	test          r2    r2     1
+.line	117	jmp          l15
+.line	119	getglobal     r2    k5 ; k5 = "ConExecute"
+.line	119	loadk         r3    k6 ; k6 = "SetFocusArmy -1"
+.line	119	call          r2     2     1
+.label	l15
+.line	121	return        r0     1
+

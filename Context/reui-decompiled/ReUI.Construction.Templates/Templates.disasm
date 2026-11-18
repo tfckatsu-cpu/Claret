@@ -1,0 +1,2795 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.construction.templates/templates.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	14
+
+.constant	k0	"ReUI"
+.constant	k1	"Require"
+.constant	k2	"ReUI.Core >= 1.0.0"
+.constant	k3	"ReUI.LINQ >= 1.4.0"
+.constant	k4	"ReUI.UI >= 1.4.0"
+.constant	k5	"ReUI.UI.Color >= 1.0.0"
+.constant	k6	"ReUI.UI.Animation >= 1.1.0"
+.constant	k7	"ReUI.UI.Controls >= 1.0.0"
+.constant	k8	"ReUI.UI.Views >= 1.2.0"
+.constant	k9	"ReUI.UI.Views.Grid >= 1.1.0"
+.constant	k10	"ReUI.Options >= 1.0.0"
+.constant	k11	"ReUI.Units >= 1.0.0"
+.constant	k12	"ReUI.Units.Enhancements >= 1.2.0"
+.constant	k13	"ReUI.Construction >= 1.0.0"
+.constant	k14	"Main"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "Require"
+.line	1	newtable      r1    14     0
+.line	3	loadk         r2    k2 ; k2 = "ReUI.Core >= 1.0.0"
+.line	4	loadk         r3    k3 ; k3 = "ReUI.LINQ >= 1.4.0"
+.line	5	loadk         r4    k4 ; k4 = "ReUI.UI >= 1.4.0"
+.line	6	loadk         r5    k5 ; k5 = "ReUI.UI.Color >= 1.0" (truncated)
+.line	7	loadk         r6    k6 ; k6 = "ReUI.UI.Animation >=" (truncated)
+.line	8	loadk         r7    k7 ; k7 = "ReUI.UI.Controls >= " (truncated)
+.line	9	loadk         r8    k8 ; k8 = "ReUI.UI.Views >= 1.2" (truncated)
+.line	10	loadk         r9    k9 ; k9 = "ReUI.UI.Views.Grid >" (truncated)
+.line	11	loadk        r10   k10 ; k10 = "ReUI.Options >= 1.0." (truncated)
+.line	12	loadk        r11   k11 ; k11 = "ReUI.Units >= 1.0.0"
+.line	13	loadk        r12   k12 ; k12 = "ReUI.Units.Enhanceme" (truncated)
+.line	15	loadk        r13   k13 ; k13 = "ReUI.Construction >=" (truncated)
+.line	15	setlist       r1    11
+.line	2	call          r0     2     1
+.line	744	closure       r0    f0
+.line	17	setglobal     r0   k14 ; k14 = "Main"
+.line	744	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	17
+.numparams	0
+.is_vararg	0
+.maxstacksize	45
+
+.local	"Templates"	3	368
+.local	"FactoryTemplates"	6	368
+.local	"CommandMode"	9	368
+.local	"UIUtil"	12	368
+.local	"Edit"	16	368
+.local	"AItemComponent"	22	368
+.local	"ASelectionHandler"	28	368
+.local	"Enumerate"	31	368
+.local	"IPairsEnumerator"	34	368
+.local	"PairsEnumerator"	37	368
+.local	"Bitmap"	41	368
+.local	"Text"	45	368
+.local	"CheckBox"	49	368
+.local	"Group"	53	368
+.local	"ToSet"	55	368
+.local	"Contains"	57	368
+.local	"FactoryTemplatePreview"	61	368
+.local	"BuildTemplatePreview"	65	368
+.local	"PREFIXES"	94	368
+.local	"ConvertToBuildable"	97	368
+.local	"ConvertBuildTemplate"	99	368
+.local	"CanBuildTemplate"	101	368
+.local	"GetAvailableFactoryTemplates"	102	368
+.local	"IssueFactoryTemplate"	103	368
+.local	"options"	107	368
+.local	"templateNameLength"	108	368
+.local	"TemplateComponentBase"	130	368
+.local	"ClearBuildPreview"	131	368
+.local	"ClearFactoryPreview"	132	368
+.local	"BaseTemplateEditMenu"	160	368
+.local	"BuildTemplateEditMenu"	173	368
+.local	"FactoryTemplateEditMenu"	186	368
+.local	"CreateEditMenu"	187	368
+.local	"CloseEditMenu"	188	368
+.local	"BuildTemplatesHandler"	228	368
+.local	"FactoryTemplatesHandler"	267	368
+.local	"BuildTemplateBehavior"	283	368
+.local	"FactoryTemplateBehavior"	299	368
+.local	"(for generator)"	315	322
+.local	"(for state)"	315	322
+.local	"_"	315	322
+.local	"handler"	315	322
+
+.constant	k0	"import"
+.constant	k1	"/lua/ui/game/build_templates.lua"
+.constant	k2	"/lua/ui/templates_factory.lua"
+.constant	k3	"/lua/ui/game/commandmode.lua"
+.constant	k4	"/lua/ui/uiutil.lua"
+.constant	k5	"/lua/maui/edit.lua"
+.constant	k6	"Edit"
+.constant	k7	"ReUI"
+.constant	k8	"UI"
+.constant	k9	"Views"
+.constant	k10	"Grid"
+.constant	k11	"Abstract"
+.constant	k12	"AItemComponent"
+.constant	k13	"ASelectionHandler"
+.constant	k14	"LINQ"
+.constant	k15	"Enumerate"
+.constant	k16	"IPairsEnumerator"
+.constant	k17	"PairsEnumerator"
+.constant	k18	"Controls"
+.constant	k19	"Bitmap"
+.constant	k20	"Text"
+.constant	k21	"CheckBox"
+.constant	k22	"Group"
+.constant	k23	"ToSet"
+.constant	k24	"Contains"
+.constant	k25	"FactoryTemplatePreview.lua"
+.constant	k26	"FactoryTemplatePreview"
+.constant	k27	"BuildTemplatePreview.lua"
+.constant	k28	"BuildTemplatePreview"
+.constant	k29	"aeon"
+.constant	k30	"ua"
+.constant	k31	"xa"
+.constant	k32	"da"
+.constant	k33	"za"
+.constant	k34	"uef"
+.constant	k35	"ue"
+.constant	k36	"xe"
+.constant	k37	"de"
+.constant	k38	"ze"
+.constant	k39	"cybran"
+.constant	k40	"ur"
+.constant	k41	"xr"
+.constant	k42	"dr"
+.constant	k43	"zr"
+.constant	k44	"seraphim"
+.constant	k45	"xs"
+.constant	k46	"us"
+.constant	k47	"ds"
+.constant	k48	"zs"
+.constant	k49	"Options"
+.constant	k50	"Mods"
+.constant	k51	"ReUI.Construction.Templates"
+.constant	k52	"templateNameLength"
+.constant	k53	"Bind"
+.constant	k54	"Core"
+.constant	k55	"Class"
+.constant	k56	"Create"
+.constant	k57	"Enable"
+.constant	k58	"Disable"
+.constant	k59	"Destroy"
+.constant	k60	"__init"
+.constant	k61	"InitLayout"
+.constant	k62	"SetData"
+.constant	k63	"HandleEvent"
+.constant	k64	"OnNameChanged"
+.constant	k65	"OnDelete"
+.constant	k66	"Close"
+.constant	k67	"OnClose"
+.constant	k68	"Name"
+.constant	k69	"BuildTemplatesHandler"
+.constant	k70	"OnInit"
+.constant	k71	"Update"
+.constant	k72	"OnDestroy"
+.constant	k73	"ComponentClass"
+.constant	k74	"ClearPreview"
+.constant	k75	"CreatePreview"
+.constant	k76	"FactoryTemplatesHandler"
+.constant	k77	"OnAttach"
+.constant	k78	"OnDetach"
+.constant	k79	"OnChecked"
+.constant	k80	"OnUpdate"
+.constant	k81	"Construction"
+.constant	k82	"Panel"
+.constant	k83	"Actions"
+.constant	k84	"build_template"
+.constant	k85	"factory_template"
+.constant	k86	"PrimaryHandlers"
+.constant	k87	"tab"
+.constant	k88	"selection"
+.constant	k89	"actions"
+.constant	k90	1
+.constant	k91	"table"
+.constant	k92	"insert"
+.constant	k93	"TechTabs"
+.constant	k94	"name"
+.constant	k95	"BUILD_TEMPLATES"
+.constant	k96	"file"
+.constant	k97	"/game/construct-tech_btn/template_btn_"
+.constant	k98	"BuildTemplates"
+.constant	k99	"construction"
+.constant	k100	"displayMode"
+.constant	k101	"grid"
+.constant	k102	"repeatBuild"
+.constant	k103	"pause"
+.constant	k104	"handler"
+.constant	k105	"FactoryTemplates"
+
+.line	18	getglobal     r0    k0 ; k0 = "import"
+.line	18	loadk         r1    k1 ; k1 = "/lua/ui/game/build_t" (truncated)
+.line	18	call          r0     2     2
+.line	19	getglobal     r1    k0 ; k0 = "import"
+.line	19	loadk         r2    k2 ; k2 = "/lua/ui/templates_fa" (truncated)
+.line	19	call          r1     2     2
+.line	20	getglobal     r2    k0 ; k0 = "import"
+.line	20	loadk         r3    k3 ; k3 = "/lua/ui/game/command" (truncated)
+.line	20	call          r2     2     2
+.line	21	getglobal     r3    k0 ; k0 = "import"
+.line	21	loadk         r4    k4 ; k4 = "/lua/ui/uiutil.lua"
+.line	21	call          r3     2     2
+.line	22	getglobal     r4    k0 ; k0 = "import"
+.line	22	loadk         r5    k5 ; k5 = "/lua/maui/edit.lua"
+.line	22	call          r4     2     2
+.line	22	gettable      r4    r4    k6 ; k6 = "Edit"
+.line	24	getglobal     r5    k7 ; k7 = "ReUI"
+.line	24	gettable      r5    r5    k8 ; k8 = "UI"
+.line	24	gettable      r5    r5    k9 ; k9 = "Views"
+.line	24	gettable      r5    r5   k10 ; k10 = "Grid"
+.line	24	gettable      r5    r5   k11 ; k11 = "Abstract"
+.line	24	gettable      r5    r5   k12 ; k12 = "AItemComponent"
+.line	25	getglobal     r6    k7 ; k7 = "ReUI"
+.line	25	gettable      r6    r6    k8 ; k8 = "UI"
+.line	25	gettable      r6    r6    k9 ; k9 = "Views"
+.line	25	gettable      r6    r6   k10 ; k10 = "Grid"
+.line	25	gettable      r6    r6   k11 ; k11 = "Abstract"
+.line	25	gettable      r6    r6   k13 ; k13 = "ASelectionHandler"
+.line	28	getglobal     r7    k7 ; k7 = "ReUI"
+.line	28	gettable      r7    r7   k14 ; k14 = "LINQ"
+.line	28	gettable      r7    r7   k15 ; k15 = "Enumerate"
+.line	29	getglobal     r8    k7 ; k7 = "ReUI"
+.line	29	gettable      r8    r8   k14 ; k14 = "LINQ"
+.line	29	gettable      r8    r8   k16 ; k16 = "IPairsEnumerator"
+.line	30	getglobal     r9    k7 ; k7 = "ReUI"
+.line	30	gettable      r9    r9   k14 ; k14 = "LINQ"
+.line	30	gettable      r9    r9   k17 ; k17 = "PairsEnumerator"
+.line	33	getglobal    r10    k7 ; k7 = "ReUI"
+.line	33	gettable     r10   r10    k8 ; k8 = "UI"
+.line	33	gettable     r10   r10   k18 ; k18 = "Controls"
+.line	33	gettable     r10   r10   k19 ; k19 = "Bitmap"
+.line	34	getglobal    r11    k7 ; k7 = "ReUI"
+.line	34	gettable     r11   r11    k8 ; k8 = "UI"
+.line	34	gettable     r11   r11   k18 ; k18 = "Controls"
+.line	34	gettable     r11   r11   k20 ; k20 = "Text"
+.line	35	getglobal    r12    k7 ; k7 = "ReUI"
+.line	35	gettable     r12   r12    k8 ; k8 = "UI"
+.line	35	gettable     r12   r12   k18 ; k18 = "Controls"
+.line	35	gettable     r12   r12   k21 ; k21 = "CheckBox"
+.line	36	getglobal    r13    k7 ; k7 = "ReUI"
+.line	36	gettable     r13   r13    k8 ; k8 = "UI"
+.line	36	gettable     r13   r13   k18 ; k18 = "Controls"
+.line	36	gettable     r13   r13   k22 ; k22 = "Group"
+.line	38	self         r14    r8   k23 ; k23 = "ToSet"
+.line	38	call         r14     2     2
+.line	39	self         r15    r8   k24 ; k24 = "Contains"
+.line	39	call         r15     2     2
+.line	41	getglobal    r16    k0 ; k0 = "import"
+.line	41	loadk        r17   k25 ; k25 = "FactoryTemplatePrevi" (truncated)
+.line	41	call         r16     2     2
+.line	41	gettable     r16   r16   k26 ; k26 = "FactoryTemplatePrevi" (truncated)
+.line	42	getglobal    r17    k0 ; k0 = "import"
+.line	42	loadk        r18   k27 ; k27 = "BuildTemplatePreview" (truncated)
+.line	42	call         r17     2     2
+.line	42	gettable     r17   r17   k28 ; k28 = "BuildTemplatePreview"
+.line	44	newtable     r18     0     0
+.line	45	newtable     r19     4     0
+.line	45	loadk        r20   k30 ; k30 = "ua"
+.line	45	loadk        r21   k31 ; k31 = "xa"
+.line	45	loadk        r22   k32 ; k32 = "da"
+.line	45	loadk        r23   k33 ; k33 = "za"
+.line	45	setlist      r19     3
+.line	45	settable     r18   k29   r19 ; k29 = "aeon"
+.line	46	newtable     r19     4     0
+.line	46	loadk        r20   k35 ; k35 = "ue"
+.line	46	loadk        r21   k36 ; k36 = "xe"
+.line	46	loadk        r22   k37 ; k37 = "de"
+.line	46	loadk        r23   k38 ; k38 = "ze"
+.line	46	setlist      r19     3
+.line	46	settable     r18   k34   r19 ; k34 = "uef"
+.line	47	newtable     r19     4     0
+.line	47	loadk        r20   k40 ; k40 = "ur"
+.line	47	loadk        r21   k41 ; k41 = "xr"
+.line	47	loadk        r22   k42 ; k42 = "dr"
+.line	47	loadk        r23   k43 ; k43 = "zr"
+.line	47	setlist      r19     3
+.line	47	settable     r18   k39   r19 ; k39 = "cybran"
+.line	48	newtable     r19     4     0
+.line	48	loadk        r20   k45 ; k45 = "xs"
+.line	48	loadk        r21   k46 ; k46 = "us"
+.line	48	loadk        r22   k47 ; k47 = "ds"
+.line	48	loadk        r23   k48 ; k48 = "zs"
+.line	48	setlist      r19     3
+.line	48	settable     r18   k44   r19 ; k44 = "seraphim"
+.line	78	closure      r19    f0
+.line	78	move          r0   r18 ; upvalue declaration
+.line	78	move          r0   r15 ; upvalue declaration
+.line	92	closure      r20    f1
+.line	92	move          r0   r19 ; upvalue declaration
+.line	107	closure      r21    f2
+.line	107	move          r0   r19 ; upvalue declaration
+.line	129	closure      r22    f3
+.line	136	closure      r23    f4
+.line	138	getglobal    r24    k7 ; k7 = "ReUI"
+.line	138	gettable     r24   r24   k49 ; k49 = "Options"
+.line	138	gettable     r24   r24   k50 ; k50 = "Mods"
+.line	138	gettable     r24   r24   k51 ; k51 = "ReUI.Construction.Te" (truncated)
+.line	140	loadnil      r25   r25
+.line	141	gettable     r26   r24   k52 ; k52 = "templateNameLength"
+.line	141	self         r26   r26   k53 ; k53 = "Bind"
+.line	143	closure      r28    f5
+.line	143	move          r0   r25 ; upvalue declaration
+.line	141	call         r26     3     1
+.line	152	getglobal    r26    k7 ; k7 = "ReUI"
+.line	152	gettable     r26   r26   k54 ; k54 = "Core"
+.line	152	gettable     r26   r26   k55 ; k55 = "Class"
+.line	152	move         r27    r5
+.line	152	call         r26     2     2
+.line	152	newtable     r27     0     3
+.line	168	closure      r28    f6
+.line	168	move          r0    r3 ; upvalue declaration
+.line	168	settable     r27   k56   r28 ; k56 = "Create"
+.line	182	closure      r28    f7
+.line	182	move          r0   r25 ; upvalue declaration
+.line	182	settable     r27   k57   r28 ; k57 = "Enable"
+.line	190	closure      r28    f8
+.line	190	settable     r27   k58   r28 ; k58 = "Disable"
+.line	197	closure      r28    f9
+.line	197	settable     r27   k59   r28 ; k59 = "Destroy"
+.line	153	call         r26     2     2
+.line	206	closure      r27   f10
+.line	214	closure      r28   f11
+.line	223	getglobal    r29    k7 ; k7 = "ReUI"
+.line	223	gettable     r29   r29   k54 ; k54 = "Core"
+.line	223	gettable     r29   r29   k55 ; k55 = "Class"
+.line	223	move         r30   r13
+.line	223	call         r29     2     2
+.line	223	newtable     r30     0     4
+.line	249	closure      r31   f12
+.line	249	move          r0   r13 ; upvalue declaration
+.line	249	move          r0   r11 ; upvalue declaration
+.line	249	move          r0    r4 ; upvalue declaration
+.line	249	move          r0    r3 ; upvalue declaration
+.line	249	settable     r30   k60   r31 ; k60 = "__init"
+.line	288	closure      r31   f13
+.line	288	move          r0    r3 ; upvalue declaration
+.line	288	settable     r30   k61   r31 ; k61 = "InitLayout"
+.line	295	closure      r31   f14
+.line	295	settable     r30   k62   r31 ; k62 = "SetData"
+.line	299	closure      r31   f15
+.line	299	settable     r30   k63   r31 ; k63 = "HandleEvent"
+.line	304	closure      r31   f16
+.line	304	settable     r30   k64   r31 ; k64 = "OnNameChanged"
+.line	308	closure      r31   f17
+.line	308	settable     r30   k65   r31 ; k65 = "OnDelete"
+.line	313	closure      r31   f18
+.line	313	settable     r30   k66   r31 ; k66 = "Close"
+.line	318	closure      r31   f19
+.line	318	settable     r30   k67   r31 ; k67 = "OnClose"
+.line	224	call         r29     2     2
+.line	323	getglobal    r30    k7 ; k7 = "ReUI"
+.line	323	gettable     r30   r30   k54 ; k54 = "Core"
+.line	323	gettable     r30   r30   k55 ; k55 = "Class"
+.line	323	move         r31   r29
+.line	323	call         r30     2     2
+.line	323	newtable     r31     0     2
+.line	330	closure      r32   f20
+.line	330	move          r0    r0 ; upvalue declaration
+.line	330	settable     r31   k64   r32 ; k64 = "OnNameChanged"
+.line	337	closure      r32   f21
+.line	337	move          r0    r0 ; upvalue declaration
+.line	337	settable     r31   k65   r32 ; k65 = "OnDelete"
+.line	324	call         r30     2     2
+.line	342	getglobal    r31    k7 ; k7 = "ReUI"
+.line	342	gettable     r31   r31   k54 ; k54 = "Core"
+.line	342	gettable     r31   r31   k55 ; k55 = "Class"
+.line	342	move         r32   r29
+.line	342	call         r31     2     2
+.line	342	newtable     r32     0     2
+.line	349	closure      r33   f22
+.line	349	move          r0    r1 ; upvalue declaration
+.line	349	settable     r32   k64   r33 ; k64 = "OnNameChanged"
+.line	356	closure      r33   f23
+.line	356	move          r0    r1 ; upvalue declaration
+.line	356	settable     r32   k65   r33 ; k65 = "OnDelete"
+.line	343	call         r31     2     2
+.line	369	closure      r32   f24
+.line	377	closure      r33   f25
+.line	380	getglobal    r34    k7 ; k7 = "ReUI"
+.line	380	gettable     r34   r34   k54 ; k54 = "Core"
+.line	380	gettable     r34   r34   k55 ; k55 = "Class"
+.line	380	move         r35    r6
+.line	380	call         r34     2     2
+.line	380	newtable     r35     0     3
+.line	382	settable     r35   k68   k69 ; k69 = "BuildTemplatesHandle" (truncated)
+.line	387	closure      r36   f26
+.line	387	settable     r35   k70   r36 ; k70 = "OnInit"
+.line	434	closure      r36   f27
+.line	434	move          r0   r33 ; upvalue declaration
+.line	434	move          r0   r27 ; upvalue declaration
+.line	434	move          r0    r0 ; upvalue declaration
+.line	434	move          r0   r14 ; upvalue declaration
+.line	434	move          r0   r21 ; upvalue declaration
+.line	434	move          r0   r20 ; upvalue declaration
+.line	434	settable     r35   k71   r36 ; k71 = "Update"
+.line	438	closure      r36   f28
+.line	438	settable     r35   k72   r36 ; k72 = "OnDestroy"
+.line	442	getglobal    r36    k7 ; k7 = "ReUI"
+.line	442	gettable     r36   r36   k54 ; k54 = "Core"
+.line	442	gettable     r36   r36   k55 ; k55 = "Class"
+.line	442	move         r37   r26
+.line	442	call         r36     2     2
+.line	442	newtable     r37     0     2
+.line	464	closure      r38   f29
+.line	464	move          r0    r2 ; upvalue declaration
+.line	464	move          r0   r32 ; upvalue declaration
+.line	464	move          r0   r30 ; upvalue declaration
+.line	464	move          r0   r24 ; upvalue declaration
+.line	464	settable     r37   k63   r38 ; k63 = "HandleEvent"
+.line	469	closure      r38   f30
+.line	469	move          r0   r27 ; upvalue declaration
+.line	469	settable     r37   k74   r38 ; k74 = "ClearPreview"
+.line	480	closure      r38   f31
+.line	480	move          r0   r17 ; upvalue declaration
+.line	480	settable     r37   k75   r38 ; k75 = "CreatePreview"
+.line	443	call         r36     2     2
+.line	481	settable     r35   k73   r36 ; k73 = "ComponentClass"
+.line	381	call         r34     2     2
+.line	486	getglobal    r35    k7 ; k7 = "ReUI"
+.line	486	gettable     r35   r35   k54 ; k54 = "Core"
+.line	486	gettable     r35   r35   k55 ; k55 = "Class"
+.line	486	move         r36    r6
+.line	486	call         r35     2     2
+.line	486	newtable     r36     0     3
+.line	488	settable     r36   k68   k76 ; k76 = "FactoryTemplatesHand" (truncated)
+.line	493	closure      r37   f32
+.line	493	settable     r36   k70   r37 ; k70 = "OnInit"
+.line	532	closure      r37   f33
+.line	532	move          r0   r33 ; upvalue declaration
+.line	532	move          r0   r28 ; upvalue declaration
+.line	532	move          r0    r1 ; upvalue declaration
+.line	532	move          r0   r14 ; upvalue declaration
+.line	532	move          r0   r22 ; upvalue declaration
+.line	532	settable     r36   k71   r37 ; k71 = "Update"
+.line	536	closure      r37   f34
+.line	536	settable     r36   k72   r37 ; k72 = "OnDestroy"
+.line	539	getglobal    r37    k7 ; k7 = "ReUI"
+.line	539	gettable     r37   r37   k54 ; k54 = "Core"
+.line	539	gettable     r37   r37   k55 ; k55 = "Class"
+.line	539	move         r38   r26
+.line	539	call         r37     2     2
+.line	539	newtable     r38     0     2
+.line	559	closure      r39   f35
+.line	559	move          r0   r23 ; upvalue declaration
+.line	559	move          r0   r32 ; upvalue declaration
+.line	559	move          r0   r31 ; upvalue declaration
+.line	559	move          r0   r24 ; upvalue declaration
+.line	559	settable     r38   k63   r39 ; k63 = "HandleEvent"
+.line	564	closure      r39   f36
+.line	564	move          r0   r28 ; upvalue declaration
+.line	564	settable     r38   k74   r39 ; k74 = "ClearPreview"
+.line	576	closure      r39   f37
+.line	576	move          r0   r16 ; upvalue declaration
+.line	576	settable     r38   k75   r39 ; k75 = "CreatePreview"
+.line	540	call         r37     2     2
+.line	577	settable     r36   k73   r37 ; k73 = "ComponentClass"
+.line	487	call         r35     2     2
+.line	581	getglobal    r36    k7 ; k7 = "ReUI"
+.line	581	gettable     r36   r36   k54 ; k54 = "Core"
+.line	581	gettable     r36   r36   k55 ; k55 = "Class"
+.line	581	call         r36     1     2
+.line	581	newtable     r37     0     3
+.line	600	closure      r38   f38
+.line	600	move          r0    r3 ; upvalue declaration
+.line	600	settable     r37   k77   r38 ; k77 = "OnAttach"
+.line	603	closure      r38   f39
+.line	603	settable     r37   k78   r38 ; k78 = "OnDetach"
+.line	612	closure      r38   f40
+.line	612	move          r0    r0 ; upvalue declaration
+.line	612	settable     r37   k79   r38 ; k79 = "OnChecked"
+.line	632	closure      r38   f41
+.line	632	settable     r37   k80   r38 ; k80 = "OnUpdate"
+.line	582	call         r36     2     2
+.line	637	getglobal    r37    k7 ; k7 = "ReUI"
+.line	637	gettable     r37   r37   k54 ; k54 = "Core"
+.line	637	gettable     r37   r37   k55 ; k55 = "Class"
+.line	637	call         r37     1     2
+.line	637	newtable     r38     0     3
+.line	656	closure      r39   f42
+.line	656	move          r0    r3 ; upvalue declaration
+.line	656	settable     r38   k77   r39 ; k77 = "OnAttach"
+.line	659	closure      r39   f43
+.line	659	settable     r38   k78   r39 ; k78 = "OnDetach"
+.line	682	closure      r39   f44
+.line	682	move          r0    r1 ; upvalue declaration
+.line	682	settable     r38   k79   r39 ; k79 = "OnChecked"
+.line	707	closure      r39   f45
+.line	707	settable     r38   k80   r39 ; k80 = "OnUpdate"
+.line	638	call         r37     2     2
+.line	710	getglobal    r38    k7 ; k7 = "ReUI"
+.line	710	gettable     r38   r38   k81 ; k81 = "Construction"
+.line	710	gettable     r38   r38   k82 ; k82 = "Panel"
+.line	710	gettable     r38   r38   k83 ; k83 = "Actions"
+.line	710	settable     r38   k84   r36 ; k84 = "build_template"
+.line	711	getglobal    r38    k7 ; k7 = "ReUI"
+.line	711	gettable     r38   r38   k81 ; k81 = "Construction"
+.line	711	gettable     r38   r38   k82 ; k82 = "Panel"
+.line	711	gettable     r38   r38   k83 ; k83 = "Actions"
+.line	711	settable     r38   k85   r37 ; k85 = "factory_template"
+.line	713	getglobal    r38    k7 ; k7 = "ReUI"
+.line	713	gettable     r38   r38   k81 ; k81 = "Construction"
+.line	713	gettable     r38   r38   k82 ; k82 = "Panel"
+.line	713	gettable     r38   r38   k86 ; k86 = "PrimaryHandlers"
+.line	713	loadnil      r39   r41
+.line	713	tforprep     r38  l321
+.label	l316
+.line	714	gettable     r42   r41   k87 ; k87 = "tab"
+.line	714	eq             0   r42   k88 ; k88 = "selection"
+.line	714	jmp         l321
+.line	715	gettable     r42   r41   k89 ; k89 = "actions"
+.line	715	settable     r42   k90   k84 ; k84 = "build_template"
+.label	l321
+.line	713	tforloop     r38     1
+.line	716	jmp         l316
+.line	719	getglobal    r38   k91 ; k91 = "table"
+.line	719	gettable     r38   r38   k92 ; k92 = "insert"
+.line	719	getglobal    r39    k7 ; k7 = "ReUI"
+.line	719	gettable     r39   r39   k81 ; k81 = "Construction"
+.line	719	gettable     r39   r39   k82 ; k82 = "Panel"
+.line	719	gettable     r39   r39   k93 ; k93 = "TechTabs"
+.line	719	newtable     r40     0     2
+.line	721	settable     r40   k94   k95 ; k95 = "BUILD_TEMPLATES"
+.line	722	settable     r40   k96   k97 ; k97 = "/game/construct-tech" (truncated)
+.line	719	call         r38     3     1
+.line	725	getglobal    r38   k91 ; k91 = "table"
+.line	725	gettable     r38   r38   k92 ; k92 = "insert"
+.line	725	getglobal    r39    k7 ; k7 = "ReUI"
+.line	725	gettable     r39   r39   k81 ; k81 = "Construction"
+.line	725	gettable     r39   r39   k82 ; k82 = "Panel"
+.line	725	gettable     r39   r39   k86 ; k86 = "PrimaryHandlers"
+.line	726	loadk        r40   k90 ; k90 = 1
+.line	726	newtable     r41     0     3
+.line	728	settable     r41   k94   k98 ; k98 = "BuildTemplates"
+.line	729	settable     r41   k87   k99 ; k99 = "construction"
+.line	730	settable     r41  k100  k101 ; k101 = "grid"
+.line	731	newtable     r42     2     0
+.line	731	loadk        r43  k102 ; k102 = "repeatBuild"
+.line	731	loadk        r44  k103 ; k103 = "pause"
+.line	731	setlist      r42     1
+.line	731	settable     r41   k89   r42 ; k89 = "actions"
+.line	732	settable     r41  k104   r34 ; k104 = "handler"
+.line	725	call         r38     4     1
+.line	735	getglobal    r38   k91 ; k91 = "table"
+.line	735	gettable     r38   r38   k92 ; k92 = "insert"
+.line	735	getglobal    r39    k7 ; k7 = "ReUI"
+.line	735	gettable     r39   r39   k81 ; k81 = "Construction"
+.line	735	gettable     r39   r39   k82 ; k82 = "Panel"
+.line	735	gettable     r39   r39   k86 ; k86 = "PrimaryHandlers"
+.line	736	loadk        r40   k90 ; k90 = 1
+.line	736	newtable     r41     0     3
+.line	738	settable     r41   k94  k105 ; k105 = "FactoryTemplates"
+.line	739	settable     r41   k87   k99 ; k99 = "construction"
+.line	740	settable     r41  k100  k101 ; k101 = "grid"
+.line	741	newtable     r42     2     0
+.line	741	loadk        r43   k85 ; k85 = "factory_template"
+.line	741	loadk        r44  k103 ; k103 = "pause"
+.line	741	setlist      r42     1
+.line	741	settable     r41   k89   r42 ; k89 = "actions"
+.line	742	settable     r41  k104   r35 ; k104 = "handler"
+.line	735	call         r38     4     1
+.line	744	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	54
+.numparams	2
+.is_vararg	0
+.maxstacksize	12
+
+.local	"id"	0	46
+.local	"buildableUnits"	0	46
+.local	"suffix"	5	46
+.local	"pref"	11	46
+.local	"i"	12	46
+.local	"(for generator)"	16	26
+.local	"(for state)"	16	26
+.local	"faction"	16	26
+.local	"prefixes"	16	26
+.local	"(for generator)"	34	44
+.local	"(for state)"	34	44
+.local	"faction"	34	44
+.local	"prefixes"	34	44
+.local	"prefix"	35	42
+.local	"newId"	38	42
+
+.upvalue	"PREFIXES"	0	false
+.upvalue	"Contains"	0	false
+
+.constant	k0	"string"
+.constant	k1	"sub"
+.constant	k2	3
+.constant	k3	1
+.constant	k4	2
+.constant	k5	"pairs"
+
+.line	55	getglobal     r2    k0 ; k0 = "string"
+.line	55	gettable      r2    r2    k1 ; k1 = "sub"
+.line	55	move          r3    r0
+.line	55	loadk         r4    k2 ; k2 = 3
+.line	55	call          r2     3     2
+.line	56	getglobal     r3    k0 ; k0 = "string"
+.line	56	gettable      r3    r3    k1 ; k1 = "sub"
+.line	56	move          r4    r0
+.line	56	loadk         r5    k3 ; k3 = 1
+.line	56	loadk         r6    k4 ; k4 = 2
+.line	56	call          r3     4     2
+.line	58	loadnil       r4    r4
+.line	59	getglobal     r5    k5 ; k5 = "pairs"
+.line	59	getupval      r6    u0
+.line	59	call          r5     2     5
+.line	59	tforprep      r5   l25
+.label	l17
+.line	60	getupval      r9    u1
+.line	60	move         r10    r8
+.line	60	move         r11    r3
+.line	60	call          r9     3     2
+.line	60	move          r4    r9
+.line	61	test          r4    r4     0
+.line	61	jmp          l25
+.line	62	jmp          l27
+.label	l25
+.line	59	tforloop      r5     1
+.line	63	jmp          l17
+.label	l27
+.line	65	test          r4    r4     1
+.line	65	jmp          l31
+.line	66	loadbool      r5     0     0
+.line	66	return        r5     2
+.label	l31
+.line	69	getglobal     r5    k5 ; k5 = "pairs"
+.line	69	getupval      r6    u0
+.line	69	call          r5     2     5
+.line	69	tforprep      r5   l43
+.label	l35
+.line	70	gettable      r9    r8    r4
+.line	71	move         r10    r9
+.line	71	move         r11    r2
+.line	71	concat       r10   r10   r11
+.line	72	gettable     r11    r1   r10
+.line	72	test         r11   r11     0
+.line	72	jmp          l43
+.line	73	return       r10     2
+.label	l43
+.line	69	tforloop      r5     1
+.line	74	jmp          l35
+.line	77	loadbool      r5     0     0
+.line	77	return        r5     2
+.line	78	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	82
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"template"	0	31
+.local	"buildableUnits"	0	31
+.local	"templateData"	6	31
+.local	"i"	14	22
+.local	"(for limit)"	14	22
+.local	"(for step)"	14	22
+.local	"entry"	15	21
+.local	"id"	16	21
+
+.upvalue	"ConvertToBuildable"	0	false
+
+.constant	k0	"table"
+.constant	k1	"deepcopy"
+.constant	k2	"templateData"
+.constant	k3	3
+.constant	k4	"getn"
+.constant	k5	1
+.constant	k6	"icon"
+.constant	k7	""
+
+.line	83	getglobal     r2    k0 ; k0 = "table"
+.line	83	gettable      r2    r2    k1 ; k1 = "deepcopy"
+.line	83	move          r3    r0
+.line	83	call          r2     2     2
+.line	83	move          r0    r2
+.line	84	gettable      r2    r0    k2 ; k2 = "templateData"
+.line	85	loadk         r3    k3 ; k3 = 3
+.line	85	getglobal     r4    k0 ; k0 = "table"
+.line	85	gettable      r4    r4    k4 ; k4 = "getn"
+.line	85	move          r5    r2
+.line	85	call          r4     2     2
+.line	85	loadk         r5    k5 ; k5 = 1
+.line	85	sub           r3    r3    r5
+.line	85	jmp          l22
+.label	l15
+.line	86	gettable      r6    r2    r3
+.line	87	gettable      r7    r6    k5 ; k5 = 1
+.line	88	getupval      r8    u0
+.line	88	move          r9    r7
+.line	88	move         r10    r1
+.line	88	call          r8     3     2
+.line	88	settable      r6    k5    r8 ; k5 = 1
+.label	l22
+.line	85	forloop       r3   l15
+.line	90	getupval      r3    u0
+.line	90	gettable      r4    r0    k6 ; k6 = "icon"
+.line	90	move          r5    r1
+.line	90	call          r3     3     2
+.line	90	test          r3    r3     1
+.line	90	jmp          l30
+.line	90	loadk         r3    k7 ; k7 = ""
+.label	l30
+.line	90	settable      r0    k6    r3 ; k6 = "icon"
+.line	91	return        r0     2
+.line	92	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	97
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"template"	0	22
+.local	"buildableUnits"	0	22
+.local	"templateData"	1	22
+.local	"i"	9	20
+.local	"(for limit)"	9	20
+.local	"(for step)"	9	20
+.local	"entry"	10	19
+.local	"id"	11	19
+
+.upvalue	"ConvertToBuildable"	0	false
+
+.constant	k0	"templateData"
+.constant	k1	3
+.constant	k2	"table"
+.constant	k3	"getn"
+.constant	k4	1
+
+.line	98	gettable      r2    r0    k0 ; k0 = "templateData"
+.line	99	loadk         r3    k1 ; k1 = 3
+.line	99	getglobal     r4    k2 ; k2 = "table"
+.line	99	gettable      r4    r4    k3 ; k3 = "getn"
+.line	99	move          r5    r2
+.line	99	call          r4     2     2
+.line	99	loadk         r5    k4 ; k4 = 1
+.line	99	sub           r3    r3    r5
+.line	99	jmp          l20
+.label	l10
+.line	100	gettable      r6    r2    r3
+.line	101	gettable      r7    r6    k4 ; k4 = 1
+.line	102	getupval      r8    u0
+.line	102	move          r9    r7
+.line	102	move         r10    r1
+.line	102	call          r8     3     2
+.line	102	test          r8    r8     1
+.line	102	jmp          l20
+.line	103	loadbool      r8     0     0
+.line	103	return        r8     2
+.label	l20
+.line	99	forloop       r3   l10
+.line	106	loadbool      r3     1     0
+.line	106	return        r3     2
+.line	107	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	111
+.numparams	2
+.is_vararg	0
+.maxstacksize	15
+
+.local	"templates"	0	30
+.local	"buildable"	0	30
+.local	"availableTemplates"	1	30
+.local	"(for generator)"	5	29
+.local	"(for state)"	5	29
+.local	"i"	5	29
+.local	"template"	5	29
+.local	"valid"	6	27
+.local	"(for generator)"	10	18
+.local	"(for state)"	10	18
+.local	"_"	10	18
+.local	"entry"	10	18
+
+.constant	k0	"ipairs"
+.constant	k1	"templateData"
+.constant	k2	"id"
+.constant	k3	"table"
+.constant	k4	"insert"
+.constant	k5	"index"
+.constant	k6	"template"
+
+.line	112	newtable      r2     0     0
+.line	113	getglobal     r3    k0 ; k0 = "ipairs"
+.line	113	move          r4    r0
+.line	113	call          r3     2     5
+.line	113	tforprep      r3   l28
+.label	l6
+.line	114	loadbool      r7     1     0
+.line	115	getglobal     r8    k0 ; k0 = "ipairs"
+.line	115	gettable      r9    r6    k1 ; k1 = "templateData"
+.line	115	call          r8     2     5
+.line	115	tforprep      r8   l17
+.label	l11
+.line	116	gettable     r12   r11    k2 ; k2 = "id"
+.line	116	gettable     r12    r1   r12
+.line	116	test         r12   r12     1
+.line	116	jmp          l17
+.line	117	loadbool      r7     0     0
+.line	118	jmp          l19
+.label	l17
+.line	115	tforloop      r8     1
+.line	119	jmp          l11
+.label	l19
+.line	121	test          r7    r7     0
+.line	121	jmp          l28
+.line	122	getglobal     r8    k3 ; k3 = "table"
+.line	122	gettable      r8    r8    k4 ; k4 = "insert"
+.line	122	move          r9    r2
+.line	122	newtable     r10     0     2
+.line	123	settable     r10    k5    r5 ; k5 = "index"
+.line	124	settable     r10    k6    r6 ; k6 = "template"
+.line	122	call          r8     3     1
+.label	l28
+.line	113	tforloop      r3     1
+.line	126	jmp           l6
+.line	128	return        r2     2
+.line	129	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	132
+.numparams	1
+.is_vararg	0
+.maxstacksize	9
+
+.local	"data"	0	11
+.local	"(for generator)"	4	11
+.local	"(for state)"	4	11
+.local	"_"	4	11
+.local	"entry"	4	11
+
+.constant	k0	"ipairs"
+.constant	k1	"templateData"
+.constant	k2	"IssueBlueprintCommand"
+.constant	k3	"UNITCOMMAND_BuildFactory"
+.constant	k4	"id"
+.constant	k5	"count"
+
+.line	133	getglobal     r1    k0 ; k0 = "ipairs"
+.line	133	gettable      r2    r0    k1 ; k1 = "templateData"
+.line	133	call          r1     2     5
+.line	133	tforprep      r1   l10
+.label	l5
+.line	134	getglobal     r5    k2 ; k2 = "IssueBlueprintComman" (truncated)
+.line	134	loadk         r6    k3 ; k3 = "UNITCOMMAND_BuildFac" (truncated)
+.line	134	gettable      r7    r4    k4 ; k4 = "id"
+.line	134	gettable      r8    r4    k5 ; k5 = "count"
+.line	134	call          r5     4     1
+.label	l10
+.line	133	tforloop      r1     1
+.line	134	jmp           l5
+.line	136	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	141
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"opt"	0	3
+
+.upvalue	"templateNameLength"	0	false
+
+.line	142	move          r1    r0
+.line	142	call          r1     1     2
+.line	142	setupval      r1    u0
+.line	143	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	157
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	37
+.local	"item"	0	37
+
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"name"
+.constant	k1	"ReUI"
+.constant	k2	"UI"
+.constant	k3	"Controls"
+.constant	k4	"Text"
+.constant	k5	"SetFont"
+.constant	k6	"Arial"
+.constant	k7	11
+.constant	k8	"Layouter"
+.constant	k9	"AnchorToBottom"
+.constant	k10	3
+.constant	k11	-3
+.constant	k12	"AtHorizontalCenterIn"
+.constant	k13	"Color"
+.constant	k14	"factionTextColor"
+.constant	k15	"DropShadow"
+.constant	k16	"Over"
+.constant	k17	10
+.constant	k18	"DisableHitTest"
+.constant	k19	"Hide"
+
+.line	158	getglobal     r2    k1 ; k1 = "ReUI"
+.line	158	gettable      r2    r2    k2 ; k2 = "UI"
+.line	158	gettable      r2    r2    k3 ; k3 = "Controls"
+.line	158	gettable      r2    r2    k4 ; k4 = "Text"
+.line	158	move          r3    r1
+.line	158	call          r2     2     2
+.line	158	settable      r0    k0    r2 ; k0 = "name"
+.line	159	gettable      r2    r0    k0 ; k0 = "name"
+.line	159	self          r2    r2    k5 ; k5 = "SetFont"
+.line	159	loadk         r4    k6 ; k6 = "Arial"
+.line	159	loadk         r5    k7 ; k7 = 11
+.line	159	call          r2     4     1
+.line	160	gettable      r2    r1    k8 ; k8 = "Layouter"
+.line	160	gettable      r3    r0    k0 ; k0 = "name"
+.line	160	call          r2     2     2
+.line	161	self          r2    r2    k9 ; k9 = "AnchorToBottom"
+.line	161	move          r4    r1
+.line	161	loadk         r5   k11 ; k11 = -3
+.line	161	call          r2     4     2
+.line	162	self          r2    r2   k12 ; k12 = "AtHorizontalCenterIn"
+.line	162	move          r4    r1
+.line	162	call          r2     3     2
+.line	163	self          r2    r2   k13 ; k13 = "Color"
+.line	163	getupval      r4    u0
+.line	163	gettable      r4    r4   k14 ; k14 = "factionTextColor"
+.line	163	call          r2     3     2
+.line	164	self          r2    r2   k15 ; k15 = "DropShadow"
+.line	164	loadbool      r4     1     0
+.line	164	call          r2     3     2
+.line	165	self          r2    r2   k16 ; k16 = "Over"
+.line	165	move          r4    r1
+.line	165	loadk         r5   k17 ; k17 = 10
+.line	165	call          r2     4     2
+.line	166	self          r2    r2   k18 ; k18 = "DisableHitTest"
+.line	166	call          r2     2     2
+.line	167	self          r2    r2   k19 ; k19 = "Hide"
+.line	167	call          r2     2     1
+.line	168	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	175
+.numparams	4
+.is_vararg	0
+.maxstacksize	12
+
+.local	"self"	0	18
+.local	"item"	0	18
+.local	"action"	0	18
+.local	"context"	0	18
+.local	"template"	2	18
+.local	"id"	3	18
+
+.upvalue	"templateNameLength"	0	false
+
+.constant	k0	"data"
+.constant	k1	"template"
+.constant	k2	"icon"
+.constant	k3	"DisplayBPID"
+.constant	k4	"name"
+.constant	k5	"SetText"
+.constant	k6	"string"
+.constant	k7	"sub"
+.constant	k8	1
+.constant	k9	"Show"
+
+.line	176	settable      r0    k0    r2 ; k0 = "data"
+.line	177	gettable      r4    r2    k1 ; k1 = "template"
+.line	178	gettable      r5    r4    k2 ; k2 = "icon"
+.line	179	self          r6    r1    k3 ; k3 = "DisplayBPID"
+.line	179	move          r8    r5
+.line	179	call          r6     3     1
+.line	180	gettable      r6    r0    k4 ; k4 = "name"
+.line	180	self          r6    r6    k5 ; k5 = "SetText"
+.line	180	getglobal     r8    k6 ; k6 = "string"
+.line	180	gettable      r8    r8    k7 ; k7 = "sub"
+.line	180	gettable      r9    r4    k4 ; k4 = "name"
+.line	180	loadk        r10    k8 ; k8 = 1
+.line	180	getupval     r11    u0
+.line	180	call          r8     4     0
+.line	180	call          r6     0     1
+.line	181	gettable      r6    r0    k4 ; k4 = "name"
+.line	181	self          r6    r6    k9 ; k9 = "Show"
+.line	181	call          r6     2     1
+.line	182	return        r0     1
+
+.function	main/f0/f8
+
+.source	null
+.linedefined	187
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	5
+.local	"item"	0	5
+
+.constant	k0	"name"
+.constant	k1	"Hide"
+.constant	k2	"ClearDisplay"
+
+.line	188	gettable      r2    r0    k0 ; k0 = "name"
+.line	188	self          r2    r2    k1 ; k1 = "Hide"
+.line	188	call          r2     2     1
+.line	189	self          r2    r1    k2 ; k2 = "ClearDisplay"
+.line	189	call          r2     2     1
+.line	190	return        r0     1
+
+.function	main/f0/f9
+
+.source	null
+.linedefined	194
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	4
+
+.constant	k0	"name"
+.constant	k1	"Destroy"
+.constant	k2	nil
+
+.line	195	gettable      r1    r0    k0 ; k0 = "name"
+.line	195	self          r1    r1    k1 ; k1 = "Destroy"
+.line	195	call          r1     2     1
+.line	196	settable      r0    k0    k2 ; k2 = nil
+.line	197	return        r0     1
+
+.function	main/f0/f10
+
+.source	null
+.linedefined	200
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"preview"	4	15
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"BuildTemplatePreview"
+.constant	k4	"IsDestroyed"
+.constant	k5	"Destroy"
+.constant	k6	nil
+
+.line	201	getglobal     r0    k0 ; k0 = "ReUI"
+.line	201	gettable      r0    r0    k1 ; k1 = "UI"
+.line	201	gettable      r0    r0    k2 ; k2 = "Global"
+.line	201	gettable      r0    r0    k3 ; k3 = "BuildTemplatePreview"
+.line	202	getglobal     r1    k4 ; k4 = "IsDestroyed"
+.line	202	move          r2    r0
+.line	202	call          r1     2     2
+.line	202	test          r1    r1     1
+.line	202	jmp          l12
+.line	203	self          r1    r0    k5 ; k5 = "Destroy"
+.line	203	call          r1     2     1
+.label	l12
+.line	205	getglobal     r1    k0 ; k0 = "ReUI"
+.line	205	gettable      r1    r1    k1 ; k1 = "UI"
+.line	205	gettable      r1    r1    k2 ; k2 = "Global"
+.line	205	settable      r1    k3    k6 ; k6 = nil
+.line	206	return        r0     1
+
+.function	main/f0/f11
+
+.source	null
+.linedefined	208
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"preview"	4	15
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"FactoryTemplatePreview"
+.constant	k4	"IsDestroyed"
+.constant	k5	"Destroy"
+.constant	k6	nil
+
+.line	209	getglobal     r0    k0 ; k0 = "ReUI"
+.line	209	gettable      r0    r0    k1 ; k1 = "UI"
+.line	209	gettable      r0    r0    k2 ; k2 = "Global"
+.line	209	gettable      r0    r0    k3 ; k3 = "FactoryTemplatePrevi" (truncated)
+.line	210	getglobal     r1    k4 ; k4 = "IsDestroyed"
+.line	210	move          r2    r0
+.line	210	call          r1     2     2
+.line	210	test          r1    r1     1
+.line	210	jmp          l12
+.line	211	self          r1    r0    k5 ; k5 = "Destroy"
+.line	211	call          r1     2     1
+.label	l12
+.line	213	getglobal     r1    k0 ; k0 = "ReUI"
+.line	213	gettable      r1    r1    k1 ; k1 = "UI"
+.line	213	gettable      r1    r1    k2 ; k2 = "Global"
+.line	213	settable      r1    k3    k6 ; k6 = nil
+.line	214	return        r0     1
+
+.function	main/f0/f12
+
+.source	null
+.linedefined	227
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	42
+.local	"parent"	0	42
+
+.upvalue	"Group"	0	false
+.upvalue	"Text"	0	false
+.upvalue	"Edit"	0	false
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"item"
+.constant	k2	"_title"
+.constant	k3	"_edit"
+.constant	k4	"OnEnterPressed"
+.constant	k5	"_deleteBtn"
+.constant	k6	"CreateButtonStd"
+.constant	k7	"/widgets02/small"
+.constant	k8	"<LOC _Delete>"
+.constant	k9	16
+.constant	k10	"OnClick"
+.constant	k11	"_closeBtn"
+.constant	k12	"<LOC _Close>"
+
+.line	228	getupval      r2    u0
+.line	228	gettable      r2    r2    k0 ; k0 = "__init"
+.line	228	move          r3    r0
+.line	228	move          r4    r1
+.line	228	call          r2     3     1
+.line	230	settable      r0    k1    r1 ; k1 = "item"
+.line	232	getupval      r2    u1
+.line	232	move          r3    r0
+.line	232	call          r2     2     2
+.line	232	settable      r0    k2    r2 ; k2 = "_title"
+.line	234	getupval      r2    u2
+.line	234	move          r3    r0
+.line	234	call          r2     2     2
+.line	234	settable      r0    k3    r2 ; k3 = "_edit"
+.line	235	gettable      r2    r0    k3 ; k3 = "_edit"
+.line	238	closure       r3    f0
+.line	238	move          r0    r0 ; upvalue declaration
+.line	238	settable      r2    k4    r3 ; k4 = "OnEnterPressed"
+.line	240	getupval      r2    u3
+.line	240	gettable      r2    r2    k6 ; k6 = "CreateButtonStd"
+.line	240	move          r3    r0
+.line	240	loadk         r4    k7 ; k7 = "/widgets02/small"
+.line	240	loadk         r5    k8 ; k8 = "<LOC _Delete>"
+.line	240	loadk         r6    k9 ; k9 = 16
+.line	240	call          r2     5     2
+.line	240	settable      r0    k5    r2 ; k5 = "_deleteBtn"
+.line	241	gettable      r2    r0    k5 ; k5 = "_deleteBtn"
+.line	243	closure       r3    f1
+.line	243	move          r0    r0 ; upvalue declaration
+.line	243	settable      r2   k10    r3 ; k10 = "OnClick"
+.line	245	getupval      r2    u3
+.line	245	gettable      r2    r2    k6 ; k6 = "CreateButtonStd"
+.line	245	move          r3    r0
+.line	245	loadk         r4    k7 ; k7 = "/widgets02/small"
+.line	245	loadk         r5   k12 ; k12 = "<LOC _Close>"
+.line	245	loadk         r6    k9 ; k9 = 16
+.line	245	call          r2     5     2
+.line	245	settable      r0   k11    r2 ; k11 = "_closeBtn"
+.line	246	gettable      r2    r0   k11 ; k11 = "_closeBtn"
+.line	248	closure       r3    f2
+.line	248	move          r0    r0 ; upvalue declaration
+.line	248	settable      r2   k10    r3 ; k10 = "OnClick"
+.line	249	return        r0     1
+
+.function	main/f0/f12/f0
+
+.source	null
+.linedefined	235
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"edit"	0	6
+.local	"text"	0	6
+
+.upvalue	"self"	0	false
+
+.constant	k0	"OnNameChanged"
+
+.line	236	getupval      r2    u0
+.line	236	self          r2    r2    k0 ; k0 = "OnNameChanged"
+.line	236	move          r4    r1
+.line	236	call          r2     3     1
+.line	237	loadbool      r2     1     0
+.line	237	return        r2     2
+.line	238	return        r0     1
+
+.function	main/f0/f12/f1
+
+.source	null
+.linedefined	241
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"btn"	0	3
+.local	"modifiers"	0	3
+
+.upvalue	"self"	0	false
+
+.constant	k0	"OnDelete"
+
+.line	242	getupval      r2    u0
+.line	242	self          r2    r2    k0 ; k0 = "OnDelete"
+.line	242	call          r2     2     1
+.line	243	return        r0     1
+
+.function	main/f0/f12/f2
+
+.source	null
+.linedefined	246
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"btn"	0	3
+.local	"modifiers"	0	3
+
+.upvalue	"self"	0	false
+
+.constant	k0	"Close"
+
+.line	247	getupval      r2    u0
+.line	247	self          r2    r2    k0 ; k0 = "Close"
+.line	247	call          r2     2     1
+.line	248	return        r0     1
+
+.function	main/f0/f13
+
+.source	null
+.linedefined	253
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	114
+.local	"layouter"	0	114
+
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"AtCenterIn"
+.constant	k1	"GetRootFrame"
+.constant	k2	"Width"
+.constant	k3	200
+.constant	k4	"Height"
+.constant	k5	150
+.constant	k6	"Depth"
+.constant	k7	"GetTopmostDepth"
+.constant	k8	1
+.constant	k9	"_title"
+.constant	k10	"AtTopIn"
+.constant	k11	10
+.constant	k12	"AtHorizontalCenterIn"
+.constant	k13	"Color"
+.constant	k14	"factionTextColor"
+.constant	k15	"SetFont"
+.constant	k16	"Arial"
+.constant	k17	20
+.constant	k18	"SetText"
+.constant	k19	"Edit menu"
+.constant	k20	"_edit"
+.constant	k21	"AtRightIn"
+.constant	k22	"AtLeftIn"
+.constant	k23	35
+.constant	k24	"SetupEditStd"
+.constant	k25	"ffffffff"
+.constant	k26	"ffaaffaa"
+.constant	k27	"highlightColor"
+.constant	k28	"bodyFont"
+.constant	k29	16
+.constant	k30	"SetDropShadow"
+.constant	k31	"ShowBackground"
+.constant	k32	""
+.constant	k33	"_closeBtn"
+.constant	k34	"AtBottomIn"
+.constant	k35	"_deleteBtn"
+.constant	k36	"AnchorToTop"
+.constant	k37	"SurroundWithNinePatch"
+.constant	k38	"/game/chat_brd/"
+.constant	k39	4
+
+.line	254	move          r2    r1
+.line	254	move          r3    r0
+.line	254	call          r2     2     2
+.line	255	self          r2    r2    k0 ; k0 = "AtCenterIn"
+.line	255	self          r4    r0    k1 ; k1 = "GetRootFrame"
+.line	255	call          r4     2     0
+.line	255	call          r2     0     2
+.line	256	self          r2    r2    k2 ; k2 = "Width"
+.line	256	loadk         r4    k3 ; k3 = 200
+.line	256	call          r2     3     2
+.line	257	self          r2    r2    k4 ; k4 = "Height"
+.line	257	loadk         r4    k5 ; k5 = 150
+.line	257	call          r2     3     2
+.line	258	self          r2    r2    k6 ; k6 = "Depth"
+.line	258	self          r4    r0    k1 ; k1 = "GetRootFrame"
+.line	258	call          r4     2     2
+.line	258	self          r4    r4    k7 ; k7 = "GetTopmostDepth"
+.line	258	call          r4     2     2
+.line	258	add           r4    r4    k8 ; k8 = 1
+.line	258	call          r2     3     1
+.line	260	move          r2    r1
+.line	260	gettable      r3    r0    k9 ; k9 = "_title"
+.line	260	call          r2     2     2
+.line	261	self          r2    r2   k10 ; k10 = "AtTopIn"
+.line	261	move          r4    r0
+.line	261	loadk         r5   k11 ; k11 = 10
+.line	261	call          r2     4     2
+.line	262	self          r2    r2   k12 ; k12 = "AtHorizontalCenterIn"
+.line	262	move          r4    r0
+.line	262	call          r2     3     2
+.line	263	self          r2    r2   k13 ; k13 = "Color"
+.line	263	getupval      r4    u0
+.line	263	gettable      r4    r4   k14 ; k14 = "factionTextColor"
+.line	263	call          r2     3     1
+.line	264	gettable      r2    r0    k9 ; k9 = "_title"
+.line	264	self          r2    r2   k15 ; k15 = "SetFont"
+.line	264	loadk         r4   k16 ; k16 = "Arial"
+.line	264	loadk         r5   k17 ; k17 = 20
+.line	264	call          r2     4     1
+.line	265	gettable      r2    r0    k9 ; k9 = "_title"
+.line	265	self          r2    r2   k18 ; k18 = "SetText"
+.line	265	loadk         r4   k19 ; k19 = "Edit menu"
+.line	265	call          r2     3     1
+.line	268	move          r2    r1
+.line	268	gettable      r3    r0   k20 ; k20 = "_edit"
+.line	268	call          r2     2     2
+.line	269	self          r2    r2    k4 ; k4 = "Height"
+.line	269	closure       r4    f0
+.line	269	move          r0    r0 ; upvalue declaration
+.line	269	call          r2     3     2
+.line	270	self          r2    r2   k21 ; k21 = "AtRightIn"
+.line	270	move          r4    r0
+.line	270	loadk         r5   k11 ; k11 = 10
+.line	270	call          r2     4     2
+.line	271	self          r2    r2   k22 ; k22 = "AtLeftIn"
+.line	271	move          r4    r0
+.line	271	loadk         r5   k11 ; k11 = 10
+.line	271	call          r2     4     2
+.line	272	self          r2    r2   k10 ; k10 = "AtTopIn"
+.line	272	move          r4    r0
+.line	272	loadk         r5   k23 ; k23 = 35
+.line	272	call          r2     4     1
+.line	273	getupval      r2    u0
+.line	273	gettable      r2    r2   k24 ; k24 = "SetupEditStd"
+.line	273	gettable      r3    r0   k20 ; k20 = "_edit"
+.line	273	loadk         r4   k25 ; k25 = "ffffffff"
+.line	273	loadnil       r5    r5
+.line	273	loadk         r6   k26 ; k26 = "ffaaffaa"
+.line	273	getupval      r7    u0
+.line	273	gettable      r7    r7   k27 ; k27 = "highlightColor"
+.line	273	getupval      r8    u0
+.line	273	gettable      r8    r8   k28 ; k28 = "bodyFont"
+.line	273	loadk         r9   k29 ; k29 = 16
+.line	273	loadk        r10    k3 ; k3 = 200
+.line	273	call          r2     9     1
+.line	274	gettable      r2    r0   k20 ; k20 = "_edit"
+.line	274	self          r2    r2   k30 ; k30 = "SetDropShadow"
+.line	274	loadbool      r4     1     0
+.line	274	call          r2     3     1
+.line	275	gettable      r2    r0   k20 ; k20 = "_edit"
+.line	275	self          r2    r2   k31 ; k31 = "ShowBackground"
+.line	275	loadbool      r4     1     0
+.line	275	call          r2     3     1
+.line	276	gettable      r2    r0   k20 ; k20 = "_edit"
+.line	276	self          r2    r2   k18 ; k18 = "SetText"
+.line	276	loadk         r4   k32 ; k32 = ""
+.line	276	call          r2     3     1
+.line	279	move          r2    r1
+.line	279	gettable      r3    r0   k33 ; k33 = "_closeBtn"
+.line	279	call          r2     2     2
+.line	280	self          r2    r2   k34 ; k34 = "AtBottomIn"
+.line	280	move          r4    r0
+.line	280	loadk         r5   k11 ; k11 = 10
+.line	280	call          r2     4     2
+.line	281	self          r2    r2   k12 ; k12 = "AtHorizontalCenterIn"
+.line	281	move          r4    r0
+.line	281	call          r2     3     1
+.line	283	move          r2    r1
+.line	283	gettable      r3    r0   k35 ; k35 = "_deleteBtn"
+.line	283	call          r2     2     2
+.line	284	self          r2    r2   k36 ; k36 = "AnchorToTop"
+.line	284	gettable      r4    r0   k33 ; k33 = "_closeBtn"
+.line	284	loadk         r5   k11 ; k11 = 10
+.line	284	call          r2     4     2
+.line	285	self          r2    r2   k12 ; k12 = "AtHorizontalCenterIn"
+.line	285	move          r4    r0
+.line	285	call          r2     3     1
+.line	287	getupval      r2    u0
+.line	287	gettable      r2    r2   k37 ; k37 = "SurroundWithNinePatc" (truncated)
+.line	287	move          r3    r0
+.line	287	loadk         r4   k38 ; k38 = "/game/chat_brd/"
+.line	287	loadk         r5   k39 ; k39 = 4
+.line	287	loadk         r6   k39 ; k39 = 4
+.line	287	call          r2     5     1
+.line	288	return        r0     1
+
+.function	main/f0/f13/f0
+
+.source	null
+.linedefined	269
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"self"	0	false
+
+.constant	k0	"_edit"
+.constant	k1	"GetFontHeight"
+
+.line	269	getupval      r0    u0
+.line	269	gettable      r0    r0    k0 ; k0 = "_edit"
+.line	269	self          r0    r0    k1 ; k1 = "GetFontHeight"
+.line	269	tailcall      r0     2
+.line	269	return        r0     0
+.line	269	return        r0     1
+
+.function	main/f0/f14
+
+.source	null
+.linedefined	292
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	7
+.local	"data"	0	7
+
+.constant	k0	"data"
+.constant	k1	"_edit"
+.constant	k2	"SetText"
+.constant	k3	"template"
+.constant	k4	"name"
+
+.line	293	settable      r0    k0    r1 ; k0 = "data"
+.line	294	gettable      r2    r0    k1 ; k1 = "_edit"
+.line	294	self          r2    r2    k2 ; k2 = "SetText"
+.line	294	gettable      r4    r0    k0 ; k0 = "data"
+.line	294	gettable      r4    r4    k3 ; k3 = "template"
+.line	294	gettable      r4    r4    k4 ; k4 = "name"
+.line	294	call          r2     3     1
+.line	295	return        r0     1
+
+.function	main/f0/f15
+
+.source	null
+.linedefined	297
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+.local	"event"	0	2
+
+.line	298	loadbool      r2     1     0
+.line	298	return        r2     2
+.line	299	return        r0     1
+
+.function	main/f0/f16
+
+.source	null
+.linedefined	303
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"name"	0	0
+
+.line	304	return        r0     1
+
+.function	main/f0/f17
+
+.source	null
+.linedefined	307
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+
+.line	308	return        r0     1
+
+.function	main/f0/f18
+
+.source	null
+.linedefined	311
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+
+.constant	k0	"OnClose"
+
+.line	312	self          r1    r0    k0 ; k0 = "OnClose"
+.line	312	call          r1     2     1
+.line	313	return        r0     1
+
+.function	main/f0/f19
+
+.source	null
+.linedefined	316
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	2
+
+.constant	k0	"Destroy"
+
+.line	317	self          r1    r0    k0 ; k0 = "Destroy"
+.line	317	call          r1     2     1
+.line	318	return        r0     1
+
+.function	main/f0/f20
+
+.source	null
+.linedefined	327
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	9
+.local	"name"	0	9
+
+.upvalue	"Templates"	0	false
+
+.constant	k0	"RenameTemplate"
+.constant	k1	"data"
+.constant	k2	"index"
+.constant	k3	"item"
+.constant	k4	"UpdatePanel"
+
+.line	328	getupval      r2    u0
+.line	328	gettable      r2    r2    k0 ; k0 = "RenameTemplate"
+.line	328	gettable      r3    r0    k1 ; k1 = "data"
+.line	328	gettable      r3    r3    k2 ; k2 = "index"
+.line	328	move          r4    r1
+.line	328	call          r2     3     1
+.line	329	gettable      r2    r0    k3 ; k3 = "item"
+.line	329	self          r2    r2    k4 ; k4 = "UpdatePanel"
+.line	329	call          r2     2     1
+.line	330	return        r0     1
+
+.function	main/f0/f21
+
+.source	null
+.linedefined	333
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	10
+
+.upvalue	"Templates"	0	false
+
+.constant	k0	"RemoveTemplate"
+.constant	k1	"data"
+.constant	k2	"index"
+.constant	k3	"item"
+.constant	k4	"UpdatePanel"
+.constant	k5	"Close"
+
+.line	334	getupval      r1    u0
+.line	334	gettable      r1    r1    k0 ; k0 = "RemoveTemplate"
+.line	334	gettable      r2    r0    k1 ; k1 = "data"
+.line	334	gettable      r2    r2    k2 ; k2 = "index"
+.line	334	call          r1     2     1
+.line	335	gettable      r1    r0    k3 ; k3 = "item"
+.line	335	self          r1    r1    k4 ; k4 = "UpdatePanel"
+.line	335	call          r1     2     1
+.line	336	self          r1    r0    k5 ; k5 = "Close"
+.line	336	call          r1     2     1
+.line	337	return        r0     1
+
+.function	main/f0/f22
+
+.source	null
+.linedefined	346
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	9
+.local	"name"	0	9
+
+.upvalue	"FactoryTemplates"	0	false
+
+.constant	k0	"RenameTemplate"
+.constant	k1	"data"
+.constant	k2	"index"
+.constant	k3	"item"
+.constant	k4	"UpdatePanel"
+
+.line	347	getupval      r2    u0
+.line	347	gettable      r2    r2    k0 ; k0 = "RenameTemplate"
+.line	347	gettable      r3    r0    k1 ; k1 = "data"
+.line	347	gettable      r3    r3    k2 ; k2 = "index"
+.line	347	move          r4    r1
+.line	347	call          r2     3     1
+.line	348	gettable      r2    r0    k3 ; k3 = "item"
+.line	348	self          r2    r2    k4 ; k4 = "UpdatePanel"
+.line	348	call          r2     2     1
+.line	349	return        r0     1
+
+.function	main/f0/f23
+
+.source	null
+.linedefined	352
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	10
+
+.upvalue	"FactoryTemplates"	0	false
+
+.constant	k0	"RemoveTemplate"
+.constant	k1	"data"
+.constant	k2	"index"
+.constant	k3	"item"
+.constant	k4	"UpdatePanel"
+.constant	k5	"Close"
+
+.line	353	getupval      r1    u0
+.line	353	gettable      r1    r1    k0 ; k0 = "RemoveTemplate"
+.line	353	gettable      r2    r0    k1 ; k1 = "data"
+.line	353	gettable      r2    r2    k2 ; k2 = "index"
+.line	353	call          r1     2     1
+.line	354	gettable      r1    r0    k3 ; k3 = "item"
+.line	354	self          r1    r1    k4 ; k4 = "UpdatePanel"
+.line	354	call          r1     2     1
+.line	355	self          r1    r0    k5 ; k5 = "Close"
+.line	355	call          r1     2     1
+.line	356	return        r0     1
+
+.function	main/f0/f24
+
+.source	null
+.linedefined	361
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"class"	0	20
+.local	"item"	0	20
+.local	"menu"	4	20
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ReUI.Construction.Templates.EditMenu"
+.constant	k4	"IsDestroyed"
+.constant	k5	"Destroy"
+
+.line	362	getglobal     r2    k0 ; k0 = "ReUI"
+.line	362	gettable      r2    r2    k1 ; k1 = "UI"
+.line	362	gettable      r2    r2    k2 ; k2 = "Global"
+.line	362	gettable      r2    r2    k3 ; k3 = "ReUI.Construction.Te" (truncated)
+.line	363	getglobal     r3    k4 ; k4 = "IsDestroyed"
+.line	363	move          r4    r2
+.line	363	call          r3     2     2
+.line	363	test          r3    r3     1
+.line	363	jmp          l12
+.line	364	self          r3    r2    k5 ; k5 = "Destroy"
+.line	364	call          r3     2     1
+.label	l12
+.line	366	move          r3    r0
+.line	366	move          r4    r1
+.line	366	call          r3     2     2
+.line	366	move          r2    r3
+.line	367	getglobal     r3    k0 ; k0 = "ReUI"
+.line	367	gettable      r3    r3    k1 ; k1 = "UI"
+.line	367	gettable      r3    r3    k2 ; k2 = "Global"
+.line	367	settable      r3    k3    r2 ; k3 = "ReUI.Construction.Te" (truncated)
+.line	368	return        r2     2
+.line	369	return        r0     1
+
+.function	main/f0/f25
+
+.source	null
+.linedefined	371
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"menu"	4	15
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ReUI.Construction.Templates.EditMenu"
+.constant	k4	"IsDestroyed"
+.constant	k5	"Destroy"
+.constant	k6	nil
+
+.line	372	getglobal     r0    k0 ; k0 = "ReUI"
+.line	372	gettable      r0    r0    k1 ; k1 = "UI"
+.line	372	gettable      r0    r0    k2 ; k2 = "Global"
+.line	372	gettable      r0    r0    k3 ; k3 = "ReUI.Construction.Te" (truncated)
+.line	373	getglobal     r1    k4 ; k4 = "IsDestroyed"
+.line	373	move          r2    r0
+.line	373	call          r1     2     2
+.line	373	test          r1    r1     1
+.line	373	jmp          l12
+.line	374	self          r1    r0    k5 ; k5 = "Destroy"
+.line	374	call          r1     2     1
+.label	l12
+.line	376	getglobal     r1    k0 ; k0 = "ReUI"
+.line	376	gettable      r1    r1    k1 ; k1 = "UI"
+.line	376	gettable      r1    r1    k2 ; k2 = "Global"
+.line	376	settable      r1    k3    k6 ; k6 = nil
+.line	377	return        r0     1
+
+.function	main/f0/f26
+
+.source	null
+.linedefined	386
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"panel"	0	0
+
+.line	387	return        r0     1
+
+.function	main/f0/f27
+
+.source	null
+.linedefined	392
+.numparams	2
+.is_vararg	0
+.maxstacksize	21
+
+.local	"self"	0	78
+.local	"context"	0	78
+.local	"selection"	9	78
+.local	"isAllEngineers"	24	78
+.local	"_"	30	78
+.local	"_"	30	78
+.local	"builableCategories"	30	78
+.local	"buildableUnits"	33	78
+.local	"templates"	43	78
+.local	"buildableSet"	54	78
+.local	"items"	55	78
+.local	"(for generator)"	58	77
+.local	"(for state)"	58	77
+.local	"i"	58	77
+.local	"template"	58	77
+
+.upvalue	"CloseEditMenu"	0	false
+.upvalue	"ClearBuildPreview"	0	false
+.upvalue	"Templates"	0	false
+.upvalue	"ToSet"	0	false
+.upvalue	"CanBuildTemplate"	0	false
+.upvalue	"ConvertBuildTemplate"	0	false
+
+.constant	k0	"tech"
+.constant	k1	"BUILD_TEMPLATES"
+.constant	k2	"selection"
+.constant	k3	"table"
+.constant	k4	"empty"
+.constant	k5	"EntityCategoryFilterOut"
+.constant	k6	"categories"
+.constant	k7	"ENGINEER"
+.constant	k8	"GetUnitCommandData"
+.constant	k9	"EntityCategoryGetUnitList"
+.constant	k10	"GetTemplates"
+.constant	k11	"insert"
+.constant	k12	"index"
+.constant	k13	"template"
+
+.line	393	gettable      r2    r1    k0 ; k0 = "tech"
+.line	393	eq             1    r2    k1 ; k1 = "BUILD_TEMPLATES"
+.line	393	jmp           l9
+.line	394	getupval      r2    u0
+.line	394	call          r2     1     1
+.line	395	getupval      r2    u1
+.line	395	call          r2     1     1
+.line	396	return        r0     1
+.label	l9
+.line	399	gettable      r2    r1    k2 ; k2 = "selection"
+.line	400	getglobal     r3    k3 ; k3 = "table"
+.line	400	gettable      r3    r3    k4 ; k4 = "empty"
+.line	400	move          r4    r2
+.line	400	call          r3     2     2
+.line	400	test          r3    r3     0
+.line	400	jmp          l17
+.line	401	return        r0     1
+.label	l17
+.line	405	getglobal     r3    k3 ; k3 = "table"
+.line	405	gettable      r3    r3    k4 ; k4 = "empty"
+.line	405	getglobal     r4    k5 ; k5 = "EntityCategoryFilter" (truncated)
+.line	405	getglobal     r5    k6 ; k6 = "categories"
+.line	405	gettable      r5    r5    k7 ; k7 = "ENGINEER"
+.line	405	move          r6    r2
+.line	405	call          r4     3     0
+.line	405	call          r3     0     2
+.line	406	test          r3    r3     1
+.line	406	jmp          l28
+.line	407	return        r0     1
+.label	l28
+.line	410	getglobal     r4    k8 ; k8 = "GetUnitCommandData"
+.line	410	move          r5    r2
+.line	410	call          r4     2     4
+.line	411	getglobal     r7    k9 ; k9 = "EntityCategoryGetUni" (truncated)
+.line	411	move          r8    r6
+.line	411	call          r7     2     2
+.line	412	getglobal     r8    k3 ; k3 = "table"
+.line	412	gettable      r8    r8    k4 ; k4 = "empty"
+.line	412	move          r9    r7
+.line	412	call          r8     2     2
+.line	412	test          r8    r8     0
+.line	412	jmp          l41
+.line	413	return        r0     1
+.label	l41
+.line	416	getupval      r8    u2
+.line	416	gettable      r8    r8   k10 ; k10 = "GetTemplates"
+.line	416	call          r8     1     2
+.line	417	getglobal     r9    k3 ; k3 = "table"
+.line	417	gettable      r9    r9    k4 ; k4 = "empty"
+.line	417	move         r10    r8
+.line	417	call          r9     2     2
+.line	417	test          r9    r9     0
+.line	417	jmp          l52
+.line	418	newtable      r9     0     0
+.line	418	return        r9     2
+.label	l52
+.line	421	getupval      r9    u3
+.line	421	move         r10    r7
+.line	421	call          r9     2     2
+.line	423	newtable     r10     0     0
+.line	424	move         r11    r8
+.line	424	loadnil      r12   r14
+.line	424	tforprep     r11   l76
+.label	l59
+.line	425	getupval     r15    u4
+.line	425	move         r16   r14
+.line	425	move         r17    r9
+.line	425	call         r15     3     2
+.line	425	test         r15   r15     0
+.line	425	jmp          l76
+.line	426	getglobal    r15    k3 ; k3 = "table"
+.line	426	gettable     r15   r15   k11 ; k11 = "insert"
+.line	426	move         r16   r10
+.line	426	newtable     r17     0     2
+.line	427	settable     r17   k12   r13 ; k12 = "index"
+.line	428	getupval     r18    u5
+.line	428	move         r19   r14
+.line	428	move         r20    r9
+.line	428	call         r18     3     2
+.line	428	settable     r17   k13   r18 ; k13 = "template"
+.line	426	call         r15     3     1
+.label	l76
+.line	424	tforloop     r11     1
+.line	430	jmp          l59
+.line	433	return       r10     2
+.line	434	return        r0     1
+
+.function	main/f0/f28
+
+.source	null
+.linedefined	437
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+
+.line	438	return        r0     1
+
+.function	main/f0/f29
+
+.source	null
+.linedefined	448
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	58
+.local	"item"	0	58
+.local	"event"	0	58
+.local	"cmd"	17	28
+
+.upvalue	"CommandMode"	0	false
+.upvalue	"CreateEditMenu"	0	false
+.upvalue	"BuildTemplateEditMenu"	0	false
+.upvalue	"options"	0	false
+
+.constant	k0	"Type"
+.constant	k1	"ButtonPress"
+.constant	k2	"ButtonDClick"
+.constant	k3	"Modifiers"
+.constant	k4	"Left"
+.constant	k5	"ClearBuildTemplates"
+.constant	k6	"data"
+.constant	k7	"template"
+.constant	k8	"templateData"
+.constant	k9	3
+.constant	k10	1
+.constant	k11	"StartCommandMode"
+.constant	k12	"build"
+.constant	k13	"name"
+.constant	k14	"SetActiveBuildTemplate"
+.constant	k15	"Right"
+.constant	k16	"SetData"
+.constant	k17	"MouseEnter"
+.constant	k18	"previewBuildTemplates"
+.constant	k19	"CreatePreview"
+.constant	k20	"MouseExit"
+.constant	k21	"ClearPreview"
+
+.line	449	gettable      r3    r2    k0 ; k0 = "Type"
+.line	449	eq             1    r3    k1 ; k1 = "ButtonPress"
+.line	449	jmp           l7
+.line	449	gettable      r3    r2    k0 ; k0 = "Type"
+.line	449	eq             0    r3    k2 ; k2 = "ButtonDClick"
+.line	449	jmp          l42
+.label	l7
+.line	450	gettable      r3    r2    k3 ; k3 = "Modifiers"
+.line	450	gettable      r3    r3    k4 ; k4 = "Left"
+.line	450	test          r3    r3     0
+.line	450	jmp          l30
+.line	451	getglobal     r3    k5 ; k5 = "ClearBuildTemplates"
+.line	451	call          r3     1     1
+.line	452	gettable      r3    r0    k6 ; k6 = "data"
+.line	452	gettable      r3    r3    k7 ; k7 = "template"
+.line	452	gettable      r3    r3    k8 ; k8 = "templateData"
+.line	452	gettable      r3    r3    k9 ; k9 = 3
+.line	452	gettable      r3    r3   k10 ; k10 = 1
+.line	453	getupval      r4    u0
+.line	453	gettable      r4    r4   k11 ; k11 = "StartCommandMode"
+.line	453	loadk         r5   k12 ; k12 = "build"
+.line	453	newtable      r6     0     1
+.line	453	settable      r6   k13    r3 ; k13 = "name"
+.line	453	call          r4     3     1
+.line	454	getglobal     r4   k14 ; k14 = "SetActiveBuildTempla" (truncated)
+.line	454	gettable      r5    r0    k6 ; k6 = "data"
+.line	454	gettable      r5    r5    k7 ; k7 = "template"
+.line	454	gettable      r5    r5    k8 ; k8 = "templateData"
+.line	454	call          r4     2     1
+.line	454	jmp          l59
+.label	l30
+.line	455	gettable      r3    r2    k3 ; k3 = "Modifiers"
+.line	455	gettable      r3    r3   k15 ; k15 = "Right"
+.line	455	test          r3    r3     0
+.line	455	jmp          l59
+.line	456	getupval      r3    u1
+.line	456	getupval      r4    u2
+.line	456	move          r5    r1
+.line	456	call          r3     3     2
+.line	457	self          r3    r3   k16 ; k16 = "SetData"
+.line	457	gettable      r5    r0    k6 ; k6 = "data"
+.line	457	call          r3     3     1
+.line	458	jmp          l59
+.label	l42
+.line	459	gettable      r3    r2    k0 ; k0 = "Type"
+.line	459	eq             0    r3   k17 ; k17 = "MouseEnter"
+.line	459	jmp          l54
+.line	459	getupval      r3    u3
+.line	459	gettable      r3    r3   k18 ; k18 = "previewBuildTemplate" (truncated)
+.line	459	call          r3     1     2
+.line	459	test          r3    r3     0
+.line	459	jmp          l54
+.line	460	self          r3    r0   k19 ; k19 = "CreatePreview"
+.line	460	move          r5    r1
+.line	460	call          r3     3     1
+.line	460	jmp          l59
+.label	l54
+.line	461	gettable      r3    r2    k0 ; k0 = "Type"
+.line	461	eq             0    r3   k20 ; k20 = "MouseExit"
+.line	461	jmp          l59
+.line	462	self          r3    r0   k21 ; k21 = "ClearPreview"
+.line	462	call          r3     2     1
+.label	l59
+.line	464	return        r0     1
+
+.function	main/f0/f30
+
+.source	null
+.linedefined	467
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.upvalue	"ClearBuildPreview"	0	false
+
+.line	468	getupval      r1    u0
+.line	468	call          r1     1     1
+.line	469	return        r0     1
+
+.function	main/f0/f31
+
+.source	null
+.linedefined	473
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	20
+.local	"item"	0	20
+.local	"preview"	7	20
+
+.upvalue	"BuildTemplatePreview"	0	false
+
+.constant	k0	"ClearPreview"
+.constant	k1	"data"
+.constant	k2	"template"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Global"
+.constant	k6	"BuildTemplatePreview"
+.constant	k7	"Layouter"
+.constant	k8	"AnchorToTop"
+.constant	k9	10
+.constant	k10	"AtHorizontalCenterIn"
+
+.line	474	self          r2    r0    k0 ; k0 = "ClearPreview"
+.line	474	call          r2     2     1
+.line	475	getupval      r2    u0
+.line	475	move          r3    r1
+.line	475	gettable      r4    r0    k1 ; k1 = "data"
+.line	475	gettable      r4    r4    k2 ; k2 = "template"
+.line	475	call          r2     3     2
+.line	476	getglobal     r3    k3 ; k3 = "ReUI"
+.line	476	gettable      r3    r3    k4 ; k4 = "UI"
+.line	476	gettable      r3    r3    k5 ; k5 = "Global"
+.line	476	settable      r3    k6    r2 ; k6 = "BuildTemplatePreview"
+.line	477	self          r3    r2    k7 ; k7 = "Layouter"
+.line	477	call          r3     2     2
+.line	478	self          r3    r3    k8 ; k8 = "AnchorToTop"
+.line	478	move          r5    r1
+.line	478	loadk         r6    k9 ; k9 = 10
+.line	478	call          r3     4     2
+.line	479	self          r3    r3   k10 ; k10 = "AtHorizontalCenterIn"
+.line	479	move          r5    r1
+.line	479	call          r3     3     1
+.line	480	return        r0     1
+
+.function	main/f0/f32
+
+.source	null
+.linedefined	492
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"panel"	0	0
+
+.line	493	return        r0     1
+
+.function	main/f0/f33
+
+.source	null
+.linedefined	498
+.numparams	2
+.is_vararg	0
+.maxstacksize	13
+
+.local	"self"	0	59
+.local	"context"	0	59
+.local	"selection"	9	59
+.local	"isAllFactories"	24	59
+.local	"_"	30	59
+.local	"_"	30	59
+.local	"builableCategories"	30	59
+.local	"buildableUnits"	33	59
+.local	"templates"	43	59
+.local	"buildableSet"	54	59
+.local	"availableTemplates"	58	59
+
+.upvalue	"CloseEditMenu"	0	false
+.upvalue	"ClearFactoryPreview"	0	false
+.upvalue	"FactoryTemplates"	0	false
+.upvalue	"ToSet"	0	false
+.upvalue	"GetAvailableFactoryTemplates"	0	false
+
+.constant	k0	"tech"
+.constant	k1	"BUILD_TEMPLATES"
+.constant	k2	"selection"
+.constant	k3	"table"
+.constant	k4	"empty"
+.constant	k5	"EntityCategoryFilterOut"
+.constant	k6	"categories"
+.constant	k7	"FACTORY"
+.constant	k8	"GetUnitCommandData"
+.constant	k9	"EntityCategoryGetUnitList"
+.constant	k10	"GetTemplates"
+
+.line	499	gettable      r2    r1    k0 ; k0 = "tech"
+.line	499	eq             1    r2    k1 ; k1 = "BUILD_TEMPLATES"
+.line	499	jmp           l9
+.line	500	getupval      r2    u0
+.line	500	call          r2     1     1
+.line	501	getupval      r2    u1
+.line	501	call          r2     1     1
+.line	502	return        r0     1
+.label	l9
+.line	505	gettable      r2    r1    k2 ; k2 = "selection"
+.line	506	getglobal     r3    k3 ; k3 = "table"
+.line	506	gettable      r3    r3    k4 ; k4 = "empty"
+.line	506	move          r4    r2
+.line	506	call          r3     2     2
+.line	506	test          r3    r3     0
+.line	506	jmp          l17
+.line	507	return        r0     1
+.label	l17
+.line	511	getglobal     r3    k3 ; k3 = "table"
+.line	511	gettable      r3    r3    k4 ; k4 = "empty"
+.line	511	getglobal     r4    k5 ; k5 = "EntityCategoryFilter" (truncated)
+.line	511	getglobal     r5    k6 ; k6 = "categories"
+.line	511	gettable      r5    r5    k7 ; k7 = "FACTORY"
+.line	511	move          r6    r2
+.line	511	call          r4     3     0
+.line	511	call          r3     0     2
+.line	512	test          r3    r3     1
+.line	512	jmp          l28
+.line	513	return        r0     1
+.label	l28
+.line	516	getglobal     r4    k8 ; k8 = "GetUnitCommandData"
+.line	516	move          r5    r2
+.line	516	call          r4     2     4
+.line	517	getglobal     r7    k9 ; k9 = "EntityCategoryGetUni" (truncated)
+.line	517	move          r8    r6
+.line	517	call          r7     2     2
+.line	518	getglobal     r8    k3 ; k3 = "table"
+.line	518	gettable      r8    r8    k4 ; k4 = "empty"
+.line	518	move          r9    r7
+.line	518	call          r8     2     2
+.line	518	test          r8    r8     0
+.line	518	jmp          l41
+.line	519	return        r0     1
+.label	l41
+.line	522	getupval      r8    u2
+.line	522	gettable      r8    r8   k10 ; k10 = "GetTemplates"
+.line	522	call          r8     1     2
+.line	523	getglobal     r9    k3 ; k3 = "table"
+.line	523	gettable      r9    r9    k4 ; k4 = "empty"
+.line	523	move         r10    r8
+.line	523	call          r9     2     2
+.line	523	test          r9    r9     0
+.line	523	jmp          l52
+.line	524	newtable      r9     0     0
+.line	524	return        r9     2
+.label	l52
+.line	527	getupval      r9    u3
+.line	527	move         r10    r7
+.line	527	call          r9     2     2
+.line	529	getupval     r10    u4
+.line	529	move         r11    r8
+.line	529	move         r12    r9
+.line	529	call         r10     3     2
+.line	531	return       r10     2
+.line	532	return        r0     1
+
+.function	main/f0/f34
+
+.source	null
+.linedefined	535
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+
+.line	536	return        r0     1
+
+.function	main/f0/f35
+
+.source	null
+.linedefined	545
+.numparams	3
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	51
+.local	"item"	0	51
+.local	"event"	0	51
+
+.upvalue	"IssueFactoryTemplate"	0	false
+.upvalue	"CreateEditMenu"	0	false
+.upvalue	"FactoryTemplateEditMenu"	0	false
+.upvalue	"options"	0	false
+
+.constant	k0	"Type"
+.constant	k1	"ButtonPress"
+.constant	k2	"ButtonDClick"
+.constant	k3	"Modifiers"
+.constant	k4	"Left"
+.constant	k5	"data"
+.constant	k6	"template"
+.constant	k7	"PlaySound"
+.constant	k8	"Sound"
+.constant	k9	"Cue"
+.constant	k10	"UI_MFD_Click"
+.constant	k11	"Bank"
+.constant	k12	"Interface"
+.constant	k13	"Right"
+.constant	k14	"SetData"
+.constant	k15	"MouseEnter"
+.constant	k16	"previewFactoryTemplates"
+.constant	k17	"CreatePreview"
+.constant	k18	"MouseExit"
+.constant	k19	"ClearPreview"
+
+.line	546	gettable      r3    r2    k0 ; k0 = "Type"
+.line	546	eq             1    r3    k1 ; k1 = "ButtonPress"
+.line	546	jmp           l7
+.line	546	gettable      r3    r2    k0 ; k0 = "Type"
+.line	546	eq             0    r3    k2 ; k2 = "ButtonDClick"
+.line	546	jmp          l35
+.label	l7
+.line	547	gettable      r3    r2    k3 ; k3 = "Modifiers"
+.line	547	gettable      r3    r3    k4 ; k4 = "Left"
+.line	547	test          r3    r3     0
+.line	547	jmp          l23
+.line	548	getupval      r3    u0
+.line	548	gettable      r4    r0    k5 ; k5 = "data"
+.line	548	gettable      r4    r4    k6 ; k6 = "template"
+.line	548	call          r3     2     1
+.line	549	getglobal     r3    k7 ; k7 = "PlaySound"
+.line	549	getglobal     r4    k8 ; k8 = "Sound"
+.line	549	newtable      r5     0     2
+.line	549	settable      r5    k9   k10 ; k10 = "UI_MFD_Click"
+.line	549	settable      r5   k11   k12 ; k12 = "Interface"
+.line	549	call          r4     2     0
+.line	549	call          r3     0     1
+.line	549	jmp          l52
+.label	l23
+.line	550	gettable      r3    r2    k3 ; k3 = "Modifiers"
+.line	550	gettable      r3    r3   k13 ; k13 = "Right"
+.line	550	test          r3    r3     0
+.line	550	jmp          l52
+.line	551	getupval      r3    u1
+.line	551	getupval      r4    u2
+.line	551	move          r5    r1
+.line	551	call          r3     3     2
+.line	552	self          r3    r3   k14 ; k14 = "SetData"
+.line	552	gettable      r5    r0    k5 ; k5 = "data"
+.line	552	call          r3     3     1
+.line	553	jmp          l52
+.label	l35
+.line	554	gettable      r3    r2    k0 ; k0 = "Type"
+.line	554	eq             0    r3   k15 ; k15 = "MouseEnter"
+.line	554	jmp          l47
+.line	554	getupval      r3    u3
+.line	554	gettable      r3    r3   k16 ; k16 = "previewFactoryTempla" (truncated)
+.line	554	call          r3     1     2
+.line	554	test          r3    r3     0
+.line	554	jmp          l47
+.line	555	self          r3    r0   k17 ; k17 = "CreatePreview"
+.line	555	move          r5    r1
+.line	555	call          r3     3     1
+.line	555	jmp          l52
+.label	l47
+.line	556	gettable      r3    r2    k0 ; k0 = "Type"
+.line	556	eq             0    r3   k18 ; k18 = "MouseExit"
+.line	556	jmp          l52
+.line	557	self          r3    r0   k19 ; k19 = "ClearPreview"
+.line	557	call          r3     2     1
+.label	l52
+.line	559	return        r0     1
+
+.function	main/f0/f36
+
+.source	null
+.linedefined	562
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.upvalue	"ClearFactoryPreview"	0	false
+
+.line	563	getupval      r1    u0
+.line	563	call          r1     1     1
+.line	564	return        r0     1
+
+.function	main/f0/f37
+
+.source	null
+.linedefined	568
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	19
+.local	"item"	0	19
+.local	"preview"	5	19
+
+.upvalue	"FactoryTemplatePreview"	0	false
+
+.constant	k0	"ClearPreview"
+.constant	k1	"DisplayTemplate"
+.constant	k2	"data"
+.constant	k3	"template"
+.constant	k4	"ReUI"
+.constant	k5	"UI"
+.constant	k6	"Global"
+.constant	k7	"FactoryTemplatePreview"
+.constant	k8	"Layouter"
+.constant	k9	"Above"
+.constant	k10	30
+
+.line	569	self          r2    r0    k0 ; k0 = "ClearPreview"
+.line	569	call          r2     2     1
+.line	571	getupval      r2    u0
+.line	571	move          r3    r1
+.line	571	call          r2     2     2
+.line	572	self          r3    r2    k1 ; k1 = "DisplayTemplate"
+.line	572	gettable      r5    r0    k2 ; k2 = "data"
+.line	572	gettable      r5    r5    k3 ; k3 = "template"
+.line	572	call          r3     3     1
+.line	573	getglobal     r3    k4 ; k4 = "ReUI"
+.line	573	gettable      r3    r3    k5 ; k5 = "UI"
+.line	573	gettable      r3    r3    k6 ; k6 = "Global"
+.line	573	settable      r3    k7    r2 ; k7 = "FactoryTemplatePrevi" (truncated)
+.line	574	self          r3    r2    k8 ; k8 = "Layouter"
+.line	574	call          r3     2     2
+.line	575	self          r3    r3    k9 ; k9 = "Above"
+.line	575	move          r5    r1
+.line	575	loadk         r6   k10 ; k10 = 30
+.line	575	call          r3     4     1
+.line	576	return        r0     1
+
+.function	main/f0/f38
+
+.source	null
+.linedefined	585
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	40
+.local	"checkBox"	0	40
+
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"SetNewTextures"
+.constant	k1	"UIFile"
+.constant	k2	"/game/construct-sm_btn/mid_btn_up.dds"
+.constant	k3	"/game/construct-sm_btn/mid_btn_selected.dds"
+.constant	k4	"/game/construct-sm_btn/mid_btn_over.dds"
+.constant	k5	"/game/construct-sm_btn/mid_btn_dis.dds"
+.constant	k6	"SetOverlayTextures"
+.constant	k7	"/game/construct-sm_btn/template_off.dds"
+.constant	k8	"/game/construct-sm_btn/template_on.dds"
+.constant	k9	"SetCheck"
+
+.line	586	self          r2    r1    k0 ; k0 = "SetNewTextures"
+.line	587	getupval      r4    u0
+.line	587	gettable      r4    r4    k1 ; k1 = "UIFile"
+.line	587	loadk         r5    k2 ; k2 = "/game/construct-sm_b" (truncated)
+.line	587	call          r4     2     2
+.line	588	getupval      r5    u0
+.line	588	gettable      r5    r5    k1 ; k1 = "UIFile"
+.line	588	loadk         r6    k3 ; k3 = "/game/construct-sm_b" (truncated)
+.line	588	call          r5     2     2
+.line	589	getupval      r6    u0
+.line	589	gettable      r6    r6    k1 ; k1 = "UIFile"
+.line	589	loadk         r7    k4 ; k4 = "/game/construct-sm_b" (truncated)
+.line	589	call          r6     2     2
+.line	590	getupval      r7    u0
+.line	590	gettable      r7    r7    k1 ; k1 = "UIFile"
+.line	590	loadk         r8    k4 ; k4 = "/game/construct-sm_b" (truncated)
+.line	590	call          r7     2     2
+.line	591	getupval      r8    u0
+.line	591	gettable      r8    r8    k1 ; k1 = "UIFile"
+.line	591	loadk         r9    k5 ; k5 = "/game/construct-sm_b" (truncated)
+.line	591	call          r8     2     2
+.line	592	getupval      r9    u0
+.line	592	gettable      r9    r9    k1 ; k1 = "UIFile"
+.line	592	loadk        r10    k5 ; k5 = "/game/construct-sm_b" (truncated)
+.line	592	call          r9     2     0
+.line	586	call          r2     0     1
+.line	595	self          r2    r1    k6 ; k6 = "SetOverlayTextures"
+.line	596	getupval      r4    u0
+.line	596	gettable      r4    r4    k1 ; k1 = "UIFile"
+.line	596	loadk         r5    k7 ; k7 = "/game/construct-sm_b" (truncated)
+.line	596	call          r4     2     2
+.line	597	getupval      r5    u0
+.line	597	gettable      r5    r5    k1 ; k1 = "UIFile"
+.line	597	loadk         r6    k8 ; k8 = "/game/construct-sm_b" (truncated)
+.line	597	call          r5     2     0
+.line	595	call          r2     0     1
+.line	599	self          r2    r1    k9 ; k9 = "SetCheck"
+.line	599	loadbool      r4     0     0
+.line	599	loadbool      r5     1     0
+.line	599	call          r2     4     1
+.line	600	return        r0     1
+
+.function	main/f0/f39
+
+.source	null
+.linedefined	602
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"checkBox"	0	0
+
+.line	603	return        r0     1
+
+.function	main/f0/f40
+
+.source	null
+.linedefined	608
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	10
+.local	"checkBox"	0	10
+.local	"isChecked"	0	10
+
+.upvalue	"Templates"	0	false
+
+.constant	k0	"CreateBuildTemplate"
+.constant	k1	"print"
+.constant	k2	"Build template created"
+.constant	k3	"SetCheck"
+
+.line	609	getupval      r3    u0
+.line	609	gettable      r3    r3    k0 ; k0 = "CreateBuildTemplate"
+.line	609	call          r3     1     1
+.line	610	getglobal     r3    k1 ; k1 = "print"
+.line	610	loadk         r4    k2 ; k2 = "Build template creat" (truncated)
+.line	610	call          r3     2     1
+.line	611	self          r3    r1    k3 ; k3 = "SetCheck"
+.line	611	loadbool      r5     0     0
+.line	611	loadbool      r6     1     0
+.line	611	call          r3     4     1
+.line	612	return        r0     1
+
+.function	main/f0/f41
+
+.source	null
+.linedefined	616
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	26
+.local	"checkBox"	0	26
+.local	"context"	1	26
+.local	"selection"	2	26
+.local	"isAllStructures"	19	26
+
+.constant	k0	"Context"
+.constant	k1	"selection"
+.constant	k2	"table"
+.constant	k3	"empty"
+.constant	k4	"Disable"
+.constant	k5	"EntityCategoryFilterOut"
+.constant	k6	"categories"
+.constant	k7	"STRUCTURE"
+.constant	k8	"Enable"
+
+.line	617	gettable      r2    r1    k0 ; k0 = "Context"
+.line	618	gettable      r3    r2    k1 ; k1 = "selection"
+.line	620	getglobal     r4    k2 ; k2 = "table"
+.line	620	gettable      r4    r4    k3 ; k3 = "empty"
+.line	620	move          r5    r3
+.line	620	call          r4     2     2
+.line	620	test          r4    r4     0
+.line	620	jmp          l12
+.line	621	self          r4    r1    k4 ; k4 = "Disable"
+.line	621	call          r4     2     1
+.line	622	return        r0     1
+.label	l12
+.line	625	getglobal     r4    k2 ; k2 = "table"
+.line	625	gettable      r4    r4    k3 ; k3 = "empty"
+.line	625	getglobal     r5    k5 ; k5 = "EntityCategoryFilter" (truncated)
+.line	625	getglobal     r6    k6 ; k6 = "categories"
+.line	625	gettable      r6    r6    k7 ; k7 = "STRUCTURE"
+.line	625	move          r7    r3
+.line	625	call          r5     3     0
+.line	625	call          r4     0     2
+.line	626	test          r4    r4     1
+.line	626	jmp          l25
+.line	627	self          r5    r1    k4 ; k4 = "Disable"
+.line	627	call          r5     2     1
+.line	628	return        r0     1
+.label	l25
+.line	631	self          r5    r1    k8 ; k8 = "Enable"
+.line	631	call          r5     2     1
+.line	632	return        r0     1
+
+.function	main/f0/f42
+
+.source	null
+.linedefined	641
+.numparams	2
+.is_vararg	0
+.maxstacksize	11
+
+.local	"self"	0	40
+.local	"checkBox"	0	40
+
+.upvalue	"UIUtil"	0	false
+
+.constant	k0	"SetNewTextures"
+.constant	k1	"UIFile"
+.constant	k2	"/game/construct-sm_btn/mid_btn_up.dds"
+.constant	k3	"/game/construct-sm_btn/mid_btn_selected.dds"
+.constant	k4	"/game/construct-sm_btn/mid_btn_over.dds"
+.constant	k5	"/game/construct-sm_btn/mid_btn_dis.dds"
+.constant	k6	"SetOverlayTextures"
+.constant	k7	"/game/construct-sm_btn/template_off.dds"
+.constant	k8	"/game/construct-sm_btn/template_on.dds"
+.constant	k9	"SetCheck"
+
+.line	642	self          r2    r1    k0 ; k0 = "SetNewTextures"
+.line	643	getupval      r4    u0
+.line	643	gettable      r4    r4    k1 ; k1 = "UIFile"
+.line	643	loadk         r5    k2 ; k2 = "/game/construct-sm_b" (truncated)
+.line	643	call          r4     2     2
+.line	644	getupval      r5    u0
+.line	644	gettable      r5    r5    k1 ; k1 = "UIFile"
+.line	644	loadk         r6    k3 ; k3 = "/game/construct-sm_b" (truncated)
+.line	644	call          r5     2     2
+.line	645	getupval      r6    u0
+.line	645	gettable      r6    r6    k1 ; k1 = "UIFile"
+.line	645	loadk         r7    k4 ; k4 = "/game/construct-sm_b" (truncated)
+.line	645	call          r6     2     2
+.line	646	getupval      r7    u0
+.line	646	gettable      r7    r7    k1 ; k1 = "UIFile"
+.line	646	loadk         r8    k4 ; k4 = "/game/construct-sm_b" (truncated)
+.line	646	call          r7     2     2
+.line	647	getupval      r8    u0
+.line	647	gettable      r8    r8    k1 ; k1 = "UIFile"
+.line	647	loadk         r9    k5 ; k5 = "/game/construct-sm_b" (truncated)
+.line	647	call          r8     2     2
+.line	648	getupval      r9    u0
+.line	648	gettable      r9    r9    k1 ; k1 = "UIFile"
+.line	648	loadk        r10    k5 ; k5 = "/game/construct-sm_b" (truncated)
+.line	648	call          r9     2     0
+.line	642	call          r2     0     1
+.line	651	self          r2    r1    k6 ; k6 = "SetOverlayTextures"
+.line	652	getupval      r4    u0
+.line	652	gettable      r4    r4    k1 ; k1 = "UIFile"
+.line	652	loadk         r5    k7 ; k7 = "/game/construct-sm_b" (truncated)
+.line	652	call          r4     2     2
+.line	653	getupval      r5    u0
+.line	653	gettable      r5    r5    k1 ; k1 = "UIFile"
+.line	653	loadk         r6    k8 ; k8 = "/game/construct-sm_b" (truncated)
+.line	653	call          r5     2     0
+.line	651	call          r2     0     1
+.line	655	self          r2    r1    k9 ; k9 = "SetCheck"
+.line	655	loadbool      r4     0     0
+.line	655	loadbool      r5     1     0
+.line	655	call          r2     4     1
+.line	656	return        r0     1
+
+.function	main/f0/f43
+
+.source	null
+.linedefined	658
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	0
+.local	"checkBox"	0	0
+
+.line	659	return        r0     1
+
+.function	main/f0/f44
+
+.source	null
+.linedefined	664
+.numparams	3
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	33
+.local	"checkBox"	0	33
+.local	"isChecked"	0	33
+.local	"unit"	1	33
+.local	"currentCommandQueue"	5	33
+
+.upvalue	"FactoryTemplates"	0	false
+
+.constant	k0	"unit"
+.constant	k1	"EntityCategoryContains"
+.constant	k2	"categories"
+.constant	k3	"EXTERNALFACTORY"
+.constant	k4	"SetCurrentFactoryForQueueDisplay"
+.constant	k5	"GetCreator"
+.constant	k6	"CreateBuildTemplate"
+.constant	k7	"print"
+.constant	k8	"Factory template created"
+.constant	k9	"SetCheck"
+
+.line	665	gettable      r3    r0    k0 ; k0 = "unit"
+.line	666	test          r3    r3     1
+.line	666	jmp           l5
+.line	667	return        r0     1
+.label	l5
+.line	671	loadnil       r4    r4
+.line	672	getglobal     r5    k1 ; k1 = "EntityCategoryContai" (truncated)
+.line	672	getglobal     r6    k2 ; k2 = "categories"
+.line	672	gettable      r6    r6    k3 ; k3 = "EXTERNALFACTORY"
+.line	672	move          r7    r3
+.line	672	call          r5     3     2
+.line	672	test          r5    r5     0
+.line	672	jmp          l19
+.line	673	getglobal     r5    k4 ; k4 = "SetCurrentFactoryFor" (truncated)
+.line	673	self          r6    r3    k5 ; k5 = "GetCreator"
+.line	673	call          r6     2     0
+.line	673	call          r5     0     2
+.line	673	move          r4    r5
+.line	673	jmp          l23
+.label	l19
+.line	675	getglobal     r5    k4 ; k4 = "SetCurrentFactoryFor" (truncated)
+.line	675	move          r6    r3
+.line	675	call          r5     2     2
+.line	675	move          r4    r5
+.label	l23
+.line	678	getupval      r5    u0
+.line	678	gettable      r5    r5    k6 ; k6 = "CreateBuildTemplate"
+.line	678	move          r6    r4
+.line	678	call          r5     2     1
+.line	680	getglobal     r5    k7 ; k7 = "print"
+.line	680	loadk         r6    k8 ; k8 = "Factory template cre" (truncated)
+.line	680	call          r5     2     1
+.line	681	self          r5    r1    k9 ; k9 = "SetCheck"
+.line	681	loadbool      r7     0     0
+.line	681	loadbool      r8     1     0
+.line	681	call          r5     4     1
+.line	682	return        r0     1
+
+.function	main/f0/f45
+
+.source	null
+.linedefined	686
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	34
+.local	"checkBox"	0	34
+.local	"selection"	5	34
+.local	"unit"	20	34
+
+.constant	k0	"Disable"
+.constant	k1	"unit"
+.constant	k2	nil
+.constant	k3	"Context"
+.constant	k4	"selection"
+.constant	k5	"table"
+.constant	k6	"empty"
+.constant	k7	"getn"
+.constant	k8	1
+.constant	k9	"EntityCategoryContains"
+.constant	k10	"categories"
+.constant	k11	"FACTORY"
+.constant	k12	"EXTERNALFACTORY"
+.constant	k13	"Enable"
+
+.line	687	self          r2    r1    k0 ; k0 = "Disable"
+.line	687	call          r2     2     1
+.line	688	settable      r0    k1    k2 ; k2 = nil
+.line	690	gettable      r2    r1    k3 ; k3 = "Context"
+.line	690	gettable      r2    r2    k4 ; k4 = "selection"
+.line	691	getglobal     r3    k5 ; k5 = "table"
+.line	691	gettable      r3    r3    k6 ; k6 = "empty"
+.line	691	move          r4    r2
+.line	691	call          r3     2     2
+.line	691	test          r3    r3     0
+.line	691	jmp          l13
+.line	692	return        r0     1
+.label	l13
+.line	695	getglobal     r3    k5 ; k5 = "table"
+.line	695	gettable      r3    r3    k7 ; k7 = "getn"
+.line	695	move          r4    r2
+.line	695	call          r3     2     2
+.line	695	eq             1    r3    k8 ; k8 = 1
+.line	695	jmp          l20
+.line	696	return        r0     1
+.label	l20
+.line	699	gettable      r3    r2    k8 ; k8 = 1
+.line	701	getglobal     r4    k9 ; k9 = "EntityCategoryContai" (truncated)
+.line	701	getglobal     r5   k10 ; k10 = "categories"
+.line	701	gettable      r5    r5   k11 ; k11 = "FACTORY"
+.line	701	getglobal     r6   k10 ; k10 = "categories"
+.line	701	gettable      r6    r6   k12 ; k12 = "EXTERNALFACTORY"
+.line	701	add           r5    r5    r6
+.line	701	move          r6    r3
+.line	701	call          r4     3     2
+.line	701	test          r4    r4     1
+.line	701	jmp          l32
+.line	702	return        r0     1
+.label	l32
+.line	705	settable      r0    k1    r3 ; k1 = "unit"
+.line	706	self          r4    r1   k13 ; k13 = "Enable"
+.line	706	call          r4     2     1
+.line	707	return        r0     1
+

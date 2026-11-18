@@ -1,0 +1,73 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/worldview/options.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.constant	k0	"Main"
+
+.line	2	closure       r0    f0
+.line	1	setglobal     r0    k0 ; k0 = "Main"
+.line	2	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	1
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"isReplay"	0	0
+
+.line	2	return        r0     1
+

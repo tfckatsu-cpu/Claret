@@ -1,0 +1,702 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/selection/selection.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	4
+
+.constant	k0	"Version"
+.constant	k1	"1.0.0"
+.constant	k2	"ReUI"
+.constant	k3	"Require"
+.constant	k4	"ReUI.Core >= 1.6.0"
+.constant	k5	"ReUI.Options >= 1.0.0"
+.constant	k6	"Main"
+
+.line	1	loadk         r0    k1 ; k1 = "1.0.0"
+.line	1	setglobal     r0    k0 ; k0 = "Version"
+.line	3	getglobal     r0    k2 ; k2 = "ReUI"
+.line	3	gettable      r0    r0    k3 ; k3 = "Require"
+.line	3	newtable      r1     2     0
+.line	5	loadk         r2    k4 ; k4 = "ReUI.Core >= 1.6.0"
+.line	7	loadk         r3    k5 ; k5 = "ReUI.Options >= 1.0." (truncated)
+.line	7	setlist       r1     1
+.line	4	call          r0     2     1
+.line	198	closure       r0    f0
+.line	9	setglobal     r0    k6 ; k6 = "Main"
+.line	198	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	1
+.is_vararg	0
+.maxstacksize	18
+
+.local	"isReplay"	0	79
+.local	"SelectUnits"	1	79
+.local	"IsKeyDown"	2	79
+.local	"TableEmpty"	4	79
+.local	"ForkThread"	5	79
+.local	"options"	9	79
+.local	"enabled"	11	79
+.local	"ignored"	18	79
+.local	"SelectIgnored"	21	79
+.local	"Handler"	31	79
+.local	"Selector"	49	79
+.local	"selector"	50	79
+.local	"GetSelector"	52	79
+.local	"HandleSelectionChanged"	60	79
+
+.constant	k0	"SelectUnits"
+.constant	k1	"IsKeyDown"
+.constant	k2	"table"
+.constant	k3	"empty"
+.constant	k4	"ForkThread"
+.constant	k5	"ReUI"
+.constant	k6	"Options"
+.constant	k7	"Mods"
+.constant	k8	"ReUI.Selection"
+.constant	k9	"enabled"
+.constant	k10	"Value"
+.constant	k11	"OnChanged"
+.constant	k12	"Add"
+.constant	k13	"Core"
+.constant	k14	"Class"
+.constant	k15	"Name"
+.constant	k16	"Default"
+.constant	k17	"Priority"
+.constant	k18	0
+.constant	k19	"Handle"
+.constant	k20	"__init"
+.constant	k21	"Process"
+.constant	k22	"Get"
+.constant	k23	"Remove"
+.constant	k24	"GetHandlers"
+.constant	k25	"Hook"
+.constant	k26	"/lua/ui/game/gamemain.lua"
+.constant	k27	"OnSelectionChanged"
+.constant	k28	"OnPostCreateUI"
+.constant	k29	"Selector"
+.constant	k30	"GetSelector"
+.constant	k31	"Handler"
+
+.line	10	getglobal     r1    k0 ; k0 = "SelectUnits"
+.line	11	getglobal     r2    k1 ; k1 = "IsKeyDown"
+.line	12	getglobal     r3    k2 ; k2 = "table"
+.line	12	gettable      r3    r3    k3 ; k3 = "empty"
+.line	13	getglobal     r4    k4 ; k4 = "ForkThread"
+.line	16	getglobal     r5    k5 ; k5 = "ReUI"
+.line	16	gettable      r5    r5    k6 ; k6 = "Options"
+.line	16	gettable      r5    r5    k7 ; k7 = "Mods"
+.line	16	gettable      r5    r5    k8 ; k8 = "ReUI.Selection"
+.line	18	gettable      r6    r5    k9 ; k9 = "enabled"
+.line	18	gettable      r6    r6   k10 ; k10 = "Value"
+.line	19	gettable      r7    r5    k9 ; k9 = "enabled"
+.line	19	gettable      r7    r7   k11 ; k11 = "OnChanged"
+.line	19	self          r7    r7   k12 ; k12 = "Add"
+.line	21	closure       r9    f0
+.line	21	move          r0    r6 ; upvalue declaration
+.line	19	call          r7     3     1
+.line	24	loadbool      r7     0     0
+.line	30	closure       r8    f1
+.line	30	move          r0    r7 ; upvalue declaration
+.line	30	move          r0    r1 ; upvalue declaration
+.line	34	getglobal     r9    k5 ; k5 = "ReUI"
+.line	34	gettable      r9    r9   k13 ; k13 = "Core"
+.line	34	gettable      r9    r9   k14 ; k14 = "Class"
+.line	34	call          r9     1     2
+.line	34	newtable     r10     0     2
+.line	37	settable     r10   k15   k16 ; k16 = "Default"
+.line	40	settable     r10   k17   k18 ; k18 = 0
+.line	48	closure      r11    f2
+.line	48	settable     r10   k19   r11 ; k19 = "Handle"
+.line	35	call          r9     2     2
+.line	54	getglobal    r10    k5 ; k5 = "ReUI"
+.line	54	gettable     r10   r10   k13 ; k13 = "Core"
+.line	54	gettable     r10   r10   k14 ; k14 = "Class"
+.line	54	call         r10     1     2
+.line	54	newtable     r11     0     3
+.line	59	closure      r12    f3
+.line	59	settable     r11   k20   r12 ; k20 = "__init"
+.line	79	closure      r12    f4
+.line	79	settable     r11   k21   r12 ; k21 = "Process"
+.line	93	closure      r12    f5
+.line	93	settable     r11   k22   r12 ; k22 = "Get"
+.line	105	closure      r12    f6
+.line	105	settable     r11   k12   r12 ; k12 = "Add"
+.line	117	closure      r12    f7
+.line	117	settable     r11   k23   r12 ; k23 = "Remove"
+.line	123	closure      r12    f8
+.line	123	settable     r11   k24   r12 ; k24 = "GetHandlers"
+.line	55	call         r10     2     2
+.line	127	loadnil      r11   r11
+.line	136	closure      r12    f9
+.line	136	move          r0   r11 ; upvalue declaration
+.line	158	closure      r13   f10
+.line	158	move          r0    r6 ; upvalue declaration
+.line	158	move          r0    r7 ; upvalue declaration
+.line	158	move          r0    r2 ; upvalue declaration
+.line	158	move          r0    r3 ; upvalue declaration
+.line	158	move          r0   r11 ; upvalue declaration
+.line	158	move          r0    r4 ; upvalue declaration
+.line	158	move          r0    r8 ; upvalue declaration
+.line	162	getglobal    r14    k5 ; k5 = "ReUI"
+.line	162	gettable     r14   r14   k13 ; k13 = "Core"
+.line	162	gettable     r14   r14   k25 ; k25 = "Hook"
+.line	162	loadk        r15   k26 ; k26 = "/lua/ui/game/gamemai" (truncated)
+.line	162	loadk        r16   k27 ; k27 = "OnSelectionChanged"
+.line	178	closure      r17   f11
+.line	178	move          r0   r13 ; upvalue declaration
+.line	162	call         r14     4     1
+.line	180	getglobal    r14    k5 ; k5 = "ReUI"
+.line	180	gettable     r14   r14   k13 ; k13 = "Core"
+.line	180	gettable     r14   r14   k28 ; k28 = "OnPostCreateUI"
+.line	190	closure      r15   f12
+.line	190	move          r0   r11 ; upvalue declaration
+.line	180	call         r14     2     1
+.line	193	newtable     r14     0     2
+.line	194	settable     r14   k29   r10 ; k29 = "Selector"
+.line	195	settable     r14   k30   r12 ; k30 = "GetSelector"
+.line	196	settable     r14   k31    r9 ; k31 = "Handler"
+.line	197	return       r14     2
+.line	198	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	19
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"o"	0	1
+.local	"v"	0	1
+
+.upvalue	"enabled"	0	false
+
+.line	20	setupval      r1    u0
+.line	21	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	25
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"units"	0	10
+
+.upvalue	"ignored"	0	false
+.upvalue	"SelectUnits"	0	false
+
+.line	26	loadbool      r1     1     0
+.line	26	setupval      r1    u0
+.line	27	getupval      r1    u1
+.line	27	loadnil       r2    r2
+.line	27	call          r1     2     1
+.line	28	getupval      r1    u1
+.line	28	move          r2    r0
+.line	28	call          r1     2     1
+.line	29	loadbool      r1     0     0
+.line	29	setupval      r1    u0
+.line	30	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	46
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	3
+.local	"selection"	0	3
+
+.line	47	move          r2    r1
+.line	47	loadbool      r3     0     0
+.line	47	return        r2     3
+.line	48	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	57
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_handlers"
+
+.line	58	newtable      r1     0     0
+.line	58	settable      r0    k0    r1 ; k0 = "_handlers"
+.line	59	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	68
+.numparams	5
+.is_vararg	0
+.maxstacksize	15
+
+.local	"self"	0	19
+.local	"oldSelection"	0	19
+.local	"newSelection"	0	19
+.local	"added"	0	19
+.local	"removed"	0	19
+.local	"changed"	2	19
+.local	"changedSel"	2	19
+.local	"selection"	3	19
+.local	"(for generator)"	6	16
+.local	"(for state)"	6	16
+.local	"_"	6	16
+.local	"handler"	6	16
+
+.constant	k0	"GetHandlers"
+.constant	k1	"Handle"
+
+.line	69	loadbool      r5     0     0
+.line	69	loadbool      r6     0     0
+.line	70	move          r7    r2
+.line	73	self          r8    r0    k0 ; k0 = "GetHandlers"
+.line	73	call          r8     2     5
+.line	73	tforprep      r8   l15
+.label	l7
+.line	74	self         r12   r11    k1 ; k1 = "Handle"
+.line	74	move         r14    r7
+.line	74	call         r12     3     3
+.line	74	move          r6   r13
+.line	74	move          r7   r12
+.line	75	test          r5    r5     1
+.line	75	jmp          l15
+.line	75	move          r5    r6
+.label	l15
+.line	73	tforloop      r8     1
+.line	75	jmp           l7
+.line	78	move          r8    r7
+.line	78	move          r9    r5
+.line	78	return        r8     3
+.line	79	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	84
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	11
+.local	"name"	0	11
+.local	"(for generator)"	3	9
+.local	"(for state)"	3	9
+.local	"i"	3	9
+.local	"handler"	3	9
+
+.constant	k0	"_handlers"
+.constant	k1	"Name"
+
+.line	86	gettable      r2    r0    k0 ; k0 = "_handlers"
+.line	86	loadnil       r3    r5
+.line	86	tforprep      r2    l8
+.label	l4
+.line	87	gettable      r6    r5    k1 ; k1 = "Name"
+.line	87	eq             0    r6    r1
+.line	87	jmp           l8
+.line	88	return        r5     2
+.label	l8
+.line	86	tforloop      r2     1
+.line	89	jmp           l4
+.line	92	loadnil       r2    r2
+.line	92	return        r2     2
+.line	93	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	98
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	24
+.local	"handler"	0	24
+
+.constant	k0	"Get"
+.constant	k1	"Name"
+.constant	k2	"WARN"
+.constant	k3	"ReUI.Selection: Handler with name "
+.constant	k4	"tostring"
+.constant	k5	" already exists in selector"
+.constant	k6	"table"
+.constant	k7	"insert"
+.constant	k8	"_handlers"
+.constant	k9	"sort"
+
+.line	99	self          r2    r0    k0 ; k0 = "Get"
+.line	99	gettable      r4    r1    k1 ; k1 = "Name"
+.line	99	call          r2     3     2
+.line	99	test          r2    r2     0
+.line	99	jmp          l15
+.line	100	getglobal     r2    k2 ; k2 = "WARN"
+.line	100	loadk         r3    k3 ; k3 = "ReUI.Selection: Hand" (truncated)
+.line	100	getglobal     r4    k4 ; k4 = "tostring"
+.line	100	gettable      r5    r1    k1 ; k1 = "Name"
+.line	100	call          r4     2     2
+.line	100	loadk         r5    k5 ; k5 = " already exists in s" (truncated)
+.line	100	concat        r3    r3    r5
+.line	100	call          r2     2     1
+.line	101	return        r0     1
+.label	l15
+.line	103	getglobal     r2    k6 ; k6 = "table"
+.line	103	gettable      r2    r2    k7 ; k7 = "insert"
+.line	103	gettable      r3    r0    k8 ; k8 = "_handlers"
+.line	103	move          r4    r1
+.line	103	call          r2     3     1
+.line	104	getglobal     r2    k6 ; k6 = "table"
+.line	104	gettable      r2    r2    k9 ; k9 = "sort"
+.line	104	gettable      r3    r0    k8 ; k8 = "_handlers"
+.line	104	closure       r4    f0
+.line	104	call          r2     3     1
+.line	105	return        r0     1
+
+.function	main/f0/f6/f0
+
+.source	null
+.linedefined	104
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"a"	0	7
+.local	"b"	0	7
+
+.constant	k0	"Priority"
+
+.line	104	gettable      r2    r0    k0 ; k0 = "Priority"
+.line	104	gettable      r3    r1    k0 ; k0 = "Priority"
+.line	104	lt             1    r3    r2
+.line	104	jmp           l6
+.line	104	loadbool      r2     0     1
+.label	l6
+.line	104	loadbool      r2     1     0
+.line	104	return        r2     2
+.line	104	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	110
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	14
+.local	"name"	0	14
+.local	"(for generator)"	3	14
+.local	"(for state)"	3	14
+.local	"i"	3	14
+.local	"handler"	3	14
+
+.constant	k0	"_handlers"
+.constant	k1	"Name"
+.constant	k2	"table"
+.constant	k3	"remove"
+
+.line	111	gettable      r2    r0    k0 ; k0 = "_handlers"
+.line	111	loadnil       r3    r5
+.line	111	tforprep      r2   l13
+.label	l4
+.line	112	gettable      r6    r5    k1 ; k1 = "Name"
+.line	112	eq             0    r6    r1
+.line	112	jmp          l13
+.line	113	getglobal     r6    k2 ; k2 = "table"
+.line	113	gettable      r6    r6    k3 ; k3 = "remove"
+.line	113	gettable      r7    r0    k0 ; k0 = "_handlers"
+.line	113	move          r8    r4
+.line	113	call          r6     3     1
+.line	114	return        r0     1
+.label	l13
+.line	111	tforloop      r2     1
+.line	115	jmp           l4
+.line	117	return        r0     1
+
+.function	main/f0/f8
+
+.source	null
+.linedefined	121
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_handlers"
+
+.line	122	gettable      r1    r0    k0 ; k0 = "_handlers"
+.line	122	return        r1     2
+.line	123	return        r0     1
+
+.function	main/f0/f9
+
+.source	null
+.linedefined	131
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"selector"	0	false
+
+.constant	k0	nil
+.constant	k1	"ReUI"
+.constant	k2	"Selection"
+.constant	k3	"Selector"
+
+.line	132	getupval      r0    u0
+.line	132	eq             0    r0    k0 ; k0 = nil
+.line	132	jmp           l9
+.line	133	getglobal     r0    k1 ; k1 = "ReUI"
+.line	133	gettable      r0    r0    k2 ; k2 = "Selection"
+.line	133	gettable      r0    r0    k3 ; k3 = "Selector"
+.line	133	call          r0     1     2
+.line	133	setupval      r0    u0
+.label	l9
+.line	135	getupval      r0    u0
+.line	135	return        r0     2
+.line	136	return        r0     1
+
+.function	main/f0/f10
+
+.source	null
+.linedefined	142
+.numparams	4
+.is_vararg	0
+.maxstacksize	12
+
+.local	"oldSelection"	0	42
+.local	"newSelection"	0	42
+.local	"added"	0	42
+.local	"removed"	0	42
+.local	"selection"	20	42
+.local	"changed"	20	42
+
+.upvalue	"enabled"	0	false
+.upvalue	"ignored"	0	false
+.upvalue	"IsKeyDown"	0	false
+.upvalue	"TableEmpty"	0	false
+.upvalue	"selector"	0	false
+.upvalue	"ForkThread"	0	false
+.upvalue	"SelectIgnored"	0	false
+
+.constant	k0	"Shift"
+.constant	k1	"Process"
+
+.line	143	getupval      r4    u0
+.line	143	test          r4    r4     0
+.line	143	jmp          l17
+.line	143	getupval      r4    u1
+.line	143	test          r4    r4     1
+.line	143	jmp          l17
+.line	143	getupval      r4    u2
+.line	143	loadk         r5    k0 ; k0 = "Shift"
+.line	143	call          r4     2     2
+.line	143	test          r4    r4     1
+.line	143	jmp          l17
+.line	143	getupval      r4    u3
+.line	143	move          r5    r2
+.line	143	call          r4     2     2
+.line	143	test          r4    r4     0
+.line	143	jmp          l19
+.label	l17
+.line	144	loadbool      r4     0     0
+.line	144	return        r4     2
+.label	l19
+.line	147	loadnil       r4    r4
+.line	147	loadbool      r5     0     0
+.line	148	getupval      r6    u4
+.line	148	test          r6    r6     0
+.line	148	jmp          l33
+.line	149	getupval      r6    u4
+.line	149	self          r6    r6    k1 ; k1 = "Process"
+.line	149	move          r8    r0
+.line	149	move          r9    r1
+.line	149	move         r10    r2
+.line	149	move         r11    r3
+.line	149	call          r6     6     3
+.line	149	move          r5    r7
+.line	149	move          r4    r6
+.label	l33
+.line	152	test          r5    r5     0
+.line	152	jmp          l41
+.line	153	getupval      r6    u5
+.line	153	getupval      r7    u6
+.line	153	move          r8    r4
+.line	153	call          r6     3     1
+.line	154	loadbool      r6     1     0
+.line	154	return        r6     2
+.label	l41
+.line	157	loadbool      r6     0     0
+.line	157	return        r6     2
+.line	158	return        r0     1
+
+.function	main/f0/f11
+
+.source	null
+.linedefined	162
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"OnSelectionChanged"	0	5
+.local	"module"	0	5
+
+.upvalue	"HandleSelectionChanged"	0	false
+
+.line	177	closure       r2    f0
+.line	177	move          r0    r1 ; upvalue declaration
+.line	177	getupval      r0    u0 ; upvalue declaration
+.line	177	move          r0    r0 ; upvalue declaration
+.line	177	return        r2     2
+.line	178	return        r0     1
+
+.function	main/f0/f11/f0
+
+.source	null
+.linedefined	167
+.numparams	4
+.is_vararg	0
+.maxstacksize	9
+
+.local	"oldSelection"	0	21
+.local	"newSelection"	0	21
+.local	"added"	0	21
+.local	"removed"	0	21
+
+.upvalue	"module"	0	false
+.upvalue	"HandleSelectionChanged"	0	false
+.upvalue	"OnSelectionChanged"	0	false
+
+.constant	k0	"IsIgnoredSelection"
+
+.line	168	getupval      r4    u0
+.line	168	gettable      r4    r4    k0 ; k0 = "IsIgnoredSelection"
+.line	168	call          r4     1     2
+.line	168	test          r4    r4     0
+.line	168	jmp           l7
+.line	169	return        r0     1
+.label	l7
+.line	172	getupval      r4    u1
+.line	172	move          r5    r0
+.line	172	move          r6    r1
+.line	172	move          r7    r2
+.line	172	move          r8    r3
+.line	172	call          r4     5     2
+.line	172	test          r4    r4     0
+.line	172	jmp          l16
+.line	173	return        r0     1
+.label	l16
+.line	176	getupval      r4    u2
+.line	176	move          r5    r0
+.line	176	move          r6    r1
+.line	176	move          r7    r2
+.line	176	move          r8    r3
+.line	176	call          r4     5     1
+.line	177	return        r0     1
+
+.function	main/f0/f12
+
+.source	null
+.linedefined	180
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"(for generator)"	11	17
+.local	"(for state)"	11	17
+.local	"_"	11	17
+.local	"handler"	11	17
+
+.upvalue	"selector"	0	false
+
+.constant	k0	nil
+.constant	k1	"LOG"
+.constant	k2	"ReUI.Selection: Handlers:"
+.constant	k3	"GetHandlers"
+.constant	k4	"\t"
+.constant	k5	"Name"
+
+.line	181	getupval      r0    u0
+.line	181	eq             0    r0    k0 ; k0 = nil
+.line	181	jmp           l5
+.line	182	return        r0     1
+.label	l5
+.line	185	getglobal     r0    k1 ; k1 = "LOG"
+.line	185	loadk         r1    k2 ; k2 = "ReUI.Selection: Hand" (truncated)
+.line	185	call          r0     2     1
+.line	187	getupval      r0    u0
+.line	187	self          r0    r0    k3 ; k3 = "GetHandlers"
+.line	187	call          r0     2     5
+.line	187	tforprep      r0   l16
+.label	l12
+.line	188	getglobal     r4    k1 ; k1 = "LOG"
+.line	188	loadk         r5    k4 ; k4 = "\t"
+.line	188	gettable      r6    r3    k5 ; k5 = "Name"
+.line	188	call          r4     3     1
+.label	l16
+.line	187	tforloop      r0     1
+.line	188	jmp          l12
+.line	190	return        r0     1
+

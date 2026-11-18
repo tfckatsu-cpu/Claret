@@ -1,0 +1,1102 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/actions/actions.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.constant	k0	"Version"
+.constant	k1	"1.3.0"
+.constant	k2	"ReUI"
+.constant	k3	"Require"
+.constant	k4	"Main"
+
+.line	1	loadk         r0    k1 ; k1 = "1.3.0"
+.line	1	setglobal     r0    k0 ; k0 = "Version"
+.line	3	getglobal     r0    k2 ; k2 = "ReUI"
+.line	3	gettable      r0    r0    k3 ; k3 = "Require"
+.line	3	newtable      r1     0     0
+.line	4	call          r0     2     1
+.line	313	closure       r0    f0
+.line	10	setglobal     r0    k4 ; k4 = "Main"
+.line	313	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	10
+.numparams	0
+.is_vararg	0
+.maxstacksize	25
+
+.local	"TableGetN"	2	116
+.local	"ipairs"	3	116
+.local	"type"	4	116
+.local	"iscallable"	5	116
+.local	"EntityCategoryFilterDown"	6	116
+.local	"GetSelectedUnits"	7	116
+.local	"ConExecute"	8	116
+.local	"categoryActions"	9	116
+.local	"ProcessAction"	12	116
+.local	"GetFormattedName"	13	116
+.local	"CheckFormattedName"	15	116
+.local	"AddSimpleAction"	18	116
+.local	"AddAction"	22	116
+.local	"SelectionAction"	31	116
+.local	"CategoryMatcher"	49	116
+.local	"CategoryAction"	71	116
+.local	"Prefs"	74	116
+.local	"actions"	80	116
+.local	"(for generator)"	83	92
+.local	"(for state)"	83	92
+.local	"name"	83	92
+.local	"action"	83	92
+
+.constant	k0	"table"
+.constant	k1	"getn"
+.constant	k2	"ipairs"
+.constant	k3	"type"
+.constant	k4	"iscallable"
+.constant	k5	"EntityCategoryFilterDown"
+.constant	k6	"GetSelectedUnits"
+.constant	k7	"ConExecute"
+.constant	k8	"Class"
+.constant	k9	"__init"
+.constant	k10	"Process"
+.constant	k11	"__call"
+.constant	k12	"Modifiers"
+.constant	k13	"Register"
+.constant	k14	"Copy"
+.constant	k15	"Action"
+.constant	k16	"Matches"
+.constant	k17	"Match"
+.constant	k18	"Execute"
+.constant	k19	"import"
+.constant	k20	"/lua/user/prefs.lua"
+.constant	k21	"GetFromCurrentProfile"
+.constant	k22	"UserKeyActions"
+.constant	k23	"category"
+.constant	k24	"ReUI.Actions"
+.constant	k25	"ReUI"
+.constant	k26	nil
+.constant	k27	"SetToCurrentProfile"
+.constant	k28	"Core"
+.constant	k29	"Hook"
+.constant	k30	"/lua/keymap/keymapper.lua"
+.constant	k31	"GenerateHotbuildModifiers"
+.constant	k32	"OnPostCreateUI"
+.constant	k33	"CategoryMatcher"
+.constant	k34	"CategoryAction"
+.constant	k35	"SelectionAction"
+.constant	k36	"ProcessAction"
+.constant	k37	"AddSimpleAction"
+.constant	k38	"FormatActionName"
+
+.line	12	getglobal     r0    k0 ; k0 = "table"
+.line	12	gettable      r0    r0    k1 ; k1 = "getn"
+.line	13	getglobal     r1    k2 ; k2 = "ipairs"
+.line	14	getglobal     r2    k3 ; k3 = "type"
+.line	15	getglobal     r3    k4 ; k4 = "iscallable"
+.line	16	getglobal     r4    k5 ; k5 = "EntityCategoryFilter" (truncated)
+.line	17	getglobal     r5    k6 ; k6 = "GetSelectedUnits"
+.line	18	getglobal     r6    k7 ; k7 = "ConExecute"
+.line	21	newtable      r7     0     0
+.line	29	closure       r8    f0
+.line	29	move          r0    r7 ; upvalue declaration
+.line	29	move          r0    r5 ; upvalue declaration
+.line	35	closure       r9    f1
+.line	44	closure      r10    f2
+.line	44	move          r0    r9 ; upvalue declaration
+.line	79	closure      r11    f3
+.line	79	move          r0   r10 ; upvalue declaration
+.line	79	move          r0    r9 ; upvalue declaration
+.line	100	closure      r12    f4
+.line	100	move          r0    r9 ; upvalue declaration
+.line	100	move          r0    r7 ; upvalue declaration
+.line	100	move          r0   r11 ; upvalue declaration
+.line	104	getglobal    r13    k8 ; k8 = "Class"
+.line	104	call         r13     1     2
+.line	104	newtable     r14     0     2
+.line	109	closure      r15    f5
+.line	109	move          r0   r12 ; upvalue declaration
+.line	109	settable     r14    k9   r15 ; k9 = "__init"
+.line	113	closure      r15    f6
+.line	113	settable     r14   k10   r15 ; k10 = "Process"
+.line	105	call         r13     2     2
+.line	121	getglobal    r14    k8 ; k8 = "Class"
+.line	121	call         r14     1     2
+.line	121	newtable     r15     0     3
+.line	125	closure      r16    f7
+.line	125	settable     r15    k9   r16 ; k9 = "__init"
+.line	131	closure      r16    f8
+.line	131	settable     r15   k11   r16 ; k11 = "__call"
+.line	139	closure      r16    f9
+.line	139	settable     r15   k12   r16 ; k12 = "Modifiers"
+.line	144	closure      r16   f10
+.line	144	move          r0   r12 ; upvalue declaration
+.line	144	settable     r15   k13   r16 ; k13 = "Register"
+.line	154	closure      r16   f11
+.line	154	move          r0    r1 ; upvalue declaration
+.line	154	settable     r15   k10   r16 ; k10 = "Process"
+.line	162	closure      r16   f12
+.line	162	settable     r15   k14   r16 ; k14 = "Copy"
+.line	122	call         r14     2     2
+.line	171	getglobal    r15    k8 ; k8 = "Class"
+.line	171	call         r15     1     2
+.line	171	newtable     r16     0     3
+.line	179	closure      r17   f13
+.line	179	settable     r16    k9   r17 ; k9 = "__init"
+.line	187	closure      r17   f14
+.line	187	settable     r16   k15   r17 ; k15 = "Action"
+.line	202	closure      r17   f15
+.line	202	move          r0    r0 ; upvalue declaration
+.line	202	move          r0    r4 ; upvalue declaration
+.line	202	settable     r16   k16   r17 ; k16 = "Matches"
+.line	210	closure      r17   f16
+.line	210	settable     r16   k17   r17 ; k17 = "Match"
+.line	222	closure      r17   f17
+.line	222	settable     r16   k10   r17 ; k10 = "Process"
+.line	236	closure      r17   f18
+.line	236	move          r0    r1 ; upvalue declaration
+.line	236	move          r0    r2 ; upvalue declaration
+.line	236	move          r0    r6 ; upvalue declaration
+.line	236	move          r0    r3 ; upvalue declaration
+.line	236	settable     r16   k18   r17 ; k18 = "Execute"
+.line	172	call         r15     2     2
+.line	239	getglobal    r16   k19 ; k19 = "import"
+.line	239	loadk        r17   k20 ; k20 = "/lua/user/prefs.lua"
+.line	239	call         r16     2     2
+.line	240	gettable     r17   r16   k21 ; k21 = "GetFromCurrentProfil" (truncated)
+.line	240	loadk        r18   k22 ; k22 = "UserKeyActions"
+.line	240	call         r17     2     2
+.line	240	test         r17   r17     1
+.line	240	jmp          l81
+.line	240	newtable     r17     0     0
+.label	l81
+.line	241	move         r18   r17
+.line	241	loadnil      r19   r21
+.line	241	tforprep     r18   l91
+.label	l84
+.line	242	gettable     r22   r21   k23 ; k23 = "category"
+.line	242	eq             1   r22   k24 ; k24 = "ReUI.Actions"
+.line	242	jmp          l90
+.line	242	gettable     r22   r21   k25 ; k25 = "ReUI"
+.line	242	test         r22   r22     0
+.line	242	jmp          l91
+.label	l90
+.line	243	settable     r17   r20   k26 ; k26 = nil
+.label	l91
+.line	241	tforloop     r18     1
+.line	244	jmp          l84
+.line	246	gettable     r18   r16   k27 ; k27 = "SetToCurrentProfile"
+.line	246	loadk        r19   k22 ; k22 = "UserKeyActions"
+.line	246	move         r20   r17
+.line	246	call         r18     3     1
+.line	249	getglobal    r18   k25 ; k25 = "ReUI"
+.line	249	gettable     r18   r18   k28 ; k28 = "Core"
+.line	249	gettable     r18   r18   k29 ; k29 = "Hook"
+.line	249	loadk        r19   k30 ; k30 = "/lua/keymap/keymappe" (truncated)
+.line	249	loadk        r20   k31 ; k31 = "GenerateHotbuildModi" (truncated)
+.line	290	closure      r21   f19
+.line	249	call         r18     4     1
+.line	292	getglobal    r18   k25 ; k25 = "ReUI"
+.line	292	gettable     r18   r18   k28 ; k28 = "Core"
+.line	292	gettable     r18   r18   k32 ; k32 = "OnPostCreateUI"
+.line	303	closure      r19   f20
+.line	292	call         r18     2     1
+.line	305	newtable     r18     0     3
+.line	306	settable     r18   k33   r14 ; k33 = "CategoryMatcher"
+.line	307	settable     r18   k34   r15 ; k34 = "CategoryAction"
+.line	308	settable     r18   k35   r13 ; k35 = "SelectionAction"
+.line	309	settable     r18   k36    r8 ; k36 = "ProcessAction"
+.line	310	settable     r18   k37   r11 ; k37 = "AddSimpleAction"
+.line	311	settable     r18   k38    r9 ; k38 = "FormatActionName"
+.line	312	return       r18     2
+.line	313	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	22
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"name"	0	15
+.local	"action"	2	15
+
+.upvalue	"categoryActions"	0	false
+.upvalue	"GetSelectedUnits"	0	false
+
+.constant	k0	"WARN"
+.constant	k1	"Attempt to use action '"
+.constant	k2	"' which wasn't registered"
+.constant	k3	"Process"
+
+.line	23	getupval      r1    u0
+.line	23	gettable      r1    r1    r0
+.line	24	test          r1    r1     1
+.line	24	jmp          l12
+.line	25	getglobal     r2    k0 ; k0 = "WARN"
+.line	25	loadk         r3    k1 ; k1 = "Attempt to use actio" (truncated)
+.line	25	move          r4    r0
+.line	25	loadk         r5    k2 ; k2 = "' which wasn't regis" (truncated)
+.line	25	concat        r3    r3    r5
+.line	25	call          r2     2     1
+.line	26	return        r0     1
+.label	l12
+.line	28	self          r2    r1    k3 ; k3 = "Process"
+.line	28	getupval      r4    u1
+.line	28	call          r4     1     0
+.line	28	call          r2     0     1
+.line	29	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	33
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"name"	0	5
+
+.constant	k0	"gsub"
+.constant	k1	"[^A-Za-z0-9]+"
+.constant	k2	"_"
+
+.line	34	self          r1    r0    k0 ; k0 = "gsub"
+.line	34	loadk         r3    k1 ; k1 = "[^A-Za-z0-9]+"
+.line	34	loadk         r4    k2 ; k2 = "_"
+.line	34	call          r1     4     2
+.line	34	return        r1     2
+.line	35	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	39
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"name"	0	9
+
+.upvalue	"GetFormattedName"	0	false
+
+.constant	k0	"error"
+.constant	k1	"name must be made of only letters A-Z, a-z, 0-9 and _"
+
+.line	40	getupval      r1    u0
+.line	40	move          r2    r0
+.line	40	call          r1     2     2
+.line	40	eq             0    r0    r1
+.line	40	jmp           l7
+.line	41	return        r0     2
+.label	l7
+.line	43	getglobal     r1    k0 ; k0 = "error"
+.line	43	loadk         r2    k1 ; k1 = "name must be made of" (truncated)
+.line	43	call          r1     2     1
+.line	44	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	59
+.numparams	1
+.is_vararg	0
+.maxstacksize	8
+
+.local	"action"	0	52
+.local	"formattedName"	14	52
+.local	"actionTable"	30	52
+.local	"keyDescriptions"	41	52
+
+.upvalue	"CheckFormattedName"	0	false
+.upvalue	"GetFormattedName"	0	false
+
+.constant	k0	"LOG"
+.constant	k1	"ReUI.Actions: adding '"
+.constant	k2	"description"
+.constant	k3	"'"
+.constant	k4	"formattedName"
+.constant	k5	"action"
+.constant	k6	"category"
+.constant	k7	"ReUI"
+.constant	k8	"shift"
+.constant	k9	"modifiers"
+.constant	k10	"ctrl"
+.constant	k11	"alt"
+.constant	k12	"import"
+.constant	k13	"/lua/keymap/keymapper.lua"
+.constant	k14	"SetUserKeyAction"
+.constant	k15	"/lua/keymap/keydescriptions.lua"
+.constant	k16	"keyDescriptions"
+.constant	k17	"WARN"
+.constant	k18	"Overwriting key action description of '%s'"
+.constant	k19	"format"
+
+.line	60	getglobal     r1    k0 ; k0 = "LOG"
+.line	60	loadk         r2    k1 ; k1 = "ReUI.Actions: adding" (truncated)
+.line	60	gettable      r3    r0    k2 ; k2 = "description"
+.line	60	loadk         r4    k3 ; k3 = "'"
+.line	60	concat        r2    r2    r4
+.line	60	call          r1     2     1
+.line	61	getupval      r1    u0
+.line	61	gettable      r2    r0    k4 ; k4 = "formattedName"
+.line	61	test          r2    r2     1
+.line	61	jmp          l14
+.line	61	getupval      r2    u1
+.line	61	gettable      r3    r0    k2 ; k2 = "description"
+.line	61	call          r2     2     2
+.label	l14
+.line	61	call          r1     2     2
+.line	63	newtable      r2     0     3
+.line	64	gettable      r3    r0    k5 ; k5 = "action"
+.line	64	settable      r2    k5    r3 ; k5 = "action"
+.line	65	gettable      r3    r0    k6 ; k6 = "category"
+.line	65	settable      r2    k6    r3 ; k6 = "category"
+.line	66	loadbool      r3     1     0
+.line	66	settable      r2    k7    r3 ; k7 = "ReUI"
+.line	67	gettable      r3    r0    k9 ; k9 = "modifiers"
+.line	67	gettable      r3    r3    k8 ; k8 = "shift"
+.line	67	settable      r2    k8    r3 ; k8 = "shift"
+.line	68	gettable      r3    r0    k9 ; k9 = "modifiers"
+.line	68	gettable      r3    r3   k10 ; k10 = "ctrl"
+.line	68	settable      r2   k10    r3 ; k10 = "ctrl"
+.line	69	gettable      r3    r0    k9 ; k9 = "modifiers"
+.line	69	gettable      r3    r3   k11 ; k11 = "alt"
+.line	69	settable      r2   k11    r3 ; k11 = "alt"
+.line	72	getglobal     r3   k12 ; k12 = "import"
+.line	72	loadk         r4   k13 ; k13 = "/lua/keymap/keymappe" (truncated)
+.line	72	call          r3     2     2
+.line	72	gettable      r3    r3   k14 ; k14 = "SetUserKeyAction"
+.line	72	move          r4    r1
+.line	72	move          r5    r2
+.line	72	call          r3     3     1
+.line	74	getglobal     r3   k12 ; k12 = "import"
+.line	74	loadk         r4   k15 ; k15 = "/lua/keymap/keydescr" (truncated)
+.line	74	call          r3     2     2
+.line	74	gettable      r3    r3   k16 ; k16 = "keyDescriptions"
+.line	75	gettable      r4    r3    r1
+.line	75	test          r4    r4     0
+.line	75	jmp          l51
+.line	76	getglobal     r4   k17 ; k17 = "WARN"
+.line	76	loadk         r5   k18 ; k18 = "Overwriting key acti" (truncated)
+.line	76	self          r5    r5   k19 ; k19 = "format"
+.line	76	move          r7    r1
+.line	76	call          r5     3     0
+.line	76	call          r4     0     1
+.label	l51
+.line	78	gettable      r4    r0    k2 ; k2 = "description"
+.line	78	settable      r3    r1    r4
+.line	79	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	86
+.numparams	5
+.is_vararg	0
+.maxstacksize	10
+
+.local	"name"	0	23
+.local	"matcher"	0	23
+.local	"category"	0	23
+.local	"formattedName"	0	23
+.local	"modifiers"	0	23
+
+.upvalue	"GetFormattedName"	0	false
+.upvalue	"categoryActions"	0	false
+.upvalue	"AddSimpleAction"	0	false
+
+.constant	k0	"ReUI.Actions"
+.constant	k1	"description"
+.constant	k2	"action"
+.constant	k3	"UI_Lua ReUI.Actions.ProcessAction('"
+.constant	k4	"')"
+.constant	k5	"category"
+.constant	k6	"formattedName"
+.constant	k7	"modifiers"
+
+.line	87	test          r2    r2     1
+.line	87	jmp           l4
+.line	87	loadk         r2    k0 ; k0 = "ReUI.Actions"
+.label	l4
+.line	88	test          r3    r3     1
+.line	88	jmp          l10
+.line	88	getupval      r5    u0
+.line	88	move          r6    r0
+.line	88	call          r5     2     2
+.line	88	move          r3    r5
+.label	l10
+.line	90	getupval      r5    u1
+.line	90	settable      r5    r3    r1
+.line	92	getupval      r5    u2
+.line	92	newtable      r6     0     3
+.line	94	settable      r6    k1    r0 ; k1 = "description"
+.line	95	loadk         r7    k3 ; k3 = "UI_Lua ReUI.Actions." (truncated)
+.line	95	move          r8    r3
+.line	95	loadk         r9    k4 ; k4 = "')"
+.line	95	concat        r7    r7    r9
+.line	95	settable      r6    k2    r7 ; k2 = "action"
+.line	96	settable      r6    k5    r2 ; k5 = "category"
+.line	97	settable      r6    k6    r3 ; k6 = "formattedName"
+.line	98	settable      r6    k7    r4 ; k7 = "modifiers"
+.line	93	call          r5     2     1
+.line	100	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	106
+.numparams	6
+.is_vararg	0
+.maxstacksize	12
+
+.local	"self"	0	8
+.local	"description"	0	8
+.local	"func"	0	8
+.local	"category"	0	8
+.local	"name"	0	8
+.local	"modifiers"	0	8
+
+.upvalue	"AddAction"	0	false
+
+.constant	k0	"func"
+
+.line	107	settable      r0    k0    r2 ; k0 = "func"
+.line	108	getupval      r6    u0
+.line	108	move          r7    r1
+.line	108	move          r8    r0
+.line	108	move          r9    r3
+.line	108	move         r10    r4
+.line	108	move         r11    r5
+.line	108	call          r6     6     1
+.line	109	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	111
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	3
+.local	"selection"	0	3
+
+.constant	k0	"func"
+
+.line	112	gettable      r2    r0    k0 ; k0 = "func"
+.line	112	move          r3    r1
+.line	112	call          r2     2     1
+.line	113	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	123
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	1
+.local	"description"	0	1
+
+.constant	k0	"description"
+
+.line	124	settable      r0    k0    r1 ; k0 = "description"
+.line	125	return        r0     1
+
+.function	main/f0/f8
+
+.source	null
+.linedefined	127
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	4
+.local	"actions"	0	4
+
+.constant	k0	"_actions"
+.constant	k1	"Register"
+
+.line	128	settable      r0    k0    r1 ; k0 = "_actions"
+.line	129	self          r2    r0    k1 ; k1 = "Register"
+.line	129	call          r2     2     1
+.line	130	return        r0     2
+.line	131	return        r0     1
+
+.function	main/f0/f9
+
+.source	null
+.linedefined	136
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+.local	"modifiers"	0	2
+
+.constant	k0	"modifiers"
+
+.line	137	settable      r0    k0    r1 ; k0 = "modifiers"
+.line	138	return        r0     2
+.line	139	return        r0     1
+
+.function	main/f0/f10
+
+.source	null
+.linedefined	142
+.numparams	1
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	6
+
+.upvalue	"AddAction"	0	false
+
+.constant	k0	"description"
+.constant	k1	"modifiers"
+
+.line	143	getupval      r1    u0
+.line	143	gettable      r2    r0    k0 ; k0 = "description"
+.line	143	move          r3    r0
+.line	143	loadnil       r4    r5
+.line	143	gettable      r6    r0    k1 ; k1 = "modifiers"
+.line	143	call          r1     6     1
+.line	144	return        r0     1
+
+.function	main/f0/f11
+
+.source	null
+.linedefined	148
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	12
+.local	"selection"	0	12
+.local	"(for generator)"	4	12
+.local	"(for state)"	4	12
+.local	"_"	4	12
+.local	"action"	4	12
+
+.upvalue	"ipairs"	0	false
+
+.constant	k0	"_actions"
+.constant	k1	"Process"
+
+.line	149	getupval      r2    u0
+.line	149	gettable      r3    r0    k0 ; k0 = "_actions"
+.line	149	call          r2     2     5
+.line	149	tforprep      r2   l11
+.label	l5
+.line	150	self          r6    r5    k1 ; k1 = "Process"
+.line	150	move          r8    r1
+.line	150	call          r6     3     2
+.line	150	test          r6    r6     0
+.line	150	jmp          l11
+.line	151	jmp          l13
+.label	l11
+.line	149	tforloop      r2     1
+.line	152	jmp           l5
+.label	l13
+.line	154	return        r0     1
+
+.function	main/f0/f12
+
+.source	null
+.linedefined	158
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	8
+.local	"other"	0	8
+
+.constant	k0	"_actions"
+.constant	k1	"table"
+.constant	k2	"copy"
+.constant	k3	"Register"
+
+.line	159	getglobal     r2    k1 ; k1 = "table"
+.line	159	gettable      r2    r2    k2 ; k2 = "copy"
+.line	159	gettable      r3    r1    k0 ; k0 = "_actions"
+.line	159	call          r2     2     2
+.line	159	settable      r0    k0    r2 ; k0 = "_actions"
+.line	160	self          r2    r0    k3 ; k3 = "Register"
+.line	160	call          r2     2     1
+.line	161	return        r0     2
+.line	162	return        r0     1
+
+.function	main/f0/f13
+
+.source	null
+.linedefined	175
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	5
+.local	"category"	0	5
+
+.constant	k0	"_actions"
+.constant	k1	"_category"
+.constant	k2	"_matcher"
+
+.line	176	newtable      r2     0     0
+.line	176	settable      r0    k0    r2 ; k0 = "_actions"
+.line	177	settable      r0    k1    r1 ; k1 = "_category"
+.line	178	loadbool      r2     0     0
+.line	178	settable      r0    k2    r2 ; k2 = "_matcher"
+.line	179	return        r0     1
+
+.function	main/f0/f14
+
+.source	null
+.linedefined	184
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	6
+.local	"action"	0	6
+
+.constant	k0	"table"
+.constant	k1	"insert"
+.constant	k2	"_actions"
+
+.line	185	getglobal     r2    k0 ; k0 = "table"
+.line	185	gettable      r2    r2    k1 ; k1 = "insert"
+.line	185	gettable      r3    r0    k2 ; k2 = "_actions"
+.line	185	move          r4    r1
+.line	185	call          r2     3     1
+.line	186	return        r0     2
+.line	187	return        r0     1
+
+.function	main/f0/f15
+
+.source	null
+.linedefined	192
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	31
+.local	"selection"	0	31
+.local	"category"	1	31
+.local	"matcher"	2	31
+
+.upvalue	"TableGetN"	0	false
+.upvalue	"EntityCategoryFilterDown"	0	false
+
+.constant	k0	"_category"
+.constant	k1	"_matcher"
+
+.line	193	gettable      r2    r0    k0 ; k0 = "_category"
+.line	194	gettable      r3    r0    k1 ; k1 = "_matcher"
+.line	195	test          r3    r3     0
+.line	195	jmp          l10
+.line	196	move          r4    r3
+.line	196	move          r5    r1
+.line	196	move          r6    r2
+.line	196	tailcall      r4     3
+.line	196	return        r4     0
+.label	l10
+.line	198	test          r2    r2     1
+.line	198	jmp          l14
+.line	199	test          r1    r1     0
+.line	199	jmp          l30
+.label	l14
+.line	200	test          r4    r2     0
+.line	200	jmp          l31
+.line	200	test          r4    r1     0
+.line	200	jmp          l31
+.line	201	getupval      r4    u0
+.line	201	getupval      r5    u1
+.line	201	move          r6    r2
+.line	201	move          r7    r1
+.line	201	call          r5     3     0
+.line	201	call          r4     0     2
+.line	201	getupval      r5    u0
+.line	201	move          r6    r1
+.line	201	call          r5     2     2
+.line	201	eq             1    r4    r5
+.line	201	jmp          l30
+.line	201	loadbool      r4     0     1
+.label	l30
+.line	201	loadbool      r4     1     0
+.label	l31
+.line	201	return        r4     2
+.line	202	return        r0     1
+
+.function	main/f0/f16
+
+.source	null
+.linedefined	207
+.numparams	2
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+.local	"matcher"	0	2
+
+.constant	k0	"_matcher"
+
+.line	208	settable      r0    k0    r1 ; k0 = "_matcher"
+.line	209	return        r0     2
+.line	210	return        r0     1
+
+.function	main/f0/f17
+
+.source	null
+.linedefined	216
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	12
+.local	"selection"	0	12
+
+.constant	k0	"Matches"
+.constant	k1	"Execute"
+
+.line	217	self          r2    r0    k0 ; k0 = "Matches"
+.line	217	move          r4    r1
+.line	217	call          r2     3     2
+.line	217	test          r2    r2     0
+.line	217	jmp          l11
+.line	218	self          r2    r0    k1 ; k1 = "Execute"
+.line	218	move          r4    r1
+.line	218	call          r2     3     1
+.line	219	loadbool      r2     1     0
+.line	219	return        r2     2
+.label	l11
+.line	221	loadbool      r2     0     0
+.line	221	return        r2     2
+.line	222	return        r0     1
+
+.function	main/f0/f18
+
+.source	null
+.linedefined	226
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	27
+.local	"selection"	0	27
+.local	"(for generator)"	4	27
+.local	"(for state)"	4	27
+.local	"_"	4	27
+.local	"action"	4	27
+
+.upvalue	"ipairs"	0	false
+.upvalue	"type"	0	false
+.upvalue	"ConExecute"	0	false
+.upvalue	"iscallable"	0	false
+
+.constant	k0	"_actions"
+.constant	k1	"string"
+.constant	k2	"error"
+.constant	k3	"unknown type of action"
+
+.line	227	getupval      r2    u0
+.line	227	gettable      r3    r0    k0 ; k0 = "_actions"
+.line	227	call          r2     2     5
+.line	227	tforprep      r2   l26
+.label	l5
+.line	228	getupval      r6    u1
+.line	228	move          r7    r5
+.line	228	call          r6     2     2
+.line	228	eq             0    r6    k1 ; k1 = "string"
+.line	228	jmp          l14
+.line	229	getupval      r6    u2
+.line	229	move          r7    r5
+.line	229	call          r6     2     1
+.line	229	jmp          l26
+.label	l14
+.line	230	getupval      r6    u3
+.line	230	move          r7    r5
+.line	230	call          r6     2     2
+.line	230	test          r6    r6     0
+.line	230	jmp          l23
+.line	231	move          r6    r5
+.line	231	move          r7    r1
+.line	231	call          r6     2     1
+.line	231	jmp          l26
+.label	l23
+.line	233	getglobal     r6    k2 ; k2 = "error"
+.line	233	loadk         r7    k3 ; k3 = "unknown type of acti" (truncated)
+.line	233	call          r6     2     1
+.label	l26
+.line	227	tforloop      r2     1
+.line	234	jmp           l5
+.line	236	return        r0     1
+
+.function	main/f0/f19
+
+.source	null
+.linedefined	249
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	4
+.local	"module"	0	4
+
+.line	289	closure       r2    f0
+.line	289	move          r0    r0 ; upvalue declaration
+.line	289	move          r0    r1 ; upvalue declaration
+.line	289	return        r2     2
+.line	290	return        r0     1
+
+.function	main/f0/f19/f0
+
+.source	null
+.linedefined	250
+.numparams	0
+.is_vararg	0
+.maxstacksize	16
+
+.local	"modifiers"	2	80
+.local	"keyDetails"	5	80
+.local	"(for generator)"	8	79
+.local	"(for state)"	8	79
+.local	"key"	8	79
+.local	"info"	8	79
+.local	"modKey"	15	31
+.local	"bind"	16	31
+.local	"modKey"	38	54
+.local	"bind"	39	54
+.local	"modKey"	61	77
+.local	"bind"	62	77
+
+.upvalue	"field"	0	false
+.upvalue	"module"	0	false
+
+.constant	k0	"GetKeyMappingDetails"
+.constant	k1	"action"
+.constant	k2	"shift"
+.constant	k3	"Shift-"
+.constant	k4	"WARN"
+.constant	k5	"Hotbuild key "
+.constant	k6	" is already bound to action \""
+.constant	k7	"name"
+.constant	k8	"\" under \""
+.constant	k9	"category"
+.constant	k10	"\" category"
+.constant	k11	"alt"
+.constant	k12	"Alt-"
+.constant	k13	"ctrl"
+.constant	k14	"Ctrl-"
+
+.line	251	getupval      r0    u0
+.line	251	call          r0     1     2
+.line	252	getupval      r1    u1
+.line	252	gettable      r1    r1    k0 ; k0 = "GetKeyMappingDetails"
+.line	252	call          r1     1     2
+.line	253	move          r2    r1
+.line	253	loadnil       r3    r5
+.line	253	tforprep      r2   l78
+.label	l9
+.line	254	gettable      r6    r5    k1 ; k1 = "action"
+.line	254	gettable      r6    r6    k2 ; k2 = "shift"
+.line	254	test          r6    r6     0
+.line	254	jmp          l32
+.line	255	loadk         r6    k3 ; k3 = "Shift-"
+.line	255	move          r7    r4
+.line	255	concat        r6    r6    r7
+.line	256	gettable      r7    r1    r6
+.line	257	test          r7    r7     0
+.line	257	jmp          l30
+.line	258	getglobal     r8    k4 ; k4 = "WARN"
+.line	258	loadk         r9    k5 ; k5 = "Hotbuild key "
+.line	259	move         r10    r6
+.line	260	loadk        r11    k6 ; k6 = " is already bound to" (truncated)
+.line	260	gettable     r12    r7    k7 ; k7 = "name"
+.line	260	loadk        r13    k8 ; k8 = "\" under \""
+.line	260	gettable     r14    r7    k9 ; k9 = "category"
+.line	260	loadk        r15   k10 ; k10 = "\" category"
+.line	260	concat        r9    r9   r15
+.line	258	call          r8     2     1
+.line	260	jmp          l32
+.label	l30
+.line	262	gettable      r8    r5    k1 ; k1 = "action"
+.line	262	settable      r0    r6    r8
+.label	l32
+.line	265	gettable      r6    r5    k1 ; k1 = "action"
+.line	265	gettable      r6    r6   k11 ; k11 = "alt"
+.line	265	test          r6    r6     0
+.line	265	jmp          l55
+.line	266	loadk         r6   k12 ; k12 = "Alt-"
+.line	266	move          r7    r4
+.line	266	concat        r6    r6    r7
+.line	267	gettable      r7    r1    r6
+.line	268	test          r7    r7     0
+.line	268	jmp          l53
+.line	269	getglobal     r8    k4 ; k4 = "WARN"
+.line	269	loadk         r9    k5 ; k5 = "Hotbuild key "
+.line	270	move         r10    r6
+.line	271	loadk        r11    k6 ; k6 = " is already bound to" (truncated)
+.line	271	gettable     r12    r7    k7 ; k7 = "name"
+.line	271	loadk        r13    k8 ; k8 = "\" under \""
+.line	271	gettable     r14    r7    k9 ; k9 = "category"
+.line	271	loadk        r15   k10 ; k10 = "\" category"
+.line	271	concat        r9    r9   r15
+.line	269	call          r8     2     1
+.line	271	jmp          l55
+.label	l53
+.line	273	gettable      r8    r5    k1 ; k1 = "action"
+.line	273	settable      r0    r6    r8
+.label	l55
+.line	276	gettable      r6    r5    k1 ; k1 = "action"
+.line	276	gettable      r6    r6   k13 ; k13 = "ctrl"
+.line	276	test          r6    r6     0
+.line	276	jmp          l78
+.line	277	loadk         r6   k14 ; k14 = "Ctrl-"
+.line	277	move          r7    r4
+.line	277	concat        r6    r6    r7
+.line	278	gettable      r7    r1    r6
+.line	279	test          r7    r7     0
+.line	279	jmp          l76
+.line	280	getglobal     r8    k4 ; k4 = "WARN"
+.line	280	loadk         r9    k5 ; k5 = "Hotbuild key "
+.line	281	move         r10    r6
+.line	282	loadk        r11    k6 ; k6 = " is already bound to" (truncated)
+.line	282	gettable     r12    r7    k7 ; k7 = "name"
+.line	282	loadk        r13    k8 ; k8 = "\" under \""
+.line	282	gettable     r14    r7    k9 ; k9 = "category"
+.line	282	loadk        r15   k10 ; k10 = "\" category"
+.line	282	concat        r9    r9   r15
+.line	280	call          r8     2     1
+.line	282	jmp          l78
+.label	l76
+.line	284	gettable      r8    r5    k1 ; k1 = "action"
+.line	284	settable      r0    r6    r8
+.label	l78
+.line	253	tforloop      r2     1
+.line	286	jmp           l9
+.line	288	return        r0     2
+.line	289	return        r0     1
+
+.function	main/f0/f20
+
+.source	null
+.linedefined	292
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"isReplay"	0	3
+
+.constant	k0	"ForkThread"
+
+.line	293	getglobal     r1    k0 ; k0 = "ForkThread"
+.line	302	closure       r2    f0
+.line	293	call          r1     2     1
+.line	303	return        r0     1
+
+.function	main/f0/f20/f0
+
+.source	null
+.linedefined	293
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"KeyMapper"	6	26
+
+.constant	k0	"WaitFrames"
+.constant	k1	1
+.constant	k2	"import"
+.constant	k3	"/lua/keymap/keymapper.lua"
+.constant	k4	"IN_ClearKeyMap"
+.constant	k5	"IN_AddKeyMapTable"
+.constant	k6	"GetKeyMappings"
+.constant	k7	"SessionIsActive"
+.constant	k8	"/lua/keymap/hotbuild.lua"
+.constant	k9	"addModifiers"
+.constant	k10	"/lua/keymap/hotkeylabels.lua"
+.constant	k11	"init"
+
+.line	294	getglobal     r0    k0 ; k0 = "WaitFrames"
+.line	294	loadk         r1    k1 ; k1 = 1
+.line	294	call          r0     2     1
+.line	295	getglobal     r0    k2 ; k2 = "import"
+.line	295	loadk         r1    k3 ; k3 = "/lua/keymap/keymappe" (truncated)
+.line	295	call          r0     2     2
+.line	296	getglobal     r1    k4 ; k4 = "IN_ClearKeyMap"
+.line	296	call          r1     1     1
+.line	297	getglobal     r1    k5 ; k5 = "IN_AddKeyMapTable"
+.line	297	gettable      r2    r0    k6 ; k6 = "GetKeyMappings"
+.line	297	call          r2     1     0
+.line	297	call          r1     0     1
+.line	298	getglobal     r1    k7 ; k7 = "SessionIsActive"
+.line	298	call          r1     1     2
+.line	298	test          r1    r1     0
+.line	298	jmp          l27
+.line	299	getglobal     r1    k2 ; k2 = "import"
+.line	299	loadk         r2    k8 ; k8 = "/lua/keymap/hotbuild" (truncated)
+.line	299	call          r1     2     2
+.line	299	gettable      r1    r1    k9 ; k9 = "addModifiers"
+.line	299	call          r1     1     1
+.line	300	getglobal     r1    k2 ; k2 = "import"
+.line	300	loadk         r2   k10 ; k10 = "/lua/keymap/hotkeyla" (truncated)
+.line	300	call          r1     2     2
+.line	300	gettable      r1    r1   k11 ; k11 = "init"
+.line	300	call          r1     1     1
+.label	l27
+.line	302	return        r0     1
+

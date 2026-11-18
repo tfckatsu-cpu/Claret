@@ -1,0 +1,2150 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/main.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	11
+
+.constant	k0	"ReUI"
+.constant	k1	"Require"
+.constant	k2	"ReUI.Core >= 1.6.0"
+.constant	k3	"ReUI.LINQ >= 1.3.0"
+.constant	k4	"ReUI.UI >= 1.1.0"
+.constant	k5	"ReUI.UI.Color >= 1.0.0"
+.constant	k6	"ReUI.UI.Animation >= 1.1.0"
+.constant	k7	"ReUI.UI.Controls >= 1.0.0"
+.constant	k8	"ReUI.UI.Views >= 1.1.0"
+.constant	k9	"ReUI.Options >= 1.0.0"
+.constant	k10	"enabled"
+.constant	k11	"Main"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "Require"
+.line	1	newtable      r1    12     1
+.line	3	loadk         r2    k2 ; k2 = "ReUI.Core >= 1.6.0"
+.line	4	loadk         r3    k3 ; k3 = "ReUI.LINQ >= 1.3.0"
+.line	5	loadk         r4    k4 ; k4 = "ReUI.UI >= 1.1.0"
+.line	6	loadk         r5    k5 ; k5 = "ReUI.UI.Color >= 1.0" (truncated)
+.line	7	loadk         r6    k6 ; k6 = "ReUI.UI.Animation >=" (truncated)
+.line	8	loadk         r7    k7 ; k7 = "ReUI.UI.Controls >= " (truncated)
+.line	9	loadk         r8    k8 ; k8 = "ReUI.UI.Views >= 1.1" (truncated)
+.line	10	loadk         r9    k9 ; k9 = "ReUI.Options >= 1.0." (truncated)
+.line	11	loadbool     r10     1     0
+.line	11	settable      r1   k10   r10 ; k10 = "enabled"
+.line	12	setlist       r1     7
+.line	2	call          r0     2     1
+.line	425	closure       r0    f0
+.line	14	setglobal     r0   k11 ; k11 = "Main"
+.line	425	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	14
+.numparams	1
+.is_vararg	0
+.maxstacksize	8
+
+.local	"isReplay"	0	93
+.local	"_IsDestroyed"	1	93
+.local	"Utils"	4	93
+.local	"ScoreHook"	9	93
+.local	"ScoreBoardModule"	85	93
+
+.constant	k0	"IsDestroyed"
+.constant	k1	"import"
+.constant	k2	"Modules/Utils.lua"
+.constant	k3	"ReUI"
+.constant	k4	"Core"
+.constant	k5	"HookModule"
+.constant	k6	"/lua/ui/game/score.lua"
+.constant	k7	"CreateScoreUI"
+.constant	k8	"DisplayPing"
+.constant	k9	"SetLayout"
+.constant	k10	"Update"
+.constant	k11	"Contract"
+.constant	k12	"Expand"
+.constant	k13	"ToggleScoreControl"
+.constant	k14	"InitialAnimation"
+.constant	k15	"NoteGameSpeedChanged"
+.constant	k16	"ArmyAnnounce"
+.constant	k17	"GetScoreCache"
+.constant	k18	"AddOnSyncHashedCallback"
+.constant	k19	"FocusArmyChanged"
+.constant	k20	"ReUI.Score:FocusArmyChanged"
+.constant	k21	"OnPostCreateUI"
+.constant	k22	"Hook"
+.constant	k23	"/lua/ui/controls/worldview.lua"
+.constant	k24	"WorldView"
+.constant	k25	"Modules/ScoreBoard.lua"
+.constant	k26	"Layouts"
+.constant	k27	"ScoreBoard"
+.constant	k28	"ReplayScoreBoard"
+
+.line	15	getglobal     r1    k0 ; k0 = "IsDestroyed"
+.line	17	getglobal     r2    k1 ; k1 = "import"
+.line	17	loadk         r3    k2 ; k2 = "Modules/Utils.lua"
+.line	17	call          r2     2     2
+.line	19	getglobal     r3    k3 ; k3 = "ReUI"
+.line	19	gettable      r3    r3    k4 ; k4 = "Core"
+.line	19	gettable      r3    r3    k5 ; k5 = "HookModule"
+.line	19	loadk         r4    k6 ; k6 = "/lua/ui/game/score.l" (truncated)
+.line	19	call          r3     2     2
+.line	21	move          r4    r3
+.line	21	loadk         r5    k7 ; k7 = "CreateScoreUI"
+.line	192	closure       r6    f0
+.line	192	move          r0    r1 ; upvalue declaration
+.line	192	move          r0    r0 ; upvalue declaration
+.line	21	call          r4     3     1
+.line	194	move          r4    r3
+.line	194	loadk         r5    k8 ; k8 = "DisplayPing"
+.line	203	closure       r6    f1
+.line	203	move          r0    r1 ; upvalue declaration
+.line	194	call          r4     3     1
+.line	205	move          r4    r3
+.line	205	loadk         r5    k9 ; k9 = "SetLayout"
+.line	223	closure       r6    f2
+.line	223	move          r0    r1 ; upvalue declaration
+.line	205	call          r4     3     1
+.line	225	move          r4    r3
+.line	225	loadk         r5   k10 ; k10 = "Update"
+.line	235	closure       r6    f3
+.line	235	move          r0    r1 ; upvalue declaration
+.line	225	call          r4     3     1
+.line	237	move          r4    r3
+.line	237	loadk         r5   k11 ; k11 = "Contract"
+.line	245	closure       r6    f4
+.line	245	move          r0    r1 ; upvalue declaration
+.line	237	call          r4     3     1
+.line	247	move          r4    r3
+.line	247	loadk         r5   k12 ; k12 = "Expand"
+.line	256	closure       r6    f5
+.line	256	move          r0    r1 ; upvalue declaration
+.line	247	call          r4     3     1
+.line	258	move          r4    r3
+.line	258	loadk         r5   k13 ; k13 = "ToggleScoreControl"
+.line	262	closure       r6    f6
+.line	258	call          r4     3     1
+.line	264	move          r4    r3
+.line	264	loadk         r5   k14 ; k14 = "InitialAnimation"
+.line	272	closure       r6    f7
+.line	272	move          r0    r1 ; upvalue declaration
+.line	264	call          r4     3     1
+.line	274	move          r4    r3
+.line	274	loadk         r5   k15 ; k15 = "NoteGameSpeedChanged"
+.line	283	closure       r6    f8
+.line	283	move          r0    r1 ; upvalue declaration
+.line	274	call          r4     3     1
+.line	285	move          r4    r3
+.line	285	loadk         r5   k16 ; k16 = "ArmyAnnounce"
+.line	294	closure       r6    f9
+.line	294	move          r0    r1 ; upvalue declaration
+.line	285	call          r4     3     1
+.line	297	move          r4    r3
+.line	297	loadk         r5   k17 ; k17 = "GetScoreCache"
+.line	307	closure       r6   f10
+.line	297	call          r4     3     1
+.line	309	getglobal     r4   k18 ; k18 = "AddOnSyncHashedCallb" (truncated)
+.line	317	closure       r5   f11
+.line	317	move          r0    r1 ; upvalue declaration
+.line	318	loadk         r6   k19 ; k19 = "FocusArmyChanged"
+.line	320	loadk         r7   k20 ; k20 = "ReUI.Score:FocusArmy" (truncated)
+.line	309	call          r4     4     1
+.line	322	getglobal     r4    k3 ; k3 = "ReUI"
+.line	322	gettable      r4    r4    k4 ; k4 = "Core"
+.line	322	gettable      r4    r4   k21 ; k21 = "OnPostCreateUI"
+.line	324	closure       r5   f12
+.line	322	call          r4     2     1
+.line	326	getglobal     r4    k3 ; k3 = "ReUI"
+.line	326	gettable      r4    r4    k4 ; k4 = "Core"
+.line	326	gettable      r4    r4   k22 ; k22 = "Hook"
+.line	326	loadk         r5   k23 ; k23 = "/lua/ui/controls/wor" (truncated)
+.line	326	loadk         r6   k24 ; k24 = "WorldView"
+.line	416	closure       r7   f13
+.line	416	move          r0    r2 ; upvalue declaration
+.line	326	call          r4     4     1
+.line	418	getglobal     r4    k1 ; k1 = "import"
+.line	418	loadk         r5   k25 ; k25 = "Modules/ScoreBoard.l" (truncated)
+.line	418	call          r4     2     2
+.line	420	newtable      r5     0     2
+.line	421	newtable      r6     0     0
+.line	421	settable      r5   k26    r6 ; k26 = "Layouts"
+.line	422	gettable      r6    r4   k27 ; k27 = "ScoreBoard"
+.line	422	settable      r5   k27    r6 ; k27 = "ScoreBoard"
+.line	423	gettable      r6    r4   k28 ; k28 = "ReplayScoreBoard"
+.line	423	settable      r5   k28    r6 ; k28 = "ReplayScoreBoard"
+.line	424	return        r5     2
+.line	425	return        r0     1
+
+.function	main/f0/f0
+
+.source	null
+.linedefined	21
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	5
+.local	"module"	0	5
+
+.upvalue	"_IsDestroyed"	0	false
+.upvalue	"isReplay"	0	false
+
+.line	191	closure       r2    f0
+.line	191	getupval      r0    u0 ; upvalue declaration
+.line	191	getupval      r0    u1 ; upvalue declaration
+.line	191	move          r0    r1 ; upvalue declaration
+.line	191	return        r2     2
+.line	192	return        r0     1
+
+.function	main/f0/f0/f0
+
+.source	null
+.linedefined	22
+.numparams	0
+.is_vararg	0
+.maxstacksize	9
+
+.local	"options"	13	190
+.local	"isCampaign"	17	190
+.local	"scoreboard"	18	190
+.local	"ResourceDisplay"	128	190
+.local	"displays"	138	190
+.local	"GM"	181	190
+
+.upvalue	"_IsDestroyed"	0	false
+.upvalue	"isReplay"	0	false
+.upvalue	"module"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"Options"
+.constant	k5	"Mods"
+.constant	k6	"ReUI.Score"
+.constant	k7	"import"
+.constant	k8	"/lua/ui/campaign/campaignmanager.lua"
+.constant	k9	"campaignMode"
+.constant	k10	"IsObserver"
+.constant	k11	"Score"
+.constant	k12	"Layouts"
+.constant	k13	"minimal"
+.constant	k14	"glow border"
+.constant	k15	"Modules/Layouts/ReplayGlowBorder.lua"
+.constant	k16	"Layout"
+.constant	k17	"window border"
+.constant	k18	"Modules/Layouts/ReplayWindowFrame.lua"
+.constant	k19	"ReplayScoreBoard"
+.constant	k20	"GetFrame"
+.constant	k21	0
+.constant	k22	"replayStyle"
+.constant	k23	"Bind"
+.constant	k24	"Modules/Layouts/GameGlowBorder.lua"
+.constant	k25	"Modules/Layouts/GameWindowFrame.lua"
+.constant	k26	"style"
+.constant	k27	"Layouter"
+.constant	k28	"Scale"
+.constant	k29	"LayoutFunctions"
+.constant	k30	"Div"
+.constant	k31	"scoreboardScale"
+.constant	k32	"Raw"
+.constant	k33	100
+.constant	k34	"OnChange"
+.constant	k35	"teamColorAsBG"
+.constant	k36	"teamColorAlpha"
+.constant	k37	"useDivisions"
+.constant	k38	"Modules/ResourceDisplay.lua"
+.constant	k39	"default"
+.constant	k40	"DefaultResourceDisplay"
+.constant	k41	"income+storage"
+.constant	k42	"PairResourceDisplay"
+.constant	k43	"income+storage+maxstorage"
+.constant	k44	"FullResourceDisplay"
+.constant	k45	"displayMode"
+.constant	k46	"player"
+.constant	k47	"color"
+.constant	k48	"name"
+.constant	k49	"icon"
+.constant	k50	"rating"
+.constant	k51	"controls"
+.constant	k52	"scoreBoard"
+.constant	k53	"/lua/ui/game/gamemain.lua"
+.constant	k54	"AddBeatFunction"
+.constant	k55	"Update"
+.constant	k56	"OnDestroy"
+
+.line	23	getupval      r0    u0
+.line	23	getglobal     r1    k0 ; k0 = "ReUI"
+.line	23	gettable      r1    r1    k1 ; k1 = "UI"
+.line	23	gettable      r1    r1    k2 ; k2 = "Global"
+.line	23	gettable      r1    r1    k3 ; k3 = "ScoreBoard"
+.line	23	call          r0     2     2
+.line	23	test          r0    r0     1
+.line	23	jmp          l10
+.line	24	return        r0     1
+.label	l10
+.line	27	getglobal     r0    k0 ; k0 = "ReUI"
+.line	27	gettable      r0    r0    k4 ; k4 = "Options"
+.line	27	gettable      r0    r0    k5 ; k5 = "Mods"
+.line	27	gettable      r0    r0    k6 ; k6 = "ReUI.Score"
+.line	29	getglobal     r1    k7 ; k7 = "import"
+.line	29	loadk         r2    k8 ; k8 = "/lua/ui/campaign/cam" (truncated)
+.line	29	call          r1     2     2
+.line	29	gettable      r1    r1    k9 ; k9 = "campaignMode"
+.line	31	loadnil       r2    r2
+.line	32	getupval      r3    u1
+.line	32	test          r3    r3     1
+.line	32	jmp          l26
+.line	32	getglobal     r3   k10 ; k10 = "IsObserver"
+.line	32	call          r3     1     2
+.line	32	test          r3    r3     0
+.line	32	jmp          l62
+.label	l26
+.line	34	getglobal     r3    k0 ; k0 = "ReUI"
+.line	34	gettable      r3    r3   k11 ; k11 = "Score"
+.line	34	gettable      r3    r3   k12 ; k12 = "Layouts"
+.line	34	loadbool      r4     0     0
+.line	34	settable      r3   k13    r4 ; k13 = "minimal"
+.line	35	getglobal     r3    k0 ; k0 = "ReUI"
+.line	35	gettable      r3    r3   k11 ; k11 = "Score"
+.line	35	gettable      r3    r3   k12 ; k12 = "Layouts"
+.line	35	getglobal     r4    k7 ; k7 = "import"
+.line	35	loadk         r5   k15 ; k15 = "Modules/Layouts/Repl" (truncated)
+.line	35	call          r4     2     2
+.line	35	gettable      r4    r4   k16 ; k16 = "Layout"
+.line	35	settable      r3   k14    r4 ; k14 = "glow border"
+.line	36	getglobal     r3    k0 ; k0 = "ReUI"
+.line	36	gettable      r3    r3   k11 ; k11 = "Score"
+.line	36	gettable      r3    r3   k12 ; k12 = "Layouts"
+.line	36	getglobal     r4    k7 ; k7 = "import"
+.line	36	loadk         r5   k18 ; k18 = "Modules/Layouts/Repl" (truncated)
+.line	36	call          r4     2     2
+.line	36	gettable      r4    r4   k16 ; k16 = "Layout"
+.line	36	settable      r3   k17    r4 ; k17 = "window border"
+.line	39	getglobal     r3    k0 ; k0 = "ReUI"
+.line	39	gettable      r3    r3   k11 ; k11 = "Score"
+.line	39	gettable      r3    r3   k19 ; k19 = "ReplayScoreBoard"
+.line	39	getglobal     r4   k20 ; k20 = "GetFrame"
+.line	39	loadk         r5   k21 ; k21 = 0
+.line	39	call          r4     2     2
+.line	39	not           r5    r1
+.line	39	call          r3     3     2
+.line	39	move          r2    r3
+.line	41	gettable      r3    r0   k22 ; k22 = "replayStyle"
+.line	41	self          r3    r3   k23 ; k23 = "Bind"
+.line	43	closure       r5    f0
+.line	43	move          r0    r2 ; upvalue declaration
+.line	41	call          r3     3     1
+.line	43	jmp          l97
+.label	l62
+.line	46	getglobal     r3    k0 ; k0 = "ReUI"
+.line	46	gettable      r3    r3   k11 ; k11 = "Score"
+.line	46	gettable      r3    r3   k12 ; k12 = "Layouts"
+.line	46	loadbool      r4     0     0
+.line	46	settable      r3   k13    r4 ; k13 = "minimal"
+.line	47	getglobal     r3    k0 ; k0 = "ReUI"
+.line	47	gettable      r3    r3   k11 ; k11 = "Score"
+.line	47	gettable      r3    r3   k12 ; k12 = "Layouts"
+.line	47	getglobal     r4    k7 ; k7 = "import"
+.line	47	loadk         r5   k24 ; k24 = "Modules/Layouts/Game" (truncated)
+.line	47	call          r4     2     2
+.line	47	gettable      r4    r4   k16 ; k16 = "Layout"
+.line	47	settable      r3   k14    r4 ; k14 = "glow border"
+.line	48	getglobal     r3    k0 ; k0 = "ReUI"
+.line	48	gettable      r3    r3   k11 ; k11 = "Score"
+.line	48	gettable      r3    r3   k12 ; k12 = "Layouts"
+.line	48	getglobal     r4    k7 ; k7 = "import"
+.line	48	loadk         r5   k25 ; k25 = "Modules/Layouts/Game" (truncated)
+.line	48	call          r4     2     2
+.line	48	gettable      r4    r4   k16 ; k16 = "Layout"
+.line	48	settable      r3   k17    r4 ; k17 = "window border"
+.line	51	getglobal     r3    k0 ; k0 = "ReUI"
+.line	51	gettable      r3    r3   k11 ; k11 = "Score"
+.line	51	gettable      r3    r3    k3 ; k3 = "ScoreBoard"
+.line	51	getglobal     r4   k20 ; k20 = "GetFrame"
+.line	51	loadk         r5   k21 ; k21 = 0
+.line	51	call          r4     2     2
+.line	51	not           r5    r1
+.line	51	call          r3     3     2
+.line	51	move          r2    r3
+.line	53	gettable      r3    r0   k26 ; k26 = "style"
+.line	53	self          r3    r3   k23 ; k23 = "Bind"
+.line	55	closure       r5    f1
+.line	55	move          r0    r2 ; upvalue declaration
+.line	53	call          r3     3     1
+.label	l97
+.line	59	gettable      r3    r2   k27 ; k27 = "Layouter"
+.line	59	getglobal     r4    k0 ; k0 = "ReUI"
+.line	59	gettable      r4    r4    k1 ; k1 = "UI"
+.line	59	gettable      r4    r4   k29 ; k29 = "LayoutFunctions"
+.line	59	gettable      r4    r4   k30 ; k30 = "Div"
+.line	59	gettable      r5    r0   k31 ; k31 = "scoreboardScale"
+.line	59	self          r5    r5   k32 ; k32 = "Raw"
+.line	59	call          r5     2     2
+.line	59	loadk         r6   k33 ; k33 = 100
+.line	59	call          r4     3     2
+.line	59	settable      r3   k28    r4 ; k28 = "Scale"
+.line	61	gettable      r3    r0   k31 ; k31 = "scoreboardScale"
+.line	66	closure       r4    f2
+.line	66	move          r0    r2 ; upvalue declaration
+.line	66	settable      r3   k34    r4 ; k34 = "OnChange"
+.line	68	gettable      r3    r0   k35 ; k35 = "teamColorAsBG"
+.line	89	closure       r4    f3
+.line	89	move          r0    r0 ; upvalue declaration
+.line	89	move          r0    r2 ; upvalue declaration
+.line	89	settable      r3   k34    r4 ; k34 = "OnChange"
+.line	91	gettable      r3    r0   k36 ; k36 = "teamColorAlpha"
+.line	91	gettable      r4    r0   k35 ; k35 = "teamColorAsBG"
+.line	91	gettable      r4    r4   k34 ; k34 = "OnChange"
+.line	91	settable      r3   k34    r4 ; k34 = "OnChange"
+.line	93	gettable      r3    r0   k37 ; k37 = "useDivisions"
+.line	93	self          r3    r3   k23 ; k23 = "Bind"
+.line	106	closure       r5    f4
+.line	106	move          r0    r2 ; upvalue declaration
+.line	93	call          r3     3     1
+.line	108	getglobal     r3    k7 ; k7 = "import"
+.line	108	loadk         r4   k38 ; k38 = "Modules/ResourceDisp" (truncated)
+.line	108	call          r3     2     2
+.line	110	newtable      r4     0     0
+.line	112	gettable      r5    r3   k40 ; k40 = "DefaultResourceDispl" (truncated)
+.line	112	call          r5     1     2
+.line	112	settable      r4   k39    r5 ; k39 = "default"
+.line	113	gettable      r5    r3   k42 ; k42 = "PairResourceDisplay"
+.line	113	call          r5     1     2
+.line	113	settable      r4   k41    r5 ; k41 = "income+storage"
+.line	114	gettable      r5    r3   k44 ; k44 = "FullResourceDisplay"
+.line	114	call          r5     1     2
+.line	114	settable      r4   k43    r5 ; k43 = "income+storage+maxst" (truncated)
+.line	117	gettable      r5    r0   k45 ; k45 = "displayMode"
+.line	117	self          r5    r5   k23 ; k23 = "Bind"
+.line	130	closure       r7    f5
+.line	130	move          r0    r2 ; upvalue declaration
+.line	130	move          r0    r4 ; upvalue declaration
+.line	117	call          r5     3     1
+.line	132	gettable      r5    r0   k46 ; k46 = "player"
+.line	132	gettable      r5    r5   k47 ; k47 = "color"
+.line	132	gettable      r5    r5   k48 ; k48 = "name"
+.line	132	self          r5    r5   k23 ; k23 = "Bind"
+.line	144	closure       r7    f6
+.line	144	move          r0    r2 ; upvalue declaration
+.line	132	call          r5     3     1
+.line	146	gettable      r5    r0   k46 ; k46 = "player"
+.line	146	gettable      r5    r5   k47 ; k47 = "color"
+.line	146	gettable      r5    r5   k49 ; k49 = "icon"
+.line	146	self          r5    r5   k23 ; k23 = "Bind"
+.line	161	closure       r7    f7
+.line	161	move          r0    r2 ; upvalue declaration
+.line	146	call          r5     3     1
+.line	163	gettable      r5    r0   k46 ; k46 = "player"
+.line	163	gettable      r5    r5   k47 ; k47 = "color"
+.line	163	gettable      r5    r5   k50 ; k50 = "rating"
+.line	163	self          r5    r5   k23 ; k23 = "Bind"
+.line	175	closure       r7    f8
+.line	175	move          r0    r2 ; upvalue declaration
+.line	163	call          r5     3     1
+.line	177	gettable      r5    r0   k36 ; k36 = "teamColorAlpha"
+.line	177	self          r5    r5   k34 ; k34 = "OnChange"
+.line	177	call          r5     2     1
+.line	178	gettable      r5    r0   k31 ; k31 = "scoreboardScale"
+.line	178	self          r5    r5   k34 ; k34 = "OnChange"
+.line	178	call          r5     2     1
+.line	181	getglobal     r5    k0 ; k0 = "ReUI"
+.line	181	gettable      r5    r5    k1 ; k1 = "UI"
+.line	181	gettable      r5    r5    k2 ; k2 = "Global"
+.line	181	settable      r5    k3    r2 ; k3 = "ScoreBoard"
+.line	183	getupval      r5    u2
+.line	183	gettable      r5    r5   k51 ; k51 = "controls"
+.line	183	settable      r5   k52    r2 ; k52 = "scoreBoard"
+.line	185	getglobal     r5    k7 ; k7 = "import"
+.line	185	loadk         r6   k53 ; k53 = "/lua/ui/game/gamemai" (truncated)
+.line	185	call          r5     2     2
+.line	186	gettable      r6    r5   k54 ; k54 = "AddBeatFunction"
+.line	186	getupval      r7    u2
+.line	186	gettable      r7    r7   k55 ; k55 = "Update"
+.line	186	loadbool      r8     1     0
+.line	186	call          r6     3     1
+.line	190	closure       r6    f9
+.line	190	move          r0    r5 ; upvalue declaration
+.line	190	getupval      r0    u2 ; upvalue declaration
+.line	190	settable      r2   k56    r6 ; k56 = "OnDestroy"
+.line	191	return        r0     1
+
+.function	main/f0/f0/f0/f0
+
+.source	null
+.linedefined	41
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"var"	0	8
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"Layout"
+.constant	k1	"ReUI"
+.constant	k2	"Score"
+.constant	k3	"Layouts"
+
+.line	42	getupval      r1    u0
+.line	42	getglobal     r2    k1 ; k1 = "ReUI"
+.line	42	gettable      r2    r2    k2 ; k2 = "Score"
+.line	42	gettable      r2    r2    k3 ; k3 = "Layouts"
+.line	42	move          r3    r0
+.line	42	call          r3     1     2
+.line	42	gettable      r2    r2    r3
+.line	42	settable      r1    k0    r2 ; k0 = "Layout"
+.line	43	return        r0     1
+
+.function	main/f0/f0/f0/f1
+
+.source	null
+.linedefined	53
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"var"	0	8
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"Layout"
+.constant	k1	"ReUI"
+.constant	k2	"Score"
+.constant	k3	"Layouts"
+
+.line	54	getupval      r1    u0
+.line	54	getglobal     r2    k1 ; k1 = "ReUI"
+.line	54	gettable      r2    r2    k2 ; k2 = "Score"
+.line	54	gettable      r2    r2    k3 ; k3 = "Layouts"
+.line	54	move          r3    r0
+.line	54	call          r3     1     2
+.line	54	gettable      r2    r2    r3
+.line	54	settable      r1    k0    r2 ; k0 = "Layout"
+.line	55	return        r0     1
+
+.function	main/f0/f0/f0/f2
+
+.source	null
+.linedefined	61
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"ResetWidthComponents"
+.constant	k1	"ApplyToViews"
+
+.line	62	getupval      r0    u0
+.line	62	self          r0    r0    k0 ; k0 = "ResetWidthComponents"
+.line	62	call          r0     2     1
+.line	63	getupval      r0    u0
+.line	63	self          r0    r0    k1 ; k1 = "ApplyToViews"
+.line	65	closure       r2    f0
+.line	63	call          r0     3     1
+.line	66	return        r0     1
+
+.function	main/f0/f0/f0/f2/f0
+
+.source	null
+.linedefined	63
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"armyId"	0	2
+.local	"view"	0	2
+
+.constant	k0	"ResetFont"
+
+.line	64	self          r2    r1    k0 ; k0 = "ResetFont"
+.line	64	call          r2     2     1
+.line	65	return        r0     1
+
+.function	main/f0/f0/f0/f3
+
+.source	null
+.linedefined	68
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"var"	0	12
+.local	"_teamColorAsBG"	3	12
+.local	"_teamColorAlpha"	6	12
+
+.upvalue	"options"	0	false
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"teamColorAsBG"
+.constant	k1	"teamColorAlpha"
+.constant	k2	"ApplyToViews"
+
+.line	70	getupval      r1    u0
+.line	70	gettable      r1    r1    k0 ; k0 = "teamColorAsBG"
+.line	70	call          r1     1     2
+.line	71	getupval      r2    u0
+.line	71	gettable      r2    r2    k1 ; k1 = "teamColorAlpha"
+.line	71	call          r2     1     2
+.line	73	getupval      r3    u1
+.line	73	self          r3    r3    k2 ; k2 = "ApplyToViews"
+.line	87	closure       r5    f0
+.line	87	move          r0    r1 ; upvalue declaration
+.line	87	move          r0    r2 ; upvalue declaration
+.line	73	call          r3     3     1
+.line	89	return        r0     1
+
+.function	main/f0/f0/f0/f3/f0
+
+.source	null
+.linedefined	73
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"armyId"	0	40
+.local	"armyView"	0	40
+
+.upvalue	"_teamColorAsBG"	0	false
+.upvalue	"_teamColorAlpha"	0	false
+
+.constant	k0	"Layouter"
+.constant	k1	"_color"
+.constant	k2	"Fill"
+.constant	k3	"Color"
+.constant	k4	"ReUI"
+.constant	k5	"UI"
+.constant	k6	"SetAlpha"
+.constant	k7	"_teamColorBG"
+.constant	k8	"Top"
+.constant	k9	"Bottom"
+.constant	k10	"Right"
+.constant	k11	"Left"
+.constant	k12	"ResetLeft"
+.constant	k13	"Width"
+.constant	k14	3
+
+.line	74	getupval      r2    u0
+.line	74	test          r2    r2     0
+.line	74	jmp          l21
+.line	75	gettable      r2    r1    k0 ; k0 = "Layouter"
+.line	75	gettable      r3    r1    k1 ; k1 = "_color"
+.line	75	call          r2     2     2
+.line	76	self          r2    r2    k2 ; k2 = "Fill"
+.line	76	move          r4    r1
+.line	76	call          r2     3     2
+.line	77	self          r2    r2    k3 ; k3 = "Color"
+.line	77	getglobal     r4    k4 ; k4 = "ReUI"
+.line	77	gettable      r4    r4    k5 ; k5 = "UI"
+.line	77	gettable      r4    r4    k3 ; k3 = "Color"
+.line	77	gettable      r4    r4    k6 ; k6 = "SetAlpha"
+.line	77	gettable      r5    r1    k7 ; k7 = "_teamColorBG"
+.line	77	call          r5     1     2
+.line	77	getupval      r6    u1
+.line	77	call          r4     3     0
+.line	77	call          r2     0     1
+.line	77	jmp          l41
+.label	l21
+.line	79	gettable      r2    r1    k0 ; k0 = "Layouter"
+.line	79	gettable      r3    r1    k1 ; k1 = "_color"
+.line	79	call          r2     2     2
+.line	80	self          r2    r2    k8 ; k8 = "Top"
+.line	80	gettable      r4    r1    k8 ; k8 = "Top"
+.line	80	call          r2     3     2
+.line	81	self          r2    r2    k9 ; k9 = "Bottom"
+.line	81	gettable      r4    r1    k9 ; k9 = "Bottom"
+.line	81	call          r2     3     2
+.line	82	self          r2    r2   k10 ; k10 = "Right"
+.line	82	gettable      r4    r1   k11 ; k11 = "Left"
+.line	82	call          r2     3     2
+.line	83	self          r2    r2   k12 ; k12 = "ResetLeft"
+.line	83	call          r2     2     2
+.line	84	self          r2    r2   k13 ; k13 = "Width"
+.line	84	loadk         r4   k14 ; k14 = 3
+.line	84	call          r2     3     2
+.line	85	self          r2    r2    k3 ; k3 = "Color"
+.line	85	gettable      r4    r1    k7 ; k7 = "_teamColorBG"
+.line	85	call          r2     3     1
+.label	l41
+.line	87	return        r0     1
+
+.function	main/f0/f0/f0/f4
+
+.source	null
+.linedefined	93
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"var"	0	7
+.local	"_useDivisions"	2	7
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"ApplyToViews"
+
+.line	94	move          r1    r0
+.line	94	call          r1     1     2
+.line	96	getupval      r2    u0
+.line	96	self          r2    r2    k0 ; k0 = "ApplyToViews"
+.line	104	closure       r4    f0
+.line	104	move          r0    r1 ; upvalue declaration
+.line	96	call          r2     3     1
+.line	106	return        r0     1
+
+.function	main/f0/f0/f0/f4/f0
+
+.source	null
+.linedefined	96
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"armyId"	0	23
+.local	"armyView"	0	23
+
+.upvalue	"_useDivisions"	0	false
+
+.constant	k0	"Division"
+.constant	k1	""
+.constant	k2	"_div"
+.constant	k3	"SetAlpha"
+.constant	k4	1
+.constant	k5	"_rating"
+.constant	k6	0
+
+.line	97	getupval      r2    u0
+.line	97	test          r2    r2     0
+.line	97	jmp          l16
+.line	97	gettable      r2    r1    k0 ; k0 = "Division"
+.line	97	eq             1    r2    k1 ; k1 = ""
+.line	97	jmp          l16
+.line	98	gettable      r2    r1    k2 ; k2 = "_div"
+.line	98	self          r2    r2    k3 ; k3 = "SetAlpha"
+.line	98	loadk         r4    k4 ; k4 = 1
+.line	98	call          r2     3     1
+.line	99	gettable      r2    r1    k5 ; k5 = "_rating"
+.line	99	self          r2    r2    k3 ; k3 = "SetAlpha"
+.line	99	loadk         r4    k6 ; k6 = 0
+.line	99	call          r2     3     1
+.line	99	jmp          l24
+.label	l16
+.line	101	gettable      r2    r1    k5 ; k5 = "_rating"
+.line	101	self          r2    r2    k3 ; k3 = "SetAlpha"
+.line	101	loadk         r4    k4 ; k4 = 1
+.line	101	call          r2     3     1
+.line	102	gettable      r2    r1    k2 ; k2 = "_div"
+.line	102	self          r2    r2    k3 ; k3 = "SetAlpha"
+.line	102	loadk         r4    k6 ; k6 = 0
+.line	102	call          r2     3     1
+.label	l24
+.line	104	return        r0     1
+
+.function	main/f0/f0/f0/f5
+
+.source	null
+.linedefined	117
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"var"	0	16
+.local	"mode"	2	16
+
+.upvalue	"scoreboard"	0	false
+.upvalue	"displays"	0	false
+
+.constant	k0	"SetDisplay"
+.constant	k1	"default"
+.constant	k2	"ApplyToViews"
+
+.line	119	move          r1    r0
+.line	119	call          r1     1     2
+.line	121	getupval      r2    u0
+.line	121	self          r2    r2    k0 ; k0 = "SetDisplay"
+.line	121	getupval      r4    u1
+.line	121	gettable      r4    r4    r1
+.line	121	test          r4    r4     1
+.line	121	jmp          l11
+.line	121	getupval      r4    u1
+.line	121	gettable      r4    r4    k1 ; k1 = "default"
+.label	l11
+.line	121	call          r2     3     1
+.line	123	getupval      r2    u0
+.line	123	self          r2    r2    k2 ; k2 = "ApplyToViews"
+.line	129	closure       r4    f0
+.line	129	getupval      r0    u0 ; upvalue declaration
+.line	123	call          r2     3     1
+.line	130	return        r0     1
+
+.function	main/f0/f0/f0/f5/f0
+
+.source	null
+.linedefined	123
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"armyId"	0	10
+.local	"armyView"	0	10
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"ResetFont"
+.constant	k1	"isAlly"
+.constant	k2	"_display"
+.constant	k3	"Apply"
+
+.line	124	self          r2    r1    k0 ; k0 = "ResetFont"
+.line	124	call          r2     2     1
+.line	126	gettable      r2    r1    k1 ; k1 = "isAlly"
+.line	126	test          r2    r2     0
+.line	126	jmp          l11
+.line	127	getupval      r2    u0
+.line	127	gettable      r2    r2    k2 ; k2 = "_display"
+.line	127	self          r2    r2    k3 ; k3 = "Apply"
+.line	127	move          r4    r1
+.line	127	call          r2     3     1
+.label	l11
+.line	129	return        r0     1
+
+.function	main/f0/f0/f0/f6
+
+.source	null
+.linedefined	132
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"opt"	0	7
+.local	"mode"	2	7
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"ApplyToViews"
+
+.line	133	move          r1    r0
+.line	133	call          r1     1     2
+.line	135	getupval      r2    u0
+.line	135	self          r2    r2    k0 ; k0 = "ApplyToViews"
+.line	143	closure       r4    f0
+.line	143	move          r0    r1 ; upvalue declaration
+.line	135	call          r2     3     1
+.line	144	return        r0     1
+
+.function	main/f0/f0/f0/f6/f0
+
+.source	null
+.linedefined	135
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"armyId"	0	17
+.local	"armyView"	0	17
+
+.upvalue	"mode"	0	false
+
+.constant	k0	"plain"
+.constant	k1	"NameColor"
+.constant	k2	"PlainColor"
+.constant	k3	"player color"
+.constant	k4	"ArmyColor"
+.constant	k5	"team color"
+.constant	k6	"TeamColor"
+
+.line	136	getupval      r2    u0
+.line	136	eq             0    r2    k0 ; k0 = "plain"
+.line	136	jmp           l7
+.line	137	gettable      r2    r1    k2 ; k2 = "PlainColor"
+.line	137	settable      r1    k1    r2 ; k1 = "NameColor"
+.line	137	jmp          l18
+.label	l7
+.line	138	getupval      r2    u0
+.line	138	eq             0    r2    k3 ; k3 = "player color"
+.line	138	jmp          l13
+.line	139	gettable      r2    r1    k4 ; k4 = "ArmyColor"
+.line	139	settable      r1    k1    r2 ; k1 = "NameColor"
+.line	139	jmp          l18
+.label	l13
+.line	140	getupval      r2    u0
+.line	140	eq             0    r2    k5 ; k5 = "team color"
+.line	140	jmp          l18
+.line	141	gettable      r2    r1    k6 ; k6 = "TeamColor"
+.line	141	settable      r1    k1    r2 ; k1 = "NameColor"
+.label	l18
+.line	143	return        r0     1
+
+.function	main/f0/f0/f0/f7
+
+.source	null
+.linedefined	146
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"opt"	0	7
+.local	"mode"	2	7
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"ApplyToViews"
+
+.line	147	move          r1    r0
+.line	147	call          r1     1     2
+.line	149	getupval      r2    u0
+.line	149	self          r2    r2    k0 ; k0 = "ApplyToViews"
+.line	160	closure       r4    f0
+.line	160	move          r0    r1 ; upvalue declaration
+.line	149	call          r2     3     1
+.line	161	return        r0     1
+
+.function	main/f0/f0/f0/f7/f0
+
+.source	null
+.linedefined	149
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"armyId"	0	25
+.local	"armyView"	0	25
+
+.upvalue	"mode"	0	false
+
+.constant	k0	"plain"
+.constant	k1	"_faction"
+.constant	k2	"Mode"
+.constant	k3	"MaskColor"
+.constant	k4	"ffffffff"
+.constant	k5	"player color"
+.constant	k6	"color"
+.constant	k7	"ArmyColor"
+.constant	k8	"team color"
+.constant	k9	"TeamColor"
+
+.line	150	getupval      r2    u0
+.line	150	eq             0    r2    k0 ; k0 = "plain"
+.line	150	jmp           l9
+.line	151	gettable      r2    r1    k1 ; k1 = "_faction"
+.line	151	settable      r2    k2    k0 ; k0 = "plain"
+.line	152	gettable      r2    r1    k1 ; k1 = "_faction"
+.line	152	settable      r2    k3    k4 ; k4 = "ffffffff"
+.line	152	jmp          l26
+.label	l9
+.line	153	getupval      r2    u0
+.line	153	eq             0    r2    k5 ; k5 = "player color"
+.line	153	jmp          l18
+.line	154	gettable      r2    r1    k1 ; k1 = "_faction"
+.line	154	settable      r2    k2    k6 ; k6 = "color"
+.line	155	gettable      r2    r1    k1 ; k1 = "_faction"
+.line	155	gettable      r3    r1    k7 ; k7 = "ArmyColor"
+.line	155	settable      r2    k3    r3 ; k3 = "MaskColor"
+.line	155	jmp          l26
+.label	l18
+.line	156	getupval      r2    u0
+.line	156	eq             0    r2    k8 ; k8 = "team color"
+.line	156	jmp          l26
+.line	157	gettable      r2    r1    k1 ; k1 = "_faction"
+.line	157	settable      r2    k2    k6 ; k6 = "color"
+.line	158	gettable      r2    r1    k1 ; k1 = "_faction"
+.line	158	gettable      r3    r1    k9 ; k9 = "TeamColor"
+.line	158	settable      r2    k3    r3 ; k3 = "MaskColor"
+.label	l26
+.line	160	return        r0     1
+
+.function	main/f0/f0/f0/f8
+
+.source	null
+.linedefined	163
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"opt"	0	7
+.local	"mode"	2	7
+
+.upvalue	"scoreboard"	0	false
+
+.constant	k0	"ApplyToViews"
+
+.line	164	move          r1    r0
+.line	164	call          r1     1     2
+.line	166	getupval      r2    u0
+.line	166	self          r2    r2    k0 ; k0 = "ApplyToViews"
+.line	174	closure       r4    f0
+.line	174	move          r0    r1 ; upvalue declaration
+.line	166	call          r2     3     1
+.line	175	return        r0     1
+
+.function	main/f0/f0/f0/f8/f0
+
+.source	null
+.linedefined	166
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"armyId"	0	17
+.local	"armyView"	0	17
+
+.upvalue	"mode"	0	false
+
+.constant	k0	"plain"
+.constant	k1	"RatingColor"
+.constant	k2	"PlainColor"
+.constant	k3	"player color"
+.constant	k4	"ArmyColor"
+.constant	k5	"team color"
+.constant	k6	"TeamColor"
+
+.line	167	getupval      r2    u0
+.line	167	eq             0    r2    k0 ; k0 = "plain"
+.line	167	jmp           l7
+.line	168	gettable      r2    r1    k2 ; k2 = "PlainColor"
+.line	168	settable      r1    k1    r2 ; k1 = "RatingColor"
+.line	168	jmp          l18
+.label	l7
+.line	169	getupval      r2    u0
+.line	169	eq             0    r2    k3 ; k3 = "player color"
+.line	169	jmp          l13
+.line	170	gettable      r2    r1    k4 ; k4 = "ArmyColor"
+.line	170	settable      r1    k1    r2 ; k1 = "RatingColor"
+.line	170	jmp          l18
+.label	l13
+.line	171	getupval      r2    u0
+.line	171	eq             0    r2    k5 ; k5 = "team color"
+.line	171	jmp          l18
+.line	172	gettable      r2    r1    k6 ; k6 = "TeamColor"
+.line	172	settable      r1    k1    r2 ; k1 = "RatingColor"
+.label	l18
+.line	174	return        r0     1
+
+.function	main/f0/f0/f0/f9
+
+.source	null
+.linedefined	188
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	5
+
+.upvalue	"GM"	0	false
+.upvalue	"module"	0	false
+
+.constant	k0	"RemoveBeatFunction"
+.constant	k1	"Update"
+
+.line	189	getupval      r1    u0
+.line	189	gettable      r1    r1    k0 ; k0 = "RemoveBeatFunction"
+.line	189	getupval      r2    u1
+.line	189	gettable      r2    r2    k1 ; k1 = "Update"
+.line	189	call          r1     2     1
+.line	190	return        r0     1
+
+.function	main/f0/f1
+
+.source	null
+.linedefined	194
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	202	closure       r2    f0
+.line	202	getupval      r0    u0 ; upvalue declaration
+.line	202	return        r2     2
+.line	203	return        r0     1
+
+.function	main/f0/f1/f0
+
+.source	null
+.linedefined	195
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"parent"	0	13
+.local	"pingData"	0	13
+.local	"scoreboard"	4	13
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"DisplayPing"
+
+.line	196	getglobal     r2    k0 ; k0 = "ReUI"
+.line	196	gettable      r2    r2    k1 ; k1 = "UI"
+.line	196	gettable      r2    r2    k2 ; k2 = "Global"
+.line	196	gettable      r2    r2    k3 ; k3 = "ScoreBoard"
+.line	197	getupval      r3    u0
+.line	197	move          r4    r2
+.line	197	call          r3     2     2
+.line	197	test          r3    r3     0
+.line	197	jmp          l11
+.line	198	return        r0     1
+.label	l11
+.line	201	self          r3    r2    k4 ; k4 = "DisplayPing"
+.line	201	move          r5    r1
+.line	201	call          r3     3     1
+.line	202	return        r0     1
+
+.function	main/f0/f2
+
+.source	null
+.linedefined	205
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	222	closure       r2    f0
+.line	222	getupval      r0    u0 ; upvalue declaration
+.line	222	return        r2     2
+.line	223	return        r0     1
+
+.function	main/f0/f2/f0
+
+.source	null
+.linedefined	206
+.numparams	0
+.is_vararg	0
+.maxstacksize	8
+
+.local	"scoreboard"	4	46
+.local	"LayoutHelpers"	13	46
+.local	"avatarsControls"	17	46
+.local	"objectivesControls"	32	38
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"import"
+.constant	k5	"/lua/maui/layouthelpers.lua"
+.constant	k6	"/lua/ui/game/avatars.lua"
+.constant	k7	"controls"
+.constant	k8	"AnchorToBottom"
+.constant	k9	"avatarGroup"
+.constant	k10	10
+.constant	k11	"/lua/ui/campaign/campaignmanager.lua"
+.constant	k12	"campaignMode"
+.constant	k13	"/lua/ui/game/objectives2.lua"
+.constant	k14	"bg"
+.constant	k15	"bracketBottom"
+.constant	k16	"AtTopIn"
+.constant	k17	"GetFrame"
+.constant	k18	0
+.constant	k19	20
+
+.line	207	getglobal     r0    k0 ; k0 = "ReUI"
+.line	207	gettable      r0    r0    k1 ; k1 = "UI"
+.line	207	gettable      r0    r0    k2 ; k2 = "Global"
+.line	207	gettable      r0    r0    k3 ; k3 = "ScoreBoard"
+.line	208	getupval      r1    u0
+.line	208	move          r2    r0
+.line	208	call          r1     2     2
+.line	208	test          r1    r1     0
+.line	208	jmp          l11
+.line	209	return        r0     1
+.label	l11
+.line	212	getglobal     r1    k4 ; k4 = "import"
+.line	212	loadk         r2    k5 ; k5 = "/lua/maui/layouthelp" (truncated)
+.line	212	call          r1     2     2
+.line	214	getglobal     r2    k4 ; k4 = "import"
+.line	214	loadk         r3    k6 ; k6 = "/lua/ui/game/avatars" (truncated)
+.line	214	call          r2     2     2
+.line	214	gettable      r2    r2    k7 ; k7 = "controls"
+.line	215	gettable      r3    r1    k8 ; k8 = "AnchorToBottom"
+.line	215	gettable      r4    r2    k9 ; k9 = "avatarGroup"
+.line	215	move          r5    r0
+.line	215	loadk         r6   k10 ; k10 = 10
+.line	215	call          r3     4     1
+.line	216	getglobal     r3    k4 ; k4 = "import"
+.line	216	loadk         r4   k11 ; k11 = "/lua/ui/campaign/cam" (truncated)
+.line	216	call          r3     2     2
+.line	216	gettable      r3    r3   k12 ; k12 = "campaignMode"
+.line	216	test          r3    r3     0
+.line	216	jmp          l40
+.line	217	getglobal     r3    k4 ; k4 = "import"
+.line	217	loadk         r4   k13 ; k13 = "/lua/ui/game/objecti" (truncated)
+.line	217	call          r3     2     2
+.line	217	gettable      r3    r3    k7 ; k7 = "controls"
+.line	218	gettable      r4    r1    k8 ; k8 = "AnchorToBottom"
+.line	218	move          r5    r0
+.line	218	gettable      r6    r3   k14 ; k14 = "bg"
+.line	218	gettable      r6    r6   k15 ; k15 = "bracketBottom"
+.line	218	loadk         r7   k10 ; k10 = 10
+.line	218	call          r4     4     1
+.line	218	jmp          l47
+.label	l40
+.line	220	gettable      r3    r1   k16 ; k16 = "AtTopIn"
+.line	220	move          r4    r0
+.line	220	getglobal     r5   k17 ; k17 = "GetFrame"
+.line	220	loadk         r6   k18 ; k18 = 0
+.line	220	call          r5     2     2
+.line	220	loadk         r6   k19 ; k19 = 20
+.line	220	call          r3     4     1
+.label	l47
+.line	222	return        r0     1
+
+.function	main/f0/f3
+
+.source	null
+.linedefined	225
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"field"	0	8
+.local	"module"	0	8
+.local	"globalControls"	3	8
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+
+.line	226	getglobal     r2    k0 ; k0 = "ReUI"
+.line	226	gettable      r2    r2    k1 ; k1 = "UI"
+.line	226	gettable      r2    r2    k2 ; k2 = "Global"
+.line	234	closure       r3    f0
+.line	234	move          r0    r2 ; upvalue declaration
+.line	234	getupval      r0    u0 ; upvalue declaration
+.line	234	move          r0    r1 ; upvalue declaration
+.line	234	return        r3     2
+.line	235	return        r0     1
+
+.function	main/f0/f3/f0
+
+.source	null
+.linedefined	227
+.numparams	0
+.is_vararg	0
+.maxstacksize	4
+
+.local	"scoreboard"	2	17
+
+.upvalue	"globalControls"	0	false
+.upvalue	"_IsDestroyed"	0	false
+.upvalue	"module"	0	false
+
+.constant	k0	"ScoreBoard"
+.constant	k1	"Update"
+.constant	k2	"currentScores"
+.constant	k3	"GetScoreCache"
+
+.line	228	getupval      r0    u0
+.line	228	gettable      r0    r0    k0 ; k0 = "ScoreBoard"
+.line	229	getupval      r1    u1
+.line	229	move          r2    r0
+.line	229	call          r1     2     2
+.line	229	test          r1    r1     0
+.line	229	jmp           l9
+.line	230	return        r0     1
+.label	l9
+.line	233	self          r1    r0    k1 ; k1 = "Update"
+.line	233	getupval      r3    u2
+.line	233	gettable      r3    r3    k2 ; k2 = "currentScores"
+.line	233	test          r3    r3     0
+.line	233	jmp          l17
+.line	233	getupval      r3    u2
+.line	233	gettable      r3    r3    k3 ; k3 = "GetScoreCache"
+.line	233	call          r3     1     2
+.label	l17
+.line	233	call          r1     3     1
+.line	234	return        r0     1
+
+.function	main/f0/f4
+
+.source	null
+.linedefined	237
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	244	closure       r2    f0
+.line	244	getupval      r0    u0 ; upvalue declaration
+.line	244	return        r2     2
+.line	245	return        r0     1
+
+.function	main/f0/f4/f0
+
+.source	null
+.linedefined	238
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"scoreboard"	4	12
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"Hide"
+
+.line	239	getglobal     r0    k0 ; k0 = "ReUI"
+.line	239	gettable      r0    r0    k1 ; k1 = "UI"
+.line	239	gettable      r0    r0    k2 ; k2 = "Global"
+.line	239	gettable      r0    r0    k3 ; k3 = "ScoreBoard"
+.line	240	getupval      r1    u0
+.line	240	move          r2    r0
+.line	240	call          r1     2     2
+.line	240	test          r1    r1     0
+.line	240	jmp          l11
+.line	241	return        r0     1
+.label	l11
+.line	243	self          r1    r0    k4 ; k4 = "Hide"
+.line	243	call          r1     2     1
+.line	244	return        r0     1
+
+.function	main/f0/f5
+
+.source	null
+.linedefined	247
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	255	closure       r2    f0
+.line	255	getupval      r0    u0 ; upvalue declaration
+.line	255	return        r2     2
+.line	256	return        r0     1
+
+.function	main/f0/f5/f0
+
+.source	null
+.linedefined	248
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"scoreboard"	4	12
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"Show"
+
+.line	249	getglobal     r0    k0 ; k0 = "ReUI"
+.line	249	gettable      r0    r0    k1 ; k1 = "UI"
+.line	249	gettable      r0    r0    k2 ; k2 = "Global"
+.line	249	gettable      r0    r0    k3 ; k3 = "ScoreBoard"
+.line	250	getupval      r1    u0
+.line	250	move          r2    r0
+.line	250	call          r1     2     2
+.line	250	test          r1    r1     0
+.line	250	jmp          l11
+.line	251	return        r0     1
+.label	l11
+.line	254	self          r1    r0    k4 ; k4 = "Show"
+.line	254	call          r1     2     1
+.line	255	return        r0     1
+
+.function	main/f0/f6
+
+.source	null
+.linedefined	258
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	2
+.local	"module"	0	2
+
+.line	261	closure       r2    f0
+.line	261	return        r2     2
+.line	262	return        r0     1
+
+.function	main/f0/f6/f0
+
+.source	null
+.linedefined	259
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"state"	0	0
+
+.line	261	return        r0     1
+
+.function	main/f0/f7
+
+.source	null
+.linedefined	264
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	271	closure       r2    f0
+.line	271	getupval      r0    u0 ; upvalue declaration
+.line	271	return        r2     2
+.line	272	return        r0     1
+
+.function	main/f0/f7/f0
+
+.source	null
+.linedefined	265
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"state"	0	12
+.local	"scoreboard"	4	12
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"InitialAnimation"
+
+.line	266	getglobal     r1    k0 ; k0 = "ReUI"
+.line	266	gettable      r1    r1    k1 ; k1 = "UI"
+.line	266	gettable      r1    r1    k2 ; k2 = "Global"
+.line	266	gettable      r1    r1    k3 ; k3 = "ScoreBoard"
+.line	267	getupval      r2    u0
+.line	267	move          r3    r1
+.line	267	call          r2     2     2
+.line	267	test          r2    r2     0
+.line	267	jmp          l11
+.line	268	return        r0     1
+.label	l11
+.line	270	self          r2    r1    k4 ; k4 = "InitialAnimation"
+.line	270	call          r2     2     1
+.line	271	return        r0     1
+
+.function	main/f0/f8
+
+.source	null
+.linedefined	274
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	282	closure       r2    f0
+.line	282	getupval      r0    u0 ; upvalue declaration
+.line	282	return        r2     2
+.line	283	return        r0     1
+
+.function	main/f0/f8/f0
+
+.source	null
+.linedefined	275
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"newSpeed"	0	11
+.local	"scoreboard"	4	11
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"GameSpeed"
+
+.line	276	getglobal     r1    k0 ; k0 = "ReUI"
+.line	276	gettable      r1    r1    k1 ; k1 = "UI"
+.line	276	gettable      r1    r1    k2 ; k2 = "Global"
+.line	276	gettable      r1    r1    k3 ; k3 = "ScoreBoard"
+.line	277	getupval      r2    u0
+.line	277	move          r3    r1
+.line	277	call          r2     2     2
+.line	277	test          r2    r2     0
+.line	277	jmp          l11
+.line	278	return        r0     1
+.label	l11
+.line	281	settable      r1    k4    r0 ; k4 = "GameSpeed"
+.line	282	return        r0     1
+
+.function	main/f0/f9
+
+.source	null
+.linedefined	285
+.numparams	2
+.is_vararg	0
+.maxstacksize	3
+
+.local	"field"	0	3
+.local	"module"	0	3
+
+.upvalue	"_IsDestroyed"	0	false
+
+.line	293	closure       r2    f0
+.line	293	getupval      r0    u0 ; upvalue declaration
+.line	293	return        r2     2
+.line	294	return        r0     1
+
+.function	main/f0/f9/f0
+
+.source	null
+.linedefined	286
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"army"	0	22
+.local	"text"	0	22
+.local	"scoreboard"	4	22
+.local	"armyLine"	13	22
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"GetArmyViews"
+.constant	k5	"import"
+.constant	k6	"/lua/ui/game/announcement.lua"
+.constant	k7	"CreateAnnouncement"
+.constant	k8	"LOC"
+
+.line	287	getglobal     r2    k0 ; k0 = "ReUI"
+.line	287	gettable      r2    r2    k1 ; k1 = "UI"
+.line	287	gettable      r2    r2    k2 ; k2 = "Global"
+.line	287	gettable      r2    r2    k3 ; k3 = "ScoreBoard"
+.line	288	getupval      r3    u0
+.line	288	move          r4    r2
+.line	288	call          r3     2     2
+.line	288	test          r3    r3     0
+.line	288	jmp          l11
+.line	289	return        r0     1
+.label	l11
+.line	291	self          r3    r2    k4 ; k4 = "GetArmyViews"
+.line	291	call          r3     2     2
+.line	291	gettable      r3    r3    r0
+.line	292	getglobal     r4    k5 ; k5 = "import"
+.line	292	loadk         r5    k6 ; k6 = "/lua/ui/game/announc" (truncated)
+.line	292	call          r4     2     2
+.line	292	gettable      r4    r4    k7 ; k7 = "CreateAnnouncement"
+.line	292	getglobal     r5    k8 ; k8 = "LOC"
+.line	292	move          r6    r1
+.line	292	call          r5     2     2
+.line	292	move          r6    r3
+.line	292	call          r4     3     1
+.line	293	return        r0     1
+
+.function	main/f0/f10
+
+.source	null
+.linedefined	297
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"field"	0	5
+.local	"module"	0	5
+.local	"scoresCache"	1	5
+
+.line	298	loadbool      r2     0     0
+.line	306	closure       r3    f0
+.line	306	move          r0    r1 ; upvalue declaration
+.line	306	move          r0    r2 ; upvalue declaration
+.line	306	return        r3     2
+.line	307	return        r0     1
+
+.function	main/f0/f10/f0
+
+.source	null
+.linedefined	299
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"curScores"	2	10
+
+.upvalue	"module"	0	false
+.upvalue	"scoresCache"	0	false
+
+.constant	k0	"currentScores"
+
+.line	300	getupval      r0    u0
+.line	300	gettable      r0    r0    k0 ; k0 = "currentScores"
+.line	301	test          r0    r0     0
+.line	301	jmp           l9
+.line	302	getupval      r1    u0
+.line	302	loadbool      r2     0     0
+.line	302	settable      r1    k0    r2 ; k0 = "currentScores"
+.line	303	setupval      r0    u1
+.label	l9
+.line	305	getupval      r1    u1
+.line	305	return        r1     2
+.line	306	return        r0     1
+
+.function	main/f0/f11
+
+.source	null
+.linedefined	310
+.numparams	0
+.is_vararg	0
+.maxstacksize	3
+
+.local	"scoreboard"	4	12
+
+.upvalue	"_IsDestroyed"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Global"
+.constant	k3	"ScoreBoard"
+.constant	k4	"FocusArmyChanged"
+
+.line	311	getglobal     r0    k0 ; k0 = "ReUI"
+.line	311	gettable      r0    r0    k1 ; k1 = "UI"
+.line	311	gettable      r0    r0    k2 ; k2 = "Global"
+.line	311	gettable      r0    r0    k3 ; k3 = "ScoreBoard"
+.line	312	getupval      r1    u0
+.line	312	move          r2    r0
+.line	312	call          r1     2     2
+.line	312	test          r1    r1     0
+.line	312	jmp          l11
+.line	313	return        r0     1
+.label	l11
+.line	316	self          r1    r0    k4 ; k4 = "FocusArmyChanged"
+.line	316	call          r1     2     1
+.line	317	return        r0     1
+
+.function	main/f0/f12
+
+.source	null
+.linedefined	322
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"isReplay"	0	5
+
+.constant	k0	"import"
+.constant	k1	"/lua/ui/game/score.lua"
+.constant	k2	"CreateScoreUI"
+
+.line	323	getglobal     r1    k0 ; k0 = "import"
+.line	323	loadk         r2    k1 ; k1 = "/lua/ui/game/score.l" (truncated)
+.line	323	call          r1     2     2
+.line	323	gettable      r1    r1    k2 ; k2 = "CreateScoreUI"
+.line	323	call          r1     1     1
+.line	324	return        r0     1
+
+.function	main/f0/f13
+
+.source	null
+.linedefined	326
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"WorldView"	0	37
+.local	"module"	0	37
+.local	"Text"	4	37
+.local	"LazyVar"	8	37
+.local	"GetArmiesFormattedTable"	10	37
+.local	"TempMarker"	24	37
+.local	"WorldView__init"	25	37
+.local	"WorldViewDisplayPing"	26	37
+
+.upvalue	"Utils"	0	false
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Text"
+.constant	k4	"import"
+.constant	k5	"/lua/lazyvar.lua"
+.constant	k6	"Create"
+.constant	k7	"GetArmiesFormattedTable"
+.constant	k8	"Core"
+.constant	k9	"Class"
+.constant	k10	"LifeTime"
+.constant	k11	5
+.constant	k12	"__init"
+.constant	k13	"OnFrame"
+.constant	k14	"DisplayPing"
+.constant	k15	"DisplayTempMarker"
+
+.line	335	getglobal     r2    k0 ; k0 = "ReUI"
+.line	335	gettable      r2    r2    k1 ; k1 = "UI"
+.line	335	gettable      r2    r2    k2 ; k2 = "Controls"
+.line	335	gettable      r2    r2    k3 ; k3 = "Text"
+.line	336	getglobal     r3    k4 ; k4 = "import"
+.line	336	loadk         r4    k5 ; k5 = "/lua/lazyvar.lua"
+.line	336	call          r3     2     2
+.line	336	gettable      r3    r3    k6 ; k6 = "Create"
+.line	337	getupval      r4    u0
+.line	337	gettable      r4    r4    k7 ; k7 = "GetArmiesFormattedTa" (truncated)
+.line	345	getglobal     r5    k0 ; k0 = "ReUI"
+.line	345	gettable      r5    r5    k8 ; k8 = "Core"
+.line	345	gettable      r5    r5    k9 ; k9 = "Class"
+.line	345	move          r6    r2
+.line	345	call          r5     2     2
+.line	345	newtable      r6     0     2
+.line	347	settable      r6   k10   k11 ; k11 = 5
+.line	366	closure       r7    f0
+.line	366	move          r0    r2 ; upvalue declaration
+.line	366	move          r0    r3 ; upvalue declaration
+.line	366	settable      r6   k12    r7 ; k12 = "__init"
+.line	379	closure       r7    f1
+.line	379	settable      r6   k13    r7 ; k13 = "OnFrame"
+.line	346	call          r5     2     2
+.line	381	gettable      r6    r0   k12 ; k12 = "__init"
+.line	382	gettable      r7    r0   k14 ; k14 = "DisplayPing"
+.line	388	closure       r8    f2
+.line	388	move          r0    r6 ; upvalue declaration
+.line	388	settable      r0   k12    r8 ; k12 = "__init"
+.line	405	closure       r8    f3
+.line	405	move          r0    r5 ; upvalue declaration
+.line	405	move          r0    r4 ; upvalue declaration
+.line	405	settable      r0   k15    r8 ; k15 = "DisplayTempMarker"
+.line	413	closure       r8    f4
+.line	413	move          r0    r7 ; upvalue declaration
+.line	413	settable      r0   k14    r8 ; k14 = "DisplayPing"
+.line	415	return        r0     2
+.line	416	return        r0     1
+
+.function	main/f0/f13/f0
+
+.source	null
+.linedefined	349
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	41
+.local	"parent"	0	41
+.local	"position"	0	41
+
+.upvalue	"Text"	0	false
+.upvalue	"LazyVar"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_worldView"
+.constant	k2	"_position"
+.constant	k3	"_onFrameTime"
+.constant	k4	0
+.constant	k5	"PosX"
+.constant	k6	"PosY"
+.constant	k7	"Left"
+.constant	k8	"Set"
+.constant	k9	"ReUI"
+.constant	k10	"UI"
+.constant	k11	"LayoutFunctions"
+.constant	k12	"Floor"
+.constant	k13	"Top"
+.constant	k14	"DisableHitTest"
+.constant	k15	"SetNeedsFrameUpdate"
+
+.line	350	getupval      r3    u0
+.line	350	gettable      r3    r3    k0 ; k0 = "__init"
+.line	350	move          r4    r0
+.line	350	move          r5    r1
+.line	350	call          r3     3     1
+.line	352	settable      r0    k1    r1 ; k1 = "_worldView"
+.line	353	settable      r0    k2    r2 ; k2 = "_position"
+.line	354	settable      r0    k3    k4 ; k4 = 0
+.line	356	getupval      r3    u1
+.line	356	call          r3     1     2
+.line	356	settable      r0    k5    r3 ; k5 = "PosX"
+.line	357	getupval      r3    u1
+.line	357	call          r3     1     2
+.line	357	settable      r0    k6    r3 ; k6 = "PosY"
+.line	358	gettable      r3    r0    k7 ; k7 = "Left"
+.line	358	self          r3    r3    k8 ; k8 = "Set"
+.line	358	getglobal     r5    k9 ; k9 = "ReUI"
+.line	358	gettable      r5    r5   k10 ; k10 = "UI"
+.line	358	gettable      r5    r5   k11 ; k11 = "LayoutFunctions"
+.line	358	gettable      r5    r5   k12 ; k12 = "Floor"
+.line	360	closure       r6    f0
+.line	360	move          r0    r1 ; upvalue declaration
+.line	360	move          r0    r0 ; upvalue declaration
+.line	358	call          r5     2     0
+.line	358	call          r3     0     1
+.line	361	gettable      r3    r0   k13 ; k13 = "Top"
+.line	361	self          r3    r3    k8 ; k8 = "Set"
+.line	361	getglobal     r5    k9 ; k9 = "ReUI"
+.line	361	gettable      r5    r5   k10 ; k10 = "UI"
+.line	361	gettable      r5    r5   k11 ; k11 = "LayoutFunctions"
+.line	361	gettable      r5    r5   k12 ; k12 = "Floor"
+.line	363	closure       r6    f1
+.line	363	move          r0    r1 ; upvalue declaration
+.line	363	move          r0    r0 ; upvalue declaration
+.line	361	call          r5     2     0
+.line	361	call          r3     0     1
+.line	364	self          r3    r0   k14 ; k14 = "DisableHitTest"
+.line	364	call          r3     2     1
+.line	365	self          r3    r0   k15 ; k15 = "SetNeedsFrameUpdate"
+.line	365	loadbool      r5     1     0
+.line	365	call          r3     3     1
+.line	366	return        r0     1
+
+.function	main/f0/f13/f0/f0
+
+.source	null
+.linedefined	358
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"parent"	0	false
+.upvalue	"self"	0	false
+
+.constant	k0	"Left"
+.constant	k1	"PosX"
+.constant	k2	"Width"
+.constant	k3	0.5
+
+.line	358	getupval      r0    u0
+.line	358	gettable      r0    r0    k0 ; k0 = "Left"
+.line	358	call          r0     1     2
+.line	358	getupval      r1    u1
+.line	358	gettable      r1    r1    k1 ; k1 = "PosX"
+.line	358	call          r1     1     2
+.line	358	add           r0    r0    r1
+.line	359	getupval      r1    u1
+.line	359	gettable      r1    r1    k2 ; k2 = "Width"
+.line	359	call          r1     1     2
+.line	359	mul           r1    r1    k3 ; k3 = 0.5
+.line	359	sub           r0    r0    r1
+.line	359	return        r0     2
+.line	360	return        r0     1
+
+.function	main/f0/f13/f0/f1
+
+.source	null
+.linedefined	361
+.numparams	0
+.is_vararg	0
+.maxstacksize	2
+
+.upvalue	"parent"	0	false
+.upvalue	"self"	0	false
+
+.constant	k0	"Top"
+.constant	k1	"PosY"
+.constant	k2	"Height"
+.constant	k3	0.5
+
+.line	361	getupval      r0    u0
+.line	361	gettable      r0    r0    k0 ; k0 = "Top"
+.line	361	call          r0     1     2
+.line	361	getupval      r1    u1
+.line	361	gettable      r1    r1    k1 ; k1 = "PosY"
+.line	361	call          r1     1     2
+.line	361	add           r0    r0    r1
+.line	362	getupval      r1    u1
+.line	362	gettable      r1    r1    k2 ; k2 = "Height"
+.line	362	call          r1     1     2
+.line	362	mul           r1    r1    k3 ; k3 = 0.5
+.line	362	sub           r0    r0    r1
+.line	362	return        r0     2
+.line	363	return        r0     1
+
+.function	main/f0/f13/f1
+
+.source	null
+.linedefined	370
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	22
+.local	"delta"	0	22
+.local	"screenPos"	14	22
+
+.constant	k0	"_onFrameTime"
+.constant	k1	"LifeTime"
+.constant	k2	"Destroy"
+.constant	k3	"_worldView"
+.constant	k4	"Project"
+.constant	k5	"_position"
+.constant	k6	"PosX"
+.constant	k7	"Set"
+.constant	k8	"x"
+.constant	k9	"PosY"
+.constant	k10	"y"
+
+.line	371	gettable      r2    r0    k0 ; k0 = "_onFrameTime"
+.line	371	add           r2    r2    r1
+.line	371	settable      r0    k0    r2 ; k0 = "_onFrameTime"
+.line	372	gettable      r2    r0    k0 ; k0 = "_onFrameTime"
+.line	372	gettable      r3    r0    k1 ; k1 = "LifeTime"
+.line	372	lt             0    r3    r2
+.line	372	jmp          l11
+.line	373	self          r2    r0    k2 ; k2 = "Destroy"
+.line	373	call          r2     2     1
+.line	374	return        r0     1
+.label	l11
+.line	376	gettable      r2    r0    k3 ; k3 = "_worldView"
+.line	376	self          r2    r2    k4 ; k4 = "Project"
+.line	376	gettable      r4    r0    k5 ; k5 = "_position"
+.line	376	call          r2     3     2
+.line	377	gettable      r3    r0    k6 ; k6 = "PosX"
+.line	377	self          r3    r3    k7 ; k7 = "Set"
+.line	377	gettable      r5    r2    k8 ; k8 = "x"
+.line	377	call          r3     3     1
+.line	378	gettable      r3    r0    k9 ; k9 = "PosY"
+.line	378	self          r3    r3    k7 ; k7 = "Set"
+.line	378	gettable      r5    r2   k10 ; k10 = "y"
+.line	378	call          r3     3     1
+.line	379	return        r0     1
+
+.function	main/f0/f13/f2
+
+.source	null
+.linedefined	384
+.numparams	1
+.is_vararg	1
+.maxstacksize	6
+
+.local	"self"	0	11
+.local	"arg"	0	11
+
+.upvalue	"WorldView__init"	0	false
+
+.constant	k0	"unpack"
+.constant	k1	"_isMiniMap"
+.constant	k2	4
+
+.line	386	getupval      r2    u0
+.line	386	move          r3    r0
+.line	386	getglobal     r4    k0 ; k0 = "unpack"
+.line	386	move          r5    r1
+.line	386	call          r4     2     0
+.line	386	call          r2     0     1
+.line	387	gettable      r2    r1    k2 ; k2 = 4
+.line	387	test          r2    r2     1
+.line	387	jmp          l11
+.line	387	loadbool      r2     0     0
+.label	l11
+.line	387	settable      r0    k1    r2 ; k1 = "_isMiniMap"
+.line	388	return        r0     1
+
+.function	main/f0/f13/f3
+
+.source	null
+.linedefined	392
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	35
+.local	"pingData"	0	35
+.local	"marker"	14	35
+.local	"playerData"	26	35
+
+.upvalue	"TempMarker"	0	false
+.upvalue	"GetArmiesFormattedTable"	0	false
+
+.constant	k0	"Marker"
+.constant	k1	"Renew"
+.constant	k2	"_isMiniMap"
+.constant	k3	"Location"
+.constant	k4	"LifeTime"
+.constant	k5	"Lifetime"
+.constant	k6	"ReUI"
+.constant	k7	"LINQ"
+.constant	k8	"Enumerate"
+.constant	k9	"First"
+.constant	k10	"SetText"
+.constant	k11	"nickname"
+.constant	k12	"Show"
+.constant	k13	"SetFont"
+.constant	k14	"Arial"
+.constant	k15	13
+
+.line	393	gettable      r2    r1    k0 ; k0 = "Marker"
+.line	393	test          r2    r2     1
+.line	393	jmp          l10
+.line	393	gettable      r2    r1    k1 ; k1 = "Renew"
+.line	393	test          r2    r2     1
+.line	393	jmp          l10
+.line	393	gettable      r2    r0    k2 ; k2 = "_isMiniMap"
+.line	393	test          r2    r2     0
+.line	393	jmp          l11
+.label	l10
+.line	393	return        r0     1
+.label	l11
+.line	396	getupval      r2    u0
+.line	396	move          r3    r0
+.line	396	gettable      r4    r1    k3 ; k3 = "Location"
+.line	396	call          r2     3     2
+.line	397	gettable      r3    r1    k5 ; k5 = "Lifetime"
+.line	397	settable      r2    k4    r3 ; k4 = "LifeTime"
+.line	399	getglobal     r3    k6 ; k6 = "ReUI"
+.line	399	gettable      r3    r3    k7 ; k7 = "LINQ"
+.line	399	gettable      r3    r3    k8 ; k8 = "Enumerate"
+.line	399	getupval      r4    u1
+.line	399	call          r4     1     0
+.line	399	call          r3     0     2
+.line	400	self          r3    r3    k9 ; k9 = "First"
+.line	400	closure       r5    f0
+.line	400	move          r0    r1 ; upvalue declaration
+.line	400	call          r3     3     2
+.line	402	self          r4    r2   k10 ; k10 = "SetText"
+.line	402	gettable      r6    r3   k11 ; k11 = "nickname"
+.line	402	call          r4     3     1
+.line	403	self          r4    r2   k12 ; k12 = "Show"
+.line	403	call          r4     2     1
+.line	404	self          r4    r2   k13 ; k13 = "SetFont"
+.line	404	loadk         r6   k14 ; k14 = "Arial"
+.line	404	loadk         r7   k15 ; k15 = 13
+.line	404	call          r4     4     1
+.line	405	return        r0     1
+
+.function	main/f0/f13/f3/f0
+
+.source	null
+.linedefined	400
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"v"	0	9
+
+.upvalue	"pingData"	0	false
+
+.constant	k0	"id"
+.constant	k1	"Owner"
+.constant	k2	1
+
+.line	400	gettable      r1    r0    k0 ; k0 = "id"
+.line	400	getupval      r2    u0
+.line	400	gettable      r2    r2    k1 ; k1 = "Owner"
+.line	400	add           r2    r2    k2 ; k2 = 1
+.line	400	eq             1    r1    r2
+.line	400	jmp           l8
+.line	400	loadbool      r1     0     1
+.label	l8
+.line	400	loadbool      r1     1     0
+.line	400	return        r1     2
+.line	400	return        r0     1
+
+.function	main/f0/f13/f4
+
+.source	null
+.linedefined	409
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	15
+.local	"pingData"	0	15
+
+.upvalue	"WorldViewDisplayPing"	0	false
+
+.constant	k0	"import"
+.constant	k1	"/lua/ui/game/score.lua"
+.constant	k2	"DisplayPing"
+.constant	k3	"DisplayTempMarker"
+
+.line	410	getglobal     r2    k0 ; k0 = "import"
+.line	410	loadk         r3    k1 ; k1 = "/lua/ui/game/score.l" (truncated)
+.line	410	call          r2     2     2
+.line	410	gettable      r2    r2    k2 ; k2 = "DisplayPing"
+.line	410	move          r3    r0
+.line	410	move          r4    r1
+.line	410	call          r2     3     1
+.line	411	self          r2    r0    k3 ; k3 = "DisplayTempMarker"
+.line	411	move          r4    r1
+.line	411	call          r2     3     1
+.line	412	getupval      r2    u0
+.line	412	move          r3    r0
+.line	412	move          r4    r1
+.line	412	tailcall      r2     3
+.line	412	return        r2     0
+.line	413	return        r0     1
+

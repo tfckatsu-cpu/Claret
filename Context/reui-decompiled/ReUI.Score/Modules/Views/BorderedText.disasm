@@ -1,0 +1,311 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/views/borderedtext.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	7
+
+.local	"Border"	4	42
+.local	"Group"	8	42
+.local	"Bitmap"	12	42
+.local	"Text"	16	42
+
+.constant	k0	"import"
+.constant	k1	"Border.lua"
+.constant	k2	"Border"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Controls"
+.constant	k6	"Group"
+.constant	k7	"Bitmap"
+.constant	k8	"Text"
+.constant	k9	"BorderedText"
+.constant	k10	"Core"
+.constant	k11	"Class"
+.constant	k12	"__init"
+.constant	k13	"SetText"
+.constant	k14	"GetText"
+.constant	k15	"SetFont"
+.constant	k16	"SetTextColor"
+.constant	k17	"SetColor"
+.constant	k18	"SetAlpha"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "Border.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "Border"
+.line	2	getglobal     r1    k3 ; k3 = "ReUI"
+.line	2	gettable      r1    r1    k4 ; k4 = "UI"
+.line	2	gettable      r1    r1    k5 ; k5 = "Controls"
+.line	2	gettable      r1    r1    k6 ; k6 = "Group"
+.line	3	getglobal     r2    k3 ; k3 = "ReUI"
+.line	3	gettable      r2    r2    k4 ; k4 = "UI"
+.line	3	gettable      r2    r2    k5 ; k5 = "Controls"
+.line	3	gettable      r2    r2    k7 ; k7 = "Bitmap"
+.line	4	getglobal     r3    k3 ; k3 = "ReUI"
+.line	4	gettable      r3    r3    k4 ; k4 = "UI"
+.line	4	gettable      r3    r3    k5 ; k5 = "Controls"
+.line	4	gettable      r3    r3    k8 ; k8 = "Text"
+.line	7	getglobal     r4    k3 ; k3 = "ReUI"
+.line	7	gettable      r4    r4   k10 ; k10 = "Core"
+.line	7	gettable      r4    r4   k11 ; k11 = "Class"
+.line	7	move          r5    r0
+.line	7	call          r4     2     2
+.line	7	newtable      r5     0     3
+.line	20	closure       r6    f0
+.line	20	move          r0    r0 ; upvalue declaration
+.line	20	move          r0    r3 ; upvalue declaration
+.line	20	settable      r5   k12    r6 ; k12 = "__init"
+.line	24	closure       r6    f1
+.line	24	settable      r5   k13    r6 ; k13 = "SetText"
+.line	28	closure       r6    f2
+.line	28	settable      r5   k14    r6 ; k14 = "GetText"
+.line	32	closure       r6    f3
+.line	32	settable      r5   k15    r6 ; k15 = "SetFont"
+.line	36	closure       r6    f4
+.line	36	settable      r5   k16    r6 ; k16 = "SetTextColor"
+.line	41	closure       r6    f5
+.line	41	move          r0    r0 ; upvalue declaration
+.line	41	settable      r5   k17    r6 ; k17 = "SetColor"
+.line	46	closure       r6    f6
+.line	46	move          r0    r0 ; upvalue declaration
+.line	46	settable      r5   k18    r6 ; k18 = "SetAlpha"
+.line	8	call          r4     2     2
+.line	48	setglobal     r4    k9 ; k9 = "BorderedText"
+.line	48	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	9
+.numparams	4
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	24
+.local	"parent"	0	24
+.local	"color"	0	24
+.local	"borderWidth"	0	24
+
+.upvalue	"Border"	0	false
+.upvalue	"Text"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_text"
+.constant	k2	"SetTextColor"
+.constant	k3	"Layouter"
+.constant	k4	"AtCenterIn"
+.constant	k5	"DisableHitTest"
+
+.line	10	getupval      r4    u0
+.line	10	gettable      r4    r4    k0 ; k0 = "__init"
+.line	10	move          r5    r0
+.line	10	move          r6    r1
+.line	10	move          r7    r2
+.line	10	move          r8    r3
+.line	10	call          r4     5     1
+.line	11	getupval      r4    u1
+.line	11	move          r5    r0
+.line	11	call          r4     2     2
+.line	11	settable      r0    k1    r4 ; k1 = "_text"
+.line	13	test          r2    r2     0
+.line	13	jmp          l17
+.line	14	self          r4    r0    k2 ; k2 = "SetTextColor"
+.line	14	move          r6    r2
+.line	14	call          r4     3     1
+.label	l17
+.line	17	gettable      r4    r0    k3 ; k3 = "Layouter"
+.line	17	gettable      r5    r0    k1 ; k1 = "_text"
+.line	17	call          r4     2     2
+.line	18	self          r4    r4    k4 ; k4 = "AtCenterIn"
+.line	18	move          r6    r0
+.line	18	call          r4     3     2
+.line	19	self          r4    r4    k5 ; k5 = "DisableHitTest"
+.line	19	call          r4     2     1
+.line	20	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	22
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"text"	0	4
+
+.constant	k0	"_text"
+.constant	k1	"SetText"
+
+.line	23	gettable      r2    r0    k0 ; k0 = "_text"
+.line	23	self          r2    r2    k1 ; k1 = "SetText"
+.line	23	move          r4    r1
+.line	23	call          r2     3     1
+.line	24	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	26
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	4
+
+.constant	k0	"_text"
+.constant	k1	"GetText"
+
+.line	27	gettable      r1    r0    k0 ; k0 = "_text"
+.line	27	self          r1    r1    k1 ; k1 = "GetText"
+.line	27	tailcall      r1     2
+.line	27	return        r1     0
+.line	28	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	30
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	5
+.local	"fontFamily"	0	5
+.local	"pointSize"	0	5
+
+.constant	k0	"_text"
+.constant	k1	"SetFont"
+
+.line	31	gettable      r3    r0    k0 ; k0 = "_text"
+.line	31	self          r3    r3    k1 ; k1 = "SetFont"
+.line	31	move          r5    r1
+.line	31	move          r6    r2
+.line	31	call          r3     4     1
+.line	32	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	34
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"color"	0	4
+
+.constant	k0	"_text"
+.constant	k1	"SetColor"
+
+.line	35	gettable      r2    r0    k0 ; k0 = "_text"
+.line	35	self          r2    r2    k1 ; k1 = "SetColor"
+.line	35	move          r4    r1
+.line	35	call          r2     3     1
+.line	36	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	38
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	8
+.local	"color"	0	8
+
+.upvalue	"Border"	0	false
+
+.constant	k0	"SetColor"
+.constant	k1	"SetTextColor"
+
+.line	39	getupval      r2    u0
+.line	39	gettable      r2    r2    k0 ; k0 = "SetColor"
+.line	39	move          r3    r0
+.line	39	move          r4    r1
+.line	39	call          r2     3     1
+.line	40	self          r2    r0    k1 ; k1 = "SetTextColor"
+.line	40	move          r4    r1
+.line	40	call          r2     3     1
+.line	41	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	43
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	11
+.local	"alpha"	0	11
+.local	"applyToChildren"	0	11
+
+.upvalue	"Border"	0	false
+
+.constant	k0	"SetAlpha"
+.constant	k1	"_text"
+
+.line	44	getupval      r3    u0
+.line	44	gettable      r3    r3    k0 ; k0 = "SetAlpha"
+.line	44	move          r4    r0
+.line	44	move          r5    r1
+.line	44	move          r6    r2
+.line	44	call          r3     4     1
+.line	45	gettable      r3    r0    k1 ; k1 = "_text"
+.line	45	self          r3    r3    k0 ; k0 = "SetAlpha"
+.line	45	move          r5    r1
+.line	45	move          r6    r2
+.line	45	call          r3     4     1
+.line	46	return        r0     1
+

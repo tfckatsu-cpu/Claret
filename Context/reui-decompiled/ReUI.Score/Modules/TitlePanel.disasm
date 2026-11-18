@@ -1,0 +1,1446 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui.score/modules/titlepanel.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	27
+
+.local	"GetFocusArmy"	1	169
+.local	"UIUtil"	4	169
+.local	"Group"	8	169
+.local	"Bitmap"	12	169
+.local	"Text"	16	169
+.local	"Animation"	19	169
+.local	"InfoPanel"	23	169
+.local	"alphaAnimator"	28	169
+.local	"animationFactory"	30	169
+.local	"alphaAnimationFactory"	32	169
+.local	"options"	36	169
+.local	"timeTextSize"	37	169
+.local	"qualityTextSize"	38	169
+.local	"unitCapTextSize"	39	169
+.local	"titlePanelWidth"	40	169
+.local	"titlePanelHeight"	41	169
+.local	"Split"	42	169
+.local	"Timer"	59	169
+.local	"TopInfoPanel"	84	169
+.local	"animationSpeed"	85	169
+.local	"expandAnimation"	97	169
+.local	"contractAnimation"	109	169
+.local	"appearAnimation"	125	169
+.local	"fadeAnimation"	141	169
+
+.constant	k0	"GetFocusArmy"
+.constant	k1	"import"
+.constant	k2	"/lua/ui/uiutil.lua"
+.constant	k3	"ReUI"
+.constant	k4	"UI"
+.constant	k5	"Controls"
+.constant	k6	"Group"
+.constant	k7	"Bitmap"
+.constant	k8	"Text"
+.constant	k9	"Animation"
+.constant	k10	"InfoPanel.lua"
+.constant	k11	"InfoPanel"
+.constant	k12	"Animator"
+.constant	k13	"GetFrame"
+.constant	k14	0
+.constant	k15	"Factory"
+.constant	k16	"Base"
+.constant	k17	"Alpha"
+.constant	k18	"Options"
+.constant	k19	"Mods"
+.constant	k20	"ReUI.Score"
+.constant	k21	12
+.constant	k22	300
+.constant	k23	20
+.constant	k24	"Class"
+.constant	k25	"__init"
+.constant	k26	"Set"
+.constant	k27	"Format"
+.constant	k28	"ToSeconds"
+.constant	k29	"HasPassed"
+.constant	k30	"ParseString"
+.constant	k31	"Core"
+.constant	k32	"InitLayout"
+.constant	k33	"SetQuality"
+.constant	k34	"Update"
+.constant	k35	"OnStart"
+.constant	k36	"OnFrame"
+.constant	k37	"OnFinish"
+.constant	k38	"Create"
+.constant	k39	"StartWith"
+.constant	k40	"ToAppear"
+.constant	k41	"For"
+.constant	k42	0.3
+.constant	k43	"EndWith"
+.constant	k44	1
+.constant	k45	"ApplyToChildren"
+.constant	k46	"ToFade"
+.constant	k47	"TitlePanel"
+.constant	k48	"HandleEvent"
+
+.line	2	getglobal     r0    k0 ; k0 = "GetFocusArmy"
+.line	7	getglobal     r1    k1 ; k1 = "import"
+.line	7	loadk         r2    k2 ; k2 = "/lua/ui/uiutil.lua"
+.line	7	call          r1     2     2
+.line	12	getglobal     r2    k3 ; k3 = "ReUI"
+.line	12	gettable      r2    r2    k4 ; k4 = "UI"
+.line	12	gettable      r2    r2    k5 ; k5 = "Controls"
+.line	12	gettable      r2    r2    k6 ; k6 = "Group"
+.line	13	getglobal     r3    k3 ; k3 = "ReUI"
+.line	13	gettable      r3    r3    k4 ; k4 = "UI"
+.line	13	gettable      r3    r3    k5 ; k5 = "Controls"
+.line	13	gettable      r3    r3    k7 ; k7 = "Bitmap"
+.line	14	getglobal     r4    k3 ; k3 = "ReUI"
+.line	14	gettable      r4    r4    k4 ; k4 = "UI"
+.line	14	gettable      r4    r4    k5 ; k5 = "Controls"
+.line	14	gettable      r4    r4    k8 ; k8 = "Text"
+.line	15	getglobal     r5    k3 ; k3 = "ReUI"
+.line	15	gettable      r5    r5    k4 ; k4 = "UI"
+.line	15	gettable      r5    r5    k9 ; k9 = "Animation"
+.line	20	getglobal     r6    k1 ; k1 = "import"
+.line	20	loadk         r7   k10 ; k10 = "InfoPanel.lua"
+.line	20	call          r6     2     2
+.line	20	gettable      r6    r6   k11 ; k11 = "InfoPanel"
+.line	25	gettable      r7    r5   k12 ; k12 = "Animator"
+.line	25	getglobal     r8   k13 ; k13 = "GetFrame"
+.line	25	loadk         r9   k14 ; k14 = 0
+.line	25	call          r8     2     0
+.line	25	call          r7     0     2
+.line	26	gettable      r8    r5   k15 ; k15 = "Factory"
+.line	26	gettable      r8    r8   k16 ; k16 = "Base"
+.line	27	gettable      r9    r5   k15 ; k15 = "Factory"
+.line	27	gettable      r9    r9   k17 ; k17 = "Alpha"
+.line	29	getglobal    r10    k3 ; k3 = "ReUI"
+.line	29	gettable     r10   r10   k18 ; k18 = "Options"
+.line	29	gettable     r10   r10   k19 ; k19 = "Mods"
+.line	29	gettable     r10   r10   k20 ; k20 = "ReUI.Score"
+.line	31	loadk        r11   k21 ; k21 = 12
+.line	32	loadk        r12   k21 ; k21 = 12
+.line	33	loadk        r13   k21 ; k21 = 12
+.line	35	loadk        r14   k22 ; k22 = 300
+.line	36	loadk        r15   k23 ; k23 = 20
+.line	56	closure      r16    f0
+.line	62	getglobal    r17   k24 ; k24 = "Class"
+.line	62	call         r17     1     2
+.line	62	newtable     r18     0     3
+.line	70	closure      r19    f1
+.line	70	settable     r18   k25   r19 ; k25 = "__init"
+.line	76	closure      r19    f2
+.line	76	settable     r18   k26   r19 ; k26 = "Set"
+.line	82	closure      r19    f3
+.line	82	settable     r18   k27   r19 ; k27 = "Format"
+.line	88	closure      r19    f4
+.line	88	settable     r18   k28   r19 ; k28 = "ToSeconds"
+.line	95	closure      r19    f5
+.line	95	settable     r18   k29   r19 ; k29 = "HasPassed"
+.line	108	closure      r19    f6
+.line	108	move          r0   r16 ; upvalue declaration
+.line	108	settable     r18   k30   r19 ; k30 = "ParseString"
+.line	63	call         r17     2     2
+.line	118	getglobal    r18    k3 ; k3 = "ReUI"
+.line	118	gettable     r18   r18   k31 ; k31 = "Core"
+.line	118	gettable     r18   r18   k24 ; k24 = "Class"
+.line	118	move         r19    r2
+.line	118	call         r18     2     2
+.line	118	newtable     r19     0     3
+.line	155	closure      r20    f7
+.line	155	move          r0    r2 ; upvalue declaration
+.line	155	move          r0    r4 ; upvalue declaration
+.line	155	move          r0    r1 ; upvalue declaration
+.line	155	move          r0   r17 ; upvalue declaration
+.line	155	settable     r19   k25   r20 ; k25 = "__init"
+.line	190	closure      r20    f8
+.line	190	move          r0   r10 ; upvalue declaration
+.line	190	move          r0   r11 ; upvalue declaration
+.line	190	move          r0   r12 ; upvalue declaration
+.line	190	move          r0   r13 ; upvalue declaration
+.line	190	move          r0   r15 ; upvalue declaration
+.line	190	settable     r19   k32   r20 ; k32 = "InitLayout"
+.line	200	closure      r20    f9
+.line	200	settable     r19   k33   r20 ; k33 = "SetQuality"
+.line	229	closure      r20   f10
+.line	229	move          r0    r0 ; upvalue declaration
+.line	229	settable     r19   k34   r20 ; k34 = "Update"
+.line	119	call         r18     2     2
+.line	231	loadk        r19   k22 ; k22 = 300
+.line	234	self         r20    r8   k35 ; k35 = "OnStart"
+.line	238	closure      r22   f11
+.line	234	call         r20     3     2
+.line	239	self         r20   r20   k36 ; k36 = "OnFrame"
+.line	244	closure      r22   f12
+.line	244	move          r0   r19 ; upvalue declaration
+.line	239	call         r20     3     2
+.line	245	self         r20   r20   k37 ; k37 = "OnFinish"
+.line	248	closure      r22   f13
+.line	245	call         r20     3     2
+.line	249	self         r20   r20   k38 ; k38 = "Create"
+.line	249	call         r20     2     2
+.line	252	self         r21    r8   k35 ; k35 = "OnStart"
+.line	256	closure      r23   f14
+.line	252	call         r21     3     2
+.line	257	self         r21   r21   k36 ; k36 = "OnFrame"
+.line	262	closure      r23   f15
+.line	262	move          r0   r19 ; upvalue declaration
+.line	257	call         r21     3     2
+.line	263	self         r21   r21   k37 ; k37 = "OnFinish"
+.line	266	closure      r23   f16
+.line	263	call         r21     3     2
+.line	267	self         r21   r21   k38 ; k38 = "Create"
+.line	267	call         r21     2     2
+.line	270	self         r22    r9   k39 ; k39 = "StartWith"
+.line	270	loadk        r24   k14 ; k14 = 0
+.line	270	call         r22     3     2
+.line	271	self         r22   r22   k40 ; k40 = "ToAppear"
+.line	271	call         r22     2     2
+.line	272	self         r22   r22   k41 ; k41 = "For"
+.line	272	loadk        r24   k42 ; k42 = 0.3
+.line	272	call         r22     3     2
+.line	273	self         r22   r22   k43 ; k43 = "EndWith"
+.line	273	loadk        r24   k44 ; k44 = 1
+.line	273	call         r22     3     2
+.line	274	self         r22   r22   k45 ; k45 = "ApplyToChildren"
+.line	274	call         r22     2     2
+.line	275	self         r22   r22   k38 ; k38 = "Create"
+.line	275	move         r24    r7
+.line	275	call         r22     3     2
+.line	278	self         r23    r9   k39 ; k39 = "StartWith"
+.line	278	loadk        r25   k44 ; k44 = 1
+.line	278	call         r23     3     2
+.line	279	self         r23   r23   k46 ; k46 = "ToFade"
+.line	279	call         r23     2     2
+.line	280	self         r23   r23   k41 ; k41 = "For"
+.line	280	loadk        r25   k42 ; k42 = 0.3
+.line	280	call         r23     3     2
+.line	281	self         r23   r23   k43 ; k43 = "EndWith"
+.line	281	loadk        r25   k14 ; k14 = 0
+.line	281	call         r23     3     2
+.line	282	self         r23   r23   k45 ; k45 = "ApplyToChildren"
+.line	282	call         r23     2     2
+.line	283	self         r23   r23   k38 ; k38 = "Create"
+.line	283	move         r25    r7
+.line	283	call         r23     3     2
+.line	290	getglobal    r24    k3 ; k3 = "ReUI"
+.line	290	gettable     r24   r24   k31 ; k31 = "Core"
+.line	290	gettable     r24   r24   k24 ; k24 = "Class"
+.line	290	move         r25    r2
+.line	290	call         r24     2     2
+.line	290	newtable     r25     0     3
+.line	304	closure      r26   f17
+.line	304	move          r0    r2 ; upvalue declaration
+.line	304	move          r0    r3 ; upvalue declaration
+.line	304	move          r0   r18 ; upvalue declaration
+.line	304	move          r0    r6 ; upvalue declaration
+.line	304	settable     r25   k25   r26 ; k25 = "__init"
+.line	324	closure      r26   f18
+.line	324	move          r0   r10 ; upvalue declaration
+.line	324	move          r0   r14 ; upvalue declaration
+.line	324	settable     r25   k32   r26 ; k32 = "InitLayout"
+.line	330	closure      r26   f19
+.line	330	settable     r25   k33   r26 ; k33 = "SetQuality"
+.line	348	closure      r26   f20
+.line	348	move          r0   r21 ; upvalue declaration
+.line	348	move          r0   r23 ; upvalue declaration
+.line	348	move          r0   r20 ; upvalue declaration
+.line	348	move          r0   r22 ; upvalue declaration
+.line	348	settable     r25   k48   r26 ; k48 = "HandleEvent"
+.line	355	closure      r26   f21
+.line	355	settable     r25   k34   r26 ; k34 = "Update"
+.line	291	call         r24     2     2
+.line	356	setglobal    r24   k47 ; k47 = "TitlePanel"
+.line	356	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	39
+.numparams	2
+.is_vararg	0
+.maxstacksize	12
+
+.local	"pString"	0	45
+.local	"pPattern"	0	45
+.local	"t"	1	45
+.local	"fpat"	4	45
+.local	"last_end"	5	45
+.local	"s"	9	45
+.local	"e"	9	45
+.local	"cap"	9	45
+
+.constant	k0	"(.-)"
+.constant	k1	1
+.constant	k2	"find"
+.constant	k3	""
+.constant	k4	"table"
+.constant	k5	"insert"
+.constant	k6	"string"
+.constant	k7	"len"
+.constant	k8	"sub"
+
+.line	40	newtable      r2     0     0
+.line	41	loadk         r3    k0 ; k0 = "(.-)"
+.line	41	move          r4    r1
+.line	41	concat        r3    r3    r4
+.line	42	loadk         r4    k1 ; k1 = 1
+.line	43	self          r5    r0    k2 ; k2 = "find"
+.line	43	move          r7    r3
+.line	43	loadk         r8    k1 ; k1 = 1
+.line	43	call          r5     4     4
+.line	44	jmp          l28
+.label	l11
+.line	45	eq             0    r5    k1 ; k1 = 1
+.line	45	jmp          l15
+.line	45	eq             1    r7    k3 ; k3 = ""
+.line	45	jmp          l20
+.label	l15
+.line	46	getglobal     r8    k4 ; k4 = "table"
+.line	46	gettable      r8    r8    k5 ; k5 = "insert"
+.line	46	move          r9    r2
+.line	46	move         r10    r7
+.line	46	call          r8     3     1
+.label	l20
+.line	48	add           r4    r6    k1 ; k1 = 1
+.line	49	self          r8    r0    k2 ; k2 = "find"
+.line	49	move         r10    r3
+.line	49	move         r11    r4
+.line	49	call          r8     4     4
+.line	49	move          r7   r10
+.line	49	move          r6    r9
+.line	49	move          r5    r8
+.label	l28
+.line	44	test          r5    r5     1
+.line	44	jmp          l11
+.line	51	getglobal     r8    k6 ; k6 = "string"
+.line	51	gettable      r8    r8    k7 ; k7 = "len"
+.line	51	move          r9    r0
+.line	51	call          r8     2     2
+.line	51	le             0    r4    r8
+.line	51	jmp          l45
+.line	52	self          r8    r0    k8 ; k8 = "sub"
+.line	52	move         r10    r4
+.line	52	call          r8     3     2
+.line	52	move          r7    r8
+.line	53	getglobal     r8    k4 ; k4 = "table"
+.line	53	gettable      r8    r8    k5 ; k5 = "insert"
+.line	53	move          r9    r2
+.line	53	move         r10    r7
+.line	53	call          r8     3     1
+.label	l45
+.line	55	return        r2     2
+.line	56	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	66
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"seconds"
+.constant	k1	0
+.constant	k2	"minutes"
+.constant	k3	"hours"
+
+.line	67	settable      r0    k0    k1 ; k1 = 0
+.line	68	settable      r0    k2    k1 ; k1 = 0
+.line	69	settable      r0    k3    k1 ; k1 = 0
+.line	70	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	72
+.numparams	4
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	3
+.local	"hours"	0	3
+.local	"minutes"	0	3
+.local	"seconds"	0	3
+
+.constant	k0	"seconds"
+.constant	k1	"minutes"
+.constant	k2	"hours"
+
+.line	73	settable      r0    k0    r3 ; k0 = "seconds"
+.line	74	settable      r0    k1    r2 ; k1 = "minutes"
+.line	75	settable      r0    k2    r1 ; k2 = "hours"
+.line	76	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	80
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	7
+
+.constant	k0	"%02d:%02d:%02d"
+.constant	k1	"format"
+.constant	k2	"hours"
+.constant	k3	"minutes"
+.constant	k4	"seconds"
+
+.line	81	loadk         r1    k0 ; k0 = "%02d:%02d:%02d"
+.line	81	self          r1    r1    k1 ; k1 = "format"
+.line	81	gettable      r3    r0    k2 ; k2 = "hours"
+.line	81	gettable      r4    r0    k3 ; k3 = "minutes"
+.line	81	gettable      r5    r0    k4 ; k4 = "seconds"
+.line	81	tailcall      r1     5
+.line	81	return        r1     0
+.line	82	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	86
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	8
+
+.constant	k0	"hours"
+.constant	k1	60
+.constant	k2	"minutes"
+.constant	k3	"seconds"
+
+.line	87	gettable      r1    r0    k0 ; k0 = "hours"
+.line	87	mul           r1    r1    k1 ; k1 = 60
+.line	87	gettable      r2    r0    k2 ; k2 = "minutes"
+.line	87	add           r1    r1    r2
+.line	87	mul           r1    r1    k1 ; k1 = 60
+.line	87	gettable      r2    r0    k3 ; k3 = "seconds"
+.line	87	add           r1    r1    r2
+.line	87	return        r1     2
+.line	88	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	93
+.numparams	2
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	7
+.local	"seconds"	0	7
+
+.constant	k0	"ToSeconds"
+
+.line	94	self          r2    r0    k0 ; k0 = "ToSeconds"
+.line	94	call          r2     2     2
+.line	94	lt             1    r2    r1
+.line	94	jmp           l6
+.line	94	loadbool      r2     0     1
+.label	l6
+.line	94	loadbool      r2     1     0
+.line	94	return        r2     2
+.line	95	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	100
+.numparams	2
+.is_vararg	0
+.maxstacksize	9
+
+.local	"self"	0	25
+.local	"s"	0	25
+.local	"splitS"	4	25
+
+.upvalue	"Split"	0	false
+
+.constant	k0	":"
+.constant	k1	"table"
+.constant	k2	"getn"
+.constant	k3	3
+.constant	k4	"Set"
+.constant	k5	"tonumber"
+.constant	k6	1
+.constant	k7	2
+
+.line	101	getupval      r2    u0
+.line	101	move          r3    r1
+.line	101	loadk         r4    k0 ; k0 = ":"
+.line	101	call          r2     3     2
+.line	103	getglobal     r3    k1 ; k1 = "table"
+.line	103	gettable      r3    r3    k2 ; k2 = "getn"
+.line	103	move          r4    r2
+.line	103	call          r3     2     2
+.line	103	eq             1    r3    k3 ; k3 = 3
+.line	103	jmp          l13
+.line	104	loadbool      r3     0     0
+.line	104	return        r3     2
+.label	l13
+.line	106	self          r3    r0    k4 ; k4 = "Set"
+.line	106	getglobal     r5    k5 ; k5 = "tonumber"
+.line	106	gettable      r6    r2    k6 ; k6 = 1
+.line	106	call          r5     2     2
+.line	106	getglobal     r6    k5 ; k5 = "tonumber"
+.line	106	gettable      r7    r2    k7 ; k7 = 2
+.line	106	call          r6     2     2
+.line	106	getglobal     r7    k5 ; k5 = "tonumber"
+.line	106	gettable      r8    r2    k3 ; k3 = 3
+.line	106	call          r7     2     0
+.line	106	call          r3     0     1
+.line	107	loadbool      r3     1     0
+.line	107	return        r3     2
+.line	108	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	122
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	40
+.local	"parent"	0	40
+
+.upvalue	"Group"	0	false
+.upvalue	"Text"	0	false
+.upvalue	"UIUtil"	0	false
+.upvalue	"Timer"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_gameSpeed"
+.constant	k2	0
+.constant	k3	"_timer"
+.constant	k4	nil
+.constant	k5	"_time"
+.constant	k6	"_speed"
+.constant	k7	"_quality"
+.constant	k8	"_unitCap"
+.constant	k9	"SessionIsReplay"
+.constant	k10	"EnableHitTest"
+.constant	k11	"HandleEvent"
+.constant	k12	"DisableHitTest"
+
+.line	123	getupval      r2    u0
+.line	123	gettable      r2    r2    k0 ; k0 = "__init"
+.line	123	move          r3    r0
+.line	123	move          r4    r1
+.line	123	call          r2     3     1
+.line	124	settable      r0    k1    k2 ; k2 = 0
+.line	125	settable      r0    k3    k4 ; k4 = nil
+.line	127	getupval      r2    u1
+.line	127	move          r3    r0
+.line	127	call          r2     2     2
+.line	127	settable      r0    k5    r2 ; k5 = "_time"
+.line	128	getupval      r2    u1
+.line	128	move          r3    r0
+.line	128	call          r2     2     2
+.line	128	settable      r0    k6    r2 ; k6 = "_speed"
+.line	129	getupval      r2    u1
+.line	129	move          r3    r0
+.line	129	call          r2     2     2
+.line	129	settable      r0    k7    r2 ; k7 = "_quality"
+.line	130	getupval      r2    u1
+.line	130	move          r3    r0
+.line	130	call          r2     2     2
+.line	130	settable      r0    k8    r2 ; k8 = "_unitCap"
+.line	132	getglobal     r2    k9 ; k9 = "SessionIsReplay"
+.line	132	call          r2     1     2
+.line	132	test          r2    r2     0
+.line	132	jmp          l38
+.line	133	gettable      r2    r0    k5 ; k5 = "_time"
+.line	133	self          r2    r2   k10 ; k10 = "EnableHitTest"
+.line	133	call          r2     2     1
+.line	134	gettable      r2    r0    k5 ; k5 = "_time"
+.line	151	closure       r3    f0
+.line	151	getupval      r0    u2 ; upvalue declaration
+.line	151	move          r0    r0 ; upvalue declaration
+.line	151	getupval      r0    u3 ; upvalue declaration
+.line	151	settable      r2   k11    r3 ; k11 = "HandleEvent"
+.line	151	jmp          l41
+.label	l38
+.line	153	gettable      r2    r0    k5 ; k5 = "_time"
+.line	153	self          r2    r2   k12 ; k12 = "DisableHitTest"
+.line	153	call          r2     2     1
+.label	l41
+.line	155	return        r0     1
+
+.function	main/f7/f0
+
+.source	null
+.linedefined	134
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"_"	0	31
+.local	"event"	0	31
+.local	"dialog"	18	31
+
+.upvalue	"UIUtil"	0	false
+.upvalue	"self"	0	false
+.upvalue	"Timer"	0	false
+
+.constant	k0	"Type"
+.constant	k1	"ButtonPress"
+.constant	k2	"ButtonDClick"
+.constant	k3	"CreateInputDialog"
+.constant	k4	"GetFrame"
+.constant	k5	0
+.constant	k6	"LOC"
+.constant	k7	"Enter time HH:MM:SS"
+.constant	k8	"_timer"
+.constant	k9	"inputBox"
+.constant	k10	"SetText"
+.constant	k11	"Format"
+
+.line	135	gettable      r2    r1    k0 ; k0 = "Type"
+.line	135	eq             1    r2    k1 ; k1 = "ButtonPress"
+.line	135	jmp           l7
+.line	135	gettable      r2    r1    k0 ; k0 = "Type"
+.line	135	eq             0    r2    k2 ; k2 = "ButtonDClick"
+.line	135	jmp          l32
+.label	l7
+.line	136	getupval      r2    u0
+.line	136	gettable      r2    r2    k3 ; k3 = "CreateInputDialog"
+.line	136	getglobal     r3    k4 ; k4 = "GetFrame"
+.line	136	loadk         r4    k5 ; k5 = 0
+.line	136	call          r3     2     2
+.line	136	getglobal     r4    k6 ; k6 = "LOC"
+.line	136	loadk         r5    k7 ; k7 = "Enter time HH:MM:SS"
+.line	136	call          r4     2     2
+.line	144	closure       r5    f0
+.line	144	getupval      r0    u1 ; upvalue declaration
+.line	144	getupval      r0    u2 ; upvalue declaration
+.line	136	call          r2     4     2
+.line	146	getupval      r3    u1
+.line	146	gettable      r3    r3    k8 ; k8 = "_timer"
+.line	146	test          r3    r3     0
+.line	146	jmp          l30
+.line	147	gettable      r3    r2    k9 ; k9 = "inputBox"
+.line	147	self          r3    r3   k10 ; k10 = "SetText"
+.line	147	getupval      r5    u1
+.line	147	gettable      r5    r5    k8 ; k8 = "_timer"
+.line	147	self          r5    r5   k11 ; k11 = "Format"
+.line	147	call          r5     2     0
+.line	147	call          r3     0     1
+.label	l30
+.line	149	loadbool      r3     1     0
+.line	149	return        r3     2
+.label	l32
+.line	151	return        r0     1
+
+.function	main/f7/f0/f0
+
+.source	null
+.linedefined	137
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"_"	0	24
+.local	"newtime"	0	24
+
+.upvalue	"self"	0	false
+.upvalue	"Timer"	0	false
+
+.constant	k0	"_timer"
+.constant	k1	"ParseString"
+.constant	k2	"print"
+.constant	k3	"Invalid time passed!"
+.constant	k4	"Timer set to %s"
+.constant	k5	"format"
+.constant	k6	"Format"
+
+.line	138	getupval      r2    u0
+.line	138	getupval      r3    u1
+.line	138	call          r3     1     2
+.line	138	settable      r2    k0    r3 ; k0 = "_timer"
+.line	139	getupval      r2    u0
+.line	139	gettable      r2    r2    k0 ; k0 = "_timer"
+.line	139	self          r2    r2    k1 ; k1 = "ParseString"
+.line	139	move          r4    r1
+.line	139	call          r2     3     2
+.line	139	test          r2    r2     1
+.line	139	jmp          l16
+.line	140	getglobal     r2    k2 ; k2 = "print"
+.line	140	loadk         r3    k3 ; k3 = "Invalid time passed!"
+.line	140	call          r2     2     1
+.line	141	return        r0     1
+.label	l16
+.line	143	getglobal     r2    k2 ; k2 = "print"
+.line	143	loadk         r3    k4 ; k4 = "Timer set to %s"
+.line	143	self          r3    r3    k5 ; k5 = "format"
+.line	143	getupval      r5    u0
+.line	143	gettable      r5    r5    k0 ; k0 = "_timer"
+.line	143	self          r5    r5    k6 ; k6 = "Format"
+.line	143	call          r5     2     0
+.line	143	call          r3     0     0
+.line	143	call          r2     0     1
+.line	144	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	159
+.numparams	2
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	125
+.local	"layouter"	0	125
+.local	"parent"	2	125
+
+.upvalue	"options"	0	false
+.upvalue	"timeTextSize"	0	false
+.upvalue	"qualityTextSize"	0	false
+.upvalue	"unitCapTextSize"	0	false
+.upvalue	"titlePanelHeight"	0	false
+
+.constant	k0	"GetParent"
+.constant	k1	"_time"
+.constant	k2	"AtLeftIn"
+.constant	k3	10
+.constant	k4	"AtVerticalCenterIn"
+.constant	k5	"Color"
+.constant	k6	"title"
+.constant	k7	"color"
+.constant	k8	"time"
+.constant	k9	"Raw"
+.constant	k10	"SetFont"
+.constant	k11	"font"
+.constant	k12	"_speed"
+.constant	k13	"AtCenterIn"
+.constant	k14	0
+.constant	k15	30
+.constant	k16	-30
+.constant	k17	"gameSpeed"
+.constant	k18	"DisableHitTest"
+.constant	k19	"_quality"
+.constant	k20	"quality"
+.constant	k21	"_unitCap"
+.constant	k22	"AtRightIn"
+.constant	k23	"totalUnits"
+.constant	k24	"Width"
+.constant	k25	"Height"
+
+.line	160	self          r2    r0    k0 ; k0 = "GetParent"
+.line	160	call          r2     2     2
+.line	161	move          r3    r1
+.line	161	gettable      r4    r0    k1 ; k1 = "_time"
+.line	161	call          r3     2     2
+.line	162	self          r3    r3    k2 ; k2 = "AtLeftIn"
+.line	162	move          r5    r0
+.line	162	loadk         r6    k3 ; k3 = 10
+.line	162	call          r3     4     2
+.line	163	self          r3    r3    k4 ; k4 = "AtVerticalCenterIn"
+.line	163	move          r5    r0
+.line	163	call          r3     3     2
+.line	164	self          r3    r3    k5 ; k5 = "Color"
+.line	164	getupval      r5    u0
+.line	164	gettable      r5    r5    k6 ; k6 = "title"
+.line	164	gettable      r5    r5    k7 ; k7 = "color"
+.line	164	gettable      r5    r5    k8 ; k8 = "time"
+.line	164	self          r5    r5    k9 ; k9 = "Raw"
+.line	164	call          r5     2     0
+.line	164	call          r3     0     1
+.line	166	gettable      r3    r0    k1 ; k1 = "_time"
+.line	166	self          r3    r3   k10 ; k10 = "SetFont"
+.line	166	getupval      r5    u0
+.line	166	gettable      r5    r5    k6 ; k6 = "title"
+.line	166	gettable      r5    r5   k11 ; k11 = "font"
+.line	166	gettable      r5    r5    k8 ; k8 = "time"
+.line	166	self          r5    r5    k9 ; k9 = "Raw"
+.line	166	call          r5     2     2
+.line	166	getupval      r6    u1
+.line	166	call          r3     4     1
+.line	168	move          r3    r1
+.line	168	gettable      r4    r0   k12 ; k12 = "_speed"
+.line	168	call          r3     2     2
+.line	169	self          r3    r3   k13 ; k13 = "AtCenterIn"
+.line	169	move          r5    r0
+.line	169	loadk         r6   k14 ; k14 = 0
+.line	169	loadk         r7   k16 ; k16 = -30
+.line	169	call          r3     5     2
+.line	170	self          r3    r3    k5 ; k5 = "Color"
+.line	170	getupval      r5    u0
+.line	170	gettable      r5    r5    k6 ; k6 = "title"
+.line	170	gettable      r5    r5    k7 ; k7 = "color"
+.line	170	gettable      r5    r5   k17 ; k17 = "gameSpeed"
+.line	170	self          r5    r5    k9 ; k9 = "Raw"
+.line	170	call          r5     2     0
+.line	170	call          r3     0     2
+.line	171	self          r3    r3   k18 ; k18 = "DisableHitTest"
+.line	171	call          r3     2     1
+.line	172	gettable      r3    r0   k12 ; k12 = "_speed"
+.line	172	self          r3    r3   k10 ; k10 = "SetFont"
+.line	172	getupval      r5    u0
+.line	172	gettable      r5    r5    k6 ; k6 = "title"
+.line	172	gettable      r5    r5   k11 ; k11 = "font"
+.line	172	gettable      r5    r5   k17 ; k17 = "gameSpeed"
+.line	172	self          r5    r5    k9 ; k9 = "Raw"
+.line	172	call          r5     2     2
+.line	172	getupval      r6    u2
+.line	172	call          r3     4     1
+.line	174	move          r3    r1
+.line	174	gettable      r4    r0   k19 ; k19 = "_quality"
+.line	174	call          r3     2     2
+.line	175	self          r3    r3   k13 ; k13 = "AtCenterIn"
+.line	175	move          r5    r0
+.line	175	loadk         r6   k14 ; k14 = 0
+.line	175	loadk         r7   k15 ; k15 = 30
+.line	175	call          r3     5     2
+.line	176	self          r3    r3    k5 ; k5 = "Color"
+.line	176	getupval      r5    u0
+.line	176	gettable      r5    r5    k6 ; k6 = "title"
+.line	176	gettable      r5    r5    k7 ; k7 = "color"
+.line	176	gettable      r5    r5   k20 ; k20 = "quality"
+.line	176	self          r5    r5    k9 ; k9 = "Raw"
+.line	176	call          r5     2     0
+.line	176	call          r3     0     2
+.line	177	self          r3    r3   k18 ; k18 = "DisableHitTest"
+.line	177	call          r3     2     1
+.line	178	gettable      r3    r0   k19 ; k19 = "_quality"
+.line	178	self          r3    r3   k10 ; k10 = "SetFont"
+.line	178	getupval      r5    u0
+.line	178	gettable      r5    r5    k6 ; k6 = "title"
+.line	178	gettable      r5    r5   k11 ; k11 = "font"
+.line	178	gettable      r5    r5   k20 ; k20 = "quality"
+.line	178	self          r5    r5    k9 ; k9 = "Raw"
+.line	178	call          r5     2     2
+.line	178	getupval      r6    u2
+.line	178	call          r3     4     1
+.line	180	move          r3    r1
+.line	180	gettable      r4    r0   k21 ; k21 = "_unitCap"
+.line	180	call          r3     2     2
+.line	181	self          r3    r3   k22 ; k22 = "AtRightIn"
+.line	181	move          r5    r0
+.line	181	loadk         r6    k3 ; k3 = 10
+.line	181	call          r3     4     2
+.line	182	self          r3    r3    k4 ; k4 = "AtVerticalCenterIn"
+.line	182	move          r5    r0
+.line	182	call          r3     3     2
+.line	183	self          r3    r3    k5 ; k5 = "Color"
+.line	183	getupval      r5    u0
+.line	183	gettable      r5    r5    k6 ; k6 = "title"
+.line	183	gettable      r5    r5    k7 ; k7 = "color"
+.line	183	gettable      r5    r5   k23 ; k23 = "totalUnits"
+.line	183	self          r5    r5    k9 ; k9 = "Raw"
+.line	183	call          r5     2     0
+.line	183	call          r3     0     2
+.line	184	self          r3    r3   k18 ; k18 = "DisableHitTest"
+.line	184	call          r3     2     1
+.line	185	gettable      r3    r0   k21 ; k21 = "_unitCap"
+.line	185	self          r3    r3   k10 ; k10 = "SetFont"
+.line	185	getupval      r5    u0
+.line	185	gettable      r5    r5    k6 ; k6 = "title"
+.line	185	gettable      r5    r5   k11 ; k11 = "font"
+.line	185	gettable      r5    r5   k23 ; k23 = "totalUnits"
+.line	185	self          r5    r5    k9 ; k9 = "Raw"
+.line	185	call          r5     2     2
+.line	185	getupval      r6    u3
+.line	185	call          r3     4     1
+.line	187	move          r3    r1
+.line	187	move          r4    r0
+.line	187	call          r3     2     2
+.line	188	self          r3    r3   k24 ; k24 = "Width"
+.line	188	gettable      r5    r2   k24 ; k24 = "Width"
+.line	188	call          r3     3     2
+.line	189	self          r3    r3   k25 ; k25 = "Height"
+.line	189	getupval      r5    u4
+.line	189	call          r3     3     1
+.line	190	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	194
+.numparams	2
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	14
+.local	"quality"	0	14
+
+.constant	k0	"_quality"
+.constant	k1	"SetText"
+.constant	k2	"Q:%.2f%%"
+.constant	k3	"format"
+.constant	k4	""
+
+.line	195	test          r1    r1     0
+.line	195	jmp          l11
+.line	196	gettable      r2    r0    k0 ; k0 = "_quality"
+.line	196	self          r2    r2    k1 ; k1 = "SetText"
+.line	196	loadk         r4    k2 ; k2 = "Q:%.2f%%"
+.line	196	self          r4    r4    k3 ; k3 = "format"
+.line	196	move          r6    r1
+.line	196	call          r4     3     0
+.line	196	call          r2     0     1
+.line	196	jmp          l15
+.label	l11
+.line	198	gettable      r2    r0    k0 ; k0 = "_quality"
+.line	198	self          r2    r2    k1 ; k1 = "SetText"
+.line	198	loadk         r4    k4 ; k4 = ""
+.line	198	call          r2     3     1
+.label	l15
+.line	200	return        r0     1
+
+.function	main/f10
+
+.source	null
+.linedefined	205
+.numparams	3
+.is_vararg	0
+.maxstacksize	10
+
+.local	"self"	0	57
+.local	"data"	0	57
+.local	"gameSpeed"	0	57
+.local	"curSeconds"	23	32
+.local	"scoreData"	38	57
+
+.upvalue	"GetFocusArmy"	0	false
+
+.constant	k0	"_gameSpeed"
+.constant	k1	"_speed"
+.constant	k2	"SetText"
+.constant	k3	"%+d / %+d"
+.constant	k4	"format"
+.constant	k5	"GetSimRate"
+.constant	k6	"_time"
+.constant	k7	"GetGameTime"
+.constant	k8	"_timer"
+.constant	k9	"GameTick"
+.constant	k10	10
+.constant	k11	"HasPassed"
+.constant	k12	nil
+.constant	k13	"SessionRequestPause"
+.constant	k14	"general"
+.constant	k15	"currentcap"
+.constant	k16	"_unitCap"
+.constant	k17	"%d/%d"
+.constant	k18	"currentunits"
+.constant	k19	""
+
+.line	206	test          r2    r2     0
+.line	206	jmp           l4
+.line	207	settable      r0    k0    r2 ; k0 = "_gameSpeed"
+.label	l4
+.line	210	gettable      r3    r0    k1 ; k1 = "_speed"
+.line	210	self          r3    r3    k2 ; k2 = "SetText"
+.line	210	loadk         r5    k3 ; k3 = "%+d / %+d"
+.line	210	self          r5    r5    k4 ; k4 = "format"
+.line	210	gettable      r7    r0    k0 ; k0 = "_gameSpeed"
+.line	210	getglobal     r8    k5 ; k5 = "GetSimRate"
+.line	210	call          r8     1     0
+.line	210	call          r5     0     0
+.line	210	call          r3     0     1
+.line	211	gettable      r3    r0    k6 ; k6 = "_time"
+.line	211	self          r3    r3    k2 ; k2 = "SetText"
+.line	211	getglobal     r5    k7 ; k7 = "GetGameTime"
+.line	211	call          r5     1     0
+.line	211	call          r3     0     1
+.line	213	gettable      r3    r0    k8 ; k8 = "_timer"
+.line	213	test          r3    r3     0
+.line	213	jmp          l33
+.line	214	getglobal     r3    k9 ; k9 = "GameTick"
+.line	214	call          r3     1     2
+.line	214	div           r3    r3   k10 ; k10 = 10
+.line	215	gettable      r4    r0    k8 ; k8 = "_timer"
+.line	215	self          r4    r4   k11 ; k11 = "HasPassed"
+.line	215	move          r6    r3
+.line	215	call          r4     3     2
+.line	215	test          r4    r4     0
+.line	215	jmp          l33
+.line	216	settable      r0    k8   k12 ; k12 = nil
+.line	217	getglobal     r4   k13 ; k13 = "SessionRequestPause"
+.line	217	call          r4     1     1
+.label	l33
+.line	221	test          r1    r1     1
+.line	221	jmp          l36
+.line	221	return        r0     1
+.label	l36
+.line	223	getupval      r3    u0
+.line	223	call          r3     1     2
+.line	223	gettable      r3    r1    r3
+.line	224	gettable      r4    r3   k14 ; k14 = "general"
+.line	224	gettable      r4    r4   k15 ; k15 = "currentcap"
+.line	224	test          r4    r4     0
+.line	224	jmp          l54
+.line	225	gettable      r4    r0   k16 ; k16 = "_unitCap"
+.line	225	self          r4    r4    k2 ; k2 = "SetText"
+.line	225	loadk         r6   k17 ; k17 = "%d/%d"
+.line	225	self          r6    r6    k4 ; k4 = "format"
+.line	225	gettable      r8    r3   k14 ; k14 = "general"
+.line	225	gettable      r8    r8   k18 ; k18 = "currentunits"
+.line	225	gettable      r9    r3   k14 ; k14 = "general"
+.line	225	gettable      r9    r9   k15 ; k15 = "currentcap"
+.line	225	call          r6     4     0
+.line	225	call          r4     0     1
+.line	225	jmp          l58
+.label	l54
+.line	227	gettable      r4    r0   k16 ; k16 = "_unitCap"
+.line	227	self          r4    r4    k2 ; k2 = "SetText"
+.line	227	loadk         r6   k19 ; k19 = ""
+.line	227	call          r4     3     1
+.label	l58
+.line	229	return        r0     1
+
+.function	main/f11
+
+.source	null
+.linedefined	234
+.numparams	3
+.is_vararg	0
+.maxstacksize	4
+
+.local	"control"	0	6
+.local	"state"	0	6
+.local	"target"	0	6
+
+.constant	k0	"target"
+
+.line	235	test          r1    r1     1
+.line	235	jmp           l5
+.line	235	newtable      r3     0     0
+.line	235	move          r1    r3
+.label	l5
+.line	236	settable      r1    k0    r2 ; k0 = "target"
+.line	237	return        r1     2
+.line	238	return        r0     1
+
+.function	main/f12
+
+.source	null
+.linedefined	239
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"control"	0	17
+.local	"delta"	0	17
+.local	"state"	0	17
+
+.upvalue	"animationSpeed"	0	false
+
+.constant	k0	"Top"
+.constant	k1	"target"
+.constant	k2	"Bottom"
+.constant	k3	"Set"
+
+.line	240	gettable      r3    r0    k0 ; k0 = "Top"
+.line	240	call          r3     1     2
+.line	240	gettable      r4    r2    k1 ; k1 = "target"
+.line	240	gettable      r4    r4    k2 ; k2 = "Bottom"
+.line	240	call          r4     1     2
+.line	240	lt             0    r4    r3
+.line	240	jmp          l10
+.line	241	loadbool      r3     1     0
+.line	241	return        r3     2
+.label	l10
+.line	243	gettable      r3    r0    k0 ; k0 = "Top"
+.line	243	self          r3    r3    k3 ; k3 = "Set"
+.line	243	gettable      r5    r0    k0 ; k0 = "Top"
+.line	243	call          r5     1     2
+.line	243	getupval      r6    u0
+.line	243	mul           r6    r1    r6
+.line	243	add           r5    r5    r6
+.line	243	call          r3     3     1
+.line	244	return        r0     1
+
+.function	main/f13
+
+.source	null
+.linedefined	245
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	8
+.local	"state"	0	8
+
+.constant	k0	"Top"
+.constant	k1	"Set"
+.constant	k2	"target"
+.constant	k3	"Bottom"
+.constant	k4	"EnableHitTest"
+
+.line	246	gettable      r2    r0    k0 ; k0 = "Top"
+.line	246	self          r2    r2    k1 ; k1 = "Set"
+.line	246	gettable      r4    r1    k2 ; k2 = "target"
+.line	246	gettable      r4    r4    k3 ; k3 = "Bottom"
+.line	246	call          r2     3     1
+.line	247	self          r2    r0    k4 ; k4 = "EnableHitTest"
+.line	247	loadbool      r4     1     0
+.line	247	call          r2     3     1
+.line	248	return        r0     1
+
+.function	main/f14
+
+.source	null
+.linedefined	252
+.numparams	3
+.is_vararg	0
+.maxstacksize	4
+
+.local	"control"	0	6
+.local	"state"	0	6
+.local	"target"	0	6
+
+.constant	k0	"target"
+
+.line	253	test          r1    r1     1
+.line	253	jmp           l5
+.line	253	newtable      r3     0     0
+.line	253	move          r1    r3
+.label	l5
+.line	254	settable      r1    k0    r2 ; k0 = "target"
+.line	255	return        r1     2
+.line	256	return        r0     1
+
+.function	main/f15
+
+.source	null
+.linedefined	257
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"control"	0	17
+.local	"delta"	0	17
+.local	"state"	0	17
+
+.upvalue	"animationSpeed"	0	false
+
+.constant	k0	"Top"
+.constant	k1	"target"
+.constant	k2	"Set"
+
+.line	258	gettable      r3    r0    k0 ; k0 = "Top"
+.line	258	call          r3     1     2
+.line	258	gettable      r4    r2    k1 ; k1 = "target"
+.line	258	gettable      r4    r4    k0 ; k0 = "Top"
+.line	258	call          r4     1     2
+.line	258	lt             0    r3    r4
+.line	258	jmp          l10
+.line	259	loadbool      r3     1     0
+.line	259	return        r3     2
+.label	l10
+.line	261	gettable      r3    r0    k0 ; k0 = "Top"
+.line	261	self          r3    r3    k2 ; k2 = "Set"
+.line	261	gettable      r5    r0    k0 ; k0 = "Top"
+.line	261	call          r5     1     2
+.line	261	getupval      r6    u0
+.line	261	mul           r6    r1    r6
+.line	261	sub           r5    r5    r6
+.line	261	call          r3     3     1
+.line	262	return        r0     1
+
+.function	main/f16
+
+.source	null
+.linedefined	263
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"control"	0	8
+.local	"state"	0	8
+
+.constant	k0	"Top"
+.constant	k1	"Set"
+.constant	k2	"target"
+.constant	k3	"DisableHitTest"
+
+.line	264	gettable      r2    r0    k0 ; k0 = "Top"
+.line	264	self          r2    r2    k1 ; k1 = "Set"
+.line	264	gettable      r4    r1    k2 ; k2 = "target"
+.line	264	gettable      r4    r4    k0 ; k0 = "Top"
+.line	264	call          r2     3     1
+.line	265	self          r2    r0    k3 ; k3 = "DisableHitTest"
+.line	265	loadbool      r4     1     0
+.line	265	call          r2     3     1
+.line	266	return        r0     1
+
+.function	main/f17
+
+.source	null
+.linedefined	294
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	22
+.local	"parent"	0	22
+
+.upvalue	"Group"	0	false
+.upvalue	"Bitmap"	0	false
+.upvalue	"TopInfoPanel"	0	false
+.upvalue	"InfoPanel"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_bg"
+.constant	k2	"_top"
+.constant	k3	"_info"
+.constant	k4	"Setup"
+.constant	k5	"_expanded"
+
+.line	295	getupval      r2    u0
+.line	295	gettable      r2    r2    k0 ; k0 = "__init"
+.line	295	move          r3    r0
+.line	295	move          r4    r1
+.line	295	call          r2     3     1
+.line	297	getupval      r2    u1
+.line	297	move          r3    r0
+.line	297	call          r2     2     2
+.line	297	settable      r0    k1    r2 ; k1 = "_bg"
+.line	298	getupval      r2    u2
+.line	298	move          r3    r0
+.line	298	call          r2     2     2
+.line	298	settable      r0    k2    r2 ; k2 = "_top"
+.line	300	getupval      r2    u3
+.line	300	move          r3    r0
+.line	300	call          r2     2     2
+.line	300	settable      r0    k3    r2 ; k3 = "_info"
+.line	301	gettable      r2    r0    k3 ; k3 = "_info"
+.line	301	self          r2    r2    k4 ; k4 = "Setup"
+.line	301	call          r2     2     1
+.line	303	loadbool      r2     1     0
+.line	303	settable      r0    k5    r2 ; k5 = "_expanded"
+.line	304	return        r0     1
+
+.function	main/f18
+
+.source	null
+.linedefined	308
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	42
+.local	"layouter"	0	42
+
+.upvalue	"options"	0	false
+.upvalue	"titlePanelWidth"	0	false
+
+.constant	k0	"_bg"
+.constant	k1	"Fill"
+.constant	k2	"Color"
+.constant	k3	"player"
+.constant	k4	"color"
+.constant	k5	"bg"
+.constant	k6	"Raw"
+.constant	k7	"DisableHitTest"
+.constant	k8	"_top"
+.constant	k9	"AtRightTopIn"
+.constant	k10	"_info"
+.constant	k11	"Top"
+.constant	k12	"Bottom"
+.constant	k13	"Right"
+.constant	k14	"Width"
+
+.line	309	move          r2    r1
+.line	309	gettable      r3    r0    k0 ; k0 = "_bg"
+.line	309	call          r2     2     2
+.line	310	self          r2    r2    k1 ; k1 = "Fill"
+.line	310	move          r4    r0
+.line	310	call          r2     3     2
+.line	311	self          r2    r2    k2 ; k2 = "Color"
+.line	311	getupval      r4    u0
+.line	311	gettable      r4    r4    k3 ; k3 = "player"
+.line	311	gettable      r4    r4    k4 ; k4 = "color"
+.line	311	gettable      r4    r4    k5 ; k5 = "bg"
+.line	311	self          r4    r4    k6 ; k6 = "Raw"
+.line	311	call          r4     2     0
+.line	311	call          r2     0     2
+.line	312	self          r2    r2    k7 ; k7 = "DisableHitTest"
+.line	312	call          r2     2     1
+.line	314	move          r2    r1
+.line	314	gettable      r3    r0    k8 ; k8 = "_top"
+.line	314	call          r2     2     2
+.line	315	self          r2    r2    k9 ; k9 = "AtRightTopIn"
+.line	315	move          r4    r0
+.line	315	call          r2     3     1
+.line	317	move          r2    r1
+.line	317	gettable      r3    r0   k10 ; k10 = "_info"
+.line	317	call          r2     2     2
+.line	318	self          r2    r2   k11 ; k11 = "Top"
+.line	318	gettable      r4    r0    k8 ; k8 = "_top"
+.line	318	gettable      r4    r4   k12 ; k12 = "Bottom"
+.line	318	call          r2     3     2
+.line	319	self          r2    r2   k13 ; k13 = "Right"
+.line	319	gettable      r4    r0   k13 ; k13 = "Right"
+.line	319	call          r2     3     1
+.line	321	move          r2    r1
+.line	321	move          r3    r0
+.line	321	call          r2     2     2
+.line	322	self          r2    r2   k14 ; k14 = "Width"
+.line	322	getupval      r4    u1
+.line	322	call          r2     3     2
+.line	323	self          r2    r2   k12 ; k12 = "Bottom"
+.line	323	gettable      r4    r0   k10 ; k10 = "_info"
+.line	323	gettable      r4    r4   k12 ; k12 = "Bottom"
+.line	323	call          r2     3     1
+.line	324	return        r0     1
+
+.function	main/f19
+
+.source	null
+.linedefined	328
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	4
+.local	"quality"	0	4
+
+.constant	k0	"_top"
+.constant	k1	"SetQuality"
+
+.line	329	gettable      r2    r0    k0 ; k0 = "_top"
+.line	329	self          r2    r2    k1 ; k1 = "SetQuality"
+.line	329	move          r4    r1
+.line	329	call          r2     3     1
+.line	330	return        r0     1
+
+.function	main/f20
+
+.source	null
+.linedefined	335
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	35
+.local	"event"	0	35
+
+.upvalue	"contractAnimation"	0	false
+.upvalue	"fadeAnimation"	0	false
+.upvalue	"expandAnimation"	0	false
+.upvalue	"appearAnimation"	0	false
+
+.constant	k0	"Type"
+.constant	k1	"ButtonPress"
+.constant	k2	"ButtonDClick"
+.constant	k3	"_expanded"
+.constant	k4	"Apply"
+.constant	k5	"_info"
+.constant	k6	"_top"
+
+.line	336	gettable      r2    r1    k0 ; k0 = "Type"
+.line	336	eq             1    r2    k1 ; k1 = "ButtonPress"
+.line	336	jmp           l7
+.line	336	gettable      r2    r1    k0 ; k0 = "Type"
+.line	336	eq             0    r2    k2 ; k2 = "ButtonDClick"
+.line	336	jmp          l34
+.label	l7
+.line	337	gettable      r2    r0    k3 ; k3 = "_expanded"
+.line	337	test          r2    r2     0
+.line	337	jmp          l20
+.line	338	getupval      r2    u0
+.line	338	self          r2    r2    k4 ; k4 = "Apply"
+.line	338	gettable      r4    r0    k5 ; k5 = "_info"
+.line	338	gettable      r5    r0    k6 ; k6 = "_top"
+.line	338	call          r2     4     1
+.line	339	getupval      r2    u1
+.line	339	self          r2    r2    k4 ; k4 = "Apply"
+.line	339	gettable      r4    r0    k5 ; k5 = "_info"
+.line	339	call          r2     3     1
+.line	339	jmp          l29
+.label	l20
+.line	341	getupval      r2    u2
+.line	341	self          r2    r2    k4 ; k4 = "Apply"
+.line	341	gettable      r4    r0    k5 ; k5 = "_info"
+.line	341	gettable      r5    r0    k6 ; k6 = "_top"
+.line	341	call          r2     4     1
+.line	342	getupval      r2    u3
+.line	342	self          r2    r2    k4 ; k4 = "Apply"
+.line	342	gettable      r4    r0    k5 ; k5 = "_info"
+.line	342	call          r2     3     1
+.label	l29
+.line	344	gettable      r2    r0    k3 ; k3 = "_expanded"
+.line	344	not           r2    r2
+.line	344	settable      r0    k3    r2 ; k3 = "_expanded"
+.line	345	loadbool      r2     1     0
+.line	345	return        r2     2
+.label	l34
+.line	347	loadbool      r2     0     0
+.line	347	return        r2     2
+.line	348	return        r0     1
+
+.function	main/f21
+
+.source	null
+.linedefined	353
+.numparams	3
+.is_vararg	0
+.maxstacksize	7
+
+.local	"self"	0	5
+.local	"data"	0	5
+.local	"gameSpeed"	0	5
+
+.constant	k0	"_top"
+.constant	k1	"Update"
+
+.line	354	gettable      r3    r0    k0 ; k0 = "_top"
+.line	354	self          r3    r3    k1 ; k1 = "Update"
+.line	354	move          r5    r1
+.line	354	move          r6    r2
+.line	354	call          r3     4     1
+.line	355	return        r0     1
+

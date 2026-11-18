@@ -1,0 +1,583 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/options/modules/reactiveoption.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.local	"LazyVar"	4	88
+
+.constant	k0	"import"
+.constant	k1	"/lua/lazyvar.lua"
+.constant	k2	"Create"
+.constant	k3	"ReactiveOption"
+.constant	k4	"ReUI"
+.constant	k5	"Core"
+.constant	k6	"Class"
+.constant	k7	"OnChanged"
+.constant	k8	"Events"
+.constant	k9	"EventProperty"
+.constant	k10	"OnSaved"
+.constant	k11	"Value"
+.constant	k12	"Property"
+.constant	k13	"get"
+.constant	k14	"set"
+.constant	k15	"IsChanged"
+.constant	k16	"Name"
+.constant	k17	"__init"
+.constant	k18	"Raw"
+.constant	k19	"Get"
+.constant	k20	"Prev"
+.constant	k21	"Set"
+.constant	k22	"Restore"
+.constant	k23	"Save"
+.constant	k24	"Destroy"
+.constant	k25	"DeprecatedOption"
+.constant	k26	"__call"
+.constant	k27	"Bind"
+.constant	k28	"OnChange"
+
+.line	1	getglobal     r0    k0 ; k0 = "import"
+.line	1	loadk         r1    k1 ; k1 = "/lua/lazyvar.lua"
+.line	1	call          r0     2     2
+.line	1	gettable      r0    r0    k2 ; k2 = "Create"
+.line	7	getglobal     r1    k4 ; k4 = "ReUI"
+.line	7	gettable      r1    r1    k5 ; k5 = "Core"
+.line	7	gettable      r1    r1    k6 ; k6 = "Class"
+.line	7	call          r1     1     2
+.line	7	newtable      r2     0     4
+.line	9	getglobal     r3    k4 ; k4 = "ReUI"
+.line	9	gettable      r3    r3    k5 ; k5 = "Core"
+.line	9	gettable      r3    r3    k8 ; k8 = "Events"
+.line	9	gettable      r3    r3    k9 ; k9 = "EventProperty"
+.line	9	call          r3     1     2
+.line	9	settable      r2    k7    r3 ; k7 = "OnChanged"
+.line	11	getglobal     r3    k4 ; k4 = "ReUI"
+.line	11	gettable      r3    r3    k5 ; k5 = "Core"
+.line	11	gettable      r3    r3    k8 ; k8 = "Events"
+.line	11	gettable      r3    r3    k9 ; k9 = "EventProperty"
+.line	11	call          r3     1     2
+.line	11	settable      r2   k10    r3 ; k10 = "OnSaved"
+.line	13	getglobal     r3    k4 ; k4 = "ReUI"
+.line	13	gettable      r3    r3    k5 ; k5 = "Core"
+.line	13	gettable      r3    r3   k12 ; k12 = "Property"
+.line	13	newtable      r4     0     2
+.line	18	closure       r5    f0
+.line	18	settable      r4   k13    r5 ; k13 = "get"
+.line	23	closure       r5    f1
+.line	23	settable      r4   k14    r5 ; k14 = "set"
+.line	14	call          r3     2     2
+.line	24	settable      r2   k11    r3 ; k11 = "Value"
+.line	26	getglobal     r3    k4 ; k4 = "ReUI"
+.line	26	gettable      r3    r3    k5 ; k5 = "Core"
+.line	26	gettable      r3    r3   k12 ; k12 = "Property"
+.line	26	newtable      r4     0     1
+.line	31	closure       r5    f2
+.line	31	settable      r4   k13    r5 ; k13 = "get"
+.line	27	call          r3     2     2
+.line	32	settable      r2   k15    r3 ; k15 = "IsChanged"
+.line	34	getglobal     r3    k4 ; k4 = "ReUI"
+.line	34	gettable      r3    r3    k5 ; k5 = "Core"
+.line	34	gettable      r3    r3   k12 ; k12 = "Property"
+.line	34	newtable      r4     0     1
+.line	39	closure       r5    f3
+.line	39	settable      r4   k13    r5 ; k13 = "get"
+.line	35	call          r3     2     2
+.line	40	settable      r2   k16    r3 ; k16 = "Name"
+.line	51	closure       r3    f4
+.line	51	move          r0    r0 ; upvalue declaration
+.line	51	settable      r2   k17    r3 ; k17 = "__init"
+.line	57	closure       r3    f5
+.line	57	settable      r2   k18    r3 ; k18 = "Raw"
+.line	63	closure       r3    f6
+.line	63	settable      r2   k19    r3 ; k19 = "Get"
+.line	69	closure       r3    f7
+.line	69	settable      r2   k20    r3 ; k20 = "Prev"
+.line	80	closure       r3    f8
+.line	80	settable      r2   k21    r3 ; k21 = "Set"
+.line	88	closure       r3    f9
+.line	88	settable      r2   k22    r3 ; k22 = "Restore"
+.line	98	closure       r3   f10
+.line	98	settable      r2   k23    r3 ; k23 = "Save"
+.line	108	closure       r3   f11
+.line	108	settable      r2   k24    r3 ; k24 = "Destroy"
+.line	8	call          r1     2     2
+.line	109	setglobal     r1    k3 ; k3 = "ReactiveOption"
+.line	113	getglobal     r1    k4 ; k4 = "ReUI"
+.line	113	gettable      r1    r1    k5 ; k5 = "Core"
+.line	113	gettable      r1    r1    k6 ; k6 = "Class"
+.line	113	getglobal     r2    k3 ; k3 = "ReactiveOption"
+.line	113	call          r1     2     2
+.line	113	newtable      r2     0     2
+.line	120	closure       r3   f12
+.line	120	settable      r2   k26    r3 ; k26 = "__call"
+.line	129	closure       r3   f13
+.line	129	settable      r2   k27    r3 ; k27 = "Bind"
+.line	132	getglobal     r3    k4 ; k4 = "ReUI"
+.line	132	gettable      r3    r3    k5 ; k5 = "Core"
+.line	132	gettable      r3    r3   k12 ; k12 = "Property"
+.line	132	newtable      r4     0     2
+.line	138	closure       r5   f14
+.line	138	settable      r4   k13    r5 ; k13 = "get"
+.line	150	closure       r5   f15
+.line	150	settable      r4   k14    r5 ; k14 = "set"
+.line	133	call          r3     2     2
+.line	151	settable      r2   k28    r3 ; k28 = "OnChange"
+.line	114	call          r1     2     2
+.line	152	setglobal     r1   k25 ; k25 = "DeprecatedOption"
+.line	152	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	16
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	3
+
+.constant	k0	"Get"
+
+.line	17	self          r1    r0    k0 ; k0 = "Get"
+.line	17	tailcall      r1     2
+.line	17	return        r1     0
+.line	18	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	21
+.numparams	2
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	3
+.local	"value"	0	3
+
+.constant	k0	"Set"
+
+.line	22	self          r2    r0    k0 ; k0 = "Set"
+.line	22	move          r4    r1
+.line	22	call          r2     3     1
+.line	23	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	29
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	6
+
+.constant	k0	"_prev"
+.constant	k1	nil
+
+.line	30	gettable      r1    r0    k0 ; k0 = "_prev"
+.line	30	eq             0    r1    k1 ; k1 = nil
+.line	30	jmp           l5
+.line	30	loadbool      r1     0     1
+.label	l5
+.line	30	loadbool      r1     1     0
+.line	30	return        r1     2
+.line	31	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	37
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	5
+
+.constant	k0	"_ref"
+.constant	k1	"GetPath"
+.constant	k2	2
+
+.line	38	gettable      r1    r0    k0 ; k0 = "_ref"
+.line	38	self          r1    r1    k1 ; k1 = "GetPath"
+.line	38	loadk         r3    k2 ; k2 = 2
+.line	38	tailcall      r1     3
+.line	38	return        r1     0
+.line	39	return        r0     1
+
+.function	main/f4
+
+.source	null
+.linedefined	45
+.numparams	3
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	10
+.local	"ref"	0	10
+.local	"default"	0	10
+.local	"val"	5	10
+
+.upvalue	"LazyVar"	0	false
+
+.constant	k0	"_ref"
+.constant	k1	"Get"
+.constant	k2	"_var"
+.constant	k3	"_prev"
+.constant	k4	nil
+
+.line	46	settable      r0    k0    r1 ; k0 = "_ref"
+.line	47	gettable      r3    r0    k0 ; k0 = "_ref"
+.line	47	self          r3    r3    k1 ; k1 = "Get"
+.line	47	move          r5    r2
+.line	47	call          r3     3     2
+.line	49	getupval      r4    u0
+.line	49	move          r5    r3
+.line	49	call          r4     2     2
+.line	49	settable      r0    k2    r4 ; k2 = "_var"
+.line	50	settable      r0    k3    k4 ; k4 = nil
+.line	51	return        r0     1
+
+.function	main/f5
+
+.source	null
+.linedefined	55
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_var"
+
+.line	56	gettable      r1    r0    k0 ; k0 = "_var"
+.line	56	return        r1     2
+.line	57	return        r0     1
+
+.function	main/f6
+
+.source	null
+.linedefined	61
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	3
+
+.constant	k0	"_var"
+
+.line	62	gettable      r1    r0    k0 ; k0 = "_var"
+.line	62	tailcall      r1     1
+.line	62	return        r1     0
+.line	63	return        r0     1
+
+.function	main/f7
+
+.source	null
+.linedefined	67
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_prev"
+
+.line	68	gettable      r1    r0    k0 ; k0 = "_prev"
+.line	68	return        r1     2
+.line	69	return        r0     1
+
+.function	main/f8
+
+.source	null
+.linedefined	73
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	15
+.local	"value"	0	15
+
+.constant	k0	"_prev"
+.constant	k1	nil
+.constant	k2	"Get"
+.constant	k3	"_var"
+.constant	k4	"Set"
+.constant	k5	"OnChanged"
+.constant	k6	"Invoke"
+
+.line	74	gettable      r2    r0    k0 ; k0 = "_prev"
+.line	74	eq             0    r2    k1 ; k1 = nil
+.line	74	jmp           l7
+.line	75	self          r2    r0    k2 ; k2 = "Get"
+.line	75	call          r2     2     2
+.line	75	settable      r0    k0    r2 ; k0 = "_prev"
+.label	l7
+.line	78	gettable      r2    r0    k3 ; k3 = "_var"
+.line	78	self          r2    r2    k4 ; k4 = "Set"
+.line	78	move          r4    r1
+.line	78	call          r2     3     1
+.line	79	gettable      r2    r0    k5 ; k5 = "OnChanged"
+.line	79	self          r2    r2    k6 ; k6 = "Invoke"
+.line	79	move          r4    r0
+.line	79	move          r5    r1
+.line	79	call          r2     4     1
+.line	80	return        r0     1
+
+.function	main/f9
+
+.source	null
+.linedefined	83
+.numparams	1
+.is_vararg	0
+.maxstacksize	4
+
+.local	"self"	0	7
+
+.constant	k0	"_prev"
+.constant	k1	nil
+.constant	k2	"Set"
+
+.line	84	gettable      r1    r0    k0 ; k0 = "_prev"
+.line	84	eq             1    r1    k1 ; k1 = nil
+.line	84	jmp           l8
+.line	85	self          r1    r0    k2 ; k2 = "Set"
+.line	85	gettable      r3    r0    k0 ; k0 = "_prev"
+.line	85	call          r1     3     1
+.line	86	settable      r0    k0    k1 ; k1 = nil
+.label	l8
+.line	88	return        r0     1
+
+.function	main/f10
+
+.source	null
+.linedefined	91
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	12
+.local	"value"	2	12
+
+.constant	k0	"Get"
+.constant	k1	"_ref"
+.constant	k2	"Set"
+.constant	k3	"OnSaved"
+.constant	k4	"Invoke"
+.constant	k5	"_prev"
+.constant	k6	nil
+
+.line	92	self          r1    r0    k0 ; k0 = "Get"
+.line	92	call          r1     2     2
+.line	94	gettable      r2    r0    k1 ; k1 = "_ref"
+.line	94	self          r2    r2    k2 ; k2 = "Set"
+.line	94	move          r4    r1
+.line	94	call          r2     3     1
+.line	96	gettable      r2    r0    k3 ; k3 = "OnSaved"
+.line	96	self          r2    r2    k4 ; k4 = "Invoke"
+.line	96	move          r4    r0
+.line	96	move          r5    r1
+.line	96	call          r2     4     1
+.line	97	settable      r0    k5    k6 ; k6 = nil
+.line	98	return        r0     1
+
+.function	main/f11
+
+.source	null
+.linedefined	101
+.numparams	1
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	8
+
+.constant	k0	"OnChanged"
+.constant	k1	nil
+.constant	k2	"OnSaved"
+.constant	k3	"_prev"
+.constant	k4	"_var"
+.constant	k5	"Destroy"
+.constant	k6	"_ref"
+
+.line	102	settable      r0    k0    k1 ; k1 = nil
+.line	103	settable      r0    k2    k1 ; k1 = nil
+.line	104	settable      r0    k3    k1 ; k1 = nil
+.line	105	gettable      r1    r0    k4 ; k4 = "_var"
+.line	105	self          r1    r1    k5 ; k5 = "Destroy"
+.line	105	call          r1     2     1
+.line	106	settable      r0    k4    k1 ; k1 = nil
+.line	107	settable      r0    k6    k1 ; k1 = nil
+.line	108	return        r0     1
+
+.function	main/f12
+
+.source	null
+.linedefined	117
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	9
+
+.constant	k0	"WARN"
+.constant	k1	"ReUI.Options: [%s] call operator is deprecated, use '.Value' or ':Get()'"
+.constant	k2	"format"
+.constant	k3	"Name"
+.constant	k4	"Get"
+
+.line	118	getglobal     r1    k0 ; k0 = "WARN"
+.line	118	loadk         r2    k1 ; k1 = "ReUI.Options: [%s] c" (truncated)
+.line	118	self          r2    r2    k2 ; k2 = "format"
+.line	118	gettable      r4    r0    k3 ; k3 = "Name"
+.line	118	call          r2     3     0
+.line	118	call          r1     0     1
+.line	119	self          r1    r0    k4 ; k4 = "Get"
+.line	119	tailcall      r1     2
+.line	119	return        r1     0
+.line	120	return        r0     1
+
+.function	main/f13
+
+.source	null
+.linedefined	125
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	10
+.local	"f"	0	10
+
+.constant	k0	"WARN"
+.constant	k1	"ReUI.Options: [%s] ':Bind()' is deprecated, use 'OnChanged' event"
+.constant	k2	"format"
+.constant	k3	"Name"
+.constant	k4	"OnChange"
+
+.line	126	getglobal     r2    k0 ; k0 = "WARN"
+.line	126	loadk         r3    k1 ; k1 = "ReUI.Options: [%s] '" (truncated)
+.line	126	self          r3    r3    k2 ; k2 = "format"
+.line	126	gettable      r5    r0    k3 ; k3 = "Name"
+.line	126	call          r3     3     0
+.line	126	call          r2     0     1
+.line	127	settable      r0    k4    r1 ; k4 = "OnChange"
+.line	128	move          r2    r1
+.line	128	move          r3    r0
+.line	128	call          r2     2     1
+.line	129	return        r0     1
+
+.function	main/f14
+
+.source	null
+.linedefined	135
+.numparams	1
+.is_vararg	0
+.maxstacksize	5
+
+.local	"self"	0	8
+
+.constant	k0	"WARN"
+.constant	k1	"ReUI.Options: [%s] '.OnChange' is deprecated, use 'OnChanged' event"
+.constant	k2	"format"
+.constant	k3	"Name"
+.constant	k4	"_onChange"
+
+.line	136	getglobal     r1    k0 ; k0 = "WARN"
+.line	136	loadk         r2    k1 ; k1 = "ReUI.Options: [%s] '" (truncated)
+.line	136	self          r2    r2    k2 ; k2 = "format"
+.line	136	gettable      r4    r0    k3 ; k3 = "Name"
+.line	136	call          r2     3     0
+.line	136	call          r1     0     1
+.line	137	gettable      r1    r0    k4 ; k4 = "_onChange"
+.line	137	return        r1     2
+.line	138	return        r0     1
+
+.function	main/f15
+
+.source	null
+.linedefined	141
+.numparams	2
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	18
+.local	"value"	0	18
+.local	"prevOnChange"	7	18
+
+.constant	k0	"WARN"
+.constant	k1	"ReUI.Options: [%s] '.OnChange' is deprecated, use 'OnChanged' event"
+.constant	k2	"format"
+.constant	k3	"Name"
+.constant	k4	"_onChange"
+.constant	k5	"OnChanged"
+.constant	k6	"Remove"
+.constant	k7	"Add"
+
+.line	142	getglobal     r2    k0 ; k0 = "WARN"
+.line	142	loadk         r3    k1 ; k1 = "ReUI.Options: [%s] '" (truncated)
+.line	142	self          r3    r3    k2 ; k2 = "format"
+.line	142	gettable      r5    r0    k3 ; k3 = "Name"
+.line	142	call          r3     3     0
+.line	142	call          r2     0     1
+.line	144	gettable      r2    r0    k4 ; k4 = "_onChange"
+.line	145	test          r2    r2     0
+.line	145	jmp          l14
+.line	146	gettable      r3    r0    k5 ; k5 = "OnChanged"
+.line	146	self          r3    r3    k6 ; k6 = "Remove"
+.line	146	move          r5    r2
+.line	146	call          r3     3     1
+.label	l14
+.line	148	gettable      r3    r0    k5 ; k5 = "OnChanged"
+.line	148	self          r3    r3    k7 ; k7 = "Add"
+.line	148	move          r5    r1
+.line	148	call          r3     3     1
+.line	149	settable      r0    k4    r1 ; k4 = "_onChange"
+.line	150	return        r0     1
+

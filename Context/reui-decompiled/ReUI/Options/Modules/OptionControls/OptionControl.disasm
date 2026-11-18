@@ -1,0 +1,201 @@
+.version	5.0
+
+.endianness	LITTLE
+.int_size	4
+.size_t_size	4
+.instruction_size	4
+.size_op	6
+.size_a	8
+.size_b	9
+.size_c	9
+.number_format	float	4
+
+.op	0	move
+.op	1	loadk
+.op	2	loadbool
+.op	3	loadnil
+.op	4	getupval
+.op	5	getglobal
+.op	6	gettable
+.op	7	setglobal
+.op	8	setupval
+.op	9	settable
+.op	10	newtable
+.op	11	self
+.op	12	add
+.op	13	sub
+.op	14	mul
+.op	15	div
+.op	21	unm
+.op	22	not
+.op	23	concat
+.op	24	jmp
+.op	25	eq
+.op	26	lt
+.op	27	le
+.op	28	test
+.op	29	call
+.op	30	tailcall
+.op	31	return
+.op	32	forloop
+.op	33	tforloop
+.op	34	tforprep
+.op	35	setlist
+.op	36	setlisto
+.op	37	close
+.op	38	closure
+
+.function	main
+
+.source	"@D:/GIT/FAF-UI-Mods/mods/reui/options/modules/optioncontrols/optioncontrol.lua"
+.linedefined	0
+.numparams	0
+.is_vararg	0
+.maxstacksize	6
+
+.local	"Group"	4	28
+
+.constant	k0	"ReUI"
+.constant	k1	"UI"
+.constant	k2	"Controls"
+.constant	k3	"Group"
+.constant	k4	"OptionControl"
+.constant	k5	"Core"
+.constant	k6	"Class"
+.constant	k7	"__init"
+.constant	k8	"Option"
+.constant	k9	"Property"
+.constant	k10	"get"
+.constant	k11	"ValueChanged"
+.constant	k12	"Destroy"
+
+.line	1	getglobal     r0    k0 ; k0 = "ReUI"
+.line	1	gettable      r0    r0    k1 ; k1 = "UI"
+.line	1	gettable      r0    r0    k2 ; k2 = "Controls"
+.line	1	gettable      r0    r0    k3 ; k3 = "Group"
+.line	5	getglobal     r1    k0 ; k0 = "ReUI"
+.line	5	gettable      r1    r1    k5 ; k5 = "Core"
+.line	5	gettable      r1    r1    k6 ; k6 = "Class"
+.line	5	move          r2    r0
+.line	5	call          r1     2     2
+.line	5	newtable      r2     0     3
+.line	15	closure       r3    f0
+.line	15	move          r0    r0 ; upvalue declaration
+.line	15	settable      r2    k7    r3 ; k7 = "__init"
+.line	17	getglobal     r3    k0 ; k0 = "ReUI"
+.line	17	gettable      r3    r3    k5 ; k5 = "Core"
+.line	17	gettable      r3    r3    k9 ; k9 = "Property"
+.line	17	newtable      r4     0     1
+.line	22	closure       r5    f1
+.line	22	settable      r4   k10    r5 ; k10 = "get"
+.line	18	call          r3     2     2
+.line	23	settable      r2    k8    r3 ; k8 = "Option"
+.line	29	closure       r3    f2
+.line	29	settable      r2   k11    r3 ; k11 = "ValueChanged"
+.line	36	closure       r3    f3
+.line	36	move          r0    r0 ; upvalue declaration
+.line	36	settable      r2   k12    r3 ; k12 = "Destroy"
+.line	6	call          r1     2     2
+.line	37	setglobal     r1    k4 ; k4 = "OptionControl"
+.line	37	return        r0     1
+
+.function	main/f0
+
+.source	null
+.linedefined	10
+.numparams	3
+.is_vararg	0
+.maxstacksize	8
+
+.local	"self"	0	14
+.local	"parent"	0	14
+.local	"option"	0	14
+
+.upvalue	"Group"	0	false
+
+.constant	k0	"__init"
+.constant	k1	"_option"
+.constant	k2	"OnChanged"
+.constant	k3	"Add"
+.constant	k4	"ValueChanged"
+
+.line	11	getupval      r3    u0
+.line	11	gettable      r3    r3    k0 ; k0 = "__init"
+.line	11	move          r4    r0
+.line	11	move          r5    r1
+.line	11	call          r3     3     1
+.line	13	settable      r0    k1    r2 ; k1 = "_option"
+.line	14	gettable      r3    r0    k1 ; k1 = "_option"
+.line	14	gettable      r3    r3    k2 ; k2 = "OnChanged"
+.line	14	self          r3    r3    k3 ; k3 = "Add"
+.line	14	newtable      r5     2     0
+.line	14	move          r6    r0
+.line	14	gettable      r7    r0    k4 ; k4 = "ValueChanged"
+.line	14	setlist       r5     1
+.line	14	call          r3     3     1
+.line	15	return        r0     1
+
+.function	main/f1
+
+.source	null
+.linedefined	20
+.numparams	1
+.is_vararg	0
+.maxstacksize	2
+
+.local	"self"	0	2
+
+.constant	k0	"_option"
+
+.line	21	gettable      r1    r0    k0 ; k0 = "_option"
+.line	21	return        r1     2
+.line	22	return        r0     1
+
+.function	main/f2
+
+.source	null
+.linedefined	28
+.numparams	3
+.is_vararg	0
+.maxstacksize	3
+
+.local	"self"	0	0
+.local	"option"	0	0
+.local	"value"	0	0
+
+.line	29	return        r0     1
+
+.function	main/f3
+
+.source	null
+.linedefined	32
+.numparams	1
+.is_vararg	0
+.maxstacksize	6
+
+.local	"self"	0	13
+
+.upvalue	"Group"	0	false
+
+.constant	k0	"_option"
+.constant	k1	"OnChanged"
+.constant	k2	"Remove"
+.constant	k3	"ValueChanged"
+.constant	k4	nil
+.constant	k5	"Destroy"
+
+.line	33	gettable      r1    r0    k0 ; k0 = "_option"
+.line	33	gettable      r1    r1    k1 ; k1 = "OnChanged"
+.line	33	self          r1    r1    k2 ; k2 = "Remove"
+.line	33	newtable      r3     2     0
+.line	33	move          r4    r0
+.line	33	gettable      r5    r0    k3 ; k3 = "ValueChanged"
+.line	33	setlist       r3     1
+.line	33	call          r1     3     1
+.line	34	settable      r0    k0    k4 ; k4 = nil
+.line	35	getupval      r1    u0
+.line	35	gettable      r1    r1    k5 ; k5 = "Destroy"
+.line	35	move          r2    r0
+.line	35	call          r1     2     1
+.line	36	return        r0     1
+
