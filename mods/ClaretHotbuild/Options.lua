@@ -1,5 +1,3 @@
-ReUI.Options.Mods['ClaretHotbuild'] = {
-    enabled = ReUI.Options.OptionValue(true),
-}
+ReUI.Options.Mods['ClaretHotbuild'] = {}
 
 function Main() end

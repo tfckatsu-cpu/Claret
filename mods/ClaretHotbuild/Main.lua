@@ -19,7 +19,12 @@ function Main(isReplay)
     if not localizationOk then error(localizationError) end
     local Runtime = import('/mods/ClaretHotbuild/modules/Runtime.lua')
     local BuildKeyLabels = import('/mods/ClaretHotbuild/modules/BuildKeyLabels.lua')
-    local options = ReUI.Options.Mods['ClaretHotbuild']
+    -- Hotbuild is always active: a private constant-true option keeps Core's
+    -- feature binding API while ignoring any saved disable value.
+    local alwaysOn = {
+        Get = function() return true end,
+        OnChanged = { Add = function() end, Remove = function() end },
+    }
     local service
     local navigatorMemory = { pageId = 'keyboard', hotbuild = {}, contexts = {} }
     local function Ensure()
@@ -71,7 +76,7 @@ function Main(isReplay)
 
     local ok, message = ReUI.ClaretCore.RegisterFeature('hotbuild', function(scope)
         Ensure():Start(scope)
-    end, options.enabled)
+    end, alwaysOn)
     if not ok then error(message) end
 
     local settingsOk, settingsError = ReUI.ClaretCore.RegisterSettingsSection {

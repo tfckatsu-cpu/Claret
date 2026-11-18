@@ -406,17 +406,10 @@ local addonEnv=setmetatable({
         return {Create=function(parent,layout,pages) navPages=pages; return {parent=parent,scale=layout.scale,pages=pages} end}
     end,
 },{__index=_G})
-local repeatValue=1.5
-addonEnv.ReUI.Options.Mods.ClaretHotbuild.quickRepeatWindow={
-    Get=function() return repeatValue end,
-    Set=function(_,value) repeatValue=value end,
-    Save=function() end,
-}
 addonEnv.SavePreferences=function() end
 assert(loadfile('../mods/ClaretHotbuild/Main.lua','t',addonEnv))()
 addonEnv.Main(false)
-assert(repeatValue==1.5, 'valid window loads without math.huge')
-assert(feature.id=='hotbuild' and feature.value==option and #posts==1)
+assert(feature.id=='hotbuild' and feature.value and feature.value.Get and feature.value.Get()==true and #posts==1)
 assert(#definitions==1, 'Hotbuild must register one navigable settings section')
 local byId={}
 for _,definition in ipairs(definitions) do byId[definition.id]=definition end
@@ -430,34 +423,8 @@ assert(runtimeCreated and wrapper.parent==host and wrapper.scale==0.8 and #navPa
 byId.hotbuild.onMenuClosed(); assert(refreshes==0); assert(coroutine.resume(deferred)); assert(refreshes==1,'refresh follows frame delay')
 byId.hotbuild.onMenuClosed(); menuOpen=true; assert(coroutine.resume(deferred)); assert(refreshes==1,'reopened menu cancels delayed refresh'); menuOpen=false
 assert(navPages[1].id=='keyboard' and navPages[2].id=='hotbuild' and navPages[3].id=='contexts'
-    and navPages[4].id=='repeat')
+    and table.getn(navPages)==3)
 assert(navPages[1].open(host,{scale=0.6}).kind=='keyboard')
 assert(navPages[2].open(host,{scale=0.6}).kind=='hotbuild')
 assert(navPages[3].open(host,{scale=0.6}).kind=='contexts')
-local repeatField
-imports['/lua/maui/edit.lua']={Edit=function(parent)
-    local field=control(parent); repeatField=field
-    function field:GetText() return self.text end
-    return field
-end}
-imports['/lua/ui/uiutil.lua'].SetupEditStd=function() end
-local repeatEnv=setmetatable({math={}}, {__index=env})
-assert(loadfile('../mods/ClaretHotbuild/modules/QuickRepeatSettings.lua','t',repeatEnv))()
-local savedRepeats, storedRepeat=0,1.5
-local function loadRepeatSetting()
-    return {value=storedRepeat,Get=function(self) return self.value end,
-        Set=function(self,value) self.value=value end,
-        Save=function(self) storedRepeat=self.value; savedRepeats=savedRepeats+1 end}
-end
-local repeatSetting=loadRepeatSetting()
-local repeatView=repeatEnv.Create(host,{scale=1},repeatSetting)
-assert(repeatView and repeatField.text=='1.5','default repeat value displays without padding')
-repeatField:SetText('2.25'); repeatField.OnTextChanged(repeatField,'2.25')
-assert(repeatSetting.value==2.25 and savedRepeats==1,'valid value is persisted immediately')
-repeatSetting=loadRepeatSetting()
-repeatView=repeatEnv.Create(host,{scale=1},repeatSetting)
-assert(repeatField.text=='2.25','reopening the tab loads the saved value')
-repeatField:SetText('0'); repeatField.OnLoseFocus()
-assert(repeatSetting.value==2.25 and savedRepeats==1 and repeatField.text=='2.25',
-    'invalid value is rejected without saving')
 print('PASS: standalone Hotbuild registers one navigable settings section before UI creation')

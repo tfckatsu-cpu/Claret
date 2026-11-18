@@ -363,10 +363,10 @@ function Create(parent, service, embedded, memory)
             CloseLeaveDialog()
             leaveIntent=intent
             leaveContinuation=continuation
-            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(frame.Depth()+80)
+            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(function() return frame.Depth()+80 end)
             leaveOverlay.HandleEvent=function(self,e) if e.Type=='ButtonPress' then return true end; return true end
             local dialogWidth,dialogHeight=560,224
-            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(frame.Depth()+90)
+            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(function() return frame.Depth()+90 end)
             Theme.AnimateCentered(leaveDialog,frame,L)
             local back=Panel(leaveDialog,0,0,dialogWidth,dialogHeight,C.surface); back.Depth:Set(leaveDialog.Depth); Theme.Outline(back,L,dialogWidth,dialogHeight,C.selectedBorder)
             Text(leaveDialog,T('hotbuild.common.unsaved_title'),24,20,20)
@@ -547,6 +547,7 @@ function Create(parent, service, embedded, memory)
         local selectorArrow=Text(selectorButton,'▼',244,7,13,C.muted)
         local listPanel, listOverlay, listTop, deleteIntent = nil, nil, 1, nil
         local function CloseList()
+            deleteIntent=nil
             if listPanel then listPanel:Destroy(); listPanel=nil end
             if listOverlay then listOverlay:Destroy(); listOverlay=nil end
         end

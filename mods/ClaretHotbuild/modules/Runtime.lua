@@ -46,7 +46,7 @@ local function Dispatch(method,prefix,id,kind,chord,shiftHeld)
     end
     if type(current[method])~='function' then
         if tracing then LOG('[Claret][keys] dispatch action='..action..' result=no_handler') end
-        return current[method](current,id)
+        return false,'no_handler'
     end
     if current.active and not current.isReplay and not IsKeyCaptureActive() then
         local quickId

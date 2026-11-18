@@ -240,7 +240,7 @@ end, RegisterSettingsSection = function(definition) settingsById[definition.id]=
 local standaloneOptions = environment.import('/mods/ClaretHotbuild/Options.lua')
 standaloneOptions.Main()
 local standalone = environment.import('/mods/ClaretHotbuild/Main.lua').Main(false)
-assert(registration.id == 'hotbuild' and registration.enabled.value == true, 'Hotbuild is always enabled')
+assert(registration.id == 'hotbuild' and registration.enabled.Get() == true, 'Hotbuild is always enabled')
 assert(#posts == 1 and hooks.CloseUI and next(menus)==nil)
 assert(settingsById.hotbuild.id=='hotbuild' and settingsById.hotbuild.toggles==nil)
 assert(settingsById.hotbuild_context==nil, 'composite constructors are a Hotbuild subpage')

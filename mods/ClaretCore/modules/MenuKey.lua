@@ -36,6 +36,7 @@ local function T(key)
 end
 
     local service = {}
+    local descriptionToken = {}
     current = open
 
     local function Maps() return {Mapper.GetCurrentKeyMap(), Mapper.GetUserDebugKeyMap()} end
@@ -148,6 +149,9 @@ end
     function service:Initialize()
         Mapper.SetUserKeyAction(actionId,definition)
         descriptions[actionId]=T('core.menu_key.s008')
+        if type(Localization.Subscribe)=='function' then
+            Localization.Subscribe(descriptionToken,function() descriptions[actionId]=T('core.menu_key.s008') end)
+        end
         if not Prefs.GetFromCurrentProfile(initializedKey) then
             if self:Get()=='' and self:Validate('Ctrl-Alt-C') then
                 Mapper.SetUserKeyMapping('Ctrl-Alt-C',nil,actionId)
@@ -163,6 +167,7 @@ end
         if disposed then return end
         -- Saved bindings belong to FAF and survive this UI session.
         disposed=true; ready=false
+        if type(Localization.Unsubscribe)=='function' then Localization.Unsubscribe(descriptionToken) end
         if current==open then current=nil end
         installed={}
     end

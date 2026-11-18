@@ -41,7 +41,8 @@ function Start(parent, scope, event)
         for _, unit in ipairs(units) do
             if not unit:IsDead() then
                 count = count + 1
-                local id = unit:GetBlueprint().BlueprintId
+                local blueprint = unit.GetBlueprint and unit:GetBlueprint()
+                local id = blueprint and blueprint.BlueprintId
                 if id and not types[id] then
                     types[id] = true
                     typeCount = typeCount + 1

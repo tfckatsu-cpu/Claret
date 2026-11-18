@@ -217,13 +217,13 @@ function Create(parent, service, embedded, memory)
         local function ShowConflictDialog(message)
             CloseConflictDialog()
             Status('', false)
-            conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(frame.Depth()+80)
+            conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(function() return frame.Depth()+80 end)
             conflictOverlay.HandleEvent=function() return true end
             local dialogWidth=680
             local lines=WrapMessage(message,76)
             local bodyHeight=math.max(22,table.getn(lines)*22)
             local dialogHeight=96+bodyHeight
-            conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); conflictDialog.Depth:Set(frame.Depth()+90)
+            conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); conflictDialog.Depth:Set(function() return frame.Depth()+90 end)
             Theme.AnimateCentered(conflictDialog,frame,L)
             Escape.PushEscapeHandler(function() CloseConflictDialog() end); conflictEscape=true
             local back=Panel(conflictDialog,0,0,dialogWidth,dialogHeight,C.surface); back.Depth:Set(conflictDialog.Depth)
@@ -241,10 +241,10 @@ function Create(parent, service, embedded, memory)
         end
         local function ShowLeaveDialog(intent,continuation)
             CloseLeaveDialog(); leaveIntent=intent; leaveContinuation=continuation
-            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(frame.Depth()+80)
+            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(function() return frame.Depth()+80 end)
             leaveOverlay.HandleEvent=function() return true end
             local dialogWidth,dialogHeight=560,224
-            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(frame.Depth()+90)
+            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(function() return frame.Depth()+90 end)
             Theme.AnimateCentered(leaveDialog,frame,L)
             Escape.PushEscapeHandler(function()
                 CloseLeaveDialog(); leaveIntent=nil
@@ -334,10 +334,10 @@ function Create(parent, service, embedded, memory)
             if deleteDialog then return end
             local keyboard=service.keyboardBindings
             local keys=keyboard and keyboard.KeysFor and keyboard:KeysFor({kind='composite',id=record.id}) or {}
-            deleteOverlay=Panel(frame,0,0,1080,920,C.transparent); deleteOverlay.Depth:Set(frame.Depth()+80)
+            deleteOverlay=Panel(frame,0,0,1080,920,C.transparent); deleteOverlay.Depth:Set(function() return frame.Depth()+80 end)
             deleteOverlay.HandleEvent=function(self,e) if e.Type=='ButtonPress' then CloseDeleteDialog() end; return true end
             Escape.PushEscapeHandler(function() CloseDeleteDialog() end); deleteEscape=true
-            deleteDialog=Group(frame); L(deleteDialog):AtCenterIn(frame):Width(560):Height(220); deleteDialog.Depth:Set(frame.Depth()+90)
+            deleteDialog=Group(frame); L(deleteDialog):AtCenterIn(frame):Width(560):Height(220); deleteDialog.Depth:Set(function() return frame.Depth()+90 end)
             local back=Panel(deleteDialog,0,0,560,220,C.surface); back.Depth:Set(deleteDialog.Depth)
             Theme.Outline(back,L,560,220)
             Text(deleteDialog,T('hotbuild.context_editor.s016'),24,18,18)
@@ -1058,9 +1058,9 @@ function Create(parent, service, embedded, memory)
                 Status(T('hotbuild.context_editor.s125')..ActionLabel(action))
             if selectedContext=='missiles' and action.id=='smart_missile' then
                 CloseConflictDialog()
-                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(frame.Depth()+80)
+                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(function() return frame.Depth()+80 end)
                 conflictOverlay.HandleEvent=function() return true end
-                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(270); conflictDialog.Depth:Set(frame.Depth()+90)
+                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(270); conflictDialog.Depth:Set(function() return frame.Depth()+90 end)
                 Theme.AnimateCentered(conflictDialog,frame,L)
                 Escape.PushEscapeHandler(function() CloseConflictDialog() end); conflictEscape=true
                 local back=Panel(conflictDialog,0,0,560,270,C.surface); back.Depth:Set(conflictDialog.Depth)
@@ -1104,9 +1104,9 @@ function Create(parent, service, embedded, memory)
             local sacu=CurrentRow('sacu')
             if selectedContext=='acu' and action.id=='overcharge' and (not sacu or sacu.mode=='inherit') then
                 CloseConflictDialog()
-                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(frame.Depth()+80)
+                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(function() return frame.Depth()+80 end)
                 conflictOverlay.HandleEvent=function() return true end
-                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(176); conflictDialog.Depth:Set(frame.Depth()+90)
+                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(176); conflictDialog.Depth:Set(function() return frame.Depth()+90 end)
                 Theme.AnimateCentered(conflictDialog,frame,L)
                 Escape.PushEscapeHandler(function() CloseConflictDialog() end); conflictEscape=true
                 local back=Panel(conflictDialog,0,0,560,176,C.surface); back.Depth:Set(conflictDialog.Depth)
