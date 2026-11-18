@@ -59,15 +59,20 @@ module.import = function(path)
     error('Unexpected import: ' .. path)
 end
 assert(loadfile('../mods/ClaretHotbuild/modules/Adapter.lua', 't', module))()
-local known = { uea0101 = true, ueb1103 = true }
-local catalog = { Get = function(self, id) return known[id] and {id=id} or nil end }
+local known = { uea0101 = {kind='AIR'}, ueb1103 = {kind='STRUCTURE'} }
+local catalog = { Get = function(self, id)
+    local record = known[id]
+    if not record then return nil end
+    return {id=id, kind=record.kind}
+end }
 local adapter = module.Create(catalog)
-local function unit(categories, buildable, orders, creator, dead)
+local function unit(categories, buildable, orders, creator, dead, fraction)
     return {
         buildable = buildable or {}, orders = orders or {},
         IsDead = function() return dead or false end,
         IsInCategory = function(self, category) return categories[category] or false end,
         GetCreator = function() return creator end,
+        GetFractionComplete = function() return fraction or 1 end,
     }
 end
 
@@ -143,6 +148,50 @@ selected = {}
 assert(not adapter:Build('uea0101', adapter:Context(false)))
 assert(#commands == 4, 'replay/observer/empty selection must emit no orders')
 
+-- Structure targets never become factory queue orders and never enter placement from a factory.
+local structureFactory = unit({FACTORY=true}, {'ueb1103'})
+selected = {structureFactory}
+local beforeStructures, beforeStructureModes = #commands, #modes
+assert(not adapter:CanBuild('ueb1103', adapter:Context(false)), 'a factory cannot queue a structure')
+assert(not adapter:Build('ueb1103', adapter:Context(false)))
+assert(#commands == beforeStructures and #modes == beforeStructureModes,
+    'a structure request from a factory is dropped')
+
+-- Mass extractors and other non-builders never receive a build order.
+selected = {unit({MASSEXTRACTION=true}, {})}
+assert(not adapter:CanBuild('ueb1103', adapter:Context(false)), 'a mass extractor cannot place structures')
+assert(not adapter:Build('ueb1103', adapter:Context(false)))
+assert(#modes == beforeStructureModes, 'no placement mode for a mass extractor')
+
+-- ACU, SACU and engineers keep placing structures.
+selected = {unit({COMMAND=true,ENGINEER=true}, {'ueb1103'})}
+assert(adapter:Build('ueb1103', adapter:Context(false)) and #modes == beforeStructureModes + 1)
+selected = {unit({SUBCOMMANDER=true,ENGINEER=true}, {'ueb1103'})}
+assert(adapter:Build('ueb1103', adapter:Context(false)) and #modes == beforeStructureModes + 2)
+
+-- A factory beside an engineer queues only through the factory.
+selected = {factory, engineer}
+local beforeMixedFactory = #commands
+assert(adapter:Build('uea0101', adapter:Context(false)))
+assert(#commands == beforeMixedFactory + 1 and #commands[#commands].units == 1
+    and commands[#commands].units[1] == factory, 'only the factory receives the queue order')
+
+-- Shift keeps the explicit count of five for factory orders.
+selected = {factory}
+local shiftContext = adapter:Context(false)
+shiftContext.shiftHeld = true
+local beforeShift = #commands
+assert(adapter:Build('uea0101', shiftContext))
+assert(#commands == beforeShift + 1 and commands[#commands].count == 5, 'shift queues five units')
+
+-- Attached factories queue only while finished and owned by a real factory.
+selected = {unit({EXTERNALFACTORY=true}, {'uea0101'}, nil, unit({ENGINEER=true}, {'ueb1103'}))}
+assert(not adapter:CanBuild('uea0101', adapter:Context(false)), 'an engineer-owned attachment cannot queue')
+selected = {unit({EXTERNALFACTORY=true}, {'uea0101'}, nil, factory, false, 0.5)}
+assert(not adapter:CanBuild('uea0101', adapter:Context(false)), 'an unfinished attachment cannot queue')
+selected = {factory}
+assert(adapter:CanBuild('uea0101', adapter:Context(false)), 'a plain factory still queues units')
+
 local registered = {}
 module.RegisterActions({RegisterAction=function(self, definition) registered[definition.id] = definition; return true end})
 selected = {engineer}
@@ -151,7 +200,7 @@ assert(registered['claret.order.reclaim'].available(context))
 assert(registered['claret.order.assist'].available(context))
 assert(registered['claret.order.move'].available(context))
 assert(registered['claret.order.reclaim'].execute(context))
-assert(modes[2].kind == 'order' and modes[2].name == 'RULEUCC_Reclaim')
+assert(modes[#modes].kind == 'order' and modes[#modes].name == 'RULEUCC_Reclaim')
 selected = {factory}
 assert(not registered['claret.order.reclaim'].available(adapter:Context(false)))
 assert(registered['claret.order.move'].available(adapter:Context(false)))

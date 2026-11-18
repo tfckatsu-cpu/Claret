@@ -302,6 +302,7 @@ end
 local function IsBuilder(unit)
     return unit:IsInCategory('COMMAND') or unit:IsInCategory('SUBCOMMANDER')
         or unit:IsInCategory('ENGINEER') or unit:IsInCategory('FACTORY')
+        or unit:IsInCategory('EXTERNALFACTORY')
 end
 
 function HasOrdinaryBuilder(selection)

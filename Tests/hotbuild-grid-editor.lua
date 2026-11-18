@@ -308,7 +308,7 @@ assert(overlay.destroyed, 'outside click did not close list')
 click('Second draft')
 local remove
 for _,c in ipairs(objects) do
- if c.text=='×' and c.parent and c.parent.x==236 and c.parent.y==2 then remove=c.parent; break end
+ if c.text=='×' and c.parent and c.parent.x==314 and c.parent.y==6 then remove=c.parent; break end
 end
 assert(remove, 'missing row delete button')
 remove:HandleEvent({Type='ButtonPress',Modifiers={Left=true}}); assert(model:Get('b1'))

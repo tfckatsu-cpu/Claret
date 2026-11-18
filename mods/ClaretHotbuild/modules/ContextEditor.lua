@@ -69,11 +69,10 @@ function Create(parent, service, embedded, memory)
     local ratio = scale / pixel
     local L = ReUI.UI.FloorLayouter(scale)
     local frame = Group(parent)
-    local CloseConflictDialog, CloseDeleteDialog
+    local CloseConflictDialog
     local oldDestroy = frame.OnDestroy
     frame.OnDestroy = function(self)
         if CloseConflictDialog then CloseConflictDialog() end
-        if CloseDeleteDialog then CloseDeleteDialog() end
         Tooltip.DestroyMouseoverDisplay()
         oldDestroy(self)
     end
@@ -317,47 +316,12 @@ function Create(parent, service, embedded, memory)
         local savedPickerLabel = Text(savedPicker, '', 12, 0, 13)
         L(savedPickerLabel):AtCenterIn(savedPicker)
         local savedList, savedOverlay, savedEscape
-        local savedTop = 1
+        local savedTop, deleteIntent = 1, nil
         local function CloseSavedList()
+            deleteIntent=nil
             if savedEscape then Escape.PopEscapeHandler(); savedEscape=nil end
             if savedList then savedList:Destroy(); savedList=nil end
             if savedOverlay then savedOverlay:Destroy(); savedOverlay=nil end
-        end
-        local deleteDialog,deleteOverlay
-        local deleteEscape
-        CloseDeleteDialog=function()
-            if deleteDialog then deleteDialog:Destroy(); deleteDialog=nil end
-            if deleteOverlay then deleteOverlay:Destroy(); deleteOverlay=nil end
-            if deleteEscape then Escape.PopEscapeHandler(); deleteEscape=nil end
-        end
-        local function DeleteSaved(record)
-            if deleteDialog then return end
-            local keyboard=service.keyboardBindings
-            local keys=keyboard and keyboard.KeysFor and keyboard:KeysFor({kind='composite',id=record.id}) or {}
-            deleteOverlay=Panel(frame,0,0,1080,920,C.transparent); deleteOverlay.Depth:Set(function() return frame.Depth()+80 end)
-            deleteOverlay.HandleEvent=function(self,e) if e.Type=='ButtonPress' then CloseDeleteDialog() end; return true end
-            Escape.PushEscapeHandler(function() CloseDeleteDialog() end); deleteEscape=true
-            deleteDialog=Group(frame); L(deleteDialog):AtCenterIn(frame):Width(560):Height(220); deleteDialog.Depth:Set(function() return frame.Depth()+90 end)
-            local back=Panel(deleteDialog,0,0,560,220,C.surface); back.Depth:Set(deleteDialog.Depth)
-            Theme.Outline(back,L,560,220)
-            Text(deleteDialog,T('hotbuild.context_editor.s016'),24,18,18)
-            Text(deleteDialog,'«'..record.name..'»',24,54,15,C.accentText)
-            Text(deleteDialog,T('hotbuild.context_editor.s017'),24,82,14,C.warning)
-            Text(deleteDialog,table.getn(keys)>0 and (T('hotbuild.context_editor.s018')..table.concat(keys,', ')) or T('hotbuild.context_editor.s019'),24,108,13,C.muted)
-            Button(deleteDialog,T('hotbuild.context_editor.s020'),300,158,112,function() CloseDeleteDialog() end)
-            Button(deleteDialog,T('hotbuild.context_editor.s021'),432,158,104,function()
-                CloseDeleteDialog()
-                local function CommitDelete(accepted)
-                    if not accepted then return end
-                    local success,message=service:CommitContext(nil,record.id,true)
-                    if success then
-                        if draft and draft.id==record.id then Load(nil) end
-                        CloseSavedList(); RefreshSaved(); RefreshRows()
-                    end
-                    Status(success and T('hotbuild.context_editor.s022') or message,not success)
-                end
-                if MayLeave('delete:'..record.id,CommitDelete) then CommitDelete(true) end
-            end,true)
         end
         local function OpenSavedList()
             CloseSavedList()
@@ -371,38 +335,92 @@ function Create(parent, service, embedded, memory)
             savedList.Depth:Set(function() return frame.Depth()+90 end)
             local back=Panel(savedList,0,0,372,listHeight,C.canvas); back.Depth:Set(savedList.Depth)
             Theme.Outline(back,L,372,listHeight)
+            local savedScrollbar
             local slots={}
+            local function MaxTop() return math.max(1,table.getn(list)-visibleRows+1) end
+            local function PaintDelete(slot)
+                local armed=slot.record and deleteIntent==slot.record.id
+                slot.delete:SetSolidColor(armed and C.selected or C.danger)
+                slot.deleteOutline(armed and C.accentText or C.border)
+                slot.deleteLabel:SetColor(armed and C.accentText or C.text)
+            end
+            local function PaintSelect(slot,hovered)
+                local selected=slot.record and draft and draft.id==slot.record.id
+                if hovered then slot.button:SetSolidColor(C.hover); slot.outline(C.selectedBorder)
+                else
+                    slot.button:SetSolidColor(selected and C.selected or C.raised)
+                    slot.outline(selected and C.selectedBorder or C.border)
+                end
+            end
             local function RenderSaved()
-                savedTop=math.max(1,math.min(savedTop,math.max(1,table.getn(list)-visibleRows+1)))
+                savedTop=math.max(1,math.min(savedTop,MaxTop()))
                 for i,slot in ipairs(slots) do
                     local item=list[savedTop+i-1]; slot.record=item
                     if item then
-                        slot.button:Show(); slot.button:SetSolidColor(draft and draft.id==item.id and C.selected or C.raised)
-                        slot.label:SetText(Short(item.name,52))
-                        slot.delete:Show()
-                    else slot.button:Hide(); slot.delete:Hide() end
+                        slot.button:Show(); slot.label:SetText(Short(item.name,52))
+                        slot.delete:Show(); PaintSelect(slot,false); PaintDelete(slot)
+                    else
+                        slot.button:Hide(); slot.delete:Hide()
+                    end
                 end
             end
-            back.HandleEvent=function(self,e) if e.Type=='WheelRotation' then savedTop=math.max(1,savedTop+(e.WheelRotation>0 and -1 or 1)); RenderSaved() end; return true end
-            function back:GetScrollValues() return 1,math.max(visibleRows,table.getn(list)),savedTop,math.max(savedTop,math.min(table.getn(list),savedTop+visibleRows-1)) end
-            function back:IsScrollable() return table.getn(list)>visibleRows end
-            function back:ScrollSetTop(axis,value) savedTop=math.max(1,math.floor(value)); RenderSaved() end
-            function back:ScrollLines(axis,delta) self:ScrollSetTop(axis,savedTop+delta) end
-            function back:ScrollPages(axis,delta) self:ScrollLines(axis,delta*2) end
-            if table.getn(list)>visibleRows then UI.CreateVertScrollbarFor(back) end
+            local function MoveTop(delta)
+                savedTop=math.max(1,math.min(MaxTop(),savedTop+delta))
+                RenderSaved()
+            end
+            back.HandleEvent=function(self,e) if e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1) end; return true end
+            function savedList:GetScrollValues() return 1,math.max(visibleRows,table.getn(list)),savedTop,math.max(savedTop,math.min(table.getn(list),savedTop+visibleRows-1)) end
+            function savedList:IsScrollable() return table.getn(list)>visibleRows end
+            function savedList:ScrollSetTop(axis,value) savedTop=math.max(1,math.min(MaxTop(),math.floor(value))); RenderSaved() end
+            function savedList:ScrollLines(axis,delta) self:ScrollSetTop(axis,savedTop+delta) end
+            function savedList:ScrollPages(axis,delta) self:ScrollSetTop(axis,savedTop+delta*visibleRows) end
+            local function SyncScrollbar()
+                if table.getn(list)>visibleRows then
+                    if not savedScrollbar then
+                        savedScrollbar=UI.CreateVertScrollbarFor(savedList,-20)
+                        if savedScrollbar.Depth then savedScrollbar.Depth:Set(function() return savedList.Depth()+4 end) end
+                    end
+                    if savedScrollbar.Show then savedScrollbar:Show() end
+                elseif savedScrollbar and savedScrollbar.Hide then
+                    savedScrollbar:Hide()
+                end
+            end
             for i=1,visibleRows do
                 local slot={}; local n=i
-                slot.button=Panel(savedList,8,6+(i-1)*38,316,34,C.raised)
-                local outline=Theme.Outline(slot.button,L,316,34)
+                slot.button=Panel(savedList,8,6+(i-1)*38,300,34,C.raised)
+                slot.outline=Theme.Outline(slot.button,L,300,34)
                 slot.label=Text(slot.button,'',10,0,13); L(slot.label):AtCenterIn(slot.button)
-                slot.delete=Panel(savedList,330,6+(i-1)*38,34,34,C.danger)
-                local deleteOutline=Theme.Outline(slot.delete,L,34,34)
-                local deleteLabel=Text(slot.delete,'×',0,0,19); L(deleteLabel):AtCenterIn(slot.delete)
+                slot.delete=Panel(savedList,314,6+(i-1)*38,34,34,C.danger)
+                slot.deleteOutline=Theme.Outline(slot.delete,L,34,34)
+                slot.deleteLabel=Text(slot.delete,'×',0,0,19); L(slot.deleteLabel):AtCenterIn(slot.delete)
                 slot.delete:Hide()
                 slot.delete.HandleEvent=function(self,e)
-                    if e.Type=='MouseEnter' then self:SetSolidColor(C.danger); deleteOutline(C.selectedBorder)
-                    elseif e.Type=='MouseExit' then self:SetSolidColor(C.raised); deleteOutline(C.border)
-                    elseif e.Type=='ButtonPress' and slot.record then DeleteSaved(slot.record); return true end
+                    local record=slot.record
+                    if not record then return true end
+                    if e.Type=='MouseEnter' then
+                        self:SetSolidColor(deleteIntent==record.id and C.selected or C.hover)
+                        slot.deleteOutline(C.selectedBorder)
+                    elseif e.Type=='MouseExit' then
+                        PaintDelete(slot)
+                    elseif e.Type=='ButtonPress' or e.Type=='DoubleClick' then
+                        if dirty then Status(T('hotbuild.editor.status.save_or_confirm'),true); return true end
+                        local recordId=record.id
+                        if deleteIntent~=recordId then
+                            deleteIntent=recordId
+                            RenderSaved()
+                            Status(T('hotbuild.context_editor.s023')..record.name..'»',true)
+                            return true
+                        end
+                        local success,message=service:CommitContext(nil,recordId,true)
+                        deleteIntent=nil
+                        if success then
+                            if draft and draft.id==recordId then Load(nil) end
+                            RefreshSaved(); RefreshRows()
+                        else
+                            RenderSaved()
+                        end
+                        Status(success and T('hotbuild.context_editor.s022') or message,not success)
+                    end
                     return true
                 end
                 Tooltip.AddAutoUpdatedControlTooltip(slot.delete,function() return slot.record and (T('hotbuild.context_editor.s023')..slot.record.name..'»') or T('hotbuild.context_editor.s024') end,function()
@@ -411,12 +429,9 @@ function Create(parent, service, embedded, memory)
                     return table.getn(keys)>0 and (T('hotbuild.context_editor.s025')..table.concat(keys,', ')) or T('hotbuild.context_editor.s026')
                 end)
                 slot.button.HandleEvent=function(self,e)
-                    if e.Type=='MouseEnter' then self:SetSolidColor(C.hover); outline(C.selectedBorder)
-                    elseif e.Type=='MouseExit' then
-                        local selected=slot.record and draft and draft.id==slot.record.id
-                        self:SetSolidColor(selected and C.selected or C.raised)
-                        outline(selected and C.selectedBorder or C.border)
-                    elseif e.Type=='WheelRotation' then savedTop=math.max(1,savedTop+(e.WheelRotation>0 and -1 or 1)); RenderSaved()
+                    if e.Type=='MouseEnter' then PaintSelect(slot,true)
+                    elseif e.Type=='MouseExit' then PaintSelect(slot,false)
+                    elseif e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1)
                     elseif e.Type=='ButtonPress' and slot.record then
                         local record=slot.record
                         local function SelectSaved(accepted)
@@ -432,6 +447,7 @@ function Create(parent, service, embedded, memory)
             end
             Escape.PushEscapeHandler(function() CloseSavedList() end); savedEscape=true
             RenderSaved()
+            SyncScrollbar()
         end
         savedPicker.HandleEvent=function(self,e)
             if e.Type=='KeyDown' and e.RawKeyCode==27 and savedList then CloseSavedList(); return true end

@@ -146,7 +146,7 @@ local function clickDeleteSaved(root)
         local owner=c
         while owner and owner~=root do owner=owner.parent end
         if owner==root and not c.destroyed and c.HandleEvent then table.insert(seen,tostring(c.Width())..'x'..tostring(c.Height())..'@'..tostring(c.x)..':'..tostring(c.text)) end
-        if not c.destroyed and owner==root and c.HandleEvent and c.Width()==34 and c.Height()==34 and c.x==330 then
+        if not c.destroyed and owner==root and c.HandleEvent and c.Width()==34 and c.Height()==34 and c.x==314 then
             c:HandleEvent({Type='ButtonPress',Modifiers={Left=true}}); return
         end
     end
@@ -310,17 +310,17 @@ local deletePickerList=false
 for _,c in ipairs(controls) do if not c.destroyed and inside(c,savedDeleteFrame) and c.GetScrollValues and c.Width()==372 then deletePickerList=true end end
 assert(deletePickerList,'delete fixture opens its saved-set list')
 clickDeleteSaved(savedDeleteFrame)
-assert(findIn(savedDeleteFrame,'Удалить сохранённый набор?') and findIn(savedDeleteFrame,'Delete me')
-    and findIn(savedDeleteFrame,'Удалить и снять с клавиш?')
-    and findIn(savedDeleteFrame,'Назначено на: F3, Alt-K'),
-    'delete confirmation names the set and shows all assigned keys')
-clickIn(savedDeleteFrame,'Отмена')
 assert(not deleteCalled and savedDeleteService.contextModel:Get('delete_me'),
-    'canceling deletion preserves the assigned set')
-openSaved(savedDeleteFrame) -- close the still-open dropdown
-openSaved(savedDeleteFrame); clickDeleteSaved(savedDeleteFrame); clickIn(savedDeleteFrame,'Удалить')
+    'the first click only arms deletion')
+assert(findIn(savedDeleteFrame,'Удалить «Delete me»'),'the armed row names the set')
+clickDeleteSaved(savedDeleteFrame)
 assert(deleteCalled and not savedDeleteService.contextModel:Get('delete_me'),
-    'confirmed deletion passes explicit authorization and removes the set')
+    'the second click deletes the set with explicit authorization')
+local stillOpen=false
+for _,c in ipairs(controls) do
+    if not c.destroyed and inside(c,savedDeleteFrame) and c.GetScrollValues and c.Width()==372 then stillOpen=true end
+end
+assert(stillOpen,'the saved-set list stays open after deletion')
 savedDeleteFrame:Destroy()
 end
 clickIn(frame,'Новый')
@@ -713,13 +713,16 @@ assert(findIn(manyFrame,'ОТКЛЮЧЕНО')
 clickIn(manyFrame,'Наследовать')
 assert(findIn(manyFrame,'● Наследовать') and findIn(manyFrame,'НАСЛЕДУЕТ'),
     'inherit mode button restores inheritance from the disabled mode')
-local manySaved
+local manySaved, manyScrollbar
 for _,target in ipairs(scrollbarTargets) do
-    if target.Width()==372 and target.Height()>300 and inside(target,manyFrame) then manySaved=target end
+    if target.GetScrollValues and target.Width()==372 and target.Height()>300 and inside(target,manyFrame) then manySaved=target end
 end
-assert(manySaved,'editor with ten saved entries exposes its saved-list scrollbar')
-assert(type(manySaved.IsScrollable)=='function' and manySaved:IsScrollable()==true,
-    'saved-list scrollbar reports scrollability with more than nine entries')
+for _,widget in ipairs(scrollbarWidgets) do
+    if widget.visible and inside(widget,manyFrame) then manyScrollbar=widget end
+end
+assert(manySaved and manySaved:IsScrollable()==true,
+    'saved list reports scrollability with more than nine entries')
+assert(manyScrollbar,'the saved list shows the native game scrollbar')
 local conflictModel=modelEnv.Create(nil,actions)
 local conflictService={contextActions=actions,contextModel=conflictModel}
 local conflictMessage='В хотбилде «Тяжёлые постройки» есть постройки, а в наборе задано действие для плиток «Строители» и ACU. Очистите плитку «Строители» и плитки ACU или выберите другой набор.'

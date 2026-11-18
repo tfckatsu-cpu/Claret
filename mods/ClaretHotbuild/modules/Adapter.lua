@@ -126,7 +126,15 @@ function Create(catalog)
                     -- capability list happens to include the blueprint.
                     if record.kind ~= 'STRUCTURE' then
                         local source = unit
-                        if unit:IsInCategory('EXTERNALFACTORY') then source = unit:GetCreator() end
+                        if unit:IsInCategory('EXTERNALFACTORY') then
+                            -- Attached factories (carriers, air staging) order through the unit
+                            -- that created them, as FAF's TranslateExFacUnits does. Only a
+                            -- finished attachment owned by a real factory may queue units.
+                            local complete = type(unit.GetFractionComplete) ~= 'function'
+                                or unit:GetFractionComplete() == 1
+                            source = complete and unit:GetCreator() or nil
+                            if source and not source:IsInCategory('FACTORY') then source = nil end
+                        end
                         if source and not source:IsDead() and not seen[source] then
                             seen[source] = true
                             table.insert(factories, source)

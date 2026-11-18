@@ -47,7 +47,7 @@ The user confirmed the UI counter and the corrected selection panel in 0.2.1. Th
 
 From Claret Project, `node Tests/check-core.cjs` checks both mods: syntax and logic scenarios, including Core without Hotbuild, early/late feature registration, the separate Hotbuild entry point, and option persistence/migration. These are simulations, not engine runs.
 
-The Claret visual style is defined in the project's `Context/ui-style.md`; the shared `Theme.lua` in Core 0.5.0 provides tokens to all modules. Hotbuild 0.10.38 requires Core >= 0.10.14.
+The Claret visual style is defined in the project's `Context/ui-style.md`; the shared `Theme.lua` in Core 0.5.0 provides tokens to all modules. Hotbuild 0.10.39 requires Core >= 0.10.14.
 
 Settings presentation (2026-11-10): toggle rows are fully clickable, show On/Off and a description, and display a save confirmation next to the row for 1.5 seconds. Sections use shared components and the theme. A hotkey is saved immediately after successful input; a conflict shows the occupied action and preserves the previous combination. An empty assignment disables the clear button. Tab/Shift+Tab move focus, Enter/Space activate, and Esc cancels capture or closes the menu. Focusing an input field transfers focus to the editor. Hotbuild is always active and cannot be disabled through the menu. The appearance and actual input still need in-game verification in FAF; local checks are not in-game screenshots.
 

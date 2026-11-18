@@ -546,67 +546,147 @@ function Create(parent, service, embedded, memory)
         local selectorLabel=Text(selectorButton,'',12,7,15)
         local selectorArrow=Text(selectorButton,'▼',244,7,13,C.muted)
         local listPanel, listOverlay, listTop, deleteIntent = nil, nil, 1, nil
+        local visibleRows, rowHeight = 9, 38
         local function CloseList()
             deleteIntent=nil
             if listPanel then listPanel:Destroy(); listPanel=nil end
             if listOverlay then listOverlay:Destroy(); listOverlay=nil end
         end
-        local function OpenList()
-            CloseList()
+        local function BuildList()
+            if listPanel then listPanel:Destroy(); listPanel=nil end
+            if listOverlay then listOverlay:Destroy(); listOverlay=nil end
             local bindings=service.model:List()
-            listTop=math.max(1,math.min(listTop,math.max(1,table.getn(bindings)-7)))
+            local listHeight=12+visibleRows*rowHeight
+            listTop=math.max(1,math.min(listTop,math.max(1,table.getn(bindings)-visibleRows+1)))
             listOverlay=Panel(frame,0,0,1080,920,C.transparent)
             listOverlay.Depth:Set(function() return frame.Depth()+80 end)
             listOverlay.HandleEvent=function(self,e)
                 if e.Type=='ButtonPress' then CloseList() end
                 return true
             end
-            listPanel=Group(frame); L(listPanel):AtLeftTopIn(frame,24,126):Width(270):Height(310)
+            listPanel=Group(frame); L(listPanel):AtLeftTopIn(frame,24,126):Width(372):Height(listHeight)
             Theme.AnimateAnchored(listPanel,frame,L,24,126)
             listPanel.Depth:Set(function() return frame.Depth()+100 end)
-            local background=Panel(listPanel,0,0,270,310,C.canvas); background.Depth:Set(listPanel.Depth)
-            Theme.Outline(background,L,270,310)
-            for i=1,8 do
-                local binding=bindings[listTop+i-1]
-                if binding then
-                    local id=binding.id
-                    local selectButton=Button(listPanel,Short(binding.name,25),2,2+(i-1)*38,232,function()
-                        if not MayLeave('select:'..id) then return end
-                        Load(service.model:Get(id)); CloseList(); SyncSelector(); Refresh()
-                    end)
-                    local remove=Button(listPanel,'×',236,2+(i-1)*38,32,function()
-                        if dirty then Status(T('hotbuild.editor.status.save_or_confirm'),true); return end
-                        if deleteIntent~=id then deleteIntent=id; Status(T('hotbuild.editor.status.delete_confirm',binding.name),true); return end
-                        local saved,msg=service:Commit(nil,id); deleteIntent=nil
-                        if saved then
-                            if draft and draft.id==id then Load(service.model:List()[1]) end
-                            CloseList(); SyncSelector(); Refresh()
-                        end
-                        Status(saved and T('hotbuild.editor.status.deleted') or msg,not saved)
-                    end)
-                    for _,button in ipairs({selectButton,remove}) do
-                        local handle=button.HandleEvent
-                        button.HandleEvent=function(self,e)
-                            if e.Type=='WheelRotation' then
-                                listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-7),listTop+(e.WheelRotation>0 and -1 or 1)))
-                                OpenList(); return true
-                            end
-                            return handle(self,e)
-                        end
-                    end
-                    Tooltip.AddAutoUpdatedControlTooltip(remove,function() return T('hotbuild.editor.delete_binding') end,function() return binding.name end)
+            local background=Panel(listPanel,0,0,372,listHeight,C.canvas); background.Depth:Set(listPanel.Depth)
+            Theme.Outline(background,L,372,listHeight)
+            local listScrollbar
+            local slots={}
+            local function PaintDelete(slot)
+                local armed=slot.record and deleteIntent==slot.record.id
+                slot.delete:SetSolidColor(armed and C.selected or C.danger)
+                slot.deleteOutline(armed and C.accentText or C.border)
+                slot.deleteLabel:SetColor(armed and C.accentText or C.text)
+            end
+            local function PaintSelect(slot,hovered)
+                local selected=slot.record and draft and draft.id==slot.record.id
+                if hovered then
+                    slot.select:SetSolidColor(C.hover); slot.selectOutline(C.selectedBorder)
+                else
+                    slot.select:SetSolidColor(selected and C.selected or C.raised)
+                    slot.selectOutline(selected and C.selectedBorder or C.border)
                 end
             end
-            local function ScrollList(self,e)
-                if e.Type=='WheelRotation' then
-                    listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-7),listTop+(e.WheelRotation>0 and -1 or 1)))
-                    OpenList(); return true
+            local function RenderRows()
+                for i=1,visibleRows do
+                    local slot=slots[i]
+                    local binding=bindings[listTop+i-1]
+                    slot.record=binding
+                    if binding then
+                        slot.select:Show(); slot.delete:Show()
+                        slot.label:SetText(Short(binding.name,50))
+                        PaintSelect(slot,false); PaintDelete(slot)
+                    else
+                        slot.select:Hide(); slot.delete:Hide()
+                    end
                 end
+            end
+            local function MoveTop(delta)
+                listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-visibleRows+1),listTop+delta))
+                RenderRows()
+            end
+            for i=1,visibleRows do
+                local slot={}
+                slot.select=Panel(listPanel,8,6+(i-1)*rowHeight,300,34,C.raised)
+                slot.selectOutline=Theme.Outline(slot.select,L,300,34)
+                slot.label=Text(slot.select,'',10,0,13); L(slot.label):AtCenterIn(slot.select)
+                slot.delete=Panel(listPanel,314,6+(i-1)*rowHeight,34,34,C.danger)
+                slot.deleteOutline=Theme.Outline(slot.delete,L,34,34)
+                slot.deleteLabel=Text(slot.delete,'×',0,0,19); L(slot.deleteLabel):AtCenterIn(slot.delete)
+                slot.select.HandleEvent=function(self,e)
+                    if e.Type=='MouseEnter' then PaintSelect(slot,true)
+                    elseif e.Type=='MouseExit' then PaintSelect(slot,false)
+                    elseif e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1)
+                    elseif e.Type=='ButtonPress' and slot.record then
+                        local id=slot.record.id
+                        if not MayLeave('select:'..id) then return true end
+                        Load(service.model:Get(id)); CloseList(); SyncSelector(); Refresh()
+                    end
+                    return true
+                end
+                slot.delete.HandleEvent=function(self,e)
+                    local binding=slot.record
+                    if not binding then return true end
+                    if e.Type=='MouseEnter' then
+                        self:SetSolidColor(deleteIntent==binding.id and C.selected or C.hover)
+                        slot.deleteOutline(C.selectedBorder)
+                    elseif e.Type=='MouseExit' then
+                        PaintDelete(slot)
+                    elseif e.Type=='ButtonPress' or e.Type=='DoubleClick' then
+                        if dirty then Status(T('hotbuild.editor.status.save_or_confirm'),true); return true end
+                        if deleteIntent~=binding.id then
+                            deleteIntent=binding.id
+                            RenderRows()
+                            Status(T('hotbuild.editor.status.delete_confirm',binding.name),true)
+                            return true
+                        end
+                        local saved,msg=service:Commit(nil,binding.id)
+                        deleteIntent=nil
+                        if saved then
+                            if draft and draft.id==binding.id then Load(service.model:List()[1]) end
+                            SyncSelector(); Refresh()
+                        end
+                        Status(saved and T('hotbuild.editor.status.deleted') or msg,not saved)
+                        BuildList()
+                    end
+                    return true
+                end
+                Tooltip.AddAutoUpdatedControlTooltip(slot.delete,function() return T('hotbuild.editor.delete_binding') end,function() return slot.record and slot.record.name or '' end)
+                slots[i]=slot
+            end
+            local function SyncScrollbar()
+                if table.getn(bindings)>visibleRows then
+                    if not listScrollbar then
+                        listScrollbar=UI.CreateVertScrollbarFor(listPanel,-20)
+                        if listScrollbar.Depth then listScrollbar.Depth:Set(function() return listPanel.Depth()+4 end) end
+                    end
+                    if listScrollbar.Show then listScrollbar:Show() end
+                elseif listScrollbar and listScrollbar.Hide then
+                    listScrollbar:Hide()
+                end
+            end
+            function listPanel:GetScrollValues()
+                local total=table.getn(bindings)
+                return 1,math.max(visibleRows,total),listTop,math.max(listTop,math.min(total,listTop+visibleRows-1))
+            end
+            function listPanel:IsScrollable() return table.getn(bindings)>visibleRows end
+            function listPanel:ScrollSetTop(axis,value)
+                listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-visibleRows+1),math.floor(value)))
+                RenderRows()
+            end
+            function listPanel:ScrollLines(axis,delta) self:ScrollSetTop(axis,listTop+delta) end
+            function listPanel:ScrollPages(axis,delta) self:ScrollSetTop(axis,listTop+delta*visibleRows) end
+            local function ScrollList(self,e)
+                if e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1) end
                 return true
             end
             background.HandleEvent=ScrollList
             listPanel.HandleEvent=ScrollList
-
+            RenderRows()
+            SyncScrollbar()
+        end
+        local function OpenList()
+            CloseList()
+            BuildList()
         end
         local selectorButtonHandle=selectorButton.HandleEvent
         selectorButton.HandleEvent=function(self,e)

@@ -344,7 +344,8 @@ function Create(isReplay)
         if ContextActions.HasOrdinaryBuilder(context.selection) and binding then
             local builderContext={selection=ContextActions.OrdinaryBuilders(context.selection),isReplay=context.isReplay,
                 focusArmy=context.focusArmy,orders=context.orders,plans={},sources=nil,
-                bindingEntries=binding.entries}
+                bindingEntries=binding.entries,
+                factorySelection=context.factorySelection,factoryTechTab=context.factoryTechTab}
             for _, entry in ipairs(binding.entries or {}) do
                 if entry.kind == 'blueprint' then
                     local ok,canBuild=pcall(adapter.CanBuild,adapter,entry.id,builderContext)
@@ -565,7 +566,8 @@ function Create(isReplay)
             if binding and contextOk and ContextActions.HasOrdinaryBuilder(context.selection) then
                 local builders={selection=ContextActions.OrdinaryBuilders(context.selection),isReplay=context.isReplay,
                     focusArmy=context.focusArmy,orders=context.orders,plans={},sources=nil,
-                    bindingEntries=binding.entries}
+                    bindingEntries=binding.entries,
+                    factorySelection=context.factorySelection,factoryTechTab=context.factoryTechTab}
                 for _,entry in ipairs(binding.entries or {}) do
                     if entry.kind=='blueprint' then
                         local ok,canBuild=pcall(adapter.CanBuild,adapter,entry.id,builders)
@@ -624,7 +626,8 @@ function Create(isReplay)
                 if probe and probe:Get() then
                     LOG('[Claret][keys] factory_shift_intercept chord='..chord..' active=true')
                 end
-                return self:Execute(pair.preset,pair.composite,chord,nil,true)
+                local executed,message = self:Execute(pair.preset,pair.composite,chord,nil,true)
+                if executed then return executed,message end
             end
         end
         if type(nativeAction)=='string' and type(ConExecute)=='function' then

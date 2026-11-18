@@ -527,6 +527,13 @@ executed=service:Execute('mixed','ctxMixed')
 assert(not executed and #commandCalls==beforeMixed and #buildCalls==beforeMixedBuilds,
     'conflicting builder siblings consume the key without executing')
 
+-- Shift on factories: an inapplicable preset must not swallow the native shift action.
+selected={makeUnit('FACTORY','CANNOT_BUILD')}
+beforeActions=#selectCalls
+assert(service:ExecuteFactoryShift('F2','NativeShiftAction')==true)
+assert(#selectCalls==beforeActions+1 and selectCalls[#selectCalls]=='NativeShiftAction',
+    'inapplicable factory preset falls back to the native shift action')
+
 selected={makeUnit('ENGINEER','CANNOT_BUILD'),makeUnit('LAND')}
 local beforeEngineerOther=#commandCalls
 executed=service:Execute('mixed','ctxMixed')

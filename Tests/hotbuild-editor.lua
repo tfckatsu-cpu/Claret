@@ -129,7 +129,7 @@ local function byPlacement(predicate)
     return found
 end
 local function selectorButton() return byPlacement(function(c) return c.x==24 and c.y==88 and c.Width()==270 and c.HandleEvent~=nil end) end
-local function listPanel() return byPlacement(function(c) return c.x==24 and c.Width()==270 and c.Height()==310 and c.HandleEvent~=nil end) end
+local function listPanel() return byPlacement(function(c) return c.x==24 and c.Width()==372 and c.Height()==354 and c.HandleEvent~=nil end) end
 local function closeButton() return byPlacement(function(c) return c.x==1038 and c.y==8 and c.Width()==30 and c.HandleEvent~=nil end) end
 local function viewportControl() return byPlacement(function(c) return c.x==74 and c.y==195 and c.Width()==985 and c.HandleEvent~=nil end) end
 local function buildCell(viewport,row)
@@ -173,7 +173,7 @@ assert(edits[1]:GetText()=='First','the saved binding name is loaded into the na
 assert(not listPanel(),'the binding list stays closed until the selector is pressed')
 selectorButton():HandleEvent({Type='ButtonPress'})
 local list=assert(listPanel(),'the selector button opens the saved-binding list')
-assert(press('First',function(parent) return parent.parent==list and parent.x==2 and parent.y==2 end),
+assert(press('First',function(parent) return parent.parent==list and parent.x==8 and parent.y==6 end),
     'the first list row is the saved binding')
 assert(edits[1]:GetText()=='First','selecting the list row loads that binding')
 assert(not listPanel(),'selecting a row closes the list')
@@ -239,18 +239,18 @@ assert(selectorLabel() and selectorLabel().text=='Second','the selector shows th
 edits[1]:SetText('Unsaved')
 selectorButton():HandleEvent({Type='ButtonPress'})
 local switchList=assert(listPanel(),'the selector list opens for switching')
-press('First',function(parent) return parent.parent==switchList and parent.x==2 and parent.y==2 end)
+press('First',function(parent) return parent.parent==switchList and parent.x==8 and parent.y==6 end)
 assert(edits[1]:GetText()=='Unsaved','a dirty draft cannot switch bindings from the list')
 assert(hasText('Несохранённые изменения'),'the blocked switch asks about the draft')
 press('Отмена')
 assert(model:Get('b2').name=='Second','cancelling the switch keeps the saved binding')
 assert(edits[1]:GetText()=='Unsaved','cancelling the switch keeps the draft')
 -- Discarding restores the saved draft, then the same row switches for real.
-press('First',function(parent) return parent.parent==switchList and parent.x==2 and parent.y==2 end)
+press('First',function(parent) return parent.parent==switchList and parent.x==8 and parent.y==6 end)
 press('Не сохранять')
 assert(edits[1]:GetText()=='Second','discarding restores the saved draft name')
 assert(model:Get('b2').name=='Second','discarding does not modify the saved binding')
-press('First',function(parent) return parent.parent==switchList and parent.x==2 and parent.y==2 end)
+press('First',function(parent) return parent.parent==switchList and parent.x==8 and parent.y==6 end)
 assert(edits[1]:GetText()=='First','a clean draft switches to the chosen binding')
 assert(not listPanel(),'switching closes the list')
 -- Existing binding deletion remains available and keeps its confirmation behavior.
@@ -258,7 +258,7 @@ selectorButton():HandleEvent({Type='ButtonPress'})
 local deleteList=assert(listPanel(),'the selector list opens for deletion')
 local deleteBinding
 for _,c in ipairs(objects) do
-    if c.text=='×' and alive(c) and shown(c) and c.parent and c.parent.x==236 and c.parent.y==2 and c.parent.parent==deleteList then
+    if c.text=='×' and alive(c) and shown(c) and c.parent and c.parent.x==314 and c.parent.y==6 and c.parent.parent==deleteList then
         deleteBinding=c.parent
     end
 end

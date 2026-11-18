@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.38
+# Claret Hotbuild — prototype 0.10.40
 
 Build 20261113-30: double-tap actions for compatible standalone actions can be configured on the **Keyboard** tab. When an action and a building preset share an assignment, the preset takes priority if the current builder can use it; otherwise, the action runs. Existing saved assignments and additional fields are preserved. In-game verification is pending.
 

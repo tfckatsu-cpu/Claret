@@ -36,3 +36,14 @@
 - The quick-repeat window, its setting and the gear were removed in 0.10.38. The per-row `quickRepeat` field remains as legacy saved data and still executes.
 - Sequential engineer selection requires a mobile engineer (ENGINEER + MOBILE); command units are excluded.
 - Version identity: `Version` in Main.lua = `ReUI` in mod_info.lua = README heading; `BuildStamp` = newest CHANGELOG build; Hotbuild requires Core >= 0.10.14.
+## Order dispatch rules (verified 2026-11-19, build 0.10.40)
+
+Single choke point: Adapter:CanBuild (ClaretHotbuild/modules/Adapter.lua). Preset entries, context entries and keyboard pairs all dispatch through Model:Execute -> Adapter:Build, so a new caller must not issue build/factory orders directly.
+
+- Placement rule: a unit may receive a structure or template order only if the blueprint id is in EntityCategoryGetUnitList(GetUnitCommandData({unit})[3]) **and** the unit passes CanPlaceBuilds (COMMAND / SUBCOMMANDER / ENGINEER). Non-builders (mass extractors, combat units) are rejected before any command mode starts. FAF3840 data check: 104 units carry ENGINEER/COMMAND/SUBCOMMANDER and cover every structure placer; the only CONSTRUCTION unit outside the list is the Megalith (XRL0403), whose targets are CRABEGG structures without BUILTBY* categories, so they never reach the catalog.
+- Factory rule: a factory queues an item only when ecord.kind ~= 'STRUCTURE'. Support factories are STRUCTURE, therefore a factory selection can never queue them as units; SACU keeps its own kind and stays producible. Vanilla equivalent: lua/keymap/hotbuild.lua filters by uildableCategories only, which never contains structures.
+- Attached factories: for EXTERNALFACTORY (carriers, air staging, Fatboy) the order goes to GetCreator(), as vanilla TranslateExFacUnits does; Claret additionally requires the attachment to be finished (GetFractionComplete()==1) and the creator to be alive and in category FACTORY.
+- Mixed selections: Model:Execute keeps the factory subset (temporary SelectUnits transaction with restoration on both paths), so an engineer next to a factory never receives the queue order.
+- Priority probe parity: the hotbuild-priority probe in Runtime copies actorySelection and actoryTechTab from the real context, so the factory tech-tab filter is evaluated identically before and during dispatch (otherwise the key was swallowed).
+- Shift on a factory: ExecuteFactoryShift falls back to the native action when the preset applies nothing; an inapplicable preset must not kill the Shift shortcut.
+- Tests: Tests/hotbuild-adapter.lua (mex, factory+structure, factory+engineer, ACU/SACU placement, shift x5, attached-factory guards) and Tests/hotbuild-context-runtime.lua (shift fallback).
