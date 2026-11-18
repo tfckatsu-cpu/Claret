@@ -1095,6 +1095,10 @@ function Create(parent, service, embedded, memory)
         end
         s.buildingScrollbar=buildingScrollbar
         SyncSelector(); Refresh()
+        local problems=service.model:GetQuarantine()
+        if table.getn(problems)>0 then
+            s.statusFn(T('hotbuild.problems.summary',table.getn(problems),problems[1].reason),true)
+        end
         frame.AfterParentShow=function() Refresh() end
     end)
     if not ok then frame:Destroy(); error(err) end

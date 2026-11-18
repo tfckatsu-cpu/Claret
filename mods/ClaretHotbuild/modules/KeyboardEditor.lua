@@ -798,6 +798,13 @@ function Create(parent, service, embedded, perf)
         LoadAssignments()
         local paintStart=perf and perf:Now()
         Refresh(); DrawModifiers()
+        local pairProblems
+        if service.keyboardBindings and service.keyboardBindings.GetPairWarnings then
+            pairProblems=service.keyboardBindings:GetPairWarnings()
+        end
+        if pairProblems and table.getn(pairProblems)>0 then
+            Status(T('hotbuild.problems.summary',table.getn(pairProblems),pairProblems[1].reason),true)
+        end
         if perf then perf:Add('initial_paint',paintStart); perf:Emit('initial_paint'); perf=nil end
     end)
     if not ok then frame:Destroy(); error(err) end

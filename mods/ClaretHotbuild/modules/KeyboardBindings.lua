@@ -40,6 +40,10 @@ function Create(runtime)
     }
     local transportActions={'append_transport_cargo','ferry','transport_order'}
     local previousTransport={dock=true,dock_damaged=true,append_transport_cargo=true,ferry=true,transport_order=true,load_transports=true,select_transports_accumulate=true}
+    local pairWarnings={}
+    local quarantinedChords={}
+    local rawAssignments
+    local managed={}
     doubleTargets.dock={dock_damaged=true}
     doubleTargets.dock_damaged={dock=true}
     for _,first in ipairs(transportActions) do
@@ -247,38 +251,78 @@ function Create(runtime)
     end
     local function LoadPairs()
         local saved=Prefs.GetFromCurrentProfile(profileName)
+        rawAssignments=nil
         if saved==nil then return {} end
-        if type(saved)~='table' or (saved.version~=1 and saved.version~=2) or type(saved.assignments)~='table' then return nil end
-        for field in pairs(saved) do if field~='version' and field~='assignments' then return nil end end
-        local result={}
+        if type(saved)~='table' or (saved.version~=1 and saved.version~=2) or type(saved.assignments)~='table' then
+            return nil,nil,T('hotbuild.keyboard_bindings.s004')
+        end
+        for field in pairs(saved) do
+            if field~='version' and field~='assignments' then return nil,nil,T('hotbuild.keyboard_bindings.s004') end
+        end
+        rawAssignments=saved.assignments
+        quarantinedChords={}
+        local result,warnings={},{}
         for chord,pair in pairs(saved.assignments) do
-            if type(chord)~='string' or chord=='' or Mapper.NormalizeKeyBinding(chord)~=chord or type(pair)~='table' then return nil end
-            for field,value in pairs(pair) do
-                if (field~='preset' and field~='composite' and field~='action' and field~='doubleFirst' and field~='doubleSecond') or type(value)~='string' or value=='' then return nil end
+            local reason
+            if type(chord)~='string' or chord=='' or Mapper.NormalizeKeyBinding(chord)~=chord then
+                reason='invalid key chord'
+            elseif type(pair)~='table' then
+                reason='invalid assignment record'
+            else
+                for field,value in pairs(pair) do
+                    if field~='preset' and field~='composite' and field~='action' and field~='doubleFirst' and field~='doubleSecond' then
+                        reason='unknown assignment field: '..tostring(field); break
+                    end
+                    if type(value)~='string' or value=='' then
+                        reason='invalid assignment field: '..tostring(field); break
+                    end
+                end
             end
-            if (pair.doubleFirst==nil)~=(pair.doubleSecond==nil) then return nil end
-            local doubleFirst=pair.doubleFirst
-            local doubleSecond=pair.doubleSecond
-            if removedDoubleActions[doubleFirst] or removedDoubleActions[doubleSecond] then
-                doubleFirst=nil
-                doubleSecond=nil
+            if not reason and (pair.doubleFirst==nil)~=(pair.doubleSecond==nil) then
+                reason='incomplete double assignment'
             end
-            if doubleFirst and not (doubleTargets[doubleFirst] and doubleTargets[doubleFirst][doubleSecond])
-                and not (previousTransport[doubleFirst] and previousTransport[doubleSecond] and doubleFirst~=doubleSecond) then return nil end
-            if pair.preset or pair.composite or pair.action or doubleFirst then
+            local doubleFirst,doubleSecond
+            if not reason then
+                doubleFirst=pair.doubleFirst
+                doubleSecond=pair.doubleSecond
+                if removedDoubleActions[doubleFirst] or removedDoubleActions[doubleSecond] then
+                    doubleFirst=nil
+                    doubleSecond=nil
+                end
+                if doubleFirst and not (doubleTargets[doubleFirst] and doubleTargets[doubleFirst][doubleSecond])
+                    and not (previousTransport[doubleFirst] and previousTransport[doubleSecond] and doubleFirst~=doubleSecond) then
+                    reason='incompatible double assignment'
+                end
+            end
+            if reason then
+                if type(chord)=='string' then quarantinedChords[chord]=true end
+                table.insert(warnings, {chord=tostring(chord),reason=reason})
+            elseif pair.preset or pair.composite or pair.action or doubleFirst then
                 result[chord]={preset=pair.preset,composite=pair.composite,action=pair.action,doubleFirst=doubleFirst,doubleSecond=doubleSecond}
+                managed[chord]=true
             end
         end
-        return result
+        return result,warnings
     end
-    local function Profile(pairsValue) return {version=2,assignments=CopyPairs(pairsValue)} end
-    local function Migrate()
-        local loaded=LoadPairs()
-        if not loaded then pairError=T('hotbuild.keyboard_bindings.s004'); return end
-        pairsByKey=loaded
-        if table.getn(runtime.model:GetLoadWarnings())>0 or table.getn(runtime.contextModel:GetLoadWarnings())>0 then
-            pairError=T('hotbuild.keyboard_bindings.s005'); return
+    -- Quarantined raw records are merged back verbatim; only managed chords
+    -- removed by the user disappear from the saved profile.
+    local function Profile(pairsValue)
+        local assignments={}
+        for chord,pair in pairs(rawAssignments or {}) do assignments[chord]=pair end
+        for chord in pairs(managed) do
+            if not pairsValue[chord] then assignments[chord]=nil end
         end
+        for chord,pair in pairs(pairsValue) do
+            managed[chord]=true
+            assignments[chord]={preset=pair.preset,composite=pair.composite,action=pair.action,doubleFirst=pair.doubleFirst,doubleSecond=pair.doubleSecond}
+        end
+        return {version=2,assignments=assignments}
+    end
+    local function Migrate()
+        local loaded,warnings,shapeError=LoadPairs()
+        pairWarnings=warnings or {}
+        if not loaded then pairError=shapeError or T('hotbuild.keyboard_bindings.s004'); pairsByKey={}; return end
+        pairsByKey=loaded
         local maps={CopyMap(Prefs.GetFromCurrentProfile('UserKeyMap') or CurrentMap()) or {},
             CopyMap(Prefs.GetFromCurrentProfile('UserDebugKeyMap') or DebugMap()) or {}}
         local proposed=CopyPairs(loaded)
@@ -288,9 +332,14 @@ function Create(runtime)
             for key,id in pairs(map) do
                 local ref=ids[id]
                 if type(id)=='string' and string.sub(id,1,string.len(pairPrefix))==pairPrefix then
-                    local chord=Mapper.NormalizeKeyBinding(key)
-                    if not ref or ref.kind~='pair' or ref.id~=chord then
-                        pairError=T('hotbuild.keyboard_bindings.s006')..chord..T('hotbuild.keyboard_bindings.s007'); return
+                    local decoded=Dec(string.sub(id,string.len(pairPrefix)+1))
+                    if decoded and quarantinedChords[decoded] then
+                        -- The raw pair record stays quarantined; its assignment is kept as is.
+                    else
+                        local chord=Mapper.NormalizeKeyBinding(key)
+                        if not ref or ref.kind~='pair' or ref.id~=chord then
+                            pairError=T('hotbuild.keyboard_bindings.s006')..chord..T('hotbuild.keyboard_bindings.s007'); return
+                        end
                     end
                 end
                 if ref and (ref.kind=='preset' or (ref.kind=='composite' and not ref.legacy)) then
@@ -389,6 +438,11 @@ function Create(runtime)
         return true
     end
     function service:GetPairError() return pairError end
+    function service:GetPairWarnings()
+        local result={}
+        for i,warning in ipairs(pairWarnings) do result[i]={chord=warning.chord,reason=warning.reason} end
+        return result
+    end
     PairIsMapped=function(chord)
         local id=PairId(chord)
         for _,map in ipairs({GetMap('UserKeyMap'),GetMap('UserDebugKeyMap')}) do
@@ -885,8 +939,8 @@ function Create(runtime)
         local probe=options and options.probeEnabled
         for key,id in pairs(current) do
             if ids[id] and not mappings[key] then
-                if probe and probe:Get() then LOG('[Claret][keys] key='..key..' action='..id..' defined=false') end
-                error('No action definition for '..tostring(key)..': '..tostring(id))
+                if probe and probe:Get() then LOG('[Claret][keys] key='..key..' action='..id..' definition=missing') end
+                mappings[key]=nil
             end
         end
         if probe and probe:Get() then LOG('[Claret][keymap] op=clear by=KeyboardBindings:Refresh') end

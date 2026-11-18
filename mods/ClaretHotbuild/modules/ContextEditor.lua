@@ -1155,8 +1155,10 @@ function Create(parent, service, embedded, memory)
             first={id='context_'..i,name=T('hotbuild.context_editor.s140'),rows={}}
         end
         Load(first); RefreshRows(); RefreshSaved(); RefreshCatalog()
-        local warnings=service.contextModel:GetLoadWarnings()
-        if table.getn(warnings)>0 then Status(warnings[1]..T('hotbuild.context_editor.s139'),true) end
+        local problems=service.contextModel:GetQuarantine()
+        if table.getn(problems)>0 then
+            Status(T('hotbuild.problems.summary',table.getn(problems),problems[1].reason),true)
+        end
     end)
     if not ok then frame:Destroy(); error(err) end
     return frame

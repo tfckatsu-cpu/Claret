@@ -245,16 +245,15 @@ function Create(isReplay)
     end
 
     function service:RefreshKeys()
-        if table.getn(self.model:GetLoadWarnings()) > 0 or table.getn(self.contextModel:GetLoadWarnings()) > 0 then
-            return false, T('hotbuild.runtime.s004')
+        local ok, message = true, nil
+        if self.model:CanWrite() then
+            ok, message = keys:Apply(self.model:List(), self.model:GetQuarantinedIds())
         end
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
-        local ok, message = keys:Apply(self.model:List())
-        if type(keys.ApplyAbsolute)=='function' then
+        if type(keys.ApplyAbsolute)=='function' and self.contextModel:CanSave() then
             local contextKeysOk, contextKeysMessage = keys:ApplyAbsolute(self.contextModel:List())
             if not contextKeysOk then ok, message = contextKeysOk, contextKeysMessage end
         end
-        keyboardBindings:Refresh()
+        if not keyboardBindings:GetPairError() then keyboardBindings:Refresh() end
         if not ok then WARN('[ClaretHotbuild] ' .. tostring(message)) end
         return ok, message
     end
@@ -636,7 +635,7 @@ function Create(isReplay)
     end
 
     function service:ValidatePreset(binding)
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
+        if not self.model:CanWrite() then return false, T('hotbuild.runtime.s018') end
         local candidate=Model.Create(self.model:Export())
         local ok,message=candidate:Put(binding)
         if not ok then return false,message end
@@ -662,10 +661,7 @@ function Create(isReplay)
 
     -- Save only after validation of the entire proposed configuration.
     function service:Commit(binding, removeId)
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
-        if table.getn(self.model:GetLoadWarnings()) > 0 then
-            return false, T('hotbuild.runtime.s018')
-        end
+        if not self.model:CanWrite() then return false, T('hotbuild.runtime.s018') end
         if not removeId and binding and type(binding.name)=='string' and string.find(binding.name, '[^ -~]') then
             return false, T('hotbuild.runtime.s019')
         end
@@ -692,7 +688,7 @@ function Create(isReplay)
             Prefs.SetToCurrentProfile('ClaretHotbuild', before)
             return false, 'Could not save: ' .. tostring(message)
         end
-        if removeId then
+        if removeId and not keyboardBindings:GetPairError() then
             local cleared,clearMessage=keyboardBindings:ClearPresetAssignments(removeId)
             if not cleared then
                 pcall(function()
@@ -713,16 +709,8 @@ function Create(isReplay)
     end
 
     function service:CommitContext(binding, removeId, confirmedDelete)
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
         if not self.contextModel:CanSave() then return false, T('hotbuild.runtime.s022') end
-        if binding and table.getn(self.model:GetLoadWarnings()) > 0 then
-            return false, T('hotbuild.runtime.s023'),
-                {kind='absolute_link',bindings={}}
-        end
         if removeId then
-            if table.getn(self.model:GetLoadWarnings()) > 0 then
-                return false, T('hotbuild.runtime.s024')
-            end
             if keyboardBindings:HasDirectAssignment({kind='composite',id=removeId}) and confirmedDelete~=true then
                 return false,T('hotbuild.runtime.s025')
             end
@@ -746,7 +734,7 @@ function Create(isReplay)
             Prefs.SetToCurrentProfile('ClaretHotbuildContexts',before)
             return false,T('hotbuild.runtime.s026')..tostring(message)
         end
-        if removeId then
+        if removeId and not keyboardBindings:GetPairError() then
             local cleared,clearMessage=keyboardBindings:ClearCompositeAssignments(removeId)
             if not cleared then
                 pcall(function()

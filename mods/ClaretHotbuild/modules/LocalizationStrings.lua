@@ -414,6 +414,7 @@ Strings.en['hotbuild.editor.picker.other_buildings'] = 'Other buildings'; String
 Strings.en['hotbuild.editor.picker.units'] = 'Units'; Strings.ru['hotbuild.editor.picker.units'] = 'Юниты'
 Strings.en['hotbuild.editor.status.incompatible'] = 'Could not finish navigation: %s'; Strings.ru['hotbuild.editor.status.incompatible'] = 'Не удалось завершить переход: %s'
 Strings.en['hotbuild.editor.status.delete_confirm'] = 'Press × again to delete “%s”.'; Strings.ru['hotbuild.editor.status.delete_confirm'] = 'Повторно нажмите ×, чтобы удалить «%s».'
+Strings.en['hotbuild.problems.summary'] = 'Damaged records: %d — %s'; Strings.ru['hotbuild.problems.summary'] = 'Повреждённых записей: %d — %s'
 Strings.en['hotbuild.editor.status.deleted'] = 'Binding deleted.'; Strings.ru['hotbuild.editor.status.deleted'] = 'Бинд удалён.'
 Strings.en['hotbuild.editor.status.new_binding'] = 'New binding'; Strings.ru['hotbuild.editor.status.new_binding'] = 'New binding'
 Strings.en['hotbuild.editor.status.legacy_action'] = 'The old binding contains an action or an unknown item.'; Strings.ru['hotbuild.editor.status.legacy_action'] = 'Старый бинд содержит действие или неизвестный объект.'

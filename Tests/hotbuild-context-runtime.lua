@@ -217,22 +217,28 @@ local partialProfile={version=1,bindings={
     {id='kept',name='Legacy',key='',entries={}},
     {id='broken',name='',key='',entries={},grid={buildings={},units={},context='ctxAcu'}},
 }}
-assertProfileProtected(partialProfile,'kept')
-assert(preferences.UserKeyActions==oldActions and oldActions.ClaretHotbuild_old
-    and preferences.UserKeyMap==oldMap and oldMap['Ctrl-X']=='ClaretHotbuild_old'
-    and preferences.UserDebugKeyMap==oldDebugMap and oldDebugMap['Ctrl-Y']=='ClaretHotbuild_old',
-    'partial Hotbuild profile leaves FAF user actions and key mappings untouched')
-assert(#mapperCalls==oldMapperCalls,'partial Hotbuild profile does not register partial key actions')
 preferences.ClaretHotbuild=partialProfile
 local partialService=Runtime.Create(false)
-local contextDeleted, contextDeleteError=partialService:CommitContext(nil,'ctxAcu')
-assert(not contextDeleted and contextDeleteError:find('Hotbuild',1,true),
-    'context deletion is blocked when an unreadable Hotbuild binding may reference it')
-assert(partialService.contextModel:Get('ctxAcu'),'blocked deletion preserves the potentially referenced context')
+assert(partialService.model:Get('kept'),'valid preset loads from a partially damaged profile')
+local kept=partialService.model:Get('kept'); kept.name='Changed copy'
+local partialSaved,partialSaveError=partialService:Commit(kept)
+assert(partialSaved,'save is allowed for a partially damaged profile: '..tostring(partialSaveError))
+local partialExport=preferences.ClaretHotbuild
+assert(partialExport and #partialExport.bindings==2
+    and partialExport.bindings[1].name=='Changed copy'
+    and partialExport.bindings[2].id=='broken'
+    and partialExport.bindings[2].grid.context=='ctxAcu',
+    'valid edit is saved and the quarantined preset is preserved in place')
+assert(preferences.UserKeyActions['ClaretHotbuild_'..encoded('kept')]
+    and not preferences.UserKeyActions['ClaretHotbuild_'..encoded('broken')],
+    'only valid presets register key actions')
+local contextSaved,contextSaveError=partialService:CommitContext({id='ctxS2',name='S2 context',rows={{context='empty',action='select_acu'}}})
+assert(contextSaved,'context saving is independent from a damaged preset profile: '..tostring(contextSaveError))
+assert(partialService.contextModel:Get('ctxS2'),'saved context is available')
 partialService:Destroy()
 assert(unknownProfile.version==99 and #unknownProfile.bindings==1
     and partialProfile.bindings[2].name=='' and partialProfile.bindings[2].grid.context=='ctxAcu',
-    'rejected writes preserve original profile contents')
+    'original profile tables are never mutated in place')
 preferences.ClaretHotbuild=originalProfile
 local migrationUserMap=preferences.UserKeyMap
 local migrationDebugMap=preferences.UserDebugKeyMap

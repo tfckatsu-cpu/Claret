@@ -148,12 +148,11 @@ end
 
 function Create(saved, actions)
     local actionCatalog, catalogError = BuildActions(actions)
-    local bindings, byId, warnings, diagnostics = {}, {}, {}, {}
-    local readable = true
+    local bindings, byId, entries, quarantine, warnings, diagnostics = {}, {}, {}, {}, {}, {}
+    local shapeError
     local model = {}
 
-    local function LoadWarning(message)
-        readable = false
+    local function Warn(message)
         table.insert(warnings, message)
     end
 
@@ -221,7 +220,7 @@ function Create(saved, actions)
     end
 
     function model:CanSave()
-        return readable and actionCatalog ~= nil
+        return actionCatalog ~= nil and shapeError == nil
     end
 
     function model:Put(binding)
@@ -231,29 +230,52 @@ function Create(saved, actions)
         if not byId[valid.id] and table.getn(bindings) >= MAX_BINDINGS then
             return nil, T('hotbuild.context_model.s029')
         end
-        if byId[valid.id] then
+        local existing = byId[valid.id]
+        if existing then
             for i, old in ipairs(bindings) do
-                if old.id == valid.id then bindings[i] = valid; break end
+                if old == existing then bindings[i] = valid; break end
+            end
+            for _, entry in ipairs(entries) do
+                if entry.binding == existing then entry.binding = valid; break end
             end
         else
             table.insert(bindings, valid)
+            table.insert(entries, { binding = valid })
         end
         byId[valid.id] = valid
         return true
     end
 
     function model:Delete(id)
-        if not byId[id] then return false end
-        for i, binding in ipairs(bindings) do
-            if binding.id == id then table.remove(bindings, i); break end
+        local binding = byId[id]
+        if not binding then return false end
+        for i, old in ipairs(bindings) do
+            if old == binding then table.remove(bindings, i); break end
+        end
+        for i, entry in ipairs(entries) do
+            if entry.binding == binding then table.remove(entries, i); break end
         end
         byId[id] = nil
         return true
     end
 
+    -- Valid records in their loaded order plus raw quarantined records verbatim.
     function model:Export()
         if not self:CanSave() then return nil, T('hotbuild.context_model.s030') end
-        return {version=3, bindings=self:List()}
+        local result = {}
+        for _, entry in ipairs(entries) do
+            if entry.binding then table.insert(result, Copy(entry.binding))
+            else table.insert(result, entry.raw) end
+        end
+        return {version=3, bindings=result}
+    end
+
+    function model:GetQuarantine()
+        local result = {}
+        for i, item in ipairs(quarantine) do
+            result[i] = { index = item.index, id = item.id, reason = item.reason }
+        end
+        return result
     end
 
     function model:GetLoadWarnings()
@@ -269,14 +291,15 @@ function Create(saved, actions)
     end
 
     if not actionCatalog then
-        LoadWarning(catalogError)
+        Warn(catalogError)
     elseif saved ~= nil then
         if type(saved) ~= 'table' or not Fields(saved, {version=true,bindings=true}) or (saved.version ~= 1 and saved.version ~= 2 and saved.version ~= 3) or not IsList(saved.bindings) then
-            LoadWarning('Saved context binding profile has an unknown or corrupted format')
+            shapeError = 'Saved context binding profile has an unknown or corrupted format'
+            Warn(shapeError)
         else
             local seen = {}
             if table.getn(saved.bindings) > MAX_BINDINGS then
-                LoadWarning('Profile contains more than 64 bindings; data integrity is not confirmed')
+                Warn('Profile contains more than 64 bindings; data integrity is not confirmed')
             end
             for i, binding in ipairs(saved.bindings) do
                 local err
@@ -326,6 +349,7 @@ function Create(saved, actions)
                         end
                         table.insert(bindings, valid)
                         byId[valid.id] = valid
+                        table.insert(entries, { binding = valid })
                         seen[valid.id] = true
                         for _, row in ipairs(valid.rows) do
                             if not actionCatalog.Contexts[row.context] or (row.action and (not actions.Get(row.action) or not actions.Supports(row.action,row.context))) then
@@ -334,7 +358,12 @@ function Create(saved, actions)
                         end
                     end
                 end
-                if err then LoadWarning('Binding ' .. tostring(i) .. ' was not loaded: ' .. tostring(err)) end
+                if err then
+                    local rawId = type(binding) == 'table' and type(binding.id) == 'string' and binding.id or nil
+                    table.insert(quarantine, { index = i, id = rawId, reason = err })
+                    table.insert(entries, { raw = binding })
+                    Warn('Binding ' .. tostring(i) .. ' was not loaded: ' .. tostring(err))
+                end
             end
         end
     end

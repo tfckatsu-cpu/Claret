@@ -144,9 +144,16 @@ local saved={version=1,bindings={
     binding('restore','Duplicate ID',{{context='acu',action='move'}}),
 }}
 local restored=modelModule.Create(saved,actions)
-assert(not restored:CanSave() and restored:Get('restore').name=='Restored')
+assert(restored:CanSave() and restored:Get('restore').name=='Restored')
 assert(not restored:Get('bad') and #restored:GetLoadWarnings()==2)
-assert(not restored:Export(),'partial recovery cannot overwrite profile')
+local restoredExport=restored:Export()
+assert(restoredExport and #restoredExport.bindings==3,
+    'quarantined records are exported instead of being dropped')
+assert(restoredExport.bindings[1].id=='restore' and restoredExport.bindings[1].name=='Restored')
+assert(restoredExport.bindings[2].id=='bad' and restoredExport.bindings[2].rows[1].unknownField==true,
+    'quarantined record is preserved verbatim with its unknown fields')
+assert(restoredExport.bindings[3].id=='restore' and restoredExport.bindings[3].name=='Duplicate ID',
+    'duplicate raw record keeps its original position and id')
 local partialOrder=modelModule.Create({version=1,bindings={
     binding('badFirst','Bad first',{{context='silo',action='move',unknownField=true}}),
     binding('keptSecond','Kept second',{{context='acu',action='move'}}),
@@ -157,8 +164,11 @@ assert(#partialList==2 and partialList[1].id=='keptSecond' and partialList[2].id
     'valid records after an invalid record remain visible and preserve order')
 assert(partialOrder:Get('keptSecond') and partialOrder:Get('keptThird'),
     'valid records after an invalid record remain addressable')
-assert(not partialOrder:CanSave() and not partialOrder:Export(),
-    'partial recovery remains protected from overwriting the damaged profile')
+local partialExport=partialOrder:Export()
+assert(partialOrder:CanSave() and #partialExport.bindings==3
+    and partialExport.bindings[1].id=='badFirst' and partialExport.bindings[2].id=='keptSecond'
+    and partialExport.bindings[3].id=='keptThird',
+    'partial recovery exports valid records and preserves the quarantined one in order')
 local clean=modelModule.Create({version=1,bindings={binding('clean','Clean')}},actions)
 local exported=clean:Export(); assert(exported.version==3 and exported.bindings[1].id=='clean')
 
