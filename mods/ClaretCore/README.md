@@ -79,6 +79,6 @@ The original TTF files and SIL OFL 1.1 notices remain in `fonts/Nunito`. To unin
 
 `ReUI.ClaretCore.IsKeyCaptureActive()` reports whether settings are temporarily capturing a key combination; it returns `false` after saving, cancelling, or destroying the menu.
 
-## Стратегические кольца
+## Strategic rings
 
-Core рисует кольца для двух клавиатурных действий Hotbuild. `CreateStrategicRing(false)` создаёт доступные радиусы разведки, оружия, щита, стелса и взрыва для объекта под курсором; `CreateStrategicRing(true)` создаёт его радиус обзора. Перекрывающиеся плоские радиусы одного типа объединяются в общий контур. Штатный ластик FAF по Alt+ПКМ удаляет группу колец объекта. Реализация находится в Core и не требует Bi4UI.StrategicRings.
+Core draws rings for two Hotbuild keyboard actions. `CreateStrategicRing(false)` creates the available scouting, weapon, shield, stealth and blast radii for the object under the cursor; `CreateStrategicRing(true)` creates its vision radius. Overlapping flat radii of the same kind merge into one outline. FAF stock eraser (Alt+RMB) removes the ring group of an object. The implementation lives in Core and does not require Bi4UI.StrategicRings.

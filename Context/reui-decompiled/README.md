@@ -1,128 +1,128 @@
-# ReUI: восстановление байткода и карта реализации
+# ReUI: Bytecode Recovery and Implementation Map
 
-Проверено 2026-11-13. Область по уточнению пользователя: только установленное семейство `ReUI` / `ReUI.*`. Это справочные материалы для изучения; они не подключаются к Claret и не заменяют файлы модов. Подмена HUD Claret в этой задаче не разрабатывалась.
+Reviewed 2026-11-13. Per user clarification, scope is limited to the installed `ReUI` / `ReUI.*` family. These are reference materials for study; they are not imported by Claret and do not replace mod files. Claret HUD replacement work was not part of this task.
 
-## Снимок и результаты
+## Snapshot and Results
 
-В соседнем `mods/` найдено 9 модов семейства, 160 Lua-файлов: 92 скомпилированных и 68 текстовых. Исходные размеры, SHA-256, манифесты модов и индивидуальные результаты восстановления находятся в [manifest.json](manifest.json). Читаемые исходники не дублируются: их актуальные оригиналы остаются в `../../../mods/`.
+Nine family mods and 160 Lua files were found in the adjacent `mods/` directory: 92 compiled and 68 text files. Original sizes, SHA-256, manifests, and per-file recovery results are in [manifest.json](manifest.json). Readable sources are not duplicated; their current originals remain in `../../../mods/`.
 
-| Установленный мод | Версия из манифеста / Main | Байткод | Текстовые Lua | Содержание |
+| Installed mod | Manifest / Main version | Bytecode | Text Lua | Contents |
 |---|---|---:|---:|---|
-| ReUI | Main 1.3.2; Core 1.7.0; Options 1.2.0 | 53 | 22 | Загрузчик, хуки, классы, события, настройки, UI, сетки, юниты |
-| ReUI.ActionsPanel | 1.1.3 | 4 | 2 | Контекстная сетка действий и регистрация расширений |
-| ReUI.Construction | 1.3.0 | 0 | 21 | Подмена строительной панели, вкладки, очереди, пассажиры |
-| ReUI.Construction.Templates | 1.0.0 | 4 | 2 | Интеграция и предпросмотр строительных и заводских шаблонов |
-| ReUI.Economy | 1.2.0 | 4 | 2 | Экономическая панель и индикаторы ресурсов |
-| ReUI.Hotbuild | 1.1.0 | 0 | 10 | Строительные сочетания; уже читаемый код |
-| ReUI.MissilePanel | 1.0.0 | 0 | 3 | Панель ракет; уже читаемый код |
-| ReUI.Reclaim | 1.2.1 | 0 | 3 | Интерфейс реклейма; уже читаемый код |
-| ReUI.Score | 1.2.4 | 27 | 3 | Таблица игроков, ресурсы, передача, наблюдение и реплеи |
+| ReUI | Main 1.3.2; Core 1.7.0; Options 1.2.0 | 53 | 22 | Loader, hooks, classes, events, settings, UI, grids, units |
+| ReUI.ActionsPanel | 1.1.3 | 4 | 2 | Context action grid and extension registration |
+| ReUI.Construction | 1.3.0 | 0 | 21 | Construction panel replacement, tabs, queues, cargo |
+| ReUI.Construction.Templates | 1.0.0 | 4 | 2 | Build/factory template integration and previews |
+| ReUI.Economy | 1.2.0 | 4 | 2 | Economy panel and resource indicators |
+| ReUI.Hotbuild | 1.1.0 | 0 | 10 | Build hotkeys; source is already readable |
+| ReUI.MissilePanel | 1.0.0 | 0 | 3 | Missile panel; source is already readable |
+| ReUI.Reclaim | 1.2.1 | 0 | 3 | Reclaim UI; source is already readable |
+| ReUI.Score | 1.2.4 | 27 | 3 | Scoreboard, resources, sharing, observer/replay views |
 
-Результат: **92/92 файла декомпилированы**, **92/92 дизассемблирования побайтно совпали после обратной сборки**, **0 неизвестных инструкций**, **0 ошибок обработки**. Дополнительно все 92 Lua-результата прошли синтаксический разбор luaparse в режиме 5.1; повторная проверка SHA-256 и размеров 160 исходных файлов не обнаружила изменений. `sourceStatus=success` означает успешный выход декомпилятора, а не доказанную эквивалентность выполнения Lua.
+Result: **92/92 files decompiled**, **92/92 disassemblies matched byte-for-byte after round-trip assembly**, **0 unknown instructions**, **0 processing errors**. All 92 Lua outputs also passed luaparse syntax parsing in 5.1 mode; a repeat SHA-256/size check found no change to the 160 source files. `sourceStatus=success` means the decompiler exited successfully; it does not prove Lua execution equivalence.
 
-## Как читать результаты
+## How to Read the Results
 
-- `ReUI/.../*.lua` и аналогичные папки других модов — автоматически восстановленный Lua без оригинальных комментариев и оформления. В начале указан SHA-256 оригинала.
-- Соседние `*.disasm` — функции, константы, локальные переменные, upvalue и инструкции с номерами строк исходной сборки. Это проверяемый нижний уровень, когда запись декомпилятора неоднозначна.
-- `*.error.txt`, если есть, — причина неполного восстановления. Такие файлы нельзя считать восстановленным исходником.
-- [index.md](index.md) — пофайловый указатель результатов. Полные служебные результаты — в manifest.
+- `ReUI/.../*.lua` and similar folders for other mods contain automatically recovered Lua without original comments/formatting. The original SHA-256 is recorded at the top.
+- Adjacent `*.disasm` files list functions, constants, locals, upvalues, and instructions with source-build line numbers. Use them as the verifiable lower-level view when decompiler output is ambiguous.
+- `*.error.txt`, if present, records why recovery was incomplete; it is not a recovered source file.
+- [index.md](index.md) lists each file. Full machine results are in the manifest.
 
-## Что находится внутри ReUI
+## Inside ReUI
 
-### Загрузка, жизненный цикл, классы и события
+### Loading, lifecycle, classes, and events
 
-`ReUI/Core/Modules/Loader.lua` разбирает имена и семантические версии модулей, зависимости и ограничения версий, организует загрузку и callback до/после создания интерфейса. Это инфраструктура ReUI, а не код конкретного HUD.
+`ReUI/Core/Modules/Loader.lua` parses module names and semantic versions, dependencies, and version limits; it manages loading and callbacks before/after UI creation. This is ReUI infrastructure, not code for one HUD.
 
-`ReUI/Core/Core.lua` предоставляет `Hook`, `HookModule`, `OnPreCreateUI`, `OnPostCreateUI`, слабые таблицы, `Class`, `Property` и строковые утилиты. Хуки сначала накапливаются, затем устанавливаются через callback до создания UI. При установке читается текущая функция модуля, callback получает её и сам модуль. После создания UI `Hook` заменяется функцией, выдающей ошибку при поздней регистрации. Поэтому будущую подмену Claret следует регистрировать до создания UI, хотя сами контролы создаются во время штатного построения интерфейса.
+`ReUI/Core/Core.lua` provides `Hook`, `HookModule`, `OnPreCreateUI`, `OnPostCreateUI`, weak tables, `Class`, `Property`, and string utilities. Hooks are collected and then installed through a callback before UI creation. At installation it reads the current module function and passes that function and the module to the callback. After UI creation, `Hook` is replaced with an erroring function for late registration. A future Claret replacement should register before UI creation, while controls themselves are created during normal UI construction.
 
-`Core/Modules/Class.lua` реализует классы и свойства через метатаблицы; `Core/Modules/String.lua` — строковые операции. `Core/Events.lua` содержит события и управление обработчиками. Это отдельный механизм от штатного FAF `ObserveSelection`.
+`Core/Modules/Class.lua` implements classes/properties with metatables; `Core/Modules/String.lua` provides string operations. `Core/Events.lua` contains events and handler management, separate from FAF's native `ObserveSelection`.
 
-### Контейнеры, перечисления и выделение
+### Containers, iteration, and selection
 
-`ECS/ECS.lua`, `ECS/Modules/ComponentContainer.lua`, `ALazyComponentContainer.lua` задают контейнеры компонентов, включая отложенное создание. `LINQ.lua` содержит цепочки перечисления коллекций, фильтрации, преобразования и получения результатов. Эти модули используются сетками и обработчиками контекста; перенос всего LINQ в Claret ради одной отметки не требуется.
+`ECS/ECS.lua`, `ECS/Modules/ComponentContainer.lua`, and `ALazyComponentContainer.lua` provide component containers, including lazy creation. `LINQ.lua` contains collection enumeration, filtering, transformation, and result chains. Grids/context handlers use these modules; there is no need to port all of LINQ into Claret for one marker.
 
-`Selection/Selection.lua` содержит менеджер обработчиков изменения выделения (`Process`, `Get`, `Add`, `Remove`, `GetHandlers`), а `Selection/Options.lua` — его параметры. Это не самостоятельная визуальная замена нижней панели.
+`Selection/Selection.lua` contains a selection-change handler manager (`Process`, `Get`, `Add`, `Remove`, `GetHandlers`); `Selection/Options.lua` contains its settings. This is not a visual replacement for the bottom panel.
 
-### Настройки
+### Settings
 
-`Options/Options.lua` создаёт параметры модулей, связывает их с профилем и обрабатывает старые пути хранения. `OptionRef.lua` адресует значения профиля; `ReactiveOption.lua` предоставляет реактивные значения и события изменения. `OptionsWindow.lua`, `OptionsMenu.lua`, `OptionControl.lua`, `Selector.lua`, `StringSelector.lua`, `TextEdit.lua` реализуют окно и редакторы параметров. Это механизм ReUI; меню Claret по действующим правилам остаётся своим.
+`Options/Options.lua` creates module settings, connects them to the profile, and handles old storage paths. `OptionRef.lua` addresses profile values; `ReactiveOption.lua` provides reactive values and change events. `OptionsWindow.lua`, `OptionsMenu.lua`, `OptionControl.lua`, `Selector.lua`, `StringSelector.lua`, and `TextEdit.lua` implement the window and editors. This is ReUI's mechanism; under current rules, Claret keeps its own menu.
 
-### Интерфейс, масштабирование и сетки
+### UI, scaling, and grids
 
-`UI/UI.lua` и `UI/Controls/Controls.lua` собирают API контролов. `UI/Modules/Layoutable.lua`, `Layouter.lua`, `LayoutFunctions.lua` отвечают за компоновку. `UI/Animation/Animation.lua` и `UI/Color/Color.lua` предоставляют анимацию и работу с цветом; `UI/QoL/Options.lua` задаёт параметры вспомогательного UI.
+`UI/UI.lua` and `UI/Controls/Controls.lua` assemble the control API. `UI/Modules/Layoutable.lua`, `Layouter.lua`, and `LayoutFunctions.lua` handle layout. `UI/Animation/Animation.lua` and `UI/Color/Color.lua` provide animation and color operations; `UI/QoL/Options.lua` defines auxiliary UI settings.
 
-`UI/Views/Views.lua` экспортирует представления: `WindowFrame`, `GlowBorder`, `Button`, `Brackets`, `CollapseArrow`, `EscapeCover`, `StaticScrollable`, `DynamicScrollable`. `UI/Widget/Widget.lua` — отдельная оболочка виджета.
+`UI/Views/Views.lua` exports `WindowFrame`, `GlowBorder`, `Button`, `Brackets`, `CollapseArrow`, `EscapeCover`, `StaticScrollable`, and `DynamicScrollable`. `UI/Widget/Widget.lua` is a separate widget wrapper.
 
-`UI/Views/Grid/Grid.lua` собирает API сеток. В `Modules/` находятся абстракции `AGridItem`, `AItemComponent`, `ASelectionHandler`, шаблон обработчика `HandlerTemplate`, базовые `BaseGridItem`, `BaseGridPanel` и `Grid`. Основная идея для панелей — отделение видимой ячейки от обработчика действия и от компонента, который рисует данные и принимает события. ActionsPanel и Construction используют эту общую основу, но не являются одной панелью.
+`UI/Views/Grid/Grid.lua` assembles the grid API. Its `Modules/` include abstractions `AGridItem`, `AItemComponent`, `ASelectionHandler`, `HandlerTemplate`, and base implementations `BaseGridItem`, `BaseGridPanel`, and `Grid`. The panel design separates the visible cell, action handler, and component that renders data and receives events. ActionsPanel and Construction use the shared foundation but are separate panels.
 
-### Действия, юниты и карта
+### Actions, units, and world view
 
-`Actions/Actions.lua` связывает именованные действия с keymapper FAF и содержит обработку действий над выделением. Это регистрация и исполнение действий, а не визуальная панель ActionsPanel.
+`Actions/Actions.lua` connects named actions to FAF's keymapper and handles actions on selection. It registers and executes actions; it is not the visual ActionsPanel.
 
-`Units/Units.lua`, `Units/Enhancements/Enhancements.lua`, `Units/Modules/Overlay.lua` предоставляют операции над юнитами, цепочки улучшений и оверлеи. В Units есть кеш юнитов с интервалами 10/50 GameTick и `HiddenSelect`: он временно сохраняет командный режим и выделение, включает игнорирование событий выделения, выполняет операцию и восстанавливает состояние. Полный сбор использует `UISelectionByCategory("ALLUNITS", ...)`; это не доказательство доступа к скрытым вражеским данным. Производительность не измерялась.
+`Units/Units.lua`, `Units/Enhancements/Enhancements.lua`, and `Units/Modules/Overlay.lua` provide unit operations, upgrade chains, and overlays. Units includes a cache with 10/50 GameTick intervals and `HiddenSelect`, which temporarily saves command mode/selection, ignores selection events, performs an operation, and restores state. Full collection uses `UISelectionByCategory("ALLUNITS", ...)`; this does not prove access to hidden enemy data. Performance was not measured.
 
-`WorldView/WorldView.lua` оборачивает класс `/lua/ui/controls/worldview.lua`, направляет компоненты через `HandleEvent`, `OnFrame`, `OnUpdateCursor` и уничтожение. `Modules/WorldViewComponent.lua` и `WorldView/Options.lua` задают основу компонентов и параметры. Наличие этого API не доказывает совместимость будущего Claret-оверлея с другими модами без проверки конкретного жизненного цикла.
+`WorldView/WorldView.lua` wraps `/lua/ui/controls/worldview.lua` and routes `HandleEvent`, `OnFrame`, `OnUpdateCursor`, and destruction to components. `Modules/WorldViewComponent.lua` and `WorldView/Options.lua` provide component foundations/settings. This API's existence does not prove a future Claret overlay is compatible with other mods; check the specific lifecycle.
 
-## Отдельные панели семейства
+## Separate Family Panels
 
 ### ReUI.ActionsPanel
 
-`Main.lua` регистрирует расширения через `AddExtension`, запоминает их активность в профиле `ReUIActionsPanel_extensions`, создаёт `ActionsGrid` после создания UI и подписывает её на `gamemain.ObserveSelection`. Положение панели пересчитывается после штатного `gamemain.SetLayout`: она размещается рядом с `construction.controls.constructionGroup`.
+`Main.lua` registers extensions through `AddExtension`, saves active state in `ReUIActionsPanel_extensions`, creates `ActionsGrid` after UI creation, and subscribes it to `gamemain.ObserveSelection`. It recalculates panel position after native `gamemain.SetLayout` and places it by `construction.controls.constructionGroup`.
 
-`Modules/ActionsGrid.lua` загружает обработчики расширений, получает действия для текущего выделения, сортирует их, назначает компоненты ячейкам, обновляет сетку и обрабатывает прокрутку. `Modules/Selector.lua` и `Options.lua` отвечают за выбор расширений и параметры сетки. ActionsPanel не восстанавливает строительные вкладки или очереди вместо Construction.
+`Modules/ActionsGrid.lua` loads extension handlers, gets actions for current selection, sorts them, assigns cell components, updates the grid, and handles scrolling. `Modules/Selector.lua` and `Options.lua` handle extension selection and grid settings. ActionsPanel does not restore Construction tabs or queues.
 
 ### ReUI.Construction.Templates
 
-`Templates.lua` содержит интеграцию шаблонов с Construction; `BuildTemplatePreview.lua` и `FactoryTemplatePreview.lua` — соответствующие виды предпросмотра; `Options.lua` — параметры. Этот мод следует исследовать отдельно при сохранении шаблонов в собственной панели: одной поддержки BuildOptions недостаточно, чтобы заявить полную замену штатных функций.
+`Templates.lua` integrates templates with Construction; `BuildTemplatePreview.lua` and `FactoryTemplatePreview.lua` render previews; `Options.lua` contains settings. Investigate this mod separately if preserving templates in a custom panel: supporting BuildOptions alone is insufficient to claim a complete replacement of native functions.
 
 ### ReUI.Economy
 
-`Main.lua` подменяет `economy.CreateEconomyBar`, создаёт свою EconomyPanel, записывает её в `module.GUI.bg` и `ReUI.UI.Global.EconomyPanel`; обновление подключено через `gamemain.AddBeatFunction`. Хуки ToggleEconPanel, InitialAnimation и SetLayout управляют новой панелью. `Modules/Panel.lua` реализует экономический UI; `Modules/StatusBar.lua` — индикатор ресурса; `Options.lua` — настройки. Это отдельная область HUD, а не часть сетки пассажиров.
+`Main.lua` replaces `economy.CreateEconomyBar`, creates EconomyPanel, stores it in `module.GUI.bg` and `ReUI.UI.Global.EconomyPanel`, and updates through `gamemain.AddBeatFunction`. Hooks for ToggleEconPanel, InitialAnimation, and SetLayout manage the panel. `Modules/Panel.lua` implements the economy UI; `Modules/StatusBar.lua` is a resource indicator; `Options.lua` holds settings. This is a separate HUD area, not part of the cargo grid.
 
 ### ReUI.Score
 
-`Main.lua` подключает мод, `Modules/ScoreBoard.lua` — основную таблицу. `ArmyView.lua`, `ArmyViewsContainer.lua`, `TeamViewsContainer.lua` собирают представления армий и команд. `ResourceDisplay.lua`, `InfoPanel.lua`, `TitlePanel.lua`, `ObserverPanel.lua`, `ReplayDataPanel.lua`, `DataPanelConfig.lua` отвечают за ресурсы, заголовки, сведения, наблюдателей и данные реплея. `ShareManager.lua` содержит управление передачей; `Utils.lua` и `Animations.lua` — вспомогательную логику.
+`Main.lua` loads the mod; `Modules/ScoreBoard.lua` is the main scoreboard. `ArmyView.lua`, `ArmyViewsContainer.lua`, and `TeamViewsContainer.lua` assemble army/team views. `ResourceDisplay.lua`, `InfoPanel.lua`, `TitlePanel.lua`, `ObserverPanel.lua`, `ReplayDataPanel.lua`, and `DataPanelConfig.lua` handle resources, titles, info, observers, and replay data. `ShareManager.lua` handles sharing; `Utils.lua` and `Animations.lua` provide helpers.
 
-`Modules/Layouts/` содержит отдельные рамки для игры и реплея. `Modules/Views/` содержит Border, BorderedButton, BorderedCheckBox, BorderedText, ColoredSlider, ExpandableGroup, ExpandableSelectionGroup и PingAnimation. `Options.lua` — параметры мода. Эти файлы документируются в рамках запрошенного семейства, но не нужны автоматически для замены строительного HUD.
+`Modules/Layouts/` contains separate game/replay frames. `Modules/Views/` contains Border, BorderedButton, BorderedCheckBox, BorderedText, ColoredSlider, ExpandableGroup, ExpandableSelectionGroup, and PingAnimation. `Options.lua` holds mod settings. These files were documented for the requested family, but are not automatically relevant to construction HUD replacement.
 
-## Найденный механизм нижней панели и отметки пассажира
+## Native Construction Panel and Cargo Marker Mechanism
 
-Здесь источник — уже текстовый установленный `mods/ReUI.Construction`, а не результат декомпиляции.
+This section uses readable installed `mods/ReUI.Construction`, not decompiler output.
 
-1. В `Construction.lua:1391` создаётся HookModule для `/lua/ui/game/construction.lua`. Хук `SetupConstructionControl` (около строки 1490) создаёт собственный `ReUI.Construction.Panel(parent)`, записывает его в `module.controls.constructionGroup` и `ReUI.UI.Global.Construction` и возвращает панель. Это настоящая подмена места создания строительного UI.
-2. `OnSelection`, `OnQueueChanged`, `RefreshUI`, `Expand`, `Contract`, `SetLayout`, `updateCommandQueue`, `setIdRelations` направляются в новую панель и её обработчики. Список обработчиков около строк 879–940 разделяет BuildOptions, BuildOptionsFactory, UpgradeChain, SelectedUnits, Enhancements, QueueList, BuildQueue, TransportCargo и CarrierCargo. Вкладки и очереди не сохраняются автоматически от старого UI: их поведение реализовано в соответствующих компонентах.
-3. `Modules/Components/TransportCargo.lua` хранит `cargoUnits` и набор отмеченных юнитов `units`. `AddUnit` одновременно отмечает юнита в этом наборе и вызывает `AddToSessionExtraSelectList`. `SetCargo` также учитывает `HasUnloadCommandQueuedUp`.
-4. Компонент пассажира в `Enable` проверяет `context:Enabled(index)` и вызывает `item:DisplayBPID(id, "down")` для отмеченного пассажира. `Modules/Views/Item.lua` выбирает штатную `_down.dds` текстуру. Видимая отметка встроена в саму ячейку.
-5. Действие `Append unit for transportation` в конце `Construction.lua` получает TransportCargoHandler, добавляет пассажира и вызывает `panel:Refresh()`. Именно связка состояния и перерисовки делает отметку видимой.
-6. `TransportCargoContext:Clear()` вызывает `ClearSessionExtraSelectList`, когда контекст груза активен. Поэтому независимые реализации Claret и ReUI могут затрагивать один сессионный список; совместное владение нужно явно решить перед интеграцией.
+1. `Construction.lua:1391` creates a HookModule for `/lua/ui/game/construction.lua`. The `SetupConstructionControl` hook (around line 1490) creates `ReUI.Construction.Panel(parent)`, stores it in `module.controls.constructionGroup` and `ReUI.UI.Global.Construction`, and returns the panel. This replaces the construction UI creation point.
+2. `OnSelection`, `OnQueueChanged`, `RefreshUI`, `Expand`, `Contract`, `SetLayout`, `updateCommandQueue`, and `setIdRelations` are routed to the new panel/handlers. The handler list around lines 879–940 separates BuildOptions, BuildOptionsFactory, UpgradeChain, SelectedUnits, Enhancements, QueueList, BuildQueue, TransportCargo, and CarrierCargo. Tabs/queues are not automatically retained from the old UI; their behavior is in the corresponding components.
+3. `Modules/Components/TransportCargo.lua` stores `cargoUnits` and a set of marked units, `units`. `AddUnit` marks the unit and calls `AddToSessionExtraSelectList`. `SetCargo` also checks `HasUnloadCommandQueuedUp`.
+4. The cargo component's `Enable` checks `context:Enabled(index)` and calls `item:DisplayBPID(id, "down")` for a marked passenger. `Modules/Views/Item.lua` selects the native `_down.dds` texture. The visible mark is part of the cell itself.
+5. The `Append unit for transportation` action at the end of `Construction.lua` gets TransportCargoHandler, adds the passenger, and calls `panel:Refresh()`. This state + redraw link makes the mark visible.
+6. `TransportCargoContext:Clear()` calls `ClearSessionExtraSelectList` while cargo context is active. Independent Claret/ReUI implementations could affect the same session list; ownership must be agreed before integration.
 
-В FAF3840 (`C:/ProgramData/FAForever/gamedata/lua.nx2`) сверено: штатный `SetupConstructionControl` вызывает `CreateUI`, которая создаёт `controls.constructionGroup`; присутствуют `OnSelection`, `OnQueueChanged`, `RefreshUI`, `SetLayout`. Это подтверждает точку подмены. ReUI.Construction заменяет строительный кластер, но не весь нижний HUD вместе с MFD, приказами и экономикой: в SetLayout он учитывает соседний `ordersControl`. Поэтому формулировку «весь нижний HUD» нельзя считать реализованной одним этим модулем.
+Checked against FAF3840 (`C:/ProgramData/FAForever/gamedata/lua.nx2`): native `SetupConstructionControl` calls `CreateUI`, which creates `controls.constructionGroup`; `OnSelection`, `OnQueueChanged`, `RefreshUI`, and `SetLayout` are present. This confirms the replacement point. ReUI.Construction replaces the construction cluster, not the entire bottom HUD including MFD, orders, and economy: `SetLayout` accounts for neighboring `ordersControl`. Do not describe this single mod as an implemented “entire bottom HUD” replacement.
 
-Практический вывод: предыдущая остановка из-за наличия строительства, очередей и вкладок не доказывала невозможность подмены. Проверенный пример архитектуры есть. Собственную реализацию Claret следует писать заново; отдельно определить охват соседних кластеров и совместимость с включённым ReUI.Construction.
+Practical conclusion: the previous pause because construction, queues, and tabs seemed inseparable did not prove replacement impossible; a verified architectural example exists. Claret should write its own implementation and separately define which neighboring clusters it covers and how it works alongside ReUI.Construction.
 
-## Метод, воспроизведение и ограничения
+## Method, Reproduction, and Limitations
 
-Инструмент: [unluac, fork Jeong-Min-Cho](https://github.com/Jeong-Min-Cho/unluac), commit `744c8149d93f7739f17b7f0f506822fb93ba7193`, версия CLI `1.2.3.569`. Собран локально из Java-исходников; dev-only каталог `.tools/unluac/`. Исходный код декомпилятора не изменён.
+Tool: [unluac, Jeong-Min-Cho fork](https://github.com/Jeong-Min-Cho/unluac), commit `744c8149d93f7739f17b7f0f506822fb93ba7193`, CLI version `1.2.3.569`. Built locally from Java source in dev-only `.tools/unluac/`; decompiler source was not changed.
 
-У всех найденных чанков заголовок `1b4c75610501010404040608090904`: LuaPlus 5.01, little-endian, четырёхбайтовые int/size_t/instruction/number, поля инструкций 6/8/9/9 бит. `.tools/luaplus-adapt.cjs` меняет только заголовок временной копии на стандартный Lua 5.0. `.tools/luaplus.opmap` задаёт таблицу инструкций: базовые операции 0–15, затем операции Lua 5.0 со сдвигом на четыре начиная с UNM. Соответствие проверялось по восстановленному ActionsPanel и его доступному читаемому исходнику; это не независимый аудит VM движка.
+All recovered chunks had header `1b4c75610501010404040608090904`: LuaPlus 5.01, little-endian, four-byte int/size_t/instruction/number, instruction fields of 6/8/9/9 bits. `.tools/luaplus-adapt.cjs` changes only the temporary copy's header to standard Lua 5.0. `.tools/luaplus.opmap` maps opcodes: base operations 0–15, then Lua 5.0 operations shifted by four starting at UNM. Mapping was checked against recovered ActionsPanel and its readable source; this is not an independent engine VM audit.
 
-Неустановленные операции 16–20 намеренно не получают догадочных имён: при их обнаружении Lua-вывод пропускается и фиксируется ошибка. Проверка обратной сборки выполняется для дизассемблирования каждой нормализованной копии и сравнивает все байты. Она доказывает полноту структурного чтения, но не эквивалентность восстановленных высокоуровневых условий и циклов. Генерируемые `for ... in table, nil do` следует читать с учётом LuaPlus, а не переносить в стандартный Lua.
+Unknown operations 16–20 intentionally receive no guessed names: on detection Lua output is skipped and an error recorded. Round-trip checks disassemble every normalized copy and compare every byte. This proves structural reading completeness, not equivalence of recovered high-level conditions/loops. Generated `for ... in table, nil do` should be read as LuaPlus, not copied into standard Lua.
 
-Повторный запуск из проекта:
+Repeat from the project root:
 
-```powershell
-node .tools/reui-decompile.cjs             # новый снимок; перезаписывает manifest
-node .tools/reui-decompile.cjs --decompile # восстановление и обратная сборка
-node .tools/reui-decompile.cjs --verify    # SHA-256 и размеры исходных файлов
-node .tools/reui-index.cjs                # указатель и синтаксическая проверка
+```sh
+node .tools/reui-decompile.cjs             # new snapshot; overwrites manifest
+node .tools/reui-decompile.cjs --decompile # recovery and round-trip assembly
+node .tools/reui-decompile.cjs --verify    # SHA-256 and source sizes
+node .tools/reui-index.cjs                # index and syntax check
 ```
 
-После нового снимка результаты прежнего запуска в manifest сбрасываются; требуется повторить `--decompile`. Для сборки инструмента: из `.tools/unluac/src` выполнить `javac -d ../build unluac/Main.java`. В текущем runner явно указан установленный JDK 21; это инструмент разработчика, не зависимость Claret.
+After a new snapshot, previous run results in the manifest are reset; rerun `--decompile`. To build the tool, run `javac -d ../build unluac/Main.java` from `.tools/unluac/src`. The current runner specifies installed JDK 21. This is a developer tool, not a Claret game dependency.
 
-Комментарии, исходное форматирование и часть записей высокого уровня компиляция теряет. Код не запускался в игре; визуал, масштабирование, производительность, совместимость модов и полная семантическая эквивалентность не проверены. Восстановленные файлы нельзя поставлять как готовую игровую замену.
+Compilation removes comments, source formatting, and some high-level structure. Code was not run in-game. Visual appearance, scaling, performance, mod compatibility, and full semantic equivalence are unverified. Do not ship recovered files as a ready-made game replacement.
 
-## Авторы и лицензии
+## Authors and Licenses
 
-Источники исследования: установленные моды из manifest и локальные читаемые справочные версии `Context/sources/ReUI`, `Context/sources/ReUI.ActionsPanel`; репозиторий, заявленный авторами: [4z0t/FAF-UI-Mods](https://github.com/4z0t/FAF-UI-Mods). По манифестам автор ReUI — 4z0t; у Construction и Score указаны 4z0t, HotCheese; у MissilePanel — Nuggets. Локальное уведомление MIT (2022, 4z0t) сохранено в `LICENSE.reference.txt`; область его действия на конкретные установленные сборки и ресурсы отдельно не установлена. Это исследовательская копия, не разрешение на перенос кода в Claret.
+Research sources: installed mods from the manifest and local readable reference copies `Context/sources/ReUI` and `Context/sources/ReUI.ActionsPanel`; repository claimed by the authors: [4z0t/FAF-UI-Mods](https://github.com/4z0t/FAF-UI-Mods). Manifests list 4z0t as ReUI author; Construction and Score list 4z0t and HotCheese; MissilePanel lists Nuggets. A local MIT notice (2022, 4z0t) is preserved in `LICENSE.reference.txt`; its scope for specific installed builds/assets is undetermined. This research copy does not grant permission to copy code into Claret.
 
-unluac: MIT, copyright 2011–2020 tehtmi, portions copyright 2014 Thomas Klaeger; уведомление остаётся в `.tools/unluac/license.txt`. Атрибуция также внесена в `Credits and more/CREDITS.md`.
+unluac: MIT, copyright 2011–2020 tehtmi, portions copyright 2014 Thomas Klaeger; notice retained in `.tools/unluac/license.txt`. Attribution is also recorded in `Credits and more/CREDITS.md`.

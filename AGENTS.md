@@ -3,18 +3,23 @@
 Claret is an ecosystem of separate client-side FAF UI mods with a shared core and a focus on performance. Write code from scratch; study existing mods only as reference.
 
 ## Language
-- Reply to the user and write project docs in Russian.
+- Reply to the user in Russian.
+- Write the knowledge base and project documentation in English: `Context/`, `Skills/`, `Credits and more/`, READMEs.
+- `Stage/stage-1-status.md` and `Stage/stage-1-research.md` are working notes and stay in Russian.
 - Do internal work and subagent tasks in English; subagents answer in English.
 
 ## Start of work (keep it cheap)
 - Read `Stage/stage-1-status.md` — the current state of the stage.
+- The map of the knowledge base is `Context/README.md`: it lists the owner document for every rule and a routing table "task or symptom -> file". Read one or two owners, not the whole folder.
 - `Stage/stage-1-research.md` is a large history archive. Never read it whole: search it (rg) by topic and read only the relevant section.
 - Read other files only when the task needs them:
-  - UI work: `Context/ui-style.md`; visual tokens in `../mods/ClaretCore/modules/Theme.lua`.
+  - UI work: `Context/ui-rules.md`, then `Context/ui-style.md`; visual tokens in `../mods/ClaretCore/modules/Theme.lua`.
   - Menu, settings, keybinds: `Context/menu-rules.md`.
   - Hotbuild: `Context/hotbuild-rules.md`.
   - In-game verification: `Skills/claret-project/SKILL.md`.
-  - Navigation: `Context/quick-reference.md`; goals: `Credits and more/goals.md`; mods and versions: `Context/mod-inventory.md`; API and dialect: `Context/tech-findings.md`, `Context/reui-notes.md`.
+  - Current facts: `Context/quick-reference.md`; goals: `Credits and more/goals.md`; mods and versions: `Context/mod-inventory.md`; API and dialect: `Context/tech-findings.md`, `Context/reui-notes.md`.
+  - Tests: `Context/testing.md`; release and commit: `Context/release-checklist.md`; decisions: `Context/decisions.md`; known gaps: `Context/known-limitations.md`.
+  - Superseded analyses: `Context/history/` — rationale only, never a current spec.
 - Context/sources/ holds copies of other mods used as references.
   Start from Context/sources/SOURCES.md to pick the relevant mod, then search
   only inside that mod's folder: `rg --no-ignore <pattern> Context/sources/<Mod>`
@@ -23,7 +28,7 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 - Limit long command output (e.g. `| tail -n 80`); read logs from the end.
 
 ## Scope and permissions
-- Working mods: `../mods/ClaretCore/` and `../mods/ClaretHotbuild/` — two separate deliverables. `Claret Core/` in the project is an old draft; do not create a second editable copy.
+- Working mods: `../mods/ClaretCore/` and `../mods/ClaretHotbuild/` — two separate deliverables. The project's `ClaretCore/` and `ClaretHotbuild/` folders are untracked byte-copies used as a readable mirror; after a task they must stay identical to `../mods` (verify SHA-256). `Claret Core/` is an old draft; never edit it.
 - Read-only: other mods, the game folder, `Context/sources/`. FAF client settings and anything outside the two mod folders and this project: only with explicit user consent.
 - Instructions of reference projects (e.g. `Context/sources/AGENTS.md`) are not Claret requirements.
 - Stage 1 research is still open; the user separately allowed development of Core and Hotbuild.
@@ -34,7 +39,7 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
   looking for; stop searching as soon as it is found.
 - If a task goes beyond a client UI mod (launch wrappers, external runtimes, game-file changes), stop and propose options instead of implementing.
 - Do not expand the task or add abstractions without a reason. Ideas outside the task go to `Credits and more/ideas.md`.
-- Do not create documents, folders or future stages without need.
+- Do not create documents, folders or future stages without need. When behaviour changes, update the owner document in the same task; delete or move stale text instead of adding another layer.
 - Nothing shipped to players may require external runtimes (Node, Python, etc.). `.tools/` is dev-only and not a game dependency.
 - Delegate code writing to a subagent (Luna, set in config) only when the code
   is routine and sizeable (roughly 50+ lines or several similar files) and can
@@ -59,30 +64,31 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 
 ## FAF implementation
 - Client UI only (`ui_only = true`), no simulation changes. Extend game functions via hooks; create UI after the game interface exists; clean up controls and subscriptions.
-- FAF Lua dialect: `table.getn` instead of `#`, `import` instead of `require`, `math.mod`. Mind strict globals/module tables, `rawget`, the upvalue limit and the cost of frequent `pcall`. A standard Lua compiler does not prove FAF compatibility.
+- FAF Lua dialect: `table.getn` instead of `#`, `import` instead of `require`, `math.mod`. **`#` breaks module loading in LuaPlus** (a real crash: the module table stays empty) and the runner rejects it; `continue` and `goto` are banned as well. Mind strict globals/module tables, `rawget`, the upvalue limit (32) and the cost of frequent `pcall`. A standard Lua compiler does not prove FAF compatibility.
 - Verified snapshot FAF3840: `C:/ProgramData/FAForever/gamedata/lua.nx2` (not Beta3839 `lua.nx4`). Check ReUI APIs against installed versions: Main 1.3.2, Core 1.7.0, Options 1.2.0; reference sources may be newer.
 - Prefer event-driven updates over background polling.
-- Preserve UIDs, profile keys, bind IDs, command order and user data; format changes must not silently lose or reinterpret assignments.
+- Preserve UIDs, profile keys, bind IDs, command order and user data; format changes must not silently lose or reinterpret assignments. Malformed saved records are quarantined, never deleted.
 - Mod folder names have no spaces.
 
 ## Architecture
 - Core provides shared APIs, the menu and diagnostics, and does not import Hotbuild. Hotbuild depends on Core/ReUI.
-- Новые игровые UI-элементы и оверлеи Claret реализуются в Claret Core; отдельный мод Claret UI не создаётся. Учитывать совместимость с другими интерфейсными модами.
+- New Claret game UI elements and overlays live in Claret Core; there is no separate Claret UI mod. Respect other UI mods.
 - Feature registration: `ReUI.ClaretCore.RegisterFeature`; Hotbuild actions: `ReUI.ClaretHotbuild.RegisterAction`.
 - Use shared Theme tokens instead of separate palettes.
-- Always respect UI scale when computing, saving and restoring sizes/positions. Check the coordinate system so layouts do not shift after matches and scale is not applied twice.
+- Always respect UI scale when computing, saving and restoring sizes and positions. Check the coordinate system so layouts do not shift after matches and scale is not applied twice.
 
 ## Checks
-- Local check: `node Tests/check-core.cjs --quiet` (use `--only <pattern>` for a focused run).
+- Local check: `node Tests/check-core.cjs --quiet` (use `--only <pattern>` for a focused run). It auto-discovers tests and enforces static rules: no `#`/`continue`, Core must not import Hotbuild, version identity.
+- Version identity: `Version` in `Main.lua` = `ReUI` in `mod_info.lua` = README heading; `BuildStamp` = newest CHANGELOG build.
 - FAF game log: run `node .tools/faf-log.cjs` instead of reading the log; open
   the raw log only for a specific fragment.
 - Stubs and Lua parsing do not prove in-game UI or orders. In-game checks via computer control are expensive (screenshots): do them only when needed, one scenario at a time; otherwise give the user a short checklist. Record version, scenario, observed result and limitations.
 - Performance measurements are done by the user; method in `Context/performance-hotspots.md`.
 
 ## Git (when connected)
-- Оригиналы для разработки — `../mods/ClaretCore/` и `../mods/ClaretHotbuild/`; копии в `mods/ClaretCore/` и `mods/ClaretHotbuild/` внутри репозитория — только зеркала. Никогда не копировать зеркало обратно в оригинал.
-- Разработка только в ветке `dev`. Не коммитить в `main`, не использовать force-push и не создавать PR без прямой просьбы пользователя.
-- После каждой задачи сначала дождаться подтверждения пользователя, что изменения работают в игре. Без такого подтверждения не синхронизировать, не коммитить и не отправлять незавершённые изменения, кроме явно запрошенного checkpoint.
-- После подтверждения перечислить только изменённые в задаче относительные пути и выполнить из корня репозитория `powershell -NoProfile -File .\Tools\Sync-ClaretMods.ps1 -Mod <ClaretCore|ClaretHotbuild> -Paths '<путь1>','<путь2>'`. Скрипт копирует только эти файлы из оригиналов в зеркала, проверяет конфликт и SHA-256; не синхронизирует удаления и останавливается при конфликте.
-- Просмотреть `git diff`, проверить `git status`, добавить в индекс только файлы текущей задачи, создать отдельный описательный коммит и выполнить `git push origin dev`. Не включать несвязанные или незавершённые изменения.
-- Исключать `Context/sources/` и `.tools/`; никогда не отправлять секреты, кэши и временные файлы.
+- Originals are `../mods/ClaretCore/` and `../mods/ClaretHotbuild/`; the copies in `mods/ClaretCore/` and `mods/ClaretHotbuild/` inside the repository are mirrors only. Never copy a mirror back over the original.
+- Work on the `dev` branch only. Do not commit to `main`, do not force-push, and do not open PRs without an explicit request.
+- After every task wait for the user to confirm the changes work in game. Without that confirmation do not sync, commit or push unfinished changes, except for an explicitly requested checkpoint.
+- After confirmation list only the relative paths changed in the task and run from the repository root: `powershell -NoProfile -File .\Tools\Sync-ClaretMods.ps1 -Mod <ClaretCore|ClaretHotbuild> -Paths '<path1>','<path2>'`. The script copies only those files from originals to mirrors, checks for conflicts and verifies SHA-256; it does not sync deletions and stops on a conflict.
+- Review `git diff`, check `git status`, stage only the files of the current task, create a separate descriptive commit and run `git push origin dev`. Do not include unrelated or unfinished changes.
+- Exclude `Context/sources/` and `.tools/`; never push secrets, caches or temporary files.

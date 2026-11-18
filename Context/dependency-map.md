@@ -1,8 +1,12 @@
-# Зависимости: первый проход
+# Dependencies
 
-Дата проверки: 2026-11-10. Первый проход этапа 1; полнота исследования не заявляется.
+Review date: 2026-11-10; Claret edges added 2026-11-18. This is not claimed to be a complete survey.
 
-Факт: таблица ниже содержит строки ограничений версий, найденные в читаемом коде. Это не полный граф: optional-проверки, строки в комментариях и зависимости внутри bytecode требуют ручной проверки. Стрелки схемы означают использование, не порядок загрузки.
+## Claret edges (current)
+
+- ClaretHotbuild -> ClaretCore: Localization, RegisterFeature, RegisterSettingsSection, IsMenuOpen, IsKeyCaptureActive, AppendTransportCargo, CreateStrategicRing; Hotbuild also hooks ClaretCore/modules/MenuKey.lua#Open.\n- ClaretCore -> ReUI (Core, UI, Options); ClaretHotbuild -> ReUI (Core, UI, Options).\n- Rule: Core never imports Hotbuild; the test runner checks this statically.\n- Stored data: ClaretHotbuild (presets v1), ClaretHotbuildContexts (v1–3), ClaretHotbuildKeyboard (v1–2, pairs) plus FAF UserKeyMap, UserKeyDebugKeyMap, UserKeyActions, keyDescriptions as the engine mirror.
+
+Fact: the table below lists version constraints found in readable code. This is not a complete graph: optional checks, strings in comments, and dependencies inside bytecode need manual review. Arrows in the diagram indicate use, not load order.
 
 ```mermaid
 flowchart LR
@@ -10,13 +14,13 @@ flowchart LR
   Economy --> ReUI
   EUT --> UMT
   Beer --> UMT
-  ReUI --> Core[Core: хуки и жизненный цикл]
-  ReUI --> Options[Options: настройки]
+  ReUI --> Core[Core: hooks and lifecycle]
+  ReUI --> Options[Options: settings]
 ```
 
-Основания схемы: EconomyMiddle/mod_info.lua (описание), ReUI.Economy/Main.lua, EUT/modules/mexmanager.lua, Beer/modules/mexes.lua; ReUI/Core/Core.lua и ReUI/Options/Options.lua из отдельной копии исходников. Схема предварительная.
+Diagram sources: EconomyMiddle/mod_info.lua (description), ReUI.Economy/Main.lua, EUT/modules/mexmanager.lua, Beer/modules/mexes.lua; ReUI/Core/Core.lua and ReUI/Options/Options.lua from a separate source copy. The diagram is provisional.
 
-| Мод-потребитель | Найденное ограничение | Файл |
+| Consumer mod | Constraint found | File |
 |---|---|---|
 | ACUEnhancements | ReUI.ActionsPanel >= 1.1.0 | Context/sources/MainMods/ACUEnhancements/ACUEnhancements.lua |
 | ACUEnhancements | ReUI.LINQ >= 1.4.0 | Context/sources/MainMods/ACUEnhancements/ACUEnhancements.lua |
@@ -89,8 +93,8 @@ flowchart LR
 | SplitGroupScatter | ReUI.Core >= 1.0.0 | Context/sources/MainMods/SplitGroupScatter/Main.lua |
 | TeamMouse | ReUI.Options >= 2.0.0 | Context/sources/MainMods/TeamMouse/Main.lua |
 
-## Хуки gamemain.lua
-Подтверждено: найдено 14 файлов. Само число хуков не доказывает конфликт.
+## `gamemain.lua` Hooks
+Confirmed: 14 files found. The number of hooks alone does not prove a conflict.
 - `Context/sources/MainMods/ASE/hook/lua/ui/game/gamemain.lua`
 - `Context/sources/MainMods/Beer/hook/lua/ui/game/gamemain.lua`
 - `Context/sources/MainMods/Bi4UI.StrategicRings/hook/lua/ui/game/gamemain.lua`

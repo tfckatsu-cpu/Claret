@@ -1,38 +1,52 @@
-# Технические выводы: первый проход
+# Technical Findings: Initial Pass
 
-Дата проверки: 2026-11-10. Версии локальных модов — в mod-inventory.md. Официальная документация ниже относится к опубликованному состоянию сайта, не является снимком FAF 3840.
+Review date: 2026-11-10. Local mod versions are in `mod-inventory.md`. Official documentation below describes the published website, not a snapshot of FAF 3840. Engine facts verified against FAF3840 on 2026-11-18 are marked **verified**.
 
-## Подтверждено
-- В MainMods один манифест ui_only=false: CinematicsMod v1. `hook/lua/simInit.lua` оборачивает BeginSession и вызывает SimConExecute; `hook/lua/system/Blueprints.lua` меняет LODCutoff пропов и юнитов. Это требует отдельного рассмотрения вне клиентского Core. Назначение — повышение дальности детализации; фактическое влияние на FPS не измерено.
-- Создать своё окно настроек и пункт игрового меню возможно по существующему примеру: ReUI/Options/Options.lua использует tabs.AddToMenu; ReUI/Options/Modules/OptionControls/OptionsWindow.lua реализует окно. Это доказательство возможности в соответствующей версии ReUI, не проверка будущего Claret в игре. Собственный пункт Claret потребует изучить сам tabs.lua FAF 3840 и не перезаписывать меню целиком.
-- UMT v13 уже предоставляет общий кеш юнитов: MainMods/UMT/modules/units.lua. Он временно меняет выделение на ALLUNITS, сохраняет/восстанавливает командный режим и выделение, обновляет кеш по GameTick, сбрасывает при смене армии. Это не доступ к произвольным скрытым вражеским данным.
-- EUT/modules/mexmanager.lua использует UMT.Units.Get, Beer/modules/mexes.lua импортирует тот же сервис. У этих потребителей обнаружен общий механизм, а не два независимых полных сканирования.
-- Найдены 14 файлов hook/lua/ui/game/gamemain.lua; список в dependency-map.md. Количество файлов не определяет порядок и не доказывает конфликт. Проверять конкретные функции, вызовы предыдущих обработчиков, return и cleanup.
+## LuaPlus dialect (verified 2026-11-18)
 
-Факт: FAF3840, `C:/ProgramData/FAForever/gamedata/lua.nx2` (проверено 2026-11-14), использует `DiskGetFileInfo(path)` как проверку наличия файла в виртуальной файловой системе: см. `lua/ui/uiutil.lua` (`UIFile`) и кэширование результата в `lua/userInit.lua`. Установщик Nunito копирует `Nunito-Regular.ttf` и `Nunito-SemiBold.ttf` в каталог `fonts` игры; в UI проверяем оба пути `/fonts/...` и показываем подсказку, если не найден любой из них. Доступность этих двух файлов проверяется при создании окна после `OnPostCreateUI`; реальный вывод в FAF ещё не проверен.
+- **`#` is not a length operator.** The official syntax page treats it as a comment marker, and a real crash confirmed it: `ContextModel.lua` with `result[#result+1]` failed to load, the module table stayed empty, and `Runtime.Create` died with `access to nonexistent global variable "Create"`. Use `table.getn` / `table.insert`. The test runner rejects `#` statically.
+- `continue` is banned by the project and the runner, even though the syntax page lists it; do not rely on it.
+- No `goto`, no `//`; Lua 5.0-style `math.mod`.
+- Upvalue limit per function: **32** (enforced by the KeyboardEditor test; Fengari adds `_ENV`, which does not exist in LuaPlus).
+- Module tables are strict: reading a missing field raises `access to nonexistent global variable <name>`. Export every public function explicitly.
+- `math.huge` may be absent (the menu test stub documents this) — use large literals or `1/0`.
+- `import` returns the module environment; lazily load heavy modules, but keep `Runtime` imports at file scope where the hooks need them.
 
-## Исправление справочных утверждений
-Факт: официальная [документация синтаксиса FAF](https://faforever.github.io/fa/development/start-here/lua-syntax) описывает LuaPlus 5.01, continue, !=, битовые &, |, сдвиги; ^ означает XOR, степень — math.pow. Следовательно, запрет битовых операторов в sources/AGENTS.md ошибочен как описание движка. Рекомендация избегать специального синтаксиса ради внешних инструментов — отдельный вопрос. # описан как начало комментария, а не оператор длины.
-Источник о разделении доступных библиотек: [официальная документация](https://faforever.github.io/fa/development), раздел Specifics to the Lua environment. io/os ограничены фазой инициализации; нельзя проектировать обычную файловую конфигурацию UI как в настольном Lua.
+## Confirmed
 
-## Утверждения сообщества: текущий статус
-| Утверждение | Статус | Почему |
+- One MainMods manifest has `ui_only=false`: CinematicsMod v1. `hook/lua/simInit.lua` wraps BeginSession and calls SimConExecute; `hook/lua/system/Blueprints.lua` changes LODCutoff for props and units. This needs separate consideration outside the client Core. Its stated purpose is increased detail distance; actual FPS impact has not been measured.
+- It is possible to create a settings window and an in-game menu item using an existing example: ReUI/Options/Options.lua uses tabs.AddToMenu; ReUI/Options/Modules/OptionControls/OptionsWindow.lua implements the window. This proves the capability in the corresponding ReUI version, not that future Claret behavior works in-game. For a Claret menu item, inspect FAF 3840's own tabs.lua and do not replace the entire menu.
+- UMT v13 already provides a shared unit cache: MainMods/UMT/modules/units.lua. It temporarily changes selection to ALLUNITS, saves/restores command mode and selection, updates the cache on GameTick, and resets on army change. This does not grant access to arbitrary hidden enemy data.
+- EUT/modules/mexmanager.lua uses UMT.Units.Get, and Beer/modules/mexes.lua imports the same service. These consumers share a mechanism; they are not two independent full scans.
+- Fourteen `hook/lua/ui/game/gamemain.lua` files were found; see `dependency-map.md`. File count does not determine order or prove conflict. Check the specific functions, calls to previous handlers, return values, and cleanup.
+
+Fact: FAF3840, `C:/ProgramData/FAForever/gamedata/lua.nx2` (checked 2026-11-14), uses `DiskGetFileInfo(path)` to check whether a file exists in the virtual filesystem: see `lua/ui/uiutil.lua` (`UIFile`) and result caching in `lua/userInit.lua`. The Nunito installer copies `Nunito-Regular.ttf` and `Nunito-SemiBold.ttf` to the game's `fonts` directory; the UI checks both `/fonts/...` paths and shows a notice if either is missing. Availability of the two files is checked when the window is created after `OnPostCreateUI`; actual rendering in FAF is not yet checked.
+
+## Corrections to Reference Claims
+
+Fact: the official [FAF syntax documentation](https://faforever.github.io/fa/development/start-here/lua-syntax) describes LuaPlus 5.01, `continue`, `!=`, bitwise `&`, `|`, and shifts; `^` means XOR, and exponentiation uses `math.pow`. Therefore the ban on bitwise operators in sources/AGENTS.md is incorrect as a description of the engine. Avoiding special syntax for external tools is a separate concern. `#` is described as the start of a comment, not a length operator.
+
+Source on available library differences: the [official documentation](https://faforever.github.io/fa/development), section “Specifics to the Lua environment.” `io`/`os` are restricted to initialization; do not design ordinary UI file configuration as in desktop Lua.
+
+## Community Claims: Current Status
+
+| Claim | Status | Why |
 |---|---|---|
-| В очередь можно только добавлять в конец | Неизвестно | Чтение GetCommandQueue и действия с factory queue не доказывают ограничений очереди приказов юнита; нужен API движка конкретной версии |
-| UI не может отдавать реклейм на пропы/здания | Неизвестно | AOE умеет включить режим реклейма, но это не доказательство программной выдачи объектного приказа |
-| Информация о врагах доступна только по hover | Неизвестно в такой абсолютной форме | Нужна проверка API, Sync и правил видимости; нельзя распространять сведения о собственных юнитах на врагов |
-| Информация союзников требует патча exe | Неизвестно | Возможности зависят от вида данных и версии движка; Mouse/TeamMouse передают часть сведений сами |
-| Иконки нельзя менять после загрузки | Неизвестно | Нужно различать стратегические иконки, картинки кнопок UI и текстуры 3D-юнитов; утверждение не проверено |
-| nil безопасен, лимит 32 upvalue, GetFrame(1) вызывает вылет | Неизвестно для FAF 3840 | Самоотчёт друга не заменяет документацию/исходники конкретного движка и проверку |
+| Orders can only be appended to the end of the queue | Unknown | Reading GetCommandQueue and factory-queue actions does not prove limits on a unit's order queue; need the engine API for the specific version |
+| UI cannot issue reclaim orders on props/buildings | Unknown | AOE can enter reclaim mode, but that does not prove programmatic issuance of an object-targeted order |
+| Enemy information is available only on hover | Unknown in this absolute form | Need to check API, Sync, and visibility rules; do not generalize data about own units to enemies |
+| Allied information requires an exe patch | Unknown | Capabilities depend on data type and engine version; Mouse/TeamMouse transmit some information themselves |
+| Icons cannot be changed after loading | Unknown | Distinguish strategic icons, UI button images, and 3D unit textures; this claim has not been verified |
+| nil is safe, the upvalue limit is 32, and GetFrame(1) crashes | Unknown for FAF 3840 | A friend's report does not replace documentation/source for the specific engine or verification |
 
-## Рекомендации по общему обходу
-Общий кеш оправдан только для одинаковой области данных и допустимой задержки. Хранить список потребителей, останавливать сканирование без них, сбрасывать по смене армии, ограничивать работу кадра и удалять погибшие объекты. Отдельно измерять цену получения списка и цену каждого потребителя. Не объединять сетевые курсоры, hovered unit и полный список собственных юнитов в один частый опрос.
+## Shared-Scan Recommendations
 
-## Ещё исследовать
-Загрузчик и хуки самого FAF 3840, Prefs/меню/Sync/keymapper, API выдачи приказов, ограничения разведданных, иконки и историю совместимости. Исходников игры в предоставленной папке нет; онлайн-проверка началаcь с официальной документации. Не считать эти вопросы закрытыми.
+A shared cache is justified only for the same data scope and acceptable staleness. Track consumers, stop scanning when none need it, reset on army change, bound per-frame work, and remove dead objects. Measure list retrieval separately from each consumer's work. Do not combine network cursors, hovered unit, and the full list of own units into one frequent poll.
 
-- FAF UI Lua (FAF3840, checked 2026-11-13): GetSystemTimeSeconds() is available
-  for timing; GetSystemTimeSecondsOnlyForProfileUse does not exist in UI context
-  (strict-globals error); `os` is unavailable. In Claret modules, rawget(_G, ...)
-  may not see engine globals — use normal access guarded by pcall.
-  Perf probes: ClaretHotbuild/modules/OpenPerf.lua, gated by probeEnabled.
+## Further Research
+
+Review the FAF 3840 loader and hooks, Prefs/menu/Sync/keymapper, order-issuance API, intelligence restrictions, icons, and compatibility history. Game source is not available in the supplied folder; online review began with official documentation. Do not consider these topics resolved.
+
+- FAF UI Lua (FAF3840, checked 2026-11-13): `GetSystemTimeSeconds()` is available for timing; `GetSystemTimeSecondsOnlyForProfileUse` does not exist in UI context (strict-globals error); `os` is unavailable. In Claret modules, `rawget(_G, ...)` may not see engine globals — use normal access guarded by `pcall`. Performance probes: `ClaretHotbuild/modules/OpenPerf.lua`, gated by `probeEnabled`.
+- `SimCallback` reaches the simulation: `RingWithFabricators` and `RingWithStorages` are implemented in `lua/SimCallbacks.lua` (verified 2026-11-18). A `ui_only` mod may call them; the earlier "missing sim callbacks" finding was wrong.
+- Profile data lives under `UIModsOptions` (ReUI options) and the mod keys (`ClaretHotbuild`, `ClaretHotbuildContexts`, `ClaretHotbuildKeyboard`); FAF key tables are `UserKeyMap`, `UserKeyDebugKeyMap`, `UserKeyActions`, `keyDescriptions`.

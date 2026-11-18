@@ -1,14 +1,15 @@
-# Цели проекта
+# Project goals
 
-## Проблемы
-- Слишком много отдельных модов, они разрознены
-- Моды иногда конфликтуют между собой
-- Частые проверки в некоторых модах роняют производительность
+## Problems
 
-## Главная цель
-Единая экосистема вместо набора отдельных модов:
-доработанные функции и исправленные проблемы (в первую очередь производительность).
+- Too many separate mods; they are fragmented.
+- Mods sometimes conflict with each other.
+- Frequent checks in some mods hurt performance.
 
-## Хочу
-- Единые стили интерфейса, применяющиеся ко всему сразу
+## Main goal
 
+One ecosystem instead of a set of separate mods: improved features and fixed problems, performance first.
+
+## Wants
+
+- Unified interface styles, applied everywhere at once.

@@ -1,84 +1,72 @@
-# Предварительные заметки (из открытых источников)
+# Preliminary Notes from Public Sources
 
-**Статус:** собрано из публичных страниц (вики FAF, форум FAF, страницы репозитория), без доступа к твоим модам и без чтения исходников.
-Всё ниже нужно проверять по коду и в игре. Это ускоряет этап 1, но не заменяет его.
+**Status:** translated/reorganized from preliminary notes gathered from public pages (FAF wiki, forum, repository pages). These notes were written before inspecting the user's mods or source code. Treat all claims as leads only and verify them against current code and in-game behavior. They were intended to speed up Stage 1, not replace it.
 
-Источники:
-- Вики FAF: Development / Modding / Creating UI Mods (wiki.faforever.com)
-- Репозиторий ReUI: github.com/4z0t/FAF-UI-Mods (README и сводка из агрегатора)
-- Форум FAF: обсуждения UI-модов 4z0t и мода на кастомные хоткеи
+Sources named in the original research: FAF wiki pages on Development/Modding/Creating UI Mods; `4z0t/FAF-UI-Mods` README and an aggregator summary; FAF forum discussions about 4z0t UI mods and custom hotkeys.
 
----
+## 1. FAF UI Mod Documentation
 
-## 1. Что говорит официальная вики FAF про UI-моды
+### Entry points and hooks
 
-### Точки входа и хуки
-- Главная точка входа для UI-мода: функция `CreateUI` в `gamemain.lua`. Она вызывается, когда игра закончила загрузку.
-- Для более ранних фаз можно хукнуть `CreateWldUIProvider` в `gamemain.lua`. `StartGameUI` хукнуть нельзя, потому что `uimain.lua` загружается ещё во фронтенде.
-- Хук работает как **конкатенация файлов**: твой код дописывается к оригиналу. Поэтому номера строк в сообщениях об ошибках могут выходить за конец твоего файла. Вики советует держать код в отдельном модуле, а в хуке оставлять только `import` и вызов.
-  (Совпадает с заметками друга в `friend-notes.md`.)
+- The wiki identifies `CreateUI` in `gamemain.lua` as the main entry point after game loading.
+- For an earlier phase, it says to hook `CreateWldUIProvider` in `gamemain.lua`. It says `StartGameUI` cannot be hooked because `uimain.lua` loads in the frontend.
+- Hooks were described as file concatenation: mod code is appended to the original, so error line numbers can extend past the hook file. The wiki recommends keeping implementation in a separate module and leaving only `import` plus a call in the hook. The friend notes in `friend-notes.md` report the same behavior.
 
-### Устойчивость к ошибкам (важно для Core как платформы)
-- Если в хуке инициализации (вроде `CreateUI`) возникает ошибка, дальнейшая инициализация обрывается, в том числе **код других модов**. Вики рекомендует оборачивать вызов своего кода в `pcall` и писать предупреждение в лог.
-- Ошибки при `import` ломают файл целиком. Поэтому в модуле не стоит выполнять сложные действия при загрузке, лучше ленивая инициализация через функцию-получатель.
-- Вывод для Core: каждый подключаемый модуль должен быть изолирован, чтобы ошибка чужого модуля не ломала остальное. Это согласуется с замечанием друга про окно настроек, которое падает целиком из-за одной регулировки.
-- Для производительности: `pcall` в редких точках (инициализация) нормален, а в частых местах дорог (см. `friend-notes.md`).
+### Error resilience and Core design
 
-### Разработка
-- Есть «disk watcher»: у каждого модуля есть `__moduleinfo` с функциями `OnDirty` и `OnReload`, позволяющими перезагружать код без перезапуска игры. Полезно для скорости разработки. Осторожно: «грязный» модуль делает грязными все зависящие от него.
+- The preliminary notes warn that an error in an initialization hook such as `CreateUI` may stop later initialization, including code from other mods. They recommend wrapping the mod call in `pcall` and logging a warning.
+- An `import` error aborts the whole file. Avoid complex work at module load time; prefer lazy initialization through a getter/function.
+- Suggested Core direction: isolate each registered module so a failure in one mod does not break others. This was aligned with a friend's report that one invalid setting could abort an entire settings window.
+- The notes suggest `pcall` is acceptable at rare points such as initialization but costly in frequent paths. Verify against the installed engine; see `friend-notes.md` and `tech-findings.md`.
 
-### Данные из симуляции
-- Два пути: engine-функции (простые данные о юнитах своей армии) и таблица Sync (сложные данные: счёт, массовая карта, запуски ядерных ракет, пинги и т.д.).
-- Рекомендуемый способ подписки на Sync: `AddOnSyncHashedCallback` с категорией и **идентификатором**, который позволяет заменить обработчик. Отписка: `RemoveOnSyncHashedCallback`. Старый способ: хук `OnSync` в `UserSync.lua`.
-- Информация о юнитах чужих армий сильно ограничена (ресурсы, щиты, топливо, прогресс и т.д. убираются).
+### Development, simulation data, and Sync
 
-### Интерфейс
-- Элементы строятся из контролов, позиции задаются через **LazyVar** (пересчитываются при изменении зависимостей). Отлаживать их тяжело, помогает флаг `ExtendedErrorMessages` в `lazyvar.lua`.
-- В `layouthelpers.lua` есть класс `Layouter` с шаблоном `ReusedLayoutFor`. Вики называет его очень полезным для читаемой и надёжной раскладки.
-- Вики прямо отмечает: моды 4z0t дают продвинутые возможности (анимации и **централизованная система настроек мода**), но используют собственную библиотеку. Остальной UI FAF во многом устаревший.
+- A “disk watcher” was described: each module has `__moduleinfo` with `OnDirty` and `OnReload` for hot reload without restarting. A dirty module also dirties dependent modules.
+- The wiki was summarized as describing two sources of simulation data: engine functions for basic data about the player's own units, and `Sync` for richer information such as score, mass map, nuke launches, and pings.
+- For Sync subscriptions, the notes recommend `AddOnSyncHashedCallback` with a category and identifier, so a handler can be replaced; unsubscribe via `RemoveOnSyncHashedCallback`. The older approach is an `OnSync` hook in `UserSync.lua`.
+- Information about other players' units was described as heavily restricted (resources, shields, fuel, progress, and similar details are removed). Verify each data type and current visibility rules.
 
-### Хоткеи (важно для будущего компонента управления)
-- В FAF есть официальный механизм: через `keymapper.lua` функция `SetUserKeyAction` регистрирует действие (команда и категория), оно сохраняется в пользовательских действиях в файле настроек. Категория группирует действия в меню хоткеев (F1).
-- Читаемое имя с локализацией задаётся через `keydescriptions.lua`. Назначить клавишу можно через `SetUserKeyMapping`.
-- Полностью своя система раскладок требует других функций (`IN_AddKeyMapTable` и т.д.) и по словам вики это фундаментальное изменение, которое лучше предлагать как вклад в игру.
-- Вывод для Core: общий реестр хоткеев, скорее всего, нужно строить **поверх** `SetUserKeyAction`, а не вместо него. Проверить.
+### UI and layout
 
-### Прочее, что пригодится
-- Локализация: функция `LOC` и хук `strings_db.lua` нужного языка.
-- Консольные команды через `ConExecute`, чтение вывода через `AddConsoleOutputReciever`.
-- Выделение: `OnSelectionChanged` в `gamemain.lua`; чтобы не запускать обработчик на собственные изменения выделения, есть `Hidden` из `selection.lua` и `SetIgnoreSelection`.
-- **Иконки:** вики коротко упоминает, что иконки можно заменять программно, функцией или таблицей по ID blueprint. Подробностей нет. Это важно для твоей идеи с собственным паком иконок, нужно изучить отдельно. (Друг писал, что текстуры и модели юнитов UI-мод заменить не может. Это не обязательно противоречит: речь могла идти о разных вещах.)
+- UI controls use positions based on `LazyVar`, recalculated when dependencies change. The notes mention `ExtendedErrorMessages` in `lazyvar.lua` for debugging.
+- `layouthelpers.lua` includes a `Layouter` class and `ReusedLayoutFor` pattern, described by the wiki as useful for clear and reliable layout.
+- The wiki was summarized as praising 4z0t mods for animation and centralized mod settings, while noting they use a custom library and much of the remaining FAF UI is old.
 
----
+### Hotkeys
+
+- FAF's `keymapper.lua` provides `SetUserKeyAction` to register an action (command and category) and save it in user settings. The category groups actions in the F1 hotkey menu.
+- Localized display names are set in `keydescriptions.lua`; `SetUserKeyMapping` assigns the key.
+- A fully custom keymap would use other functions such as `IN_AddKeyMapTable`. The wiki reportedly describes this as a fundamental game change better proposed upstream.
+- Preliminary Core recommendation: build a shared hotkey registry on top of `SetUserKeyAction`, not in place of it. This still needed verification.
+
+### Other notes
+
+- Localization uses `LOC` and language-specific `strings_db.lua` hooks.
+- Console commands use `ConExecute`; output can be read through `AddConsoleOutputReciever`.
+- Selection changes use `OnSelectionChanged` in `gamemain.lua`. `selection.lua` provides `Hidden` and `SetIgnoreSelection` to avoid reacting to the mod's own selection changes.
+- The wiki briefly mentions that icons can be replaced programmatically by function or blueprint-ID table, but gives no detail. This was flagged for separate research. A friend said UI mods could not replace unit textures/models; the notes say these may be different kinds of assets rather than conflicting claims.
 
 ## 2. ReUI (4z0t)
 
-- Репозиторий: `4z0t/FAF-UI-Mods`. По данным агрегатора лицензия **MIT**, в репозитории есть файл `LICENSE`. **Проверить файл самому.**
-- В обсуждении на форуме автор подтверждал MIT-лицензию репозитория. Другой участник замечал, что лицензии по отдельным модам добавляются постепенно. Поэтому лицензию нужно проверять **у каждого мода и подпапки**.
-- Состав библиотек (по README):
-  - **ReUI.Core**: функции хуков и выполнения кода до и после создания UI, классы со свойствами, слабые таблицы
-  - **ReUI.Options**: система настроек, примеры использования в `Options.lua` почти каждого мода
-  - **ReUI.UI**: `Layouter`, `Layout`, `Layoutable`, примитивы Group, Text, Bitmap, CheckBox
-  - **ReUI.UI.Views**: кнопки, стрелки, рамки, скобки, прокручиваемый контрол, сетка
-  - **ReUI.UI.Animation**, **ReUI.UI.Color**
-  - **ReUI.LINQ**: библиотека запросов к данным, по заявлению автора быстрее старой LuaQ из UMT
-- Моды проекта (по README): экономика, реклейм, Hotbuild, ActionsPanel, шаблоны, EAS, RFA, IA и другие.
-- По агрегатору последнее обновление основной ветки было в ноябре 2024. На форуме упоминается ветка `dev`. Проверить, какая версия соответствует той, что стоит у тебя.
+- Repository: `4z0t/FAF-UI-Mods`. An aggregator reported an MIT license and a repository `LICENSE` file; the original notes said to verify the file directly. The subsequent local review is recorded in `license-audit.md` and `reui-notes.md`.
+- A forum author reportedly confirmed the repository's MIT license; another participant noted that separate mod licenses were being added gradually. Check each mod and subfolder separately.
+- Libraries listed in the README: **ReUI.Core** (hooks, pre/post UI phases, property classes, weak tables); **ReUI.Options** (settings system); **ReUI.UI** (Layouter, Layout, Layoutable, Group/Text/Bitmap/CheckBox); **ReUI.UI.Views** (buttons, arrows, frames, brackets, scrollable control, grid); **ReUI.UI.Animation**, **ReUI.UI.Color**, and **ReUI.LINQ** (data-query library; its author claimed it was faster than UMT's older LuaQ).
+- The repository was described as including economy, reclaim, Hotbuild, ActionsPanel, templates, EAS, RFA, IA, and other mods.
+- An aggregator showed the main branch's latest update in November 2024; the forum mentioned a `dev` branch. Check the local copy against the repository and installed version. Later local investigation found the installed and readable copies were different versions; see `mod-inventory.md` and `reui-notes.md`.
 
----
+## 3. Community License Discussion
 
-## 3. Что обсуждает сообщество про лицензии
-- На форуме участники отмечали: без файла лицензии копировать чужой код нельзя, а при использовании кода стоит указывать автора и текст лицензии либо договориться с автором. Это согласуется с тем, что мы уже обсуждали.
+Forum participants reportedly said code should not be copied when no license file is present, and that use should include author/license attribution or permission from the author. This is a lead, not a legal conclusion; check the actual license per mod and resource.
 
----
+## 4. Questions Listed for Further Research
 
-## 4. Что осталось выяснить (для Opus)
+- Read ReUI's `LICENSE` and licenses for individual mods.
+- Inspect how `ReUI.Options` registers/stores settings and builds its window.
+- Check whether FAF itself has a settings window/mechanism for mods.
+- Compare the user's ReUI copy with the repository version.
+- Identify UMT's author/license, behavior, and whether it is needed as a dependency.
+- Investigate the wiki's claim about programmatic icon replacement.
+- Inspect FAF repository pull request #5755, reportedly about adding hotkey functionality, and compare it with the project plan.
+- Check whether a custom library can coexist with installed ReUI without duplicate hooks on the same files.
 
-- [ ] Прочитать `LICENSE` в репозитории ReUI и лицензии отдельных модов
-- [ ] Как именно устроен `ReUI.Options`: как мод регистрирует настройки, где они хранятся, как строится окно
-- [ ] Есть ли в самом FAF готовое окно или механизм настроек для модов
-- [ ] Какая версия ReUI у тебя в копии модов и чем она отличается от репозитория
-- [ ] UMT: автор, лицензия, что делает, нужна ли как зависимость
-- [ ] Что именно позволяет вики имея в виду под программной заменой иконок
-- [ ] На форуме упоминается pull request в репозитории FAF (`FAForever/fa`, номер 5755) о включении хоткей-функциональности в игру. Выяснить, о чём он и не пересекается ли с твоим планом
-- [ ] Совместимость собственной библиотеки с установленным ReUI (двойные хуки на одни и те же файлы)
+Many of these questions were later partially investigated. Consult current source notes rather than treating this preliminary list as an open-state tracker.

@@ -1,47 +1,23 @@
-Гладкие ножки [DPG], Значок роли, [DPG] Prime — 1:42
-Крч накидывайте идеи в целом что из нового хотите, не пишите про то что можно добавить из существующего(Оно всё ровно будет)
-SkuGGnattЗначок роли, Гость — 8:04
-Ну мне бы хотелось видеть прям четкий список, точнее таблицу с кратким (и отдельным столбцом) и подробными возможностями каждого уже имеющегося мода
-Это чтобы видеть общую картину и не гадать (тем более учтите, что у нас могут отличаться наборы модов, чтобы не повторяться короче)
-С такой таблицей в отдельных строках ниже можно было бы уже занести что хотелось бы видеть плюсом, потом это все уже можно смержиться - видя общую картину
-Во славу гладкого Господа [DPG], Значок роли, [DPG] Prime — 8:07
-Я бы в сборке объединил не только модификации Азота, но и вообще всё которые возможно и добавил бы функционал для настройки всего этого
-Мини карту, отключение мини карты при отдалении
-Во славу гладкого Господа [DPG], Значок роли, [DPG] Prime — 8:09
-Тут смысл не в том что оно отличается, а чтобы сделать золотую коллекцию, всё что реально нужно будет в одном месте
+# Community Notes (Translated Excerpts)
 
-И по желанию, это должно быть интуитивно понятно, просто заходишь и отключаешь какие то функции
-SkuGGnattЗначок роли, Гость — 8:10
-Возможно стоит рассмотреть общую интерактивную таблицу, Miro например для удобной разработки (всякими стрелочками связи можно нарисовать и т.д.)
-Модов много и зпвисимостей у них тоже не мало. Ну и каких-то общих механизмов тоже (например несколько модов могут делать обход под юнитам/зданиям, но каждый отдельно - это и создает нагрузку в плане оптимизации) - с таким подходом можно условно обход по юнитам сделать отдельным Core API модом, от которого уже зависят более мелкие
-Во славу гладкого Господа [DPG], Значок роли, [DPG] Prime — 8:11
-А не как тупой дебил, как некоторые делают просто сносят часть модов и половина работать перестаёт
- [DPG], 
-SkuGGnattЗначок роли, Гость — 8:11
-Не, я как понял вы хотите оптимизацию сделать. А чтобы провернуть такое, нужны чтобы все моды работали как одно целое в единой экосистеме
-Во славу гладкого Господа [DPG], Значок роли, [DPG] Prime — 8:14
-Да это и хотим
-Экосистема дпг
-SkuGGnattЗначок роли, Гость — 8:15
-Ну вот все и сводится к тому, что выяснить все связи, разобрать какие моды в совокупности делают двойную работу
-Правда я не особо знаю как такое через нейронку провернуть и какие там подводные, максимум для простых скриптов ее юзал
-Гладкие ножки [DPG], Значок роли, [DPG] Prime — 10:59
-Я поэтому сижу смотрю как другие моды сделаны, возможна беда в самом reui, если так будет своя библиотека. Если нет, будет reui core использоватся
-Предварительные заметки (из открытых источников)
-Статус: собрано из публичных страниц (вики FAF, форум FAF, страницы репозитория), без доступа к твоим модам и без чтения исходников. Всё ниже нужно проверять по коду и в игре. Это ускоряет этап 1, но не заменяет его.
+These are informal community comments, not verified requirements or technical facts. See `prestudy-notes.md` and check any technical claims against source code and the target FAF version.
 
-Источники:
+**Smooth Legs [DPG], [DPG] Prime — 1:42:** “Suggest ideas for new things you want overall; don't ask for things that can already be added from existing mods (those will be included anyway).”
 
+**SkuGGnatt — 8:04:** Asked for a clear table with a short summary and a separate detailed description of each existing mod's capabilities, to understand the overall landscape and avoid duplication when users have different mod sets. Proposed listing new requests separately below the table so they can be merged later with the full picture in view.
 
-prestudy-notes.md
-12 кб
-Там условно ещё лепеха делает дно мод свой
-Я спизданул память его чата, чтобы узнать на какие ui ограничения он наткнулся
-SkuGGnattЗначок роли, Гость — 12:33
-Ну насколько я знаю по ограничениям, так это то, что очередь приказов топорная - приказы можно только последовательно закидывать в очередь (т.е. приказ в начало или в середину ты не вставишь). Приказы реклейма (и вроде некоторые другие) нельзя с юи кинуть на другие объекты (пропы, юниты, здания). Поступающая инфа о врагах тоже там дохуя ограничений (опять же расклик и прочая хуйня, только ховер работает)
-Но это конкретно по автоматизации если говорить
-Вероятно еще инфа о зданиях и юнитах мейтов без патча ехе не доступна (те же радиусы радаров в той либе не с пустого места берутся)
-SkuGGnattЗначок роли, Гость — 12:41
-По поводу этого, если я правильно понял - находясь в игре нельзя менять иконки, потому что они уже загружены (по сути статичны)
-Если это так, единственный вариант, что я могу предложить - поставлять с паком небольшую оконную прогу для кастомизации набора иконок и билда в готовый модуль (например на каком-нибудь C#, по крайней мере с ним я знаком хорошо)
-Изображение
+**[DPG] Prime — 8:07–8:09:** Proposed combining not only 4z0t's mods but as many compatible mods as possible, adding controls for all of them, and including options such as a minimap toggle when zoomed out. The aim was a “gold collection” of genuinely useful features in one place, with an intuitive interface that lets users turn features on or off.
+
+**SkuGGnatt — 8:10–8:15:** Suggested a shared interactive map (for example, Miro) to track dependencies and common mechanisms. Several mods may scan units/buildings independently and add overhead; a shared Core API for unit scans could serve smaller mods. Also noted the need to understand the ecosystem and duplicate work before optimizing it.
+
+**[DPG] Prime — 8:11–8:14:** Said that removing mods can break dependent features and that the intended direction was an integrated DPG ecosystem.
+
+**[DPG] Prime — 10:59:** Said they were reviewing how other mods work and wondered whether ReUI itself might be the problem; if so, a custom library could be considered, otherwise use ReUI Core.
+
+## Preliminary Notes Mentioned in the Discussion
+
+The initial notes were gathered from public pages (FAF wiki, forum, repository pages), without access to the user's mods or source-code inspection. They were intended to speed up Stage 1, not replace code review or in-game checks. See `prestudy-notes.md`.
+
+**Unattributed message — 12:33:** Mentioned that another developer was also making a bottom-panel mod and that chat notes had been copied to learn what UI limitations they encountered.
+
+**SkuGGnatt — 12:33–12:41:** Reported several suspected automation limits: orders might only append to the end of a queue; reclaim (and some other) orders might not target props, units, or buildings from the UI; enemy information might be heavily restricted beyond hover; allied unit/building information might require an executable patch; and icons might be immutable after loading. These were explicitly informal beliefs and were later marked as unverified in `tech-findings.md`. One proposed workaround for icon customization was a small companion desktop utility to produce a ready-to-use mod package.

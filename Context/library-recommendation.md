@@ -1,28 +1,28 @@
-# Выбор основы Claret: рекомендация после изучения ReUI
+# Claret foundation choice: recommendation after studying ReUI
 
-Дата: 2026-11-10. Статус: рекомендация для решения пользователя; архитектура ещё не утверждена. Основание — чтение предоставленной ReUI 1.4.0, а не измерения FPS. Подробности и файлы-источники: reui-notes.md, раздел «Углублённый разбор».
+Review date: 2026-11-10. Status: recommendation for the user's decision; architecture has not yet been approved. Based on reading the supplied ReUI 1.4.0, not FPS measurements. Details and source files: `reui-notes.md`, section “Detailed review.”
 
-**Рекомендация: начать с ReUI как внешней основы для UI и настроек, а собственный Claret Core ограничить управлением функциями, их ресурсами и нагрузкой. Полную замену ReUI сейчас не писать.** Это уточняет прежнюю предварительную рекомендацию собственной библиотеки: подробное чтение не подтвердило необходимость повторять готовые настройки, раскладку и события ради предполагаемой скорости.
+**Recommendation: start with ReUI as the external foundation for UI and settings, and limit Claret Core to managing features, their resources, and workload. Do not write a full ReUI replacement now.** This updates the earlier preliminary recommendation to build a custom library: detailed review did not show a need to recreate existing settings, layout, and event systems for a presumed speed benefit.
 
-| Критерий | Использовать ReUI | Писать полную замену |
+| Criterion | Use ReUI | Write a full replacement |
 |---|---|---|
-| Окно настроек | Реактивные значения, сохранение/отмена, готовые контролы | Всё это создавать, тестировать и поддерживать |
-| Масштабирование и раскладка | Maui + Layouter/Layoutable, готовые Views | Собственные правила и проверки масштабов/разрешений |
-| Включение функций | Дописать Claret lifecycle и cleanup | Дописать тот же lifecycle, плюс основу библиотеки |
-| Производительность | Оптимизировать конкретные функции; в частых местах можно использовать обычные циклы | Выигрыш неизвестен до равного по функциям сравнения |
-| Независимость | Зависимость от версий API и обязательного QoL | Контроль кода, но также полная ответственность за совместимость с FAF |
-| Стиль Claret | Проверить настройку готовых Views; для нужных панелей сделать собственные контролы | Свобода оформления ценой большей работы |
+| Settings window | Reactive values, save/cancel, ready-made controls | Build, test, and maintain all of this |
+| Scaling and layout | Maui + Layouter/Layoutable, ready-made Views | Create custom rules and test scaling/resolutions |
+| Feature activation | Add Claret lifecycle and cleanup | Add the same lifecycle, plus a library foundation |
+| Performance | Optimize specific features; ordinary loops can be used in hot paths | Benefit is unknown until comparing equivalent features |
+| Independence | Depends on API versions and required QoL | Code control, but full responsibility for FAF compatibility |
+| Claret style | Check whether existing Views can be configured; build custom controls for required panels | Full design freedom with more work |
 
-**Что использовать сначала:** Core hooks/фазы создания UI, UI/Layouter и Controls, Options. Дополнительные WorldView, Grid, Units и Animation подключать по требованиям функции. Штатный Main ReUI уже требует QoL, а тот Options/UI/LINQ — установка не ограничивается одним Core. Нельзя обещать нулевые побочные изменения интерфейса.
+**Start with:** Core hooks/UI creation phases, UI/Layouter and Controls, Options. Add WorldView, Grid, Units, and Animation as features require them. The standard ReUI Main already requires QoL, which in turn requires Options/UI/LINQ; installation is not limited to Core alone. Do not promise zero side effects on the interface.
 
-**Что оставить собственным:** реестр функций Claret; включение/выключение с остановкой задач и отпиской; бюджет тяжёлых работ; единые данные только для реально общих потребителей; миграции настроек старых модов; оформление и диагностика. Для первого варианта не нужен универсальный аналог всей ReUI.
+**Keep custom:** Claret feature registry; activation/deactivation that stops work and unsubscribes; heavy-work budgets; shared data only for consumers that truly share it; settings migration from old mods; styling and diagnostics. The first version does not need a universal replacement for all of ReUI.
 
-**Почему переписывание пока не оправдано:** Layouter не обнаружил постоянного полного покадрового обхода; Animator останавливает обновления без анимаций; в настройках есть очистка подписок; загрузчик в основном работает на старте. Потенциально дорогие участки — WorldView/overlays, активные анимации, длинные списки и получение данных — нужно оценивать по количеству объектов и реальным обработчикам. Утверждение «ReUI сама просаживает FPS» пока не подтверждено.
+**Why a rewrite is not justified yet:** Layouter showed no constant full per-frame traversal; Animator stops updating when no animations are active; settings include subscription cleanup; the loader mainly works at startup. Potentially expensive areas—WorldView/overlays, active animations, long lists, and data retrieval—should be assessed by object count and actual handlers. The claim “ReUI itself reduces FPS” has not been confirmed.
 
-**Риски ReUI:** нет автоматического разрешения конфликтов хуков и универсального runtime unload; штатный QoL влияет на панели; ошибки подписчиков обычного Event не изолированы; HiddenSelect не восстанавливает состояние при исключении callback; установленная 1.3.2 и читаемая 1.4.0 не доказаны как эквивалентные. Это конкретные ограничения для проверки, не список подтверждённых игровых сбоев.
+**ReUI risks:** no automatic resolution of hook conflicts or universal runtime unload; standard QoL affects panels; exceptions in ordinary Event subscribers are not isolated; HiddenSelect does not restore state if a callback throws; installed 1.3.2 and readable 1.4.0 are not proven equivalent. These are concrete items to check, not confirmed in-game failures.
 
-**Когда выбрать собственную основу:** измерен существенный расход именно обязательной части ReUI; нужный стиль/жизненный цикл требует систематически обходить её API; обязательные изменения QoL несовместимы с Claret; либо независимая поставка важнее дополнительной поддержки. Тогда писать только минимально нужную основу, используя результаты прототипа для определения объёма. Числовой порог допустимой нагрузки выбирается после базовых замеров.
+**When to choose a custom foundation:** a significant cost is measured in the required part of ReUI; required style/lifecycle repeatedly works around its API; required QoL changes conflict with Claret; or independent distribution matters more than added maintenance. Then build only the minimal required foundation, using prototype results to set scope. Choose a numeric workload threshold after baseline measurements.
 
-**Закреплённый форк:** даёт контроль версии, но переносит поддержку обновлений на Claret и расходится с текущим правилом писать код заново. Дополнительно замечено различие заголовка LINQ.lua и корневой MIT — область лицензирования перед копированием требует уточнения. На данном этапе форк не рекомендуется.
+**Pinned fork:** gives version control, but shifts update maintenance to Claret and conflicts with the current rule to write code from scratch. A difference between the LINQ.lua header and root MIT notice was also observed; clarify license scope before copying. A fork is not recommended at this stage.
 
-**Проверка перед окончательным выбором:** ReUI отдельно; одна репрезентативная функция Claret поверх ReUI; сценарии выключения/повторного включения, смены армии, окончания игры, масштаба UI и совместной загрузки с используемыми модами. Сравнивать по методике performance-hotspots.md. Исследование не требует обновлять установленный ReUI или создавать новый игровой мод прямо сейчас.
+**Checks before the final choice:** ReUI by itself; one representative Claret feature on ReUI; disable/re-enable, army changes, match end, UI scaling, and co-loading with the mods in use. Compare using `performance-hotspots.md`. This research does not require updating installed ReUI or creating a new game mod now.

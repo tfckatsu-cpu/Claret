@@ -1,81 +1,87 @@
-# Исследование ReUI.Hotbuild для прототипа Claret
+# ReUI.Hotbuild Research for the Claret Prototype
 
-Дата проверки: 2026-11-10. Только чтение исходников; работа в FAF не проверена. Код оригинала не переносился.
+Review date: 2026-11-10. Source inspection only; not tested in FAF. No original code was copied.
 
-## Область и версии
+## Scope and versions
 
-Факт: предоставленная установленная копия `sources/MainMods/ReUI.Hotbuild/mod_info.lua` имеет manifest version 1, UID `reui-Hotbuild-1.1.0`, ReUI tag `ReUI.Hotbuild=1.1.0`, автор 4z0t. Основная реализация читаемая. Main находится в `Hotbuild.lua`, а не `Main.lua`. Требования включают Core>=1.2.0, Actions>=1.3.0, LINQ>=1.4.0, UI>=1.4.0, Options>=1.0.0 и дополнительные UI-модули (`Hotbuild.lua:1–14`).
+Fact: the supplied `sources/MainMods/ReUI.Hotbuild/mod_info.lua` has manifest version 1, UID `reui-Hotbuild-1.1.0`, ReUI tag `ReUI.Hotbuild=1.1.0`, author 4z0t. Main implementation is readable in `Hotbuild.lua`, not `Main.lua`. Requirements include Core >=1.2.0, Actions >=1.3.0, LINQ >=1.4.0, UI >=1.4.0, Options >=1.0.0, and additional UI modules (`Hotbuild.lua:1–14`).
 
-## Исполнение
+## Execution
 
-Подтверждённый факт по `Hotbuild.lua`:
-- `:105–172`: производство получает третий результат `GetUnitCommandData(selection)` как категорию доступных blueprint; преобразует через `EntityCategoryGetUnitList`, проверяет точный ID. Из применимых элементов всегда выбирается первый. Обычное нажатие заказывает count=1, Shift в оригинале count=5; требование пользователя Claret — один юнит за одно нажатие, поэтому множитель не переносить автоматически.
-- `:144–165`: обычный путь производства — `IssueBlueprintCommand` с командой `UNITCOMMAND_BuildFactory`, blueprint ID и количеством. Внешние фабрики требуют отдельной обработки: оригинал заменяет EXTERNALFACTORY на GetCreator(), убирает повторы и использует `IssueBlueprintCommandToUnits`. Этот крайний случай не считать проверенным для прототипа без реализации/теста.
-- `:169`: после заказа вызывает construction.RefreshUI.
-- `:178–220`: размещение строения использует ту же проверку доступного blueprint, сбрасывает активные build templates, затем включает commandmode режим build с полем name=blueprint ID. Это вход в режим размещения, а не приказ построить здание в произвольной точке.
-- `:223–248`: контекст выбирается по выделению: наличие подходящих мобильных инженеров включает путь построек; иначе путь производства. Это правило оригинала, не обязательное правило будущего Claret.
-- `Modules/CycleMap.lua:168–201`: строительные элементы в оригинале циклируются, Alt меняет направление; `Hotbuild.lua:132–139` у производства maxPos=1. Прототип Claret по решению пользователя использует порядок сверху вниз и первое применимое действие, поэтому цикл не нужен, если отдельно не согласован.
+Confirmed from `Hotbuild.lua`:
 
-Неизвестно: что именно engine считает доступным для смешанного выделения и как заказ распределяется между несколькими фабриками. Для безопасной классификации конкретной фабрики можно проверить buildable отдельно на списке из одного юнита, но не выдавать тайную смену выделения ради этого. Проверить UEF T1 air scout, неподходящий завод, смешанные и внешние фабрики в игре.
+- `:105–172`: production gets the third result of `GetUnitCommandData(selection)` as the available-blueprint category; it converts this using `EntityCategoryGetUnitList` and checks the exact ID. It always chooses the first applicable entry. Ordinary press issues count=1; the original uses count=5 with Shift. The Claret requirement is one unit per press, so do not copy the multiplier automatically.
+- `:144–165`: normal production uses `IssueBlueprintCommand` with `UNITCOMMAND_BuildFactory`, blueprint ID, and count. External factories need special handling: the original replaces EXTERNALFACTORY with `GetCreator()`, removes duplicates, and uses `IssueBlueprintCommandToUnits`. Do not treat this edge case as verified for a prototype until implemented/tested.
+- `:169`: after issuing an order, it calls `construction.RefreshUI`.
+- `:178–220`: building placement checks available blueprints, clears active build templates, then enables build command mode with `name=blueprint ID`. This enters placement mode; it does not issue an order to build at an arbitrary point.
+- `:223–248`: selection context is chosen by whether suitable mobile engineers are present; if so, use building actions, otherwise production actions. This is the original's rule, not a required Claret rule.
+- `Modules/CycleMap.lua:168–201`: the original cycles building entries; Alt reverses the direction. `Hotbuild.lua:132–139` sets production `maxPos=1`. Claret's user-approved design uses top-to-bottom order and the first applicable action, so cycling is not needed unless separately agreed.
 
-## Каталог и проблема списка
+Unknown: what the engine considers available for mixed selections and how an order is distributed across several factories. A specific factory can be checked for buildability using a one-unit list, but do not secretly change selection to do it. In-game checks proposed: UEF T1 air scout, unsuitable factory, mixed factories, and external factories.
 
-Факт: `Modules/model.lua:43–52,104–151` ограничивает каталог BUILTBY-категориями инженеров/фабрик/командира/гейта, группирует Construction/Land/Air/Naval/Gate и четыре фракции. Фактическая сортировка blueprint ID выполняется по подстроке начиная с четвёртого символа (`:137`), а не по отображаемому названию или роли.
-Факт: `Modules/views/BlueprintItem.lua:49–60` содержит изображение, blueprint ID и локализованный Interface.HelpText; значит, утверждение «в исходниках вообще нет подписей» неверно. Однако у пользователя подписи неудобны/не видны, и это обоснованное требование к новому интерфейсу. В оригинале ID и HelpText рисуются мелким шрифтом 10 на элементе 192x64 (`:7–8,30–37`).
-Факт: `Modules/views/view.lua:242–316` показывает только семь строк селектора по умолчанию; использует заранее подготовленный массив. Поиск по названию/ID и явная сортировка по роли/технологии в этом селекторе не найдены.
-Рекомендация: новый каталог строить из __blueprints, брать ID из ключа/BlueprintId, обрабатывать отсутствие General.UnitName/Description/Interface.HelpText, отображать иконку+название+роль+ID, сортировать стабильно с ID как последним ключом. Хранить только ID, не локализованные подписи или индексы строк.
+## Catalog and list behavior
 
-## Контекстные действия
+Fact: `Modules/model.lua:43–52,104–151` limits the catalog to BUILTBY categories for engineers/factories/commander/gate, grouped as Construction/Land/Air/Naval/Gate and four factions. Blueprint IDs are sorted by substring starting at the fourth character (`:137`), not by display name or role.
 
-Факт: `sources/ReUI/Actions/Actions.lua` (Version 1.3.0) имеет отдельный механизм CategoryMatcher/CategoryAction. `:148–154` прекращает перебор после первого успешно обработанного элемента; `:192–202` стандартный matcher требует совпадения категории у всего выделения, а также позволяет собственный predicate. `:216–239` совпавший элемент может выполнять одну или несколько команд/функций. Это полезное описание поведения, но Claret пишет собственный реестр по стабильным action ID, а не копирует классы ReUI.
-Рекомендация: отделить каталог будущих действий от списков биндов: ID, отображаемая подпись, доступность по контексту и исполнитель. Неизвестный action ID сохранять как недоступный, не заменять другим действием и не удалять без запроса пользователя.
+Fact: `Modules/views/BlueprintItem.lua:49–60` includes an image, blueprint ID, and localized `Interface.HelpText`; therefore the claim that source has no labels at all is incorrect. However, the user found the labels inconvenient or hard to see, which is a valid requirement for a new interface. In the original, ID and HelpText use small 10 pt text on a 192×64 item (`:7–8,30–37`).
 
-## Клавиатура: проверенные API
+Fact: `Modules/views/view.lua:242–316` shows only seven selector rows by default and uses a prebuilt array. No search by name/ID or explicit role/tech sorting was found in this selector.
 
-Источник: [официальный keymapper.lua develop](https://raw.githubusercontent.com/FAForever/fa/develop/lua/keymap/keymapper.lua), просмотрен 2026-11-10; это не закреплённый снимок FAF 3840.
+Recommendation: build a new catalog from `__blueprints`; read ID from the key/BlueprintId; handle missing General.UnitName/Description/Interface.HelpText; show icon + name + role + ID; sort consistently, with ID as the final key. Store only IDs, not localized labels or row indices.
 
-Факт: SetUserKeyAction(id, table) регистрирует действие; nil удаляет его. SetUserKeyMapping(key, oldKey, actionID) назначает клавишу, oldKey может быть nil. ClearUserKeyMapping(key) удаляет назначение. GetCurrentKeyMap возвращает key→actionID; GetKeyMappingDetails даёт ID, имя, категорию и actionTable. NormalizeKeyBinding нормализует порядок модификаторов. GetKeyMappings строит новую карту key→actionTable. Проверять владение лучше по стабильному actionID, не по ссылочному равенству карт.
+## Context actions
 
-Факт по локальным примерам: `sources/MainMods/Bi4UI.StrategicRings/hook/lua/ui/game/gamemain.lua:24–38` удаляет старое действие и обновляет runtime через IN_ClearKeyMap, IN_AddKeyMapTable текущих mappings и hotbuild.addModifiers. `sources/MainMods/cinematics/modules/hotkeys.lua:50–77` временно удаляет набор клавиш через IN_RemoveKeyMapTable с key=true и восстанавливает соответствующие bindings.
+Fact: `sources/ReUI/Actions/Actions.lua` (Version 1.3.0) has a separate `CategoryMatcher`/`CategoryAction` mechanism. `:148–154` stops after the first successfully handled item; `:192–202` default matcher requires a category match across the whole selection and also supports a custom predicate. `:216–239` a matched item can run one or more commands/functions. This documents behavior; Claret uses its own registry with stable action IDs rather than copying ReUI classes.
 
-Рекомендация жизненного цикла: сохранить назначение через native keymapper, а Runtime.Execute проверять на enabled/живую сессию/replay. При выключении действие становится неисполняемым, пользовательское назначение сохраняется. Полностью освободить клавишу временной IN_RemoveKeyMapTable недостаточно: F1 или другой rebuild восстановит сохранённое назначение. Удалять prefs при каждом выключении не рекомендуется.
+Recommendation: separate the future action catalog from bind lists: ID, display label, context applicability, and executor. Preserve unknown action IDs as unavailable; do not replace them with another action or delete them without user request.
 
-Рекомендация конфликтов: нормализовать введённую комбинацию и существующие назначения; отказать в сохранении, если клавишей владеет другое действие, сообщить имя владельца. Не назначать E автоматически и не замещать стандартное действие молча. Собственные названия действий должны быть стабильными и уникальными, без дефиса: GetKeyActions отбрасывает action ID с дефисом.
+## Keyboard: API review
 
-Неизвестно: наличие/поведение отдельного API просмотра владельца активного engine keymap; не обещать отсутствие гонки с модом, который меняет runtime bindings напрямую. Проверка F1, чата, модальных окон и режима реплея обязательна в игре.
+Source: [official keymapper.lua develop](https://raw.githubusercontent.com/FAForever/fa/develop/lua/keymap/keymapper.lua), reviewed 2026-11-10; this is not a pinned FAF 3840 snapshot.
 
-## UI, доступный в установленной версии
+Fact: `SetUserKeyAction(id, table)` registers an action; nil removes it. `SetUserKeyMapping(key, oldKey, actionID)` assigns a key; `oldKey` may be nil. `ClearUserKeyMapping(key)` clears an assignment. `GetCurrentKeyMap` returns key→actionID; `GetKeyMappingDetails` provides ID, name, category, and actionTable. `NormalizeKeyBinding` normalizes modifier order. `GetKeyMappings` builds a new key→actionTable map. Prefer checking ownership by stable actionID, not table reference equality.
 
-Подтверждённый локальный пример: `Hotbuild.lua:251–257` вызывает ReUI.Options.Builder.AddOptions с callback, получающим parent. `Modules/views/view.lua:1–15,39–130` строит редактор обычными Maui Group/Bitmap/Button/Edit, Combo и Popup; LayoutHelpers и ReUI.UI.FloorLayoutFor. Так можно сделать отдельное окно без требования новой ReUI.Options 2.0.0. Существующая Options 1.2.0 бинарная, поэтому не приписывать ей API нового Options.Window.
+Fact from local examples: `sources/MainMods/Bi4UI.StrategicRings/hook/lua/ui/game/gamemain.lua:24–38` removes the old action and updates runtime through `IN_ClearKeyMap`, `IN_AddKeyMapTable` with current mappings, and `hotbuild.addModifiers`. `sources/MainMods/cinematics/modules/hotkeys.lua:50–77` temporarily removes a key set using `IN_RemoveKeyMapTable` with `key=true` and restores the corresponding bindings.
 
-Факт: UIUtil.SetupEditStd используется в `view.lua:108–116` для стандартного Edit; Combo:AddItems/OnClick — `:119–130`; обычная кнопка задаёт OnClick. Указанные сигнатуры — наблюдение локального использования, не независимая гарантия совместимости любого нового окна.
+Lifecycle recommendation: save assignment through the native keymapper and make `Runtime.Execute` check enabled/live session/replay state. When disabled, the action does nothing but the user assignment remains. Temporarily removing the entire key with `IN_RemoveKeyMapTable` is not enough: F1 or another rebuild restores the saved assignment. Do not erase prefs on every disable.
 
-## Сохранение
+Conflict recommendation: normalize the entered combination and existing assignments; reject saving if another action owns the key and show its name. Do not automatically assign E or silently replace a standard action. Custom action names must be stable and unique, without a hyphen: `GetKeyActions` drops action IDs containing a hyphen.
 
-Факт: оригинал хранит данные профиля под hotbuildoverhaul, читает/пишет через Prefs и вызывает SavePreferences при явном сохранении (`Modules/model.lua:180–220`). Компиляция проходит таблицы категорий и фракций; для нового приоритетного порядка лучше хранить плотный массив строк действий и не опираться на порядок обхода словаря.
+Unknown: whether a separate API exposes the active engine keymap owner; do not promise there is no race with a mod that changes runtime bindings directly. Check F1, chat, modal windows, and replay mode in-game.
 
-Проверка пользователем для Claret: бинд E с точным blueprint T1 воздушного разведчика при выделенном доступном авиазаводе ставит один заказ; с неподходящим выделением не выдаёт другой приказ. Контекстные действия перебираются сверху вниз до первого применимого. Невалидные/будущие действия видимы как недоступные. При конфликте клавиши сохранение отклоняется без замены прежнего владельца. Выключение Hotbuild прекращает выполнение, но не стирает сохранённое назначение.
+## UI available in the installed version
 
-## Уточнение по выбранному runtime-only варианту
+Confirmed local example: `Hotbuild.lua:251–257` calls `ReUI.Options.Builder.AddOptions` with a callback receiving parent. `Modules/views/view.lua:1–15,39–130` builds an editor using standard Maui Group/Bitmap/Button/Edit, Combo and Popup, LayoutHelpers, and ReUI.UI.FloorLayoutFor. This supports a separate window without requiring ReUI.Options 2.0.0. Installed Options 1.2.0 is binary; do not attribute the newer `Options.Window` API to it.
 
-По направлению основного агента прототип может хранить назначения только в Claret prefs и применять временную runtime-карту, не меняя UserKeyMap/UserKeyActions. Это альтернативный вариант к нативному сохранению выше, лучше соответствует полному выключению функции. На каждом применении отвергать занятые нативные клавиши и автоматически созданные hotbuild-модификаторы. При снятии временной карты восстанавливать текущие нативные записи только затронутых клавиш. Служебное действие задаётся напрямую в таблице IN_AddKeyMapTable; отдельное сохранение через SetUserKeyAction для этого не обязательно.
+Fact: `UIUtil.SetupEditStd` is used for standard Edit in `view.lua:108–116`; Combo:AddItems/OnClick at `:119–130`; a standard button sets OnClick. These signatures are observations of local use, not independent guarantees for every new window.
 
-Факт по [официальному keybindings.lua develop](https://raw.githubusercontent.com/FAForever/fa/develop/lua/ui/dialogs/keybindings.lua): публичная CloseUI (`:497–503`) закрывает popup; OnClosed (`:531–533`) вызывает локальную ConfirmNewKeyMap (`:62–70`), которая перестраивает runtime bindings. Кнопка, Escape, shadow и повторное открытие используют CloseUI. Поэтому после исходной CloseUI можно повторно применять временные назначения Claret и заново проверять конфликты. Сам ConfirmNewKeyMap локальный и не является полем модуля для Core.Hook.
+## Persistence
 
-Факт по [официальному Popup](https://raw.githubusercontent.com/FAForever/fa/develop/lua/ui/controls/popups/popup.lua): Close (`:51–54`) синхронно вызывает OnClosed до Destroy. Это обосновывает порядок «исходная CloseUI → обновление Claret» без таймера. Оба источника — develop, их эквивалентность FAF 3840 не проверена.
+Fact: the original stores profile data under `hotbuildoverhaul`, reads/writes through Prefs, and calls SavePreferences on explicit save (`Modules/model.lua:180–220`). Compilation iterates category/faction tables; for a new priority order, store a dense array of action rows and do not rely on dictionary iteration order.
 
-Ограничение: такой хук не ловит произвольные перестройки engine keymap другими модами. API чтения реального runtime-владельца клавиши не подтверждён; конфликт с чужими временными overlay нельзя надёжно выявить по GetKeyMappings, который отражает нативные prefs. Это обязательно указать в игровых проверках прототипа.
+Suggested user check for Claret: bind E to the exact T1 air scout blueprint with an eligible air factory selected and confirm one order; with an ineligible selection, confirm it does not issue another order. Context actions are tried top-to-bottom until the first applicable one. Invalid/future actions remain visible as unavailable. On key conflict, saving is rejected without replacing the prior owner. Disabling Hotbuild stops execution but does not erase saved assignment.
 
-## Подтверждение на локальном FAF 3840
+## Clarification: runtime-only approach
 
-После онлайн-проверки найден установленный архив `C:/ProgramData/FAForever/gamedata/lua.nx2`. Он прочитан как ZIP в памяти, без извлечения и без изменения. `C:/ProgramData/FAForever/.faf_build.json` указывает resolvedVersion=3840; внутренний `lua/version.lua` указывает Version 3840, GameType FAF, commit `d0f37b8a19aa1e6986edbe009a43652a25b37ab6`. Поэтому утверждение выше «целевой снимок не проверен» уточняется для перечисленных ниже файлов.
+Under the primary agent's direction, the prototype may store assignments only in Claret prefs and apply a temporary runtime map without changing UserKeyMap/UserKeyActions. This is an alternative to the native persistence approach above and better supports fully disabling the feature. On each apply, reject natively occupied keys and automatically generated hotbuild modifiers. When removing the temporary map, restore current native entries only for affected keys. A service action can be provided directly in the `IN_AddKeyMapTable` table; saving through `SetUserKeyAction` is not required.
 
-Подтверждено по содержимому lua.nx2:
-- `lua/ui/dialogs/keybindings.lua:541–547`: CloseUI публичная. `:578–580`: OnClosed вызывает ConfirmNewKeyMap. `:70–78`: подтверждение пересобирает runtime map и hotbuild-модификаторы.
-- `lua/ui/controls/popups/popup.lua:59–61`: Close вызывает OnClosed синхронно, затем Destroy. Хук CloseUI после original пригоден для повторного применения overlay без таймера в установленной FAF 3840.
-- `lua/keymap/keymapper.lua`: GetCurrentKeyMap (`:91`), SetUserKeyMapping (`:134`), SetUserKeyAction (`:235`), NormalizeKeyBinding (`:349`) присутствуют с описанными выше контрактами.
-- `lua/userInit.lua:364–370`: GetUnitCommandDataOfUnit(unit) использует одноэлементную кеш-таблицу и GetUnitCommandData, не меняя выделение.
-- `lua/userInit.lua:373–390`: IssueBlueprintCommandToUnits не является прямым engine-вызовом на произвольном массиве. Это Lua helper со скрытой временной сменой выделения, кэшированием commandmode и восстановлением. Исключение между этими операциями может прервать восстановление, отдельной защиты здесь нет. Для обычного производства по текущему выделению использовать прямой IssueBlueprintCommand; дополнительные цели вводить осознанно.
-- `lua/ui/game/construction.lua:1445–1458`: штатный UI сам применяет этот helper для EXTERNALFACTORY, а обычные заказы выдаёт по текущему выделению.
+Fact from [official keybindings.lua develop](https://raw.githubusercontent.com/FAForever/fa/develop/lua/ui/dialogs/keybindings.lua): public `CloseUI` (`:497–503`) closes the popup; `OnClosed` (`:531–533`) calls local `ConfirmNewKeyMap` (`:62–70`), which rebuilds runtime bindings. The button, Escape, shadow, and reopen paths use `CloseUI`. Therefore Claret could reapply temporary assignments after original `CloseUI` and recheck conflicts. `ConfirmNewKeyMap` is local and cannot be hooked as a module field through `Core.Hook`.
 
-Важно: соседний lua.nx4 содержит FAF Beta Balance 3839; его нельзя выдавать за целевую версию. Возможные дополнительные пути монтирования и активные runtime overlay других модов данным чтением не установлены.
+Fact from [official Popup](https://raw.githubusercontent.com/FAForever/fa/develop/lua/ui/controls/popups/popup.lua): `Close` (`:51–54`) synchronously calls `OnClosed` before `Destroy`. This supports the sequence “original CloseUI → update Claret” without a timer. Both sources are from develop; equivalence with FAF 3840 is unverified.
+
+Limitation: such a hook does not catch arbitrary runtime keymap rebuilds by other mods. An API for reading the actual runtime owner is unconfirmed; `GetKeyMappings`, which reflects native prefs, cannot reliably identify conflicts with another mod's temporary overlay. This limitation must be stated in game-check instructions.
+
+## Confirmation on Local FAF 3840
+
+After online review, the installed archive `C:/ProgramData/FAForever/gamedata/lua.nx2` was found. It was read as a ZIP in memory, without extraction or modification. `C:/ProgramData/FAForever/.faf_build.json` reports resolvedVersion=3840; internal `lua/version.lua` reports Version 3840, GameType FAF, commit `d0f37b8a19aa1e6986edbe009a43652a25b37ab6`. This updates the earlier “target snapshot not checked” note for the files listed below.
+
+Confirmed in `lua.nx2`:
+
+- `lua/ui/dialogs/keybindings.lua:541–547`: `CloseUI` is public. `:578–580`: `OnClosed` calls `ConfirmNewKeyMap`. `:70–78`: confirmation rebuilds the runtime map and hotbuild modifiers.
+- `lua/ui/controls/popups/popup.lua:59–61`: `Close` calls `OnClosed` synchronously, then `Destroy`. A `CloseUI` hook after the original is suitable for reapplying the overlay without a timer in installed FAF 3840.
+- `lua/keymap/keymapper.lua`: `GetCurrentKeyMap` (`:91`), `SetUserKeyMapping` (`:134`), `SetUserKeyAction` (`:235`), and `NormalizeKeyBinding` (`:349`) are present with the described contracts.
+- `lua/userInit.lua:364–370`: `GetUnitCommandDataOfUnit(unit)` uses a one-entry cache table and `GetUnitCommandData`, without changing selection.
+- `lua/userInit.lua:373–390`: `IssueBlueprintCommandToUnits` is not a direct engine call on an arbitrary array. It is a Lua helper with hidden temporary selection changes, command-mode caching, and restoration. An exception between these operations can interrupt restoration; there is no separate guard here. For ordinary production on current selection, use direct `IssueBlueprintCommand`; introduce extra targets deliberately.
+- `lua/ui/game/construction.lua:1445–1458`: native UI uses this helper for EXTERNALFACTORY and issues ordinary orders against the current selection.
+
+Important: adjacent `lua.nx4` contains FAF Beta Balance 3839; do not treat it as the target version. This inspection did not establish other mount paths or active runtime overlays from other mods.

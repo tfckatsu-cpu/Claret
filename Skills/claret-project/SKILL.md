@@ -1,24 +1,24 @@
 ---
 name: claret-project
-description: Работать над проектом Claret и его модами FAF: изучение исходников, Lua, ReUI, совместимость интерфейса и разумное распределение задач между агентами.
+description: Work on the Claret project and its FAF mods: studying sources, Lua, ReUI, UI compatibility, and sensible delegation between agents.
 ---
 
 # Claret / FAF
 
-Перед изменениями прочитай AGENTS.md и Stage/stage-1-status.md, а для интерфейса — Context/ui-style.md. Краткий указатель проверенных выводов и источников: Context/quick-reference.md. Исходники в Context/sources и чужие моды — только чтение; собственные рабочие моды находятся в соседнем mods/ClaretCore и mods/ClaretHotbuild. Не копируй чужой код. Учитывай пользовательские инструкции и текущие ограничения доступа.
+Before changing anything read `AGENTS.md` and `Stage/stage-1-status.md`; for UI work read `Context/ui-rules.md` and `Context/ui-style.md`. The knowledge-base map is `Context/README.md`, current facts are in `Context/quick-reference.md`. Sources in `Context/sources` and other mods are read-only; the working mods are `../mods/ClaretCore` and `../mods/ClaretHotbuild`. Do not copy other mods' code. Follow the user's instructions and the current access limits.
 
-## Экономное делегирование
+## Cheap delegation
 
-Вызывай субагента только когда это разрешено текущими инструкциями и пользователем. Для самостоятельного небольшого исследования, поиска API, сверки фактов или простого обзора выбирай доступную недорогую модель (например Luna), если она разрешена. Для сложного проектирования и интеграции используй собственную работу или подходящую модель; не подменяй качество экономией. Ограничивай задачу и вывод, передавай конкретные пути и контекст; по возможности используй fork без всей истории. Не параллель изменения одного файла, не делегируй последовательные действия без выигрыша. Проверяй и интегрируй результаты самостоятельно. Не повторяй вызовы при исчерпании лимита.
+Call a subagent only when current instructions and the user allow it. For a small self-contained study, API lookup, fact check or simple overview, use an available cheap model (for example Luna) if permitted. For complex design and integration use your own work or a suitable model; do not trade quality for savings. Bound the task and the output, pass concrete paths and context, and use a fork without full history when possible. Do not parallel-edit one file and do not delegate sequential steps without a benefit. Verify and integrate results yourself. Do not repeat calls after hitting a limit.
 
-## Правила FAF
+## FAF rules
 
-FAF Lua: table.getn вместо #, import вместо require, math.mod, осторожно с несуществующими глобалами и полями модулей. Не предполагай совместимость обычного Lua с LuaPlus; учитывай лимит upvalue. Игровые API сверяй с установленной версией; проверенный снимок FAF3840: C:/ProgramData/FAForever/gamedata/lua.nx2 (только чтение). Доступные ReUI версии и зависимости см. quick-reference. UI создавай после создания интерфейса, очищай подписки и контролы; не меняй симуляцию.
+FAF Lua: `table.getn` instead of `#`, `import` instead of `require`, `math.mod`; be careful with missing globals and module fields. Do not assume stock Lua compatibility with LuaPlus; respect the upvalue limit (32). Verify game APIs against the installed version; the verified snapshot is FAF3840 at `C:/ProgramData/FAForever/gamedata/lua.nx2` (read-only). ReUI versions and dependencies are in `quick-reference.md`. Create UI after the interface exists; clean up subscriptions and controls; never change the simulation.
 
-Сохраняй ID биндов, порядок и данные профиля; при изменениях формата проверяй старые данные, не выполняй молчаливую миграцию с потерей команд. Проводить локальную проверку логики и синтаксиса; заглушки не подтверждают поведение в FAF. Документируй сценарий и ограничения в текущем этапе.
+Preserve binding IDs, order and profile data; when changing a format, read old data and never migrate silently with lost commands. Run local logic and syntax checks; stubs do not confirm in-game behaviour. Document the scenario and limitations in the current stage.
 
-## Проверка в игре
+## In-game checks
 
-Пользователь разрешил самостоятельно пользоваться компьютером для проверки Claret. Когда доступен инструмент управления и проверка в FAF поможет задаче, осмотри состояние игры и самостоятельно воспроизведи проблему или проверь изменение, а не перекладывай проверку на пользователя. Следуй актуальным инструкциям инструмента computer use; не мешай чужому или значимому матчу и не теряй несохранённые данные. Если игра недоступна или проверка невозможна, сообщи конкретное ограничение.
+The user allows using the computer for Claret checks. When a control tool is available and an in-game check helps the task, inspect the game state and reproduce the problem or verify the change yourself instead of offloading it to the user. Follow the current computer-use instructions; do not disturb someone else's or an important match and do not lose unsaved data. If the game is unavailable or a check is impossible, state the exact limitation.
 
-Для быстрой перезагрузки изменений в подходящем тестовом матче: раскрой скрытую панель сверху экрана, нажми первую кнопку «Меню (F10)», затем «Перезапустить игру» и дождись нового матча. Пользователь явно разрешил этот способ для тестирования; проверяй текущее состояние и не перезапускай важную или сетевую игру без отдельного разрешения. Учитывай масштаб UI и активную версию мода. После проверки различай непосредственно увиденное, результаты локальных тестов и непроверенные сценарии; при сбоях изучай актуальный игровой журнал.
+To reload changes quickly in a suitable test match: reveal the hidden top panel, press the first button "Menu (F10)", then "Restart game" and wait for the new match. The user explicitly allowed this for testing; check the current state and never restart an important or networked game without separate permission. Mind the UI scale and the active mod version. After a check, distinguish what you actually saw, local test results and unverified scenarios; on failure read the current game log.

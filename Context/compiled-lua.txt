@@ -1,4 +1,4 @@
-# Проверено 2026-11-10; пути относительно Context/sources/MainMods; сигнатура ESC Lua
+# Checked 2026-11-10; paths relative to Context/sources/MainMods; ESC Lua signature
 EconomyMiddle\Main.lua
 FactoryTemplates\FactoryTemplates.lua
 InstantAssist\Main.lua

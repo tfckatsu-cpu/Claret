@@ -52,9 +52,9 @@ Open **F10 → Claret → Hotbuild → Keyboard**. Press a key on the layout, th
 
 The **Ctrl**, **Shift**, and **Alt** toggles set the modifiers for the next assignment. The key displays assignments for all modifier combinations at once. The page legend maps colors to combinations: no modifiers, Ctrl, Shift, Ctrl+Shift, Alt, Ctrl+Alt, Shift+Alt, and Ctrl+Shift+Alt. A single assignment colors the key for its combination; multiple assignments appear as colored indicators. The key tooltip lists combinations and actions, including assignments from other mods and old assignments.
 
-В каталоге клавиатуры доступны действия **Создать стратегические кольца** и **Создать кольцо обзора**. Они рисуют радиусы объекта под курсором; повторное нажатие разворачивает щит или радиус взрыва в сферу и затем в сектор. Кольца удаляются через штатный ластик рисования FAF: удерживайте Alt и ведите ПКМ по контуру. Радиусы одного объекта удаляются вместе.
+The keyboard catalogue offers **Create strategic rings** and **Create vision ring**. They draw the radii of the object under the cursor; a second press expands a shield or blast radius into a sphere and then a sector. Rings are removed with FAF stock drawing eraser: hold Alt and drag RMB along the outline. Radii of one object are removed together.
 
-У каждого варианта в диалоге назначения есть кнопка **+ Shift**. Она назначает этот же вариант для выбранного сочетания и для сочетания с добавленным Shift. Если одно из сочетаний занято, редактор предлагает подтвердить замену.
+Every variant in the assignment dialog has a **+ Shift** button. It assigns the same variant to the selected chord and to the chord with Shift added. If one of the chords is occupied, the editor asks to confirm the replacement.
 
 Right-click a key to remove the displayed Claret, FAF, and other-mod assignments for the current modifier combination; hold Ctrl, Shift, or Alt to use that combination. Saved sets and other combinations remain. Assignments are saved immediately in the FAF profile key map. If a combination is occupied, the editor shows its current assignment and asks whether to reassign it; cancelling preserves the existing assignment. Reserved Hotbuild modifiers cannot be reassigned. Other combinations are unchanged.
 
