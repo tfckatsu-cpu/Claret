@@ -704,7 +704,7 @@ function Create(runtime)
             end end
             Mapper.SaveUserKeyMap()
             SavePreferences()
-            service:Refresh()
+            local refreshed,refreshError=service:Refresh(); if refreshed==false then error(refreshError or 'refresh failed') end
         end)
         if not good then
             pairsByKey=beforePairs
@@ -753,7 +753,7 @@ function Create(runtime)
             end
             Mapper.SaveUserKeyMap()
             SavePreferences()
-            service:Refresh()
+            local refreshed,refreshError=service:Refresh(); if refreshed==false then error(refreshError or 'refresh failed') end
         end)
         if not good then
             pairsByKey=beforePairs
@@ -939,8 +939,8 @@ function Create(runtime)
         local probe=options and options.probeEnabled
         for key,id in pairs(current) do
             if ids[id] and not mappings[key] then
-                if probe and probe:Get() then LOG('[Claret][keys] key='..key..' action='..id..' definition=missing') end
-                mappings[key]=nil
+                if probe and probe:Get() then LOG('[Claret][keys] key='..key..' action='..id..' defined=false') end
+                return false, 'No action definition for '..tostring(key)..': '..tostring(id)
             end
         end
         if probe and probe:Get() then LOG('[Claret][keymap] op=clear by=KeyboardBindings:Refresh') end

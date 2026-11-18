@@ -46,7 +46,7 @@ assert(handled and result and executions[#executions][1]=='quick','empty selecti
 assert(not state:ContinueQuick('key1',context),'quick repeat does not rearm')
 context.resolvedContext='builder'
 context.legacyUnits=true
-state:RememberQuick('key1',quick,context,1.5,true)
+state:RememberQuick('key1',quick,context,1.5); state:ReleaseQuick('key1')
 context.resolvedContext='units'
 context.legacyUnits=false
 handled,result=state:ContinueQuick('key1',context)

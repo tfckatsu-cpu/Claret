@@ -144,7 +144,7 @@ local binding = service.model:Get('b1'); binding.key = 'Ctrl-Alt-E'
 assert(service:Commit(binding))
 assert(saveCount == 1 and saved.bindings[1].key == 'Ctrl-Alt-E')
 assert(userKeyActions[actionId('b1')].category == 'Claret Hotbuild')
-assert(userKeyActions[actionId('b1')].action:find('Execute("b1")',1,true))
+assert(userKeyActions[actionId('b1')].action:find('Execute("b1", IsKeyDown(16))',1,true))
 assert(next(userKeyMap)==nil and next(userDebugKeyMap)==nil,'actions are registered without assigning profile keys')
 selected = {{ IsDead = function() return false end, IsInCategory = function(self, kind) return kind == 'FACTORY' end }}
 assert(Runtime.Execute('b1'))

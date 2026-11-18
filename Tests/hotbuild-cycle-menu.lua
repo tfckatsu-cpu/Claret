@@ -65,9 +65,12 @@ for i=1,45 do records[i]={id='unit'..i,name='Unit '..i,faction='UEF',tech='T1',k
 records[46]={id='claret_template_cycle',name='Template',faction='UEF',tech='T1',kind='STRUCTURE',blueprint={},icon='icon',templateData={2,2,{'unit1',0,0,0}}}
 local catalog={Get=function(self,id) for _,r in ipairs(records) do if r.id==id then return r end end end,
     List=function(self,filters)
-        if filters.faction~='ALL' and filters.faction~='UEF' then return {} end
+        filters=filters or {}
+        local faction=filters.faction or 'ALL'
+        local search=filters.search or ''
+        if faction~='ALL' and faction~='UEF' then return {} end
         local result={}
-        for _,r in ipairs(records) do if filters.search=='' or r.name:find(filters.search,1,true) then result[#result+1]=r end end
+        for _,r in ipairs(records) do if search=='' or r.name:find(search,1,true) then result[#result+1]=r end end
         return result
     end}
 local modelModule=setmetatable({},{__index=_G})

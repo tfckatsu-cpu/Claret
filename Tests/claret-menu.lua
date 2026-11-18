@@ -109,9 +109,15 @@ assert(menu:Register({id='core',title='Core',toggles={{label='Probe',option=opti
     onMenuClosed=function() assert(not menu:IsOpen() and not focused,'close callback follows focus release'); closedCount=closedCount+1 end,
     actions={{label='Editor',open=function(parent)
         child=control(parent); closeAttempts=0
+        -- Separate windows own their Escape handling above the menu (menu-rules.md).
+        local handler=function() child.RequestClose() end
+        escapes[#escapes+1]=handler
         child.RequestClose=function()
             closeAttempts=closeAttempts+1
-            if closeAttempts==2 then child:Destroy() end
+            if closeAttempts==2 then
+                for index=#escapes,1,-1 do if escapes[index]==handler then table.remove(escapes,index) end end
+                child:Destroy()
+            end
         end
         return child
     end}}}))
@@ -160,11 +166,13 @@ menu:Open(); assert(#controls==count,'one menu instance')
 assert(not textControl('Probe'),'launcher opens without module settings')
 click('Core'); assert(not focused,'section leaves game keyboard focus alone')
 local panel=textControl('Core')
+-- Core uses the compact panel (Menu.lua Render -> SetPanelSize(corePanelWidth,corePanelHeight)).
 for _,c in ipairs(controls) do
-    if c.parent==group and c~=launcher and c.Width()==1128 then panel=c end
+    if c.parent==group and c~=launcher and c.Width()==theme.Metrics.corePanelWidth then panel=c end
 end
 local panelHeader
-for _,c in ipairs(controls) do if c.parent==panel and c.Width()==1056 and c.Height()==72 then panelHeader=c end end
+-- Drag header is created at width-72 then resized to panelWidth-72 by SetPanelSize (Menu.lua:357).
+for _,c in ipairs(controls) do if c.parent==panel and c.Width()==theme.Metrics.corePanelWidth-72 and c.Height()==72 then panelHeader=c end end
 assert(panelHeader, 'settings drag header exists')
 panelHeader:HandleEvent({Type='ButtonPress',MouseX=100,MouseY=100,KeyCode=1,Modifiers={Left=true}})
 postedDrag:OnMove(80,105)
@@ -175,15 +183,18 @@ postedDrag:OnRelease()
 click('Probe')
 assert(option.value==false and option.saved==false and saved==1)
 assert(textControl('○'),'off state must have a visible state marker')
-local notice=assert(textControl('Сохранено'))
-assert(notice.needsFrameUpdate)
-notice:OnFrame(1.6)
-assert(notice.text=='' and not notice.needsFrameUpdate,'saved notice expires')
+-- Toggles save silently; the brief status is emitted by key capture (Menu.lua:700).
 click('Probe'); assert(option.value and option.saved and saved==2)
 assert(textControl('●'),'on state must have a visible state marker')
-click('Editor'); assert(child.Depth()>420)
-escapes[1](); assert(closeAttempts==1 and not child.destroyed and #escapes==1)
-escapes[1](); assert(child.destroyed and #escapes==1,'return to menu after editor confirmation')
+click('Editor')
+-- Dialogs mount in the panel content above the chrome; depth is relative (Menu.lua:432), not absolute.
+assert(child.parent and child.parent.parent==panel and child.parent.Width()==384,'action dialog mounts in the resized panel content')
+assert(#escapes==2,'dialog joins the Escape stack above the menu')
+local topHandler=#escapes
+escapes[topHandler](); assert(closeAttempts==1 and not child.destroyed and #escapes==2)
+escapes[topHandler](); assert(child.destroyed and #escapes==1,'return to menu after editor confirmation')
+-- Launch clears the remembered section (Menu.lua:428), so re-enter it before the close/reopen check.
+click('Core'); assert(textControl('Probe'),'returning to the section drops the action window')
 local bindings=0; for fn in pairs(callbacks) do bindings=bindings+1 end
 assert(bindings==1,'return must not duplicate option bindings')
 click('×'); assert(#escapes==1,'close waits for transition')
@@ -201,7 +212,7 @@ local reopenedLauncher=launcherControl()
 local reopenedGroup=reopenedLauncher.parent
 local reopenedPanel
 for _,c in ipairs(controls) do
-    if c.parent==reopenedGroup and c~=reopenedLauncher and c.Width()==1128 then reopenedPanel=c end
+    if c.parent==reopenedGroup and c~=reopenedLauncher and c.Width()==theme.Metrics.corePanelWidth then reopenedPanel=c end
 end
 assert(math.abs(reopenedLauncher.x-40/lastLayoutScale)<0.01 and math.abs(reopenedLauncher.y-5/lastLayoutScale)<0.01,
     'launcher position survives closing')
@@ -209,7 +220,7 @@ assert(reopenedPanel and math.abs(reopenedPanel.x-(264-20/lastLayoutScale))<0.01
     'settings position survives closing independently')
 local panelClose
 for _,c in ipairs(controls) do
-    if not c.destroyed and c.text=='×' and c.parent and c.parent.parent and c.parent.parent.Width()==1128 then panelClose=c.parent end
+    if not c.destroyed and c.text=='×' and c.parent and c.parent.parent and c.parent.parent.Width()==theme.Metrics.corePanelWidth then panelClose=c.parent end
 end
 assert(panelClose,'settings close button exists')
 panelClose:HandleEvent({Type='ButtonPress'})
@@ -225,6 +236,7 @@ many:Open()
 assert(scrollbarTarget)
 scrollbarTarget:ScrollSetTop('Vert',3)
 local _,_,scrollTop=scrollbarTarget:GetScrollValues(); assert(scrollTop==3)
+scrollbarTarget:ScrollSetTop('Vert',1000) -- 4 placeholder sections precede the registrations (Menu.lua:22-30)
 assert(button('Section 8'))
 scrollbarTarget:ScrollPages('Vert',-1)
 _,_,scrollTop=scrollbarTarget:GetScrollValues(); assert(scrollTop==1)
@@ -256,9 +268,10 @@ scaleMenu:Register({id='core',title='Scale'})
 for _,case in ipairs({{1920,1080,1},{2560,1440,1.25},{1280,720,0.8}}) do
     root.Width:Set(case[1]); root.Height:Set(case[2]); pixelScale=case[3]
     scaleMenu:Open()
-    local expected=math.min(case[3],(case[1]-24)/1364,(case[2]-24)/1110)
+    -- Fit group is launcher 248 + gap 16 + panel 1128 = 1392 wide (Menu.lua:86).
+    local expected=math.min(case[3],(case[1]-24)/1392,(case[2]-24)/1110)
     assert(math.abs(lastLayoutScale-expected)<0.00001,'group fits screen with UI scale applied once')
-    assert(1364*lastLayoutScale<=case[1]-24 and 1110*lastLayoutScale<=case[2]-24,'both panels stay inside screen margins')
+    assert(1392*lastLayoutScale<=case[1]-24 and 1110*lastLayoutScale<=case[2]-24,'both panels stay inside screen margins')
     escapes[#escapes]()
     advanceTransitions()
 end
@@ -284,6 +297,10 @@ key(27); assert(nested and focused and textControl('Нажмите сочета�
 assert(textControl('Нажмите сочетание…'))
 key(75,nil,'Ctrl-K')
 assert(binding.key=='Ctrl-K' and not focused and not keyed:IsKeyCaptureActive() and not textControl('Нажмите сочетание…'),'capture saves immediately and restores navigation')
+local notice=assert(textControl('Сохранено'))
+assert(notice.needsFrameUpdate)
+notice:OnFrame(1.6)
+assert(notice.text=='' and not notice.needsFrameUpdate,'saved notice expires')
 click('Изменить')
 key(88,nil,'Ctrl-X')
 assert(binding.key=='Ctrl-K' and focused and textControl('Нажмите сочетание…'),'conflict keeps old binding and allows retry')
@@ -330,17 +347,20 @@ inlineMenu:Register({id='hotbuild',title='Large',inline=function(host,layout)
 end})
 inlineMenu:Open()
 local launcher=button('×').parent
-assert(launcher.Width()==248 and launcher.Height()==208)
+-- Launcher height follows its rows: 112+4*48 for 2 registered and 2 placeholder sections (Menu.lua:85).
+assert(launcher.Width()==theme.Metrics.launcherWidth and launcher.Height()==112+4*48)
 assert(not embedded, 'launcher opens alone')
 click('Large')
 local panel=inlineHost.parent
-assert(panel.Width()==1128 and panel.Height()==1110 and not panel.hidden)
+-- The wide Hotbuild section keeps the full panel metrics (Menu.lua:446-447).
+assert(panel.Width()==theme.Metrics.panelWidth and panel.Height()==theme.Metrics.panelHeight and not panel.hidden)
 resizeInline(626); assert(panel.Height()==750, 'inline editor can resize its own panel')
 mayLeave=false; click('Small'); assert(not embedded.destroyed)
 local cancelNavigation=pendingLeave; assert(cancelNavigation); cancelNavigation(false)
 click('Small'); local saveNavigation=pendingLeave; assert(saveNavigation)
 saveNavigation(true)
-assert(embedded.destroyed and panel.Width()==1128 and panel.Height()==1110)
+-- 'Small' is the core section, which uses the compact panel metrics (Menu.lua:446-447).
+assert(embedded.destroyed and panel.Width()==theme.Metrics.corePanelWidth and panel.Height()==theme.Metrics.corePanelHeight)
 click('Large'); assert(embedded and not embedded.destroyed)
 mayLeave=false
 local panelClose
@@ -419,7 +439,7 @@ assert(not byId.hotbuild_context, 'subpages belong inside the Hotbuild section')
 assert(not runtimeCreated, 'Hotbuild runtime remains deferred until the menu opens')
 local host={}
 local wrapper=byId.hotbuild.inline(host,{scale=0.8})
-assert(runtimeCreated and wrapper.parent==host and wrapper.scale==0.8 and #navPages==4)
+assert(runtimeCreated and wrapper.parent==host and wrapper.scale==0.8 and table.getn(navPages)==3)
 byId.hotbuild.onMenuClosed(); assert(refreshes==0); assert(coroutine.resume(deferred)); assert(refreshes==1,'refresh follows frame delay')
 byId.hotbuild.onMenuClosed(); menuOpen=true; assert(coroutine.resume(deferred)); assert(refreshes==1,'reopened menu cancels delayed refresh'); menuOpen=false
 assert(navPages[1].id=='keyboard' and navPages[2].id=='hotbuild' and navPages[3].id=='contexts'

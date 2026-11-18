@@ -54,6 +54,7 @@ local env = {
     import = function(path)
         if path == '/mods/ClaretHotbuild/modules/Runtime.lua' then return runtimeModule end
         if path == '/mods/ClaretHotbuild/modules/BuildKeyLabels.lua' then return buildLabels end
+        if path == '/mods/ClaretHotbuild/modules/LocalizationStrings.lua' then return { Strings = { en = {}, ru = {} } } end
         if path == '/lua/maui/group.lua' then
             return { Group = function(parent)
                 local owner = { parent = parent, OnDestroy = function() end }
@@ -73,6 +74,7 @@ env.ReUI = {
     },
     Options = { Mods = { ClaretHotbuild = options } },
     ClaretCore = {
+        Localization = { Register = function() return true end, Text = function(key) return key end },
         RegisterFeature = function(_, callback) featureStarter = callback; return true end,
         RegisterSettingsSection = function() return true end,
         IsMenuOpen = function() return false end,
@@ -104,10 +106,10 @@ featureStarter({ feature = true })
 local labels, upgrade, orderKeys = getKeyTables()
 assert(originalCalls == 2 and serviceCalls.assignments == 1,
     'active hook calls original once and takes one keyboard assignment snapshot')
-assert(labels ~= originalRelations and labels.uel0002 and labels.uel0002.key == 'W',
-    'Claret-only blueprint receives its W badge through the returned BPID map')
-assert(labels.ual0001 == nativeLabel and originalRelations.ual0001 == nativeLabel,
-    'existing FAF relation wins deterministically and neither original map nor value changes')
+assert(labels ~= originalRelations and labels.uel0002,
+    'Claret-only blueprint receives its badge through the returned BPID map')
+assert(labels.ual0001 and labels.ual0001.key == 'W+' and originalRelations.ual0001 == nativeLabel,
+    'Claret key takes precedence while the native map stays untouched')
 assert(upgrade == nativeUpgrade and orderKeys == nativeOrder,
     'upgrade and order relations pass through unchanged')
 assert(labels.uel0002.ambiguous and labels.uel0002.key == 'W+'

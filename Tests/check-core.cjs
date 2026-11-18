@@ -92,6 +92,38 @@ function checkLocalizationReferences(dir) {
 }
 checkLocalizationReferences(root);
 checkLocalizationReferences('../mods/ClaretHotbuild');
+// Architecture boundary: Core must never import ClaretHotbuild.
+function checkCoreBoundary(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) checkCoreBoundary(file);
+    else if (file.endsWith('.lua') && /import\(\s*['"]\/mods\/ClaretHotbuild/.test(fs.readFileSync(file, 'utf8'))) {
+      throw new Error(`${file}: ClaretCore must not import ClaretHotbuild`);
+    }
+  }
+}
+checkCoreBoundary(root);
+// Version identity: Main Version == manifest ReUI == README heading; BuildStamp == newest CHANGELOG build.
+function checkVersionIdentity(modName, dir) {
+  const main = fs.readFileSync(path.join(dir, 'Main.lua'), 'utf8');
+  const manifest = fs.readFileSync(path.join(dir, 'mod_info.lua'), 'utf8');
+  const readme = fs.readFileSync(path.join(dir, 'README.md'), 'utf8');
+  const changelogPath = path.join(dir, 'CHANGELOG.md');
+  const changelog = fs.existsSync(changelogPath) ? fs.readFileSync(changelogPath, 'utf8') : null;
+  const version = (main.match(/^Version = '([^']+)'/m) || [])[1];
+  const stamp = (main.match(/BuildStamp = '(\d{8}-\d+)'/) || [])[1];
+  const manifestVersion = (manifest.match(/ReUI = ['"][^'"]+=([\d.]+)['"]/) || [])[1];
+  const readmeVersion = (readme.match(/^# .*?(\d+\.\d+\.\d+)/m) || [])[1];
+  const newestBuild = changelog ? (changelog.match(/## Сборка (\d{8}-\d+)/) || [])[1] : null;
+  const problems = [];
+  if (!version) problems.push('Main.lua Version missing');
+  if (version !== manifestVersion) problems.push(`${modName}: Main ${version} != mod_info ${manifestVersion}`);
+  if (version !== readmeVersion) problems.push(`${modName}: README ${readmeVersion} != Main ${version}`);
+  if (changelog && stamp !== newestBuild) problems.push(`${modName}: BuildStamp ${stamp} != CHANGELOG ${newestBuild}`);
+  if (problems.length) throw new Error(problems.join('; '));
+}
+checkVersionIdentity('ClaretCore', root);
+checkVersionIdentity('ClaretHotbuild', '../mods/ClaretHotbuild');
 // LuaPlus rejects expression-form varargs accepted by the Lua 5.1 parser.
 // These live integration files do not need varargs at all.
 for (const file of ['../mods/ClaretHotbuild/Main.lua', '../mods/ClaretCore/modules/ReUICargoIndicator.lua']) {
@@ -101,7 +133,11 @@ if (!quiet) console.log(`PASS: parsed ${count} Lua files (Lua 5.1 grammar; FAF r
 let failed = false;
 let passedCount = 0;
 const failures = [];
-for (const file of ['core-localization.lua', 'core-smoke.lua', 'core-welcome.lua', 'core-transport-cargo.lua', 'core-reui-cargo-indicator.lua', 'core-cargo-selection.lua', 'core-selection-ignore-scope.lua', 'core-selection-ignore-hook.lua', 'core-construction-facade.lua', 'core-construction-panel.lua', 'core-construction-choices.lua', 'core-construction-cargo-view.lua', 'core-construction-cargo-integration.lua', 'core-construction-queue.lua', 'core-construction-panel-shell.lua', 'core-construction-grid-model.lua', 'core-construction-selection.lua', 'core-construction-templates.lua', 'core-construction-items-view.lua', 'core-construction-controller.lua', 'core-construction-enhancements.lua', 'core-construction-actions.lua', 'core-construction-engine-adapters.lua', 'core-construction-template-actions.lua', 'core-construction-template-integration.lua', 'core-construction-enhancement-actions.lua', 'core-construction-enhancement-scope-integration.lua', 'core-multifunction-shell.lua', 'core-multifunction-controller.lua', 'core-multifunction-integration.lua', 'core-orders-panel-shell.lua', 'core-orders-panel-model.lua', 'core-orders-panel-integration.lua', 'core-orders-catalog.lua', 'core-orders-overrides.lua', 'core-orders-actions.lua', 'claret-menu.lua', 'claret-menu-key.lua', 'hotbuild-catalog.lua', 'hotbuild-equivalents.lua', 'hotbuild-templates.lua', 'hotbuild-model.lua', 'hotbuild-profile-corruption.lua', 'hotbuild-build-key-labels.lua', 'hotbuild-adapter.lua', 'hotbuild-keys.lua', 'hotbuild-runtime.lua', 'hotbuild-grid-editor.lua', 'hotbuild-cycle-menu.lua', 'hotbuild-navigator.lua', 'hotbuild-keyboard-editor.lua', 'hotbuild-open-perf.lua', 'hotbuild-compatibility.lua', 'hotbuild-context-model.lua', 'hotbuild-context-actions.lua', 'hotbuild-context-labels.lua', 'hotbuild-context-repeat.lua', 'hotbuild-engineer-hold.lua', 'hotbuild-context-runtime.lua', 'hotbuild-context-editor.lua', 'hotbuild-context-enhancements.lua', 'hotbuild-context-queue.lua', 'hotbuild-context-upgrade.lua']) {
+// Every test file on disk runs automatically; only *-helper.lua are shared helpers.
+const testFiles = fs.readdirSync(path.join(__dirname))
+  .filter((name) => name.endsWith('.lua') && !name.endsWith('-helper.lua'))
+  .sort();
+for (const file of testFiles) {
   if (pattern !== null && !file.includes(pattern)) continue;
   const L = lauxlib.luaL_newstate();
   lualib.luaL_openlibs(L);

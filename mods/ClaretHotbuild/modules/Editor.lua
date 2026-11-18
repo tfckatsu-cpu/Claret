@@ -626,7 +626,7 @@ function Create(parent, service, embedded, memory)
             Load({id='b'..n,name=T('hotbuild.editor.status.new_binding'),key='',entries={}}); Change(); SyncSelector(); Refresh()
         end)
         frame.RequestClose=function()
-            if MayLeave('close',function() frame:Destroy() end) then frame:Destroy() end
+            if MayLeave('close',function(allowed) if allowed then frame:Destroy() end end) then frame:Destroy() end
         end
         frame.CanLeave=MayLeave
         if not embedded then Button(frame,'×',1038,8,30,frame.RequestClose) end

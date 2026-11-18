@@ -14,6 +14,7 @@ local function control(parent)
     end
     controls[#controls+1]=c
     function c:SetSolidColor(v) self.color=v end
+    function c:SetTexture(v) self.texture=v end
     function c:SetNeedsFrameUpdate(v) self.needsFrameUpdate=v end
     function c:SetColor(v) self.color=v end
     function c:SetText(v) self.text=v end
@@ -638,9 +639,12 @@ function manyService:CommitContext(binding,removeId)
     self.contextModel=candidate
     return true,'Сохранено'
 end
-local manyFrame=env.Create(host,manyService,nil)
+local manyFrame=env.Create(host,manyService,nil,{bindingId='saved_scroll_1'})
 openSaved(manyFrame)
 assert(treeButton(manyFrame,'Строители'),'builder group remains available for child overrides')
+-- The catalog lists actions for the selected draft context, so pick one before scanning headings.
+expandBuilders(manyFrame)
+clickAcu(manyFrame)
 local seenGroups={}
 local manyCatalog
 for _,c in ipairs(controls) do
@@ -660,9 +664,6 @@ local headingCount=0
 for _ in pairs(seenGroups) do headingCount=headingCount+1 end
 assert(headingCount>=2,'compatible actions use multiple descriptive headings throughout the scrollable catalog')
 manyCatalog:ScrollSetTop('Vert',1)
-selectSaved(manyFrame,'Saved 1')
-expandBuilders(manyFrame)
-clickAcu(manyFrame)
 assert(not findIn(manyFrame,'Своё'),'own-mode button is removed from the interface')
 for _,label in ipairs({'Отключить','Наследовать'}) do
     local mode=findIn(manyFrame,label)
@@ -773,7 +774,7 @@ assert(factoryTile.color=='selected','factory remains selectable')
 policyFrame:Destroy()
 do
 local pickerLockModel=modelEnv.Create({version=3,bindings={{id='picker_lock',name='Picker lock',rows={{context='engineer',action='reclaim'}}}}},actions)
-local pickerLockFrame=env.Create(host,{contextActions=actions,contextModel=pickerLockModel},nil)
+local pickerLockFrame=env.Create(host,{contextActions=actions,contextModel=pickerLockModel},nil,{bindingId='picker_lock'})
 clickIn(pickerLockFrame,'Ничего не выделено')
 local pickerSearch
 for _,c in ipairs(controls) do if not c.destroyed and c.parent==pickerLockFrame and c.OnTextChanged and c.Width()>400 then pickerSearch=c end end
@@ -807,7 +808,7 @@ function retainedService:CommitContext(binding,removeId)
     self.contextModel=candidate
     return true,'Сохранено'
 end
-local retainedFrame=env.Create(host,retainedService,nil)
+local retainedFrame=env.Create(host,retainedService,nil,{bindingId='absolute_ui'})
 for _,c in ipairs(controls) do
     assert(c.destroyed or not inside(c,retainedFrame) or c.text~='Абсолютный режим: выкл.', 'absolute switch is absent')
 end
@@ -831,7 +832,7 @@ function groupService:CommitContext(binding)
     self.contextModel=candidate
     return true
 end
-local groupFrame=env.Create(host,groupService,{scale=0.75})
+local groupFrame=env.Create(host,groupService,{scale=0.75},{bindingId='groups'})
 local function groupTile(label)
     return assert(treeButton(groupFrame,label),'missing context tree entry '..label)
 end
@@ -980,7 +981,7 @@ for index,case in ipairs(continuationCases) do
     assert(fixture and fixture.rows[1].context=='empty' and fixture.rows[1].action==actionId,
         'continuation lock fixture is preserved: '..actionId)
     local svc={contextActions=actions,contextModel=m}
-    local f=env.Create(host,svc,nil)
+    local f=env.Create(host,svc,nil,{bindingId='continuation_'..index})
     local target=assert(treeButton(f,targetId),'continuation target exists: '..targetId)
     local lockHint=findIn(target,'занято цепочкой')
     local treeText={}
@@ -1001,7 +1002,7 @@ function savedConflictService:CommitContext(binding)
     self.contextModel=candidate
     return true,'Сохранено'
 end
-local savedConflictFrame=env.Create(host,savedConflictService,nil)
+local savedConflictFrame=env.Create(host,savedConflictService,nil,{bindingId='saved_conflict'})
 assert(savedConflictService.contextModel:ResolveAction('saved_conflict','acu')=='move',
     'loading a saved continuation conflict preserves the assigned child row')
 local conflictingAcu=assert(treeButton(savedConflictFrame,'acu'))
@@ -1019,7 +1020,7 @@ assert(savedConflictService.contextModel:ResolveAction('saved_conflict','acu')==
 savedConflictFrame:Destroy()
 -- A locked inherited child also blocks assigning an action to its group.
 local inheritedConflict=modelEnv.Create({version=3,bindings={{id='inherited_conflict',name='Inherited conflict',rows={{context='empty',action='select_acu_double'}}}}},actions)
-local inheritedConflictFrame=env.Create(host,{contextActions=actions,contextModel=inheritedConflict},nil)
+local inheritedConflictFrame=env.Create(host,{contextActions=actions,contextModel=inheritedConflict},nil,{bindingId='inherited_conflict'})
 clickIn(inheritedConflictFrame,'Строители')
 clickIn(inheritedConflictFrame,'Движение')
 assert(not inheritedConflict:Get('inherited_conflict').rows[2]
@@ -1035,7 +1036,7 @@ local legacyService={contextActions=actions,contextModel=legacyModel}
 function legacyService:CommitContext(binding)
     local ok,err=self.contextModel:Put(binding); return ok,err or 'Сохранено'
 end
-local legacyFrame=env.Create(host,legacyService,nil)
+local legacyFrame=env.Create(host,legacyService,nil,{bindingId='legacy'})
 assert(findIn(legacyFrame,'устарело: Самоунич'),
     'saved delayed-suicide assignment is shown as obsolete')
 clickIn(legacyFrame,'Сохранить')
@@ -1058,7 +1059,7 @@ local extraLegacyService={contextActions=actions,contextModel=extraLegacyModel}
 function extraLegacyService:CommitContext(binding)
     local ok,err=self.contextModel:Put(binding); return ok,err or 'Сохранено'
 end
-local extraLegacyFrame=env.Create(host,extraLegacyService,nil)
+local extraLegacyFrame=env.Create(host,extraLegacyService,nil,{bindingId='old_extra_fields'})
 clickIn(extraLegacyFrame,'Сохранить')
 local retainedExtra=extraLegacyService.contextModel:Get('old_extra_fields')
 assert(retainedExtra.rows[1].quickRepeat=='attack' and retainedExtra.rows[1].fallback=='attack_move', 'saving retains legacy repeat and fallback')
@@ -1084,7 +1085,7 @@ local function offerScenario(rows,answer)
     local m=modelEnv.Create({version=3,bindings={{id='offer',name='Offer',rows=rows}}},actions)
     local svc={contextActions=actions,contextModel=m}
     function svc:CommitContext(binding) local ok,err=self.contextModel:Put(binding); return ok,err end
-    local f=env.Create(host,svc,nil)
+    local f=env.Create(host,svc,nil,{bindingId='offer'})
     expandBuilders(f); clickAcu(f); clickIn(f,'Overcharge')
     if answer then
         assert(findIn(f,'Поставить то же для SACU?'), 'offer appears when no SACU override exists')
@@ -1111,7 +1112,7 @@ local function missileOffer(existingRows,choose)
         if not ok then return false,err end
         self.contextModel=candidate; return true,'Сохранено'
     end
-    local f=env.Create(host,svc,nil)
+    local f=env.Create(host,svc,nil,{bindingId='missile_offer'})
     clickIn(f,'Ракеты')
     clickIn(f,'Запуск ракеты')
     assert(findIn(f,'Предложить запуск ракеты для ACU/SACU?'),'smart missile assignment offers ACU/SACU separately')

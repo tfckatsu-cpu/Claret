@@ -129,6 +129,8 @@ game.import = function(path)
         end,
     } end
     if path == '/lua/ui/game/tabs.lua' then return {AddToMenu=function(item) game.menuItem=item end} end
+    if path == '/lua/ui/game/rangeoverlayparams.lua' then return {RangeOverlayParams={}} end
+    if path == '/lua/ui/game/worldview.lua' then return {viewLeft=nil} end
     if path == '/lua/maui/group.lua' then return { Group = control } end
     if path == '/lua/maui/bitmap.lua' then return { Bitmap = control } end
     if path == '/lua/ui/uiutil.lua' then return { bodyFont = 'Arial', CreateText = function(parent) return control(parent) end } end

@@ -300,12 +300,15 @@ assert(ContextActions.Get('select_t3_mml').select:find('+excludeengineers',1,tru
 for _,id in ipairs({'select_bombers','select_fighters','select_gunships','select_land_army_screen',
     'select_land_army_map','select_naval_army_screen','select_naval_army_map','select_experimentals',
     'select_satellites','select_land_experimentals','select_air_experimentals',
-    'select_transport_screen','select_transport_map','select_transport_nearest','select_tactical_silos',
+    'select_transport_screen','select_transport_map','select_tactical_silos',
     'select_nuclear_silos','select_t3_artillery','select_t3_shields','select_t3_stealth','select_t3_mml'}) do
     local item=ContextActions.Get(id)
     assert(item and ContextActions.Supports(id,'empty') and item.selectionPolicy=='exclusive',
         id..' is available with empty selection and blocks conflicting contexts')
 end
+assert(ContextActions.Get('select_transport_nearest').selectionPolicy=='accumulate'
+    and ContextActions.Supports('select_transport_nearest','empty'),
+    'nearest free transport accumulates into the selection')
 assert(ContextActions.Get('select_experimentals').special=='select_mobile_land_experimentals',
     'default experimental selection is mobile land, excluding Scathis and satellite')
 assert(ContextActions.Get('select_land_army_screen').special=='select_land_army_screen'
@@ -567,9 +570,9 @@ context.orders.RULEUCC_Move=true
 
 -- Sequential engineer selection adds one unseen unit per invocation, excludes command units,
 -- includes busy engineers, and preserves the original list when candidate discovery fails.
-local engOne,engTwo=unit(categories('ENGINEER','TECH1')),unit(categories('ENGINEER','TECH1'))
-local engThree=unit(categories('ENGINEER','TECH2'))
-local engFour=unit(categories('ENGINEER','TECH3'))
+local engOne,engTwo=unit(categories('ENGINEER','MOBILE','TECH1')),unit(categories('ENGINEER','MOBILE','TECH1'))
+local engThree=unit(categories('ENGINEER','MOBILE','TECH2'))
+local engFour=unit(categories('ENGINEER','MOBILE','TECH3'))
 local engAcu=unit(categories('ENGINEER','COMMAND'))
 local engSacu=unit(categories('ENGINEER','SUBCOMMANDER'))
 for i,u in ipairs({engOne,engTwo,engThree,engAcu,engSacu,engFour}) do

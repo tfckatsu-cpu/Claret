@@ -1,10 +1,16 @@
-# Claret Core — test build 0.10.1
+# Claret Core — test build 0.10.14
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
 
 Provides a feature registry, lifecycle and resource management (`Own`, `Bind`, `Every`, `Guard`, `Defer`), and a selection composition diagnostics panel. The `probeEnabled` setting controls diagnostic log entries and is available under F10 → Claret → Core when ReUI developer mode is enabled; its previously saved value is preserved. The UI counter panel has been removed.
 
 The Claret interface follows the game language by default. To override it, choose **English** or **Russian** under F10 → Claret → Core → **Interface language**. The preference is saved, and open Claret windows update immediately without restarting the game.
+
+## Experimental / deferred features (not wired)
+
+`modules/Construction*.lua`, `modules/Orders*.lua`, `modules/Multifunction*.lua`, `modules/SelectionIgnore*.lua` and `modules/CargoSelection.lua` are an experimental, deliberately deferred implementation of a planned replacement for the ReUI construction, orders and multi-function HUD. They are not abandoned or broken code: the modules are preserved and covered by the local checks, and their tests stay in place.
+
+No shipped session imports or registers them, so they never load in game (`import` is lazy). Wiring them — including an explicit ownership decision against `ReUI.Construction` — is outside the current scope and is a separate future step. Do not delete them as dead code.
 
 ## Connecting other mods
 
@@ -41,7 +47,7 @@ The user confirmed the UI counter and the corrected selection panel in 0.2.1. Th
 
 From Claret Project, `node Tests/check-core.cjs` checks both mods: syntax and logic scenarios, including Core without Hotbuild, early/late feature registration, the separate Hotbuild entry point, and option persistence/migration. These are simulations, not engine runs.
 
-The Claret visual style is defined in the project's `Context/ui-style.md`; the shared `Theme.lua` in Core 0.5.0 provides tokens to all modules. Hotbuild 0.10.1 requires Core >= 0.10.0.
+The Claret visual style is defined in the project's `Context/ui-style.md`; the shared `Theme.lua` in Core 0.5.0 provides tokens to all modules. Hotbuild 0.10.38 requires Core >= 0.10.14.
 
 Settings presentation (2026-11-10): toggle rows are fully clickable, show On/Off and a description, and display a save confirmation next to the row for 1.5 seconds. Sections use shared components and the theme. A hotkey is saved immediately after successful input; a conflict shows the occupied action and preserves the previous combination. An empty assignment disables the clear button. Tab/Shift+Tab move focus, Enter/Space activate, and Esc cancels capture or closes the menu. Focusing an input field transfers focus to the editor. Hotbuild is always active and cannot be disabled through the menu. The appearance and actual input still need in-game verification in FAF; local checks are not in-game screenshots.
 

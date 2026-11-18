@@ -110,7 +110,7 @@ runtimeEnvironment=setmetatable({
     GetSelectedUnits=function() return selected end,
     SelectUnits=function(units) selected=units end,
     UISelectionByCategory=function(category)
-        if category=='ENGINEER TECH1' then selected=engineerCandidates end
+        if category=='ENGINEER TECH1' or category=='MOBILE ENGINEER TECH1' then selected=engineerCandidates end
     end,
     ConExecute=function(command)
         selectCalls[#selectCalls+1]=command
@@ -359,11 +359,11 @@ assert(service:CommitContext(absoluteComposite),'unlinked absolute composite can
 local standaloneRegistered=false
 for _,call in ipairs(mapperCalls) do
     if call[1]=='ClaretHotkeyPair_41'
-        and call[2].action:find('ExecuteKeyboardPair("A")',1,true) then standaloneRegistered=true end
+        and call[2].action:find('ExecuteKeyboardPair("A", IsKeyDown(16))',1,true) then standaloneRegistered=true end
 end
 assert(not standaloneRegistered,'unassigned absolute composite does not add a native key action')
 assert(service.keyboardBindings:Set({kind='composite',id='ctxAbsolute'},'A',{}),'keyboard page assigns composite')
-assert(engineKeyMap.A and engineKeyMap.A.action:find('ExecuteKeyboardPair("A")',1,true),
+assert(engineKeyMap.A and engineKeyMap.A.action:find('ExecuteKeyboardPair("A", IsKeyDown(16))',1,true),
     'keyboard assignment is applied to the engine map immediately')
 preferences.UserDebugKeyMap={['Alt-Z']='ForeignDebugAction',
     ['Alt-F2']='ClaretHotkeyPair_'..encoded('Alt-F2')}
@@ -442,7 +442,7 @@ assert(not service.keyboardBindings:Set(ref,'D',{ctrl=true},'ChangedAction'),'st
 engineKeyMap['Ctrl-D']={action='previous engine action'}
 applyCalls={}; probeEnabled=true
 assert(service.keyboardBindings:Set(ref,'D',{ctrl=true},collision.id),'confirmed default conflict can be replaced')
-assert(table.concat(applyCalls,',')=='save,clear,add,modifiers,labels','commit follows native save and full apply sequence')
+assert(table.concat(applyCalls,',')=='save,clear,add,modifiers,add,labels','commit follows native save and full apply sequence')
 assert(engineKeyMap.A and engineKeyMap['Alt-Z'],'full apply preserves other Claret and foreign bindings')
 local logged=false; for _,line in ipairs(diagnosticLines) do if line:find('[Claret][keys] key=Ctrl-D action=',1,true) and line:find('defined=true',1,true) then logged=true end end
 assert(logged,'enabled probe reports resolved Claret binding')
@@ -456,15 +456,15 @@ assert(service.keyboardBindings:Set({kind='action',id='select_acu'},'Q',{}),'con
 assert(engineKeyMap.Q and engineKeyMap.Q.action:find('ExecuteKeyboardAction',1,true),'context mapping contains the registered action')
 assert(engineKeyMap.Q.action:find('"Q"',1,true),'direct action dispatch carries its actual chord')
 assert(service.keyboardBindings:Set({kind='preset',id='legacy'},'R',{}),'building definition is registered before applying')
-assert(engineKeyMap.R and engineKeyMap.R.action:find('ExecuteKeyboardPair("R")',1,true),'building mapping contains the registered action')
+assert(engineKeyMap.R and engineKeyMap.R.action:find('ExecuteKeyboardPair("R", IsKeyDown(16))',1,true),'building mapping contains the registered action')
 probeEnabled=false
-assert(preferences.UserKeyMap['Ctrl-D']~='DefaultAction' and engineKeyMap['Ctrl-D'].action:find('ExecuteKeyboardPair("Ctrl-D")',1,true),'confirmed replacement removes the existing engine action before installation')
+assert(preferences.UserKeyMap['Ctrl-D']~='DefaultAction' and engineKeyMap['Ctrl-D'].action:find('ExecuteKeyboardPair("Ctrl-D", IsKeyDown(16))',1,true),'confirmed replacement removes the existing engine action before installation')
 local removed,removeMessage=service:CommitContext(nil,'ctxAbsolute')
 assert(not removed and removeMessage:find('Подтвердите',1,true),
     'a composite with a direct keyboard assignment requests confirmation')
 for _,call in ipairs(mapperCalls) do
     if call[1]=='ClaretHotkeyPair_41'
-        and call[2].action:find('ExecuteKeyboardPair("A")',1,true) then standaloneRegistered=true end
+        and call[2].action:find('ExecuteKeyboardPair("A", IsKeyDown(16))',1,true) then standaloneRegistered=true end
 end
 assert(standaloneRegistered,'assigned composite gets a standalone native key action')
 assert(service.keyboardBindings:Set({kind='composite',id='ctxAbsolute'},'B',{ctrl=true}),
@@ -676,11 +676,11 @@ assert(service:Execute('double','ctxDouble') and commandCalls[#commandCalls][2].
 assert(service.contextModel:Put({id='ctxAdd',name='Add engineers',rows={
     {context='empty',action='select_engineers_t1',quickRepeat='select_engineers_t1'}}}))
 assert(service.model:Put({id='add',name='Add',key='',entries={},grid={buildings={},units={},context='ctxAdd'}}))
-local engineerA=makeUnit('ENGINEER','TECH1','CANNOT_BUILD'); engineerA.entityId=1
-local engineerB=makeUnit('ENGINEER','TECH1','CANNOT_BUILD'); engineerB.entityId=2
-local engineerC=makeUnit('ENGINEER','TECH1','CANNOT_BUILD'); engineerC.entityId=3
-local engineerD=makeUnit('ENGINEER','TECH1','CANNOT_BUILD'); engineerD.entityId=4
-local engineerE=makeUnit('ENGINEER','TECH1','CANNOT_BUILD'); engineerE.entityId=5
+local engineerA=makeUnit('ENGINEER','MOBILE','TECH1','CANNOT_BUILD'); engineerA.entityId=1
+local engineerB=makeUnit('ENGINEER','MOBILE','TECH1','CANNOT_BUILD'); engineerB.entityId=2
+local engineerC=makeUnit('ENGINEER','MOBILE','TECH1','CANNOT_BUILD'); engineerC.entityId=3
+local engineerD=makeUnit('ENGINEER','MOBILE','TECH1','CANNOT_BUILD'); engineerD.entityId=4
+local engineerE=makeUnit('ENGINEER','MOBILE','TECH1','CANNOT_BUILD'); engineerE.entityId=5
 engineerCandidates={engineerA,engineerB,engineerC,engineerD,engineerE}; selected={}; testNow=5
 assert(service:Execute('add','ctxAdd') and #selected==1 and selected[1]==engineerA,'first press selects one engineer')
 testNow=25
@@ -886,26 +886,27 @@ previousSelects=#selectCalls
 assert(service:ExecuteKeyboardPair('X') and #selectCalls==previousSelects+1,
     'direct action runs when no ordinary builder can build the paired preset')
 local doubleChoices=service.keyboardBindings:GetDoubleChoices('select_scout')
-local transportActions={'append_transport_cargo','ferry','transport_order','load_transports'}
+local transportActions={'append_transport_cargo','ferry','transport_order'}
 for _,first in ipairs(transportActions) do
     local choices=service.keyboardBindings:GetDoubleChoices(first)
-    assert(#choices==3,'transport action offers the other transport actions')
+    assert(#choices==2,'transport action offers the other transport actions: '..first..' -> '..#choices)
     for _,choice in ipairs(choices) do assert(choice.id~=first,'transport action does not offer itself') end
 end
-assert(service.keyboardBindings:Set({kind='action',id='dock'},'V',{}))
-assert(service.keyboardBindings:SetDoubleForKey('V',{},'dock','dock_damaged'))
+
+assert(service.keyboardBindings:Set({kind='action',id='append_transport_cargo'},'V',{}))
+assert(service.keyboardBindings:SetDoubleForKey('V',{},'append_transport_cargo','ferry'))
 local shownDouble
 for _,assignment in ipairs(service.keyboardBindings:GetAssignments()) do
     if assignment.key=='V' then shownDouble=assignment.doubleLabel end
 end
-assert(shownDouble=='Посадить повреждённые самолёты','assignment exposes the saved repeat action')
+assert(shownDouble=='Паромный маршрут','assignment exposes the saved repeat action')
 service:RefreshKeys()
-assert(service.keyboardBindings:GetDoubleForKey('V',{}).second=='dock_damaged','aircraft pair survives reload')
-assert(not service.keyboardBindings:SetDoubleForKey('V',{},'dock','transport_order'),'aircraft action does not offer transport actions')
+assert(service.keyboardBindings:GetDoubleForKey('V',{}).second=='ferry','transport pair survives reload')
+assert(not service.keyboardBindings:SetDoubleForKey('V',{},'append_transport_cargo','select_transport_map'),'transport action does not offer selection actions')
 preferences.ClaretHotbuildKeyboard.assignments.V.doubleSecond='transport_order'
 local reloaded=Runtime.Create(false)
 assert(reloaded.keyboardBindings:GetDoubleForKey('V',{}).second=='transport_order','previously saved pair survives reload')
-assert(not service.keyboardBindings:SetDoubleForKey('V',{},'dock','dock'),'transport action cannot repeat itself')
+assert(not service.keyboardBindings:SetDoubleForKey('V',{},'append_transport_cargo','append_transport_cargo'),'transport action cannot repeat itself')
 assert(#doubleChoices==1 and doubleChoices[1].id=='select_all_scouts',
     'scout double press exposes only the same-unit-type safe target')
 assert(not service.keyboardBindings:SetDoubleForKey('X',{},'select_scout','select_transport_map'),
@@ -947,7 +948,7 @@ assert(preferences.UserKeyMap.H=='ClaretHotkeyPair_'..encoded('H')
     and preferences.ClaretHotbuildKeyboard.assignments.H.composite==nil
     and preferences.ClaretHotbuildKeyboard.assignments.H.action=='select_scout',
     'replacement installs the paired action mapping without stale composite data')
-engineerCandidates={makeUnit('ENGINEER','CANNOT_BUILD')}; selected={}
+engineerCandidates={makeUnit('ENGINEER','MOBILE','CANNOT_BUILD')}; selected={}
 assert(service:ExecuteKeyboardPair('Z') and selected[1]==engineerCandidates[1],
     'same preset dispatches the first chord composite')
 selected={}; simulateSelection=makeUnit('COMMAND')

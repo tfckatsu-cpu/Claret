@@ -106,7 +106,7 @@ assert(#commands == 3 and commands[3].units == originalSelection and commands[3]
 assert(selected == originalSelection and #selectionChanges == oldChanges)
 assert(caches == oldCaches and restores == oldRestores and #ignoreChanges == oldIgnores)
 
-local engineer = unit({}, {'ueb1103'}, {'RULEUCC_Reclaim','RULEUCC_Guard','RULEUCC_Move'})
+local engineer = unit({ENGINEER=true}, {'ueb1103'}, {'RULEUCC_Reclaim','RULEUCC_Guard','RULEUCC_Move'})
 selected = {engineer}
 assert(adapter:Build('ueb1103', adapter:Context(false)))
 assert(cleared == 1 and #modes == 1 and modes[1].kind == 'build' and modes[1].name == 'ueb1103')
