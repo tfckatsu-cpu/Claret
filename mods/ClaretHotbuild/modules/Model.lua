@@ -204,11 +204,7 @@ function Create(saved)
         if not byId[validated.id] and table.getn(bindings) >= MAX_BINDINGS then
             return nil, 'Too many bindings (maximum 64)'
         end
-        for _, other in ipairs(bindings) do
-            if other.id ~= validated.id and validated.key ~= '' and other.key == validated.key then
-                return nil, 'Key already assigned to ' .. other.name
-            end
-        end
+        -- Legacy `key` values are metadata; bindings are owned by keyboard pairs.
         local existing = byId[validated.id]
         if existing then
             for i, other in ipairs(bindings) do

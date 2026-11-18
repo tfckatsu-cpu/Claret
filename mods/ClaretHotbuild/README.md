@@ -14,6 +14,12 @@ Create a binding, give it a name, and add buildings or units from the catalog. F
 
 When a builder is selected, the binding starts placement of a suitable building. When a factory is selected, it queues one suitable unit. Binding contents are stored in the ClaretHotbuild profile; key assignments are saved in FAF's profile key settings.
 
+## Saved data
+
+Bindings are stored per chord in `ClaretHotbuildKeyboard` (`chord -> preset / composite / action`, plus the optional double action). That profile is the single source of truth: dispatch, the keyboard editor and compatibility checks read it, and FAF's key maps are rebuilt from it.
+
+`key` and `grid.context` inside `ClaretHotbuild` presets are historical metadata from the pre-pair format. They are preserved but never updated when a binding changes, and current builds use them only as a fallback when the keyboard profile cannot be read. An older Claret build may therefore not see bindings created after the migration to pairs.
+
 ## Multifunction bindings and unit selection
 
 In normal mode, a multifunction binding applies to the current selection according to its selected context. Absolute mode uses only the **Nothing selected** row, regardless of the current selection. Assign a multifunction binding in the **Actions** slot on the **Keyboard** page.
