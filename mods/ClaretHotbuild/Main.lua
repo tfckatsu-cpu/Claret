@@ -44,6 +44,7 @@ function Main(isReplay)
             end
             local okLabels, claretRelations = pcall(BuildKeyLabels.Build, service.model, assignments)
             if not okLabels or type(claretRelations) ~= 'table' then
+                WARN('[ClaretHotbuild] build key labels failed: ' .. tostring(claretRelations))
                 return idRelations, upgradeKey, orderKeys
             end
             local okMerge, merged = pcall(BuildKeyLabels.Merge, idRelations, claretRelations)
