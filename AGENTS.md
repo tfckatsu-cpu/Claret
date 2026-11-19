@@ -28,7 +28,7 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 - Limit long command output (e.g. `| tail -n 80`); read logs from the end.
 
 ## Scope and permissions
-- Working mods: `../mods/ClaretCore/` and `../mods/ClaretHotbuild/` — two separate deliverables. The project's `ClaretCore/` and `ClaretHotbuild/` folders are untracked byte-copies used as a readable mirror; after a task they must stay identical to `../mods` (verify SHA-256). `Claret Core/` is an old draft; never edit it.
+- Working mods: `../mods/ClaretCore/` and `../mods/ClaretHotbuild/` — two separate deliverables. The project's `mods/ClaretCore/` and `mods/ClaretHotbuild/` are tracked mirrors kept by `Tools/Sync-ClaretMods.ps1`; never copy a mirror back over the original. `Claret Core/` (with the space) is an old draft; never edit it.
 - Read-only: other mods, the game folder, `Context/sources/`. FAF client settings and anything outside the two mod folders and this project: only with explicit user consent.
 - Instructions of reference projects (e.g. `Context/sources/AGENTS.md`) are not Claret requirements.
 - Stage 1 research is still open; the user separately allowed development of Core and Hotbuild.
