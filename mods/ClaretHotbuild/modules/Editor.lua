@@ -231,7 +231,7 @@ function Create(parent, service, embedded, memory)
         local bg=Panel(frame,0,0,1080,920,C.canvas); bg.Depth:Set(function() return frame.Depth()+1 end); bg:DisableHitTest()
         local function Text(owner,text,x,y,size,color)
             if type(text)=='string' and string.sub(text,1,9)=='hotbuild.' then text=T(text) end
-            local t=UI.CreateText(owner,text,(size or 14)*ratio,Theme.Fonts.body)
+            local t=UI.CreateText(owner,text,(size or Theme.Metrics.secondaryText)*ratio,Theme.Fonts.body)
             t.Depth:Set(function() return owner.Depth()+2 end)
             t:SetColor(color or C.text); t:DisableHitTest()
             L(t):AtLeftTopIn(owner,x,y); return t
@@ -241,15 +241,19 @@ function Create(parent, service, embedded, memory)
             local h=Theme.Metrics.buttonHeight
             local b=Panel(owner,x,y,w,h,normal); local border=Theme.Outline(b,L,w,h)
             local label=Text(b,text,0,0,Theme.Metrics.buttonText); L(label):AtCenterIn(b)
+            local hovered=false
+            local function Paint()
+                if b.saveButton and not b.saveEnabled then b:SetSolidColor(C.disabled); border(C.border); return end
+                b:SetSolidColor(b.pressed and (primary and C.accentPressed or C.pressed) or hovered and (primary and C.accentHover or C.hover) or normal)
+                border(hovered and C.selectedBorder or C.border)
+            end
             b.HandleEvent=function(self,e)
-                if e.Type=='MouseEnter' then
-                    self:SetSolidColor(self.saveButton and not self.saveEnabled and C.disabled or (primary and C.accentHover or C.hover))
-                    border(self.saveButton and not self.saveEnabled and C.border or C.selectedBorder)
-                elseif e.Type=='MouseExit' then
-                    self:SetSolidColor(self.saveButton and not self.saveEnabled and C.disabled or normal); border(C.border)
+                if e.Type=='MouseEnter' then hovered=true; Paint()
+                elseif e.Type=='MouseExit' then hovered=false; self.pressed=false; Paint()
+                elseif e.Type=='ButtonRelease' then self.pressed=false; Paint()
                 elseif e.Type=='ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then
                     if self.saveButton and not self.saveEnabled then return true end
-                    fn(); return true
+                    self.pressed=true; Paint(); fn(); return true
                 end
                 return true
             end
@@ -290,7 +294,7 @@ function Create(parent, service, embedded, memory)
         local leaveIntent=nil
         local leaveDialog,leaveOverlay,leaveContinuation
         local compatibilityDialog,compatibilityOverlay
-        local status=Text(frame,'',24,893,12,C.muted)
+        local status=Text(frame,'',24,893,Theme.Metrics.caption,C.muted)
         local function Status(message,error,arg1,arg2,arg3)
             if type(message)=='string' and string.sub(message,1,9)=='hotbuild.' then message=T(message,arg1,arg2,arg3) end
             status:SetColor(error and C.danger or C.muted); status:SetText(Short(message,130))
@@ -491,7 +495,7 @@ function Create(parent, service, embedded, memory)
         local nameBorder=Panel(frame,315,88,300,36,C.transparent)
         local nameOutline=Theme.Outline(nameBorder,L,300,36,C.border)
         nameBorder:DisableHitTest()
-        local nameWarning=Text(frame,'',315,48,13,C.danger)
+        local nameWarning=Text(frame,'',315,48,Theme.Metrics.label,C.danger)
         local function InvalidName(value)
             return type(value)=='string' and string.find(value,'[^ -~]')~=nil
         end
@@ -543,8 +547,8 @@ function Create(parent, service, embedded, memory)
         Panel(frame,24,18,4,22,C.accent):DisableHitTest(); Text(frame,'Hotbuild',40,14,22)
         Text(frame,T('hotbuild.editor.binding'),24,67,14,C.muted); Text(frame,T('hotbuild.editor.name'),315,67,14,C.muted)
         local selectorButton=Button(frame,'',24,88,270,function() end)
-        local selectorLabel=Text(selectorButton,'',12,7,15)
-        local selectorArrow=Text(selectorButton,'▼',244,7,13,C.muted)
+        local selectorLabel=Text(selectorButton,'',12,7,Theme.Metrics.buttonText)
+        local selectorArrow=Text(selectorButton,'▼',244,7,Theme.Metrics.label,C.muted)
         local listPanel, listOverlay, listTop, deleteIntent = nil, nil, 1, nil
         local visibleRows, rowHeight = 9, 38
         local function CloseList()
@@ -608,7 +612,7 @@ function Create(parent, service, embedded, memory)
                 local slot={}
                 slot.select=Panel(listPanel,8,6+(i-1)*rowHeight,300,34,C.raised)
                 slot.selectOutline=Theme.Outline(slot.select,L,300,34)
-                slot.label=Text(slot.select,'',10,0,13); L(slot.label):AtCenterIn(slot.select)
+                slot.label=Text(slot.select,'',10,0,Theme.Metrics.secondaryText); L(slot.label):AtCenterIn(slot.select)
                 slot.delete=Panel(listPanel,314,6+(i-1)*rowHeight,34,34,C.danger)
                 slot.deleteOutline=Theme.Outline(slot.delete,L,34,34)
                 slot.deleteLabel=Text(slot.delete,'×',0,0,19); L(slot.deleteLabel):AtCenterIn(slot.delete)
@@ -842,7 +846,7 @@ function Create(parent, service, embedded, memory)
             local function ApplyStyle()
                 button:SetSolidColor(not button.enabled and C.canvas or (hovered and C.hover or C.raised))
                 outline(not button.enabled and C.canvas or (hovered and C.selectedBorder or C.border))
-                label:SetColor(not button.enabled and C.disabled or (hovered and C.text or C.muted))
+                label:SetColor(not button.enabled and C.disabledText or (hovered and C.text or C.muted))
             end
             button.ClearHover=function()
                 hovered=false

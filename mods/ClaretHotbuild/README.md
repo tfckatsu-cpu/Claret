@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.40
+# Claret Hotbuild — prototype 0.10.41
 
 Build 20261113-30: double-tap actions for compatible standalone actions can be configured on the **Keyboard** tab. When an action and a building preset share an assignment, the preset takes priority if the current builder can use it; otherwise, the action runs. Existing saved assignments and additional fields are preserved. In-game verification is pending.
 
@@ -6,7 +6,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.14, and Claret Hotbuild 0.10.14, then start a new match. Hotbuild requires Core >= 0.10.14 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.41, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 

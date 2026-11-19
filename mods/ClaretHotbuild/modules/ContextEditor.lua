@@ -114,14 +114,27 @@ function Create(parent, service, embedded, memory)
         local function Button(owner, label, x, y, w, callback, primary)
             local normal = primary and C.accent or C.raised
             local selected = false
+            local hovered = false
             local h = Theme.Metrics.buttonHeight
             local b = Panel(owner, x, y, w, h, normal)
             local outline = Theme.Outline(b, L, w, h)
             local title = Text(b, label, 4, 0, Theme.Metrics.buttonText); L(title):AtCenterIn(b)
+            local function Paint()
+                if hovered then
+                    b:SetSolidColor(b.pressed and (primary and C.accentPressed or C.pressed) or (primary and C.accentHover or C.hover))
+                    outline(C.selectedBorder)
+                else
+                    b:SetSolidColor(selected and C.selected or normal)
+                    outline(selected and C.selectedBorder or C.border)
+                end
+            end
             b.HandleEvent = function(self, e)
-                if e.Type == 'MouseEnter' then self:SetSolidColor(primary and C.accentHover or C.hover); outline(C.selectedBorder)
-                elseif e.Type == 'MouseExit' then self:SetSolidColor(selected and C.selected or normal); outline(selected and C.selectedBorder or C.border)
-                elseif e.Type == 'ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then callback(); return true end
+                if e.Type == 'MouseEnter' then hovered = true; Paint()
+                elseif e.Type == 'MouseExit' then hovered = false; self.pressed = false; Paint()
+                elseif e.Type == 'ButtonRelease' then self.pressed = false; Paint()
+                elseif e.Type == 'ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then
+                    self.pressed = true; Paint(); callback(); return true
+                end
                 return true
             end
             function b:SetLabel(value) title:SetText(value) end
@@ -389,7 +402,7 @@ function Create(parent, service, embedded, memory)
                 local slot={}; local n=i
                 slot.button=Panel(savedList,8,6+(i-1)*38,300,34,C.raised)
                 slot.outline=Theme.Outline(slot.button,L,300,34)
-                slot.label=Text(slot.button,'',10,0,13); L(slot.label):AtCenterIn(slot.button)
+                slot.label=Text(slot.button,'',10,0,Theme.Metrics.secondaryText); L(slot.label):AtCenterIn(slot.button)
                 slot.delete=Panel(savedList,314,6+(i-1)*38,34,34,C.danger)
                 slot.deleteOutline=Theme.Outline(slot.delete,L,34,34)
                 slot.deleteLabel=Text(slot.delete,'×',0,0,19); L(slot.deleteLabel):AtCenterIn(slot.delete)
@@ -626,7 +639,7 @@ function Create(parent, service, embedded, memory)
                     local parent=CurrentRow(childParents[item.context])
                     effective=mode=='own' and row.action or (mode=='inherit' and parent and parent.action or nil)
                     item.mode:SetText(mode=='inherit' and T('hotbuild.context_editor.s047') or (mode=='disabled' and T('hotbuild.context_editor.s048') or T('hotbuild.context_editor.s049')))
-                    item.mode:SetColor(mode=='inherit' and C.disabled or C.accentText)
+                    item.mode:SetColor(mode=='inherit' and C.disabledText or C.accentText)
                 else effective=row and row.action end
                 if isChild then
                     effective=draft and service.contextModel:ResolveAction(draft,item.context) or nil
@@ -644,7 +657,7 @@ function Create(parent, service, embedded, memory)
                 if not isChild then item.action:SetColor(C.muted) end
                 if isChild and (not row or row.mode=='inherit') and action then
                     item.action:SetText(T('hotbuild.context_editor.s050'))
-                    item.action:SetColor(C.disabled)
+                    item.action:SetColor(C.disabledText)
                 elseif isChild then item.action:SetColor(C.muted) end
                 if item.isBuilder then
                     local overrides=0

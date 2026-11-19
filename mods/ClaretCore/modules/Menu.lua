@@ -183,7 +183,7 @@ function Create(keyBinding)
                     local edge=transparent and C.transparent or item.focused and C.accentText or item.selected and C.selectedBorder or C.border
                     for _,part in ipairs(fills) do part:SetSolidColor(fill) end
                     for _,part in ipairs(borders) do part:SetSolidColor(edge) end
-                    if item.label then item.label:SetColor(item.enabled and C.text or C.disabled) end
+                    if item.label then item.label:SetColor(item.enabled and C.text or C.disabledText) end
                 end
                 function item:SetEnabled(value) self.enabled=value; self.paint() end
                 b.HandleEvent=function(self,event)
@@ -329,10 +329,10 @@ function Create(keyBinding)
                 local accent=Surface(note,0,0,3,noteHeight,C.warning)
                 accent:DisableHitTest()
                 local heading=Text(note,T('core.menu.recommended_mods'),16,12,C.warning)
-                heading:SetFont(Theme.Fonts.heading,15*ratio)
+                heading:SetFont(Theme.Fonts.heading,metrics.buttonText*ratio)
                 for index,modName in ipairs(missingMods) do
                     local dependency=Text(note,modName,16,38+(index-1)*24,C.text)
-                    dependency:SetFont(Theme.Fonts.body,14*ratio)
+                    dependency:SetFont(Theme.Fonts.body,metrics.secondaryText*ratio)
                 end
             end
             local closePanel
@@ -365,7 +365,7 @@ function Create(keyBinding)
             end
             state.panelDragHeader=DragHeader(state.panel,width-72,panelPosition)
             state.title=Text(state.panel,'',24,20)
-            state.title:SetFont(Theme.Fonts.heading,22*ratio)
+            state.title:SetFont(Theme.Fonts.heading,metrics.title*ratio)
             state.panelClose=Button(state.panel,'×',width-64,16,40,function() closePanel() end,{})
             state.headerDivider=Surface(state.panel,24,72,width-48,1,C.border); state.headerDivider:DisableHitTest()
             state.panel:Hide()
@@ -793,7 +793,7 @@ function Create(keyBinding)
                         end,state.navItems,C.transparent,true)
                         iconButton.label=Text(iconButton.control,'⚙',0,0,C.muted)
                         L(iconButton.label):AtCenterIn(iconButton.control)
-                        iconButton.label:SetFont(Theme.Fonts.body,20*ratio)
+                        iconButton.label:SetFont(Theme.Fonts.body,metrics.glyph*ratio)
                         local paint=iconButton.paint
                         iconButton.paint=function()
                             paint()

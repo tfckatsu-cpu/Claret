@@ -173,13 +173,17 @@ function Create(parent, service, embedded, perf)
             local title=Text(b,value,4,0,Theme.Metrics.buttonText); L(title):AtCenterIn(b)
             local baseColor,baseBorder=normal,primary and C.selectedBorder or C.border
             local hovered=false
-            local function Restore()
-                b:SetSolidColor(baseColor); border(baseBorder)
+            local function Paint()
+                if b.pressed then b:SetSolidColor(primary and C.accentPressed or C.pressed); border(C.selectedBorder)
+                elseif hovered then b:SetSolidColor(hoverColor or (primary and C.accentHover or C.hover)); border(C.selectedBorder)
+                else b:SetSolidColor(baseColor); border(baseBorder) end
             end
+            local function Restore() Paint() end
             b.HandleEvent=function(self,e)
-                if e.Type=='MouseEnter' then hovered=true; self:SetSolidColor(hoverColor or (primary and C.accentHover or C.hover)); border(C.selectedBorder)
-                elseif e.Type=='MouseExit' then hovered=false; Restore()
-                elseif e.Type=='ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then callback(); return true end
+                if e.Type=='MouseEnter' then hovered=true; Paint()
+                elseif e.Type=='MouseExit' then hovered=false; self.pressed=false; Paint()
+                elseif e.Type=='ButtonRelease' then self.pressed=false; Paint()
+                elseif e.Type=='ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then self.pressed=true; Paint(); callback(); return true end
                 return true
             end
             function b:SetBaseStyle(color,outline)

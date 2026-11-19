@@ -13,6 +13,7 @@ Colors = {
     muted = 'ff929394',
     accent = 'ff7a1f30',
     accentHover = 'ff962a43',
+    accentPressed = 'ff57131f',
     selected = 'ff32171f',
     selectedBorder = 'ff743043',
     accentText = 'ffe5a1b0',
@@ -25,6 +26,7 @@ Colors = {
     lockSurface = 'ff1b1b20',
     lockBorder = 'ff55515b',
     disabled = 'ff605d65',
+    disabledText = 'ff8a8792',
     keyCombo0 = 'ff7f8794', -- no modifier
     keyCombo1 = 'ff64b5f6', -- Ctrl
     keyCombo2 = 'ffc792ea', -- Shift
@@ -39,6 +41,7 @@ Metrics = { launcherWidth=248, launcherHeight=400, panelWidth=1128, panelHeight=
     corePanelWidth=552, corePanelHeight=408, coreCardWidth=520, coreRowHeight=56,
     coreRowStep=64, coreControlHeight=56,
     panelGap=16, padding=24, text=16, secondaryText=14, buttonText=15, launcherText=18,
+    title=22, heading=18, label=13, caption=12, glyph=20,
     rowHeight=40, buttonHeight=36, fieldHeight=36 }
 -- Flat faction marks, rasterized from the SVG masters in textures/factions.
 FactionIcons = {

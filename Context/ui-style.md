@@ -37,3 +37,13 @@ Vertical module rows have consistent heights; mark the selected section with a d
 Virtualize or scroll long collections inside a bounded area without covering the header or navigation. Simple registered Core rows are virtualized as a whole; Hotbuild lists implement their own scrolling. With mixed content, show the embedded editor in full when scrolled into view and keep it created while hidden so its draft survives. An embedded editor must fit the provided area or implement its own viewport and hit-testing in FAF. Do not rely on clipping child Maui controls without checking. Register with `RegisterSettingsSection`; an embedded editor receives `layout.scale` and implements `CanLeave` when it has a draft.
 
 Recommended: one clear row with enough spacing, a neutral button, and a visible state label. Avoid a heavy border around every setting, red disabled buttons, tiny text, content-sized windows, or using color alone to indicate saved state. Check empty and long lists, keyboard input, drafts, scale, and real clicks in a new match: local mock tests do not confirm rendering.
+
+## Type scale and states (2026-11-19, Core 0.10.15 / Hotbuild 0.10.41)
+
+Sizes are tokens in Theme.Metrics, not point sizes at call sites: 	itle 22 (panel header), heading 18, launcherText 18 (launcher rows), 	ext 16 (body), uttonText 15 (button labels, selector value), secondaryText 14 (list row names, dependency lines), label 13 (field captions, arrows), caption 12 (status line, hints), glyph 20 (symbol buttons such as gear/close). Editors default their text helper to secondaryText; pass a token when a different size is meant.
+
+Disabled text uses Theme.Colors.disabledText (readable contrast), while Theme.Colors.disabled stays a fill for disabled controls — do not use one for the other.
+
+Every interactive control needs four visual states: normal, hover, pressed (Theme.Colors.pressed) and disabled. Buttons return to hover after ButtonRelease, not after the click callback, so a callback that closes a dialog cannot leave a stuck pressed colour. The shell already had hover/pressed/focus/disabled; the Hotbuild editor buttons gained pressed feedback in this build.
+
+The shell sits on the 4 px grid (padding 24, gap 16, rows 40/36/56/64); panelHeight 1110 is the only 2 px exception and is kept for compatibility. List rows stay 34 px high with a 4 px gap (38 px step) because the list background and tests depend on that height.
