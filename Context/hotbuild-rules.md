@@ -35,7 +35,7 @@
 - Double-press actions are consumed after one execution and limited by a 0.5 s window. Quick repeat is one-shot, limited by a 1.5 s window and never re-arms. Invalid windows (NaN, infinity, <=0) are rejected.
 - The quick-repeat window, its setting and the gear were removed in 0.10.38. The per-row `quickRepeat` field remains as legacy saved data and still executes.
 - Sequential engineer selection requires a mobile engineer (ENGINEER + MOBILE); command units are excluded.
-- Version identity: `Version` in Main.lua = `ReUI` in mod_info.lua = README heading; `BuildStamp` = newest CHANGELOG build; Hotbuild requires Core >= 0.10.14.
+- Version identity: `Version` in Main.lua = `ReUI` in mod_info.lua = README heading; `BuildStamp` = newest CHANGELOG build; Hotbuild requires Core >= 0.10.15.
 ## Order dispatch rules (verified 2026-11-19, build 0.10.40)
 
 Single choke point: Adapter:CanBuild (ClaretHotbuild/modules/Adapter.lua). Preset entries, context entries and keyboard pairs all dispatch through Model:Execute -> Adapter:Build, so a new caller must not issue build/factory orders directly.

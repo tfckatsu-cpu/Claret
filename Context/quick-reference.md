@@ -2,7 +2,7 @@
 
 Snapshot of decisions and versions. The map of the knowledge base is `README.md`; the state of the current stage is `../Stage/stage-1-status.md`.
 
-Versions (2026-11-18): Claret Core 0.10.14 (mod 33, build 20261118-46), Claret Hotbuild 0.10.38 (mod 74, build 20261118-148). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840.
+Versions (2026-11-19): Claret Core 0.10.16 (mod 35, build 20261119-48) is loaded in game and awaits confirmation; last committed and mirrored is Core 0.10.15 (mod 34, build 20261119-47). Claret Hotbuild 0.10.41 (mod 77, build 20261119-151), committed and mirrored. ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840.
 
 ## Product shape
 

@@ -2,7 +2,7 @@
 
 Agent-facing reference for the Claret project. Written in English; the chat with the user stays in Russian. Everything here describes the current code unless a document says otherwise. When a document and the code disagree, the code wins — then fix the document in the same task.
 
-Current versions: Claret Core 0.10.14 (mod 33, build 20261118-46), Claret Hotbuild 0.10.38 (mod 74, build 20261118-148). ReUI Main 1.3.2, ReUI.Core 1.7.0, ReUI.Options 1.2.0. FAF3840, game archive `lua.nx2`.
+Current versions: Claret Core 0.10.16 (mod 35, build 20261119-48), Claret Hotbuild 0.10.41 (mod 77, build 20261119-151); the committed Core mirror is still 0.10.15 (mod 34, build 20261119-47) until the panel shell is confirmed in game. ReUI Main 1.3.2, ReUI.Core 1.7.0, ReUI.Options 1.2.0. FAF3840, game archive `lua.nx2`.
 
 ## How to choose a file
 

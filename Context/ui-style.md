@@ -1,6 +1,6 @@
 # Claret Visual Style
 
-Required reference for Claret windows. Implementation patterns (scale, depth, lifecycle, dialogs) are in `ui-rules.md`. The shared source of colors and shell dimensions is `../mods/ClaretCore/modules/Theme.lua`; code values take precedence over examples. Reference: [claret-ui-reference.png](claret-ui-reference.png). Decisions made on 2026-11-11 replace the earlier single-window geometry; verified against Core 0.10.14 / Hotbuild 0.10.38 on 2026-11-18.
+Required reference for Claret windows. Implementation patterns (scale, depth, lifecycle, dialogs) are in `ui-rules.md`. The shared source of colors and shell dimensions is `../mods/ClaretCore/modules/Theme.lua`; code values take precedence over examples. Reference: [claret-ui-reference.png](claret-ui-reference.png). Decisions made on 2026-11-11 replace the earlier single-window geometry; verified against Core 0.10.16 / Hotbuild 0.10.41 on 2026-11-19.
 
 ## Principles and architecture
 
@@ -47,3 +47,8 @@ Disabled text uses Theme.Colors.disabledText (readable contrast), while Theme.Co
 Every interactive control needs four visual states: normal, hover, pressed (Theme.Colors.pressed) and disabled. Buttons return to hover after ButtonRelease, not after the click callback, so a callback that closes a dialog cannot leave a stuck pressed colour. The shell already had hover/pressed/focus/disabled; the Hotbuild editor buttons gained pressed feedback in this build.
 
 The shell sits on the 4 px grid (padding 24, gap 16, rows 40/36/56/64); panelHeight 1110 is the only 2 px exception and is kept for compatibility. List rows stay 34 px high with a 4 px gap (38 px step) because the list background and tests depend on that height.
+### Panel surface (2026-11-19, Core 0.10.16)
+
+Shell panels are not flat rectangles any more: Theme.RoundedPanel keeps the control's size and hit area but draws the surface itself — two fills, four corner masks (radius Metrics.panelRadius, currently 8), a 1 px border ring and an optional soft shadow. Masks are PNGs in ClaretCore/textures/ui/ (panel-corner-*, panel-ring-*, panel-shadow-*); they are pixel-exact for the current radius, so changing panelRadius means regenerating them.
+
+The shadow is a 16 px halo built from four stretched strips plus four corner patches, drawn below the fills, so it must stay outside the panel bounds — do not clip the panel control. RoundedPanel returns Resize(width, height); call it wherever a panel changes size (the settings panel does this in SetPanelSize). The launcher and settings panel both use it; Hotbuild editor windows still draw flat panels and are the next candidate.

@@ -1,6 +1,6 @@
 # Mod Inventory
 
-Claret (2026-11-18): **Claret Core 0.10.14**, mod version 33, build 20261118-46, UID claret-core-001; **Claret Hotbuild 0.10.38**, mod version 74, build 20261118-148, UID claret-hotbuild-001. Both ui_only=true, both require ReUI; Hotbuild requires Core >= 0.10.14.
+Claret (2026-11-19): **Claret Core 0.10.16**, mod version 35, build 20261119-48, UID claret-core-001 (in game, awaiting confirmation; committed mirror is 0.10.15 / mod 34 / build 20261119-47); **Claret Hotbuild 0.10.41**, mod version 77, build 20261119-151, UID claret-hotbuild-001. Both ui_only=true, both require ReUI; Hotbuild requires Core >= 0.10.15.
 
 The table below covers the *reference* mods in Context/sources, not Claret.
 
