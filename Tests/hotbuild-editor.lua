@@ -216,6 +216,52 @@ assert(select(3,container:GetScrollValues())==1,'search resets the catalog scrol
 assert(pickerRow('Unit 4') and pickerRow('Unit 45') and not pickerRow('Unit 3'),'search narrows the catalog to matching labels')
 search:SetText('')
 assert(pickerRow('Unit 1'),'clearing the search restores the full catalog')
+-- Template rows preview their composition on hover, before anything is chosen.
+table.insert(records,{id='claret_big_building',name='Big',faction='UEF',tech='T2',kind='STRUCTURE',icon='big',
+    blueprint={Footprint={SizeX=2,SizeZ=2},Physics={SkirtSizeX=2,SkirtSizeZ=2,SkirtOffsetX=0,SkirtOffsetZ=0}}})
+table.insert(records,{id='claret_template_test',name='Стройка',faction='UEF',tech='T2',kind='STRUCTURE',icon='icon',
+    templateData={4,4,{'unit1',0,0,0},{'unit2',0,1,0},{'unit1',0,0,1},{'claret_big_building',0,2,0}}})
+table.insert(records,{id='claret_unit_template_test',name='Очередь',faction='UEF',tech='T1',kind='LAND',icon='icon',
+    unitTemplate=true,queueData={{'unit1',2,false},{'unit2',1,false}},unitCount=3})
+search:SetText('')
+local function previewCard(title)
+    for _,c in ipairs(objects) do
+        if not c.destroyed and c.text==title and c.parent and c.parent.x~=nil and c.parent.HandleEvent==nil then
+            return c.parent
+        end
+    end
+end
+local function previewTiles(card)
+    local count=0
+    for _,c in ipairs(objects) do
+        if alive(c) and c.parent==card and c.texture then count=count+1 end
+    end
+    return count
+end
+local function previewTileSizes(card)
+    local sizes={}
+    for _,c in ipairs(objects) do
+        if alive(c) and c.parent==card and c.texture then sizes[#sizes+1]=math.floor(c.Width()) end
+    end
+    table.sort(sizes)
+    return sizes
+end
+local buildingRow=assert(pickerRow('Стройка'),'a construction template row is offered by name')
+buildingRow:HandleEvent({Type='MouseEnter'})
+local preview=assert(previewCard('Стройка'),'hovering a construction template opens its preview')
+assert(previewTiles(preview)==4,'the preview draws one tile per template building')
+local tileSizes=previewTileSizes(preview)
+assert(tileSizes[#tileSizes]>=1.8*tileSizes[1],'a 2x2 building must draw twice as large as a 1x1 one')
+assert(preview.Width()<276 and preview.Height()<200,'the card shrinks to the saved layout instead of a fixed box')
+assert(preview.x>=220 and preview.x+preview.Width()<=664,'the card stays inside the popup and clear of row text')
+buildingRow:HandleEvent({Type='MouseExit'})
+assert(preview.destroyed,'leaving the row closes the preview')
+local queueRow=assert(pickerRow('Очередь'),'a queue template row is offered by name')
+queueRow:HandleEvent({Type='MouseEnter'})
+local queuePreview=assert(previewCard('Очередь'),'hovering a queue template opens its preview')
+assert(previewTiles(queuePreview)==2,'the preview lists one tile per queue member')
+queueRow:HandleEvent({Type='MouseExit'})
+assert(queuePreview.destroyed,'leaving the queue row closes its preview')
 container:ScrollSetTop(nil,999)
 press('Unit 9')
 press('Сохранить')

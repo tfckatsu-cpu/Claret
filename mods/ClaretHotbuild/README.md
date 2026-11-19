@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.44
+# Claret Hotbuild — prototype 0.10.49
 
 Build 20261113-30: double-tap actions for compatible standalone actions can be configured on the **Keyboard** tab. When an action and a building preset share an assignment, the preset takes priority if the current builder can use it; otherwise, the action runs. Existing saved assignments and additional fields are preserved. In-game verification is pending.
 
@@ -6,7 +6,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.44, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.49, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 
@@ -86,7 +86,7 @@ Principle cross-check: `Context/sources/MainMods/ReUI.Hotbuild/Modules/viewmodel
 
 In a new match, choose a simple template from a generator/storage building in one faction, check that it fills four faction cells, save it, and execute it with engineers of the other factions. Check contents and geometry; a template with a unique building should have only confirmed variants. Local tests do not replace this check.
 
-In the dropdown, templates are sorted before regular buildings. They have a burgundy border and a **TEMPLATE** label; the same label and color appear in the saved binding cell.
+In the dropdown, templates are sorted before regular buildings. They have a burgundy border and a **TEMPLATE** label; the same label and color appear in the saved binding cell. Hovering a template row shows a card with its composition. Construction templates copy the geometry of the game's own preview: one scale for the whole template, every building centred on its template anchor and sized by the blueprint skirt (Physics.SkirtSizeX/Z, centre offset SkirtOffsetX/Z), so a 2x2 structure draws twice as large as a 1x1 one and neighbours stand flush. A terrain tile of the building layer (land, sea, air) sits behind each icon, and cells keep an outline that reads as a hitbox. Queue templates are one horizontal strip of larger icons (up to 416 px wide), and a stack count sits on a dark plate in the corner of its icon so it stays readable on bright art. The card sizes itself to the composition — a minimum for the title, a maximum for huge templates, small tiles for a wall of a hundred parts — and never covers row text or takes the pointer. The card is hit-test disabled, so it never steals the pointer, and it disappears with the row hover, the search or the popup.
 
 ## Unit (factory queue) templates — Hotbuild 0.10.43
 

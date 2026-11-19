@@ -962,8 +962,9 @@ function Create(parent, service, embedded, memory)
         saveButton.saveButton=true; saveButton.saveEnabled=false; saveButton:SetSolidColor(C.disabled)
         local keyHint=Text(frame,T('hotbuild.common.used_keys','—'),625,128,13,C.muted)
         -- Picker is created once per click and destroyed on selection/close.
-        local popup, pickerOverlay
+        local popup, pickerOverlay, pickerPreview
         ClosePopup=function()
+            if pickerPreview then pickerPreview:Destroy(); pickerPreview=nil end
             if popup then popup:Destroy(); popup=nil end
             if pickerOverlay then pickerOverlay:Destroy(); pickerOverlay=nil end
         end
@@ -998,7 +999,9 @@ function Create(parent, service, embedded, memory)
             local search=SearchField(popup,18,64,684,80)
             local container=Panel(popup,18,105,662,478,C.canvas)
             local pool,found,top={}, {},1
+            local ShowPreview, HidePreview
             local function Render()
+                if HidePreview then HidePreview() end
                 local q=search.GetText and search:GetText() or ''
                 local candidates=catalog:List({search='',faction=faction,kind=kind})
                 found={}; q=Fold(q)
@@ -1049,6 +1052,186 @@ function Create(parent, service, embedded, memory)
                 return true
             end
             UI.CreateVertScrollbarFor(container)
+            -- Hover preview: a template row shows its composition without leaving the list.
+            local LayerTexture={LAND='/textures/ui/common/icons/units/land_up.dds',
+                NAVAL='/textures/ui/common/icons/units/sea_up.dds',
+                AIR='/textures/ui/common/icons/units/air_up.dds'}
+            -- Skirt size and centre offset exactly as the game's own template maths
+            -- (lua/ui/templateUtils.lua, ReUI.Construction.Templates): icons are
+            -- centred on their anchor and sized by the skirt, so neighbours tile.
+            local function SkirtOf(member)
+                local bp=member and member.blueprint
+                local foot=type(bp)=='table' and rawget(bp,'Footprint') or nil
+                local phys=type(bp)=='table' and rawget(bp,'Physics') or nil
+                local fx=type(foot)=='table' and tonumber(rawget(foot,'SizeX')) or nil
+                local fz=type(foot)=='table' and tonumber(rawget(foot,'SizeZ')) or nil
+                fx=fx or (type(bp)=='table' and tonumber(rawget(bp,'SizeX'))) or 1
+                fz=fz or (type(bp)=='table' and tonumber(rawget(bp,'SizeZ'))) or 1
+                local sx=type(phys)=='table' and tonumber(rawget(phys,'SkirtSizeX')) or nil
+                local sz=type(phys)=='table' and tonumber(rawget(phys,'SkirtSizeZ')) or nil
+                local ox=type(phys)=='table' and tonumber(rawget(phys,'SkirtOffsetX')) or 0
+                local oz=type(phys)=='table' and tonumber(rawget(phys,'SkirtOffsetZ')) or 0
+                local w=math.max(1,sx or fx)
+                local h=math.max(1,sz or fz)
+                return w,h,((ox+((w+ox)-fx))/2),((oz+((h+oz)-fz))/2)
+            end
+            -- Terrain under a building follows its layer, as the game's preview does.
+            local function LayerOf(member)
+                local kind=member and member.kind or nil
+                if kind~='STRUCTURE' then
+                    if kind=='AIR' then return 'AIR' end
+                    if kind=='NAVAL' then return 'NAVAL' end
+                    return 'LAND'
+                end
+                local bp=member.blueprint
+                local hash=type(bp)=='table' and rawget(bp,'CategoriesHash') or nil
+                if type(hash)=='table' and hash.NAVAL then return 'NAVAL' end
+                local list=type(bp)=='table' and rawget(bp,'Categories') or nil
+                if type(list)=='table' then
+                    for _,value in ipairs(list) do if value=='NAVAL' then return 'NAVAL' end end
+                end
+                return 'LAND'
+            end
+            local function PreviewTile(owner,x,y,w,h,member,count,cell,layer)
+                local tile=Panel(owner,x,y,w,h,C.raised)
+                local background=layer and LayerTexture[layer] or nil
+                if background then tile:SetTexture(background) end
+                if member and member.icon then
+                    if background then
+                        -- Terrain stays visible around the building silhouette.
+                        local icon=Panel(tile,0,0,w,h,C.canvas)
+                        icon:SetTexture(UI.UIFile(member.icon,true))
+                    else
+                        tile:SetTexture(UI.UIFile(member.icon,true))
+                    end
+                end
+                -- A cell outline makes every building read as one grid slot.
+                if cell then Theme.Outline(tile,L,w,h,C.border) end
+                if count and count>1 then
+                    local text=tostring(count)
+                    local font=math.min(15,math.max(11,math.floor(math.min(w,h)*0.42)))
+                    local plateW=math.floor(font*0.6)*string.len(text)+5
+                    local plateH=font+3
+                    Panel(tile,w-plateW-1,h-plateH-2,plateW,plateH,'b3000000')
+                    local badge=Text(tile,text,w-plateW,h-plateH-4,font,'ffffffff')
+                    if badge.SetDropShadow then badge:SetDropShadow(true) end
+                end
+                return tile
+            end
+            local function PreviewCells(record)
+                local cells={}
+                if record.unitTemplate then
+                    for _,entry in ipairs(record.queueData or {}) do
+                        local member=catalog:Get(entry[1])
+                        if member then
+                            local w,h,ox,oz=SkirtOf(member)
+                            table.insert(cells,{member=member,count=entry[2],px=0,pz=0,w=w,h=h,ox=ox,oz=oz})
+                        end
+                    end
+                    return cells
+                end
+                local data=record.templateData or {}
+                for index=3,table.getn(data) do
+                    local entry=data[index]
+                    local member=catalog:Get(entry[1])
+                    if member then
+                        local w,h,ox,oz=SkirtOf(member)
+                        table.insert(cells,{member=member,px=entry[3] or 0,pz=entry[4] or 0,w=w,h=h,ox=ox,oz=oz})
+                    end
+                end
+                return cells
+            end
+            HidePreview=function()
+                if pickerPreview then pickerPreview:Destroy(); pickerPreview=nil end
+            end
+            ShowPreview=function(record,slotIndex)
+                HidePreview()
+                if not (record and (record.templateData or record.unitTemplate)) then return end
+                local cells=PreviewCells(record)
+                if table.getn(cells)==0 then return end
+                local pad,header,maxWidth,maxHeight=12,38,420,230
+                local width,height,draw
+                if record.unitTemplate then
+                    -- Queues read best as one horizontal strip of icons.
+                    local count=table.getn(cells)
+                    local gap=4
+                    local size=math.min(52,math.floor((maxWidth-(count-1)*gap)/count))
+                    size=math.max(20,size)
+                    local visible=count
+                    if visible*(size+gap)-gap>maxWidth then
+                        visible=math.max(1,math.floor((maxWidth+gap)/(size+gap)))
+                    end
+                    local contentW=visible*(size+gap)-gap
+                    width=math.max(170,contentW+pad*2)
+                    height=header+size+pad
+                    draw=function()
+                        for index=1,visible do
+                            local cell=cells[index]
+                            PreviewTile(pickerPreview,pad+(index-1)*(size+gap),header,size,size,
+                                cell.member,cell.count,false,nil)
+                        end
+                        if visible<count then
+                            Text(pickerPreview,'+'..(count-visible),pad+contentW+2,header+size-14,11,C.muted)
+                        end
+                    end
+                else
+                    -- One scale for the whole template, icons centred on their anchors:
+                    -- this is how the game and ReUI lay a template out.
+                    local minX,maxX,minZ,maxZ
+                    for _,cell in ipairs(cells) do
+                        local x0=cell.px-cell.w/2+cell.ox
+                        local x1=cell.px+cell.w/2+cell.ox
+                        local z0=cell.pz-cell.h/2+cell.oz
+                        local z1=cell.pz+cell.h/2+cell.oz
+                        minX=minX and math.min(minX,x0) or x0
+                        minZ=minZ and math.min(minZ,z0) or z0
+                        maxX=maxX and math.max(maxX,x1) or x1
+                        maxZ=maxZ and math.max(maxZ,z1) or z1
+                    end
+                    local spanX=(maxX or 0)-(minX or 0)
+                    local spanZ=(maxZ or 0)-(minZ or 0)
+                    local midX=((minX or 0)+(maxX or 0))/2
+                    local midZ=((minZ or 0)+(maxZ or 0))/2
+                    local cell=math.min(44,math.floor(maxWidth/math.max(spanX,spanZ,1)),
+                        math.floor(maxHeight/math.max(spanX,spanZ,1)))
+                    if spanX<0.01 or spanZ<0.01 or cell<4 then
+                        width,height=170,header+14
+                        draw=function() end
+                    else
+                        cell=math.max(4,cell)
+                        local contentW=spanX*cell
+                        local contentH=spanZ*cell
+                        width=math.max(170,math.min(444,contentW+pad*2))
+                        height=header+contentH+pad
+                        -- Cell outlines stay readable for normal templates; a wall
+                        -- template with a hundred parts keeps only the grid gaps.
+                        local outlines=table.getn(cells)<=64
+                        draw=function()
+                            for _,c in ipairs(cells) do
+                                local w=c.w*cell
+                                local h=c.h*cell
+                                local x=pad+contentW/2+(c.px+c.ox-midX)*cell-w/2
+                                local z=header+contentH/2+(c.pz+c.oz-midZ)*cell-h/2
+                                PreviewTile(pickerPreview,math.floor(x),math.floor(z),
+                                    math.max(1,math.floor(w-1)),math.max(1,math.floor(h-1)),
+                                    c.member,nil,outlines,LayerOf(c.member))
+                            end
+                        end
+                    end
+                end
+                local top=105+(slotIndex-1)*43+20-height/2
+                top=math.max(107,math.min(math.max(107,583-height-4),top))
+                local left=math.max(220,664-width-8)
+                pickerPreview=Group(popup); L(pickerPreview):AtLeftTopIn(popup,left,top):Width(width):Height(height)
+                pickerPreview.Depth:Set(function() return popup.Depth()+5 end)
+                pickerPreview:DisableHitTest()
+                Panel(pickerPreview,0,0,width,height,C.canvas)
+                Theme.Outline(pickerPreview,L,width,height,C.selectedBorder)
+                Text(pickerPreview,TileName(record,displayCatalog),pad,5,13,C.accentText)
+                Text(pickerPreview,record.unitTemplate and T('hotbuild.editor.unit_template_count',record.unitCount or 0)
+                    or T('hotbuild.editor.template_count',table.getn(record.templateData)-2),pad,21,10,C.muted)
+                draw()
+            end
             local selection={kind=kind,index=index,faction=faction,tier=tier}
             local function Choose(record)
                 ApplyPickerChoice(pickerApplyState,selection,record)
@@ -1060,9 +1243,12 @@ function Create(parent, service, embedded, memory)
                 pool[i]={control=row,icon=icon,title=title,meta=meta,
                     outline=Theme.Outline(row,L,662,41,C.border)}
                 row.HandleEvent=function(self,e)
-                    if e.Type=='WheelRotation' then return container.HandleEvent(container,e) end
-                    if e.Type=='MouseEnter' then self:SetSolidColor(C.hover)
-                    elseif e.Type=='MouseExit' then self:SetSolidColor(C.raised)
+                    if e.Type=='WheelRotation' then HidePreview(); return container.HandleEvent(container,e) end
+                    if e.Type=='MouseEnter' then
+                        self:SetSolidColor(C.hover)
+                        ShowPreview(pool[slotIndex].record,slotIndex)
+                    elseif e.Type=='MouseExit' then
+                        self:SetSolidColor(C.raised); HidePreview()
                     elseif e.Type=='ButtonPress' and not (e.Modifiers and e.Modifiers.Right) and pool[slotIndex].record then Choose(pool[slotIndex].record); return true end
                     return true
                 end
