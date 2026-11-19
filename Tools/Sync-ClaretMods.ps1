@@ -94,8 +94,15 @@ foreach ($inputPath in $Paths) {
         }
     }
 
-    $baseHash = & git -C $repoRoot rev-parse --verify "HEAD:$repoPath" 2>$null
-    $trackedAtHead = $LASTEXITCODE -eq 0
+    # A missing revision makes git write to stderr; under 'Stop' that aborts the
+    # script, which used to break the first sync of every new file.
+    $baseHash = $null
+    try {
+        $baseHash = & git -C $repoRoot rev-parse --verify "HEAD:$repoPath" 2>$null
+    } catch {
+        $baseHash = $null
+    }
+    $trackedAtHead = $LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($baseHash)
     if ($mirrorExists) {
         if (-not $trackedAtHead) {
             throw "В репозитории уже есть несохранённое зеркало '$repoPath'; проверьте конфликт вручную."
