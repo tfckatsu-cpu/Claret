@@ -312,7 +312,7 @@ function Create(keyBinding)
             state.launcher.Depth:Set(function() return group.Depth()+(state.frontWindow=='launcher' and 1000 or 0) end)
             ClampPosition(launcherPosition); PlacePanel(state.launcher,launcherPosition)
             state.launcher.HandleEvent=function() return true end
-            Theme.Outline(state.launcher,L,launcherWidth,launcherHeight)
+            Theme.RoundedPanel(state.launcher,L,launcherWidth,launcherHeight,C.canvas,C.border,true)
             DragHeader(state.launcher,launcherWidth-60,launcherPosition,96)
             local launcherLogo=Bitmap(state.launcher)
             launcherLogo.Depth:Set(function() return state.launcher.Depth()+2 end)
@@ -345,7 +345,7 @@ function Create(keyBinding)
                 end
                 return true
             end
-            local _,resizePanelOutline=Theme.Outline(state.panel,L,width,height)
+            local resizePanelOutline=Theme.RoundedPanel(state.panel,L,width,height,C.canvas,C.border,true)
             local function SetPanelSize(panelWidth,panelHeight,minHeight,minWidth)
                 state.panelWidth=math.max(minWidth or metrics.corePanelWidth,math.min(width,panelWidth or width))
                 state.panelHeight=math.max(minHeight or 400,math.min(height,panelHeight or height))

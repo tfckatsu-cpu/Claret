@@ -1,10 +1,10 @@
-# Claret Core — test build 0.10.15
+# Claret Core — test build 0.10.16
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
 
 Provides a feature registry, lifecycle and resource management (`Own`, `Bind`, `Every`, `Guard`, `Defer`), and a selection composition diagnostics panel. The `probeEnabled` setting controls diagnostic log entries and is available under F10 → Claret → Core when ReUI developer mode is enabled; its previously saved value is preserved. The UI counter panel has been removed.
 
-Text sizes and states come from `Theme.Metrics` (`text`, `secondaryText`, `buttonText`, `launcherText`, `title`, `heading`, `label`, `caption`, `glyph`) and `Theme.Colors.disabledText` / `accentPressed`; do not hardcode point sizes or state colours in screens.
+Text sizes and states come from `Theme.Metrics` (`text`, `secondaryText`, `buttonText`, `launcherText`, `title`, `heading`, `label`, `caption`, `glyph`) and `Theme.Colors.disabledText` / `accentPressed`; do not hardcode point sizes or state colours in screens. Shell panels use `Theme.RoundedPanel(control, layout, width, height, fill, border, shadow)` with `Metrics.panelRadius`; the corner, ring and shadow masks live in `textures/ui/`, carry baked canvas/border colours, and must be regenerated if the radius or those colours change.
 
 The Claret interface follows the game language by default. To override it, choose **English** or **Russian** under F10 → Claret → Core → **Interface language**. The preference is saved, and open Claret windows update immediately without restarting the game.
 
