@@ -736,13 +736,15 @@ function Create(parent, service, embedded, memory)
         end)
         disableChildButton:Hide(); resetChildButton:Hide(); clearContextButton:Hide()
         local function CreateContextTile(index, contextId, child, x, y, w, h)
-            local button=Panel(contextPanel,nil,nil,w,h,C.surface)
+            -- Always give a position: a size-only Maui control has a circular
+            -- Left/Top chain until one anchor exists.
+            local button=Panel(contextPanel,x,y,w,h,C.surface)
             local border=Theme.Outline(button,L,w,h)
             local mark=Text(button,'○',8,5,14,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),28,0,14)
             local mode=child and Text(button,'',188,0,11,C.muted) or nil
             local action=Text(button,'',child and 276 or 188,0,12,C.muted)
-            local item={context=contextId,child=child,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y}
+            local item={context=contextId,child=child,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y,displayY=y}
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
                 elseif e.Type=='MouseExit' then SetContextTileHover(item,false)
@@ -767,12 +769,12 @@ function Create(parent, service, embedded, memory)
             contextButtons[index]=item
         end
         local function CreatePriorityTile(contextId, rank, x, y, w)
-            local button=Panel(contextPanel,nil,nil,w,30,C.surface)
+            local button=Panel(contextPanel,x,y,w,30,C.surface)
             local border=Theme.Outline(button,L,w,30)
             local mark=Text(button,tostring(rank or '—'),8,2,13,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),30,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
-            local item={context=contextId,button=button,mark=mark,name=title,action=action,outline=border,priority=true,treeX=x,treeY=y}
+            local item={context=contextId,button=button,mark=mark,name=title,action=action,outline=border,priority=true,treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -790,11 +792,11 @@ function Create(parent, service, embedded, memory)
             end)
         end
         local function CreateOtherTile(contextId,x,y,w)
-            local button=Panel(contextPanel,nil,nil,w,30,C.surface)
+            local button=Panel(contextPanel,x,y,w,30,C.surface)
             local border=Theme.Outline(button,L,w,30)
             local title=Text(button,Short(ContextLabel(contextId),20),8,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
-            local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,rank=priorityRank[contextId],treeX=x,treeY=y}
+            local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,rank=priorityRank[contextId],treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -814,11 +816,11 @@ function Create(parent, service, embedded, memory)
         CreatePriorityTile('cursor',nil,8,8,456)
         CreatePriorityTile('empty',nil,8,42,456)
         local function CreateGroup(id,children,x,y,width,childHeight,step)
-            local header=Panel(contextPanel,nil,nil,width,30,C.raised)
+            local header=Panel(contextPanel,x,y,width,30,C.raised)
             local mark=Text(header,'▸',8,0,14,C.accentText)
             local label=Text(header,ContextLabel(id),30,0,15)
             local action=Text(header,'',math.floor(width*0.5),0,11,C.muted)
-            local item={context=id,button=header,mark=mark,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y}
+            local item={context=id,button=header,mark=mark,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             for i,childId in ipairs(children) do
                 local index=table.getn(contextButtons)+1

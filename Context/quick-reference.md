@@ -24,6 +24,7 @@ Versions (2026-11-19): Claret Core 0.10.16 (mod 35, build 20261119-48) is loaded
 
 - Context priority: land/air/navy units → empty selection → ACU/SACU/engineer → factory → silos → transport/mex/scout/other. "Under cursor" is checked first.
 - Templates: only complete, unambiguous cross-faction mappings; geometry and order preserved; `claret_template_<hash>` depends on composition and geometry.
+- Unit (factory queue) templates come from FAF's `build_templates_factory`; `claret_unit_template_<hash>` depends on members, order and counts. Every member must be queueable by the selected factory (engine list, with FAF's upgrade-chain exception); templates are faction-bound, and Shift never repeats a unit order.
 - Double-press is configured per key on the Keyboard page and is consumed after one use; the window is 0.5 s. Quick repeat is one-shot with a 1.5 s window and never re-arms.
 - Sequential engineer selection requires a mobile engineer (ENGINEER + MOBILE); ACU/SACU are excluded.
 - Deleting a preset/context clears its assignments only after confirmation and never touches other slots.

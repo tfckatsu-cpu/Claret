@@ -86,7 +86,7 @@ local function CatalogName(name, record, catalog)
     return Short(name,34)
 end
 local function TileName(record, catalog)
-    if record.templateData then return Short(record.name,18) end
+    if record.templateData or record.unitTemplate then return Short(record.name,18) end
     return CatalogName(record.name,record,catalog)
 end
 local function ApplyPickerChoice(state,selection,record)
@@ -975,6 +975,7 @@ function Create(parent, service, embedded, memory)
         }
         local function PickCategory(r)
             if r.templateData then return T('hotbuild.editor.picker.templates') end
+            if r.unitTemplate then return T('hotbuild.editor.picker.unit_templates') end
             local labels={'hotbuild.editor.picker.production','hotbuild.editor.picker.economy','hotbuild.editor.picker.defense','hotbuild.editor.picker.other_buildings','hotbuild.editor.picker.units'}
             return T(labels[Categories(r)])
         end
@@ -1005,12 +1006,14 @@ function Create(parent, service, embedded, memory)
                     if (not tier or UnitSlot(record.tech)==tier)
                         and (q=='' or string.find(Fold(TileName(record,displayCatalog)),q,1,true)
                         or string.find(Fold(record.search or record.name),q,1,true)
-                        or (record.templateData and string.find(Fold(record.name),q,1,true))) then
+                        or ((record.templateData or record.unitTemplate) and string.find(Fold(record.name),q,1,true))) then
                         table.insert(found,record)
                     end
                 end
                 table.sort(found,function(a,b)
-                    if (a.templateData~=nil)~=(b.templateData~=nil) then return a.templateData~=nil end
+                    local left=a.templateData~=nil or a.unitTemplate==true
+                    local right=b.templateData~=nil or b.unitTemplate==true
+                    if left~=right then return left end
                     local ta,tb=techRank[a.tech] or 5,techRank[b.tech] or 5
                     if ta~=tb then return ta<tb end
                     local ca,cb=Categories(a),Categories(b)
@@ -1023,11 +1026,17 @@ function Create(parent, service, embedded, memory)
                     local r=found[top+i-1]; slot.record=r
                     if r then
                         slot.control:Show(); slot.control:SetSolidColor(C.raised)
-                        if slot.outline then slot.outline(r.templateData and C.accent or C.border) end
+                        if slot.outline then slot.outline((r.templateData or r.unitTemplate) and C.accent or C.border) end
                         slot.icon:SetTexture(UI.UIFile(r.icon,true)); slot.title:SetText(TileName(r,displayCatalog))
-                        slot.title:SetColor(r.templateData and C.accentText or C.text)
-                        slot.meta:SetText(r.templateData and T('hotbuild.editor.template_count',table.getn(r.templateData)-2) or (r.tech..' · '..r.id))
-                        slot.meta:SetColor(r.templateData and C.accentText or C.muted)
+                        slot.title:SetColor((r.templateData or r.unitTemplate) and C.accentText or C.text)
+                        if r.templateData then
+                            slot.meta:SetText(T('hotbuild.editor.template_count',table.getn(r.templateData)-2))
+                        elseif r.unitTemplate then
+                            slot.meta:SetText(T('hotbuild.editor.unit_template_count',r.unitCount or 0))
+                        else
+                            slot.meta:SetText(r.tech..' · '..r.id)
+                        end
+                        slot.meta:SetColor((r.templateData or r.unitTemplate) and C.accentText or C.muted)
                     else slot.control:Hide() end
                 end
             end
@@ -1080,8 +1089,16 @@ function Create(parent, service, embedded, memory)
             local record=id and catalog:Get(id)
             if record then
                 cell.icon:SetTexture(UI.UIFile(record.icon,true)); cell.icon:Show(); cell.empty:Hide()
-                cell.full=cell.tier..' · '..TileName(record,displayCatalog)..' · '..record.id
+                if record.unitTemplate then
+                    -- A 76 px bind cell fits the accent marker; the tooltip and list carry the word.
+                    cell.tierLabel:SetText('▧'); cell.tierLabel:SetColor(C.accentText)
+                    cell.full=cell.tier..' · '..T('hotbuild.editor.template')..' · '..TileName(record,displayCatalog)..' · '..record.id
+                else
+                    cell.tierLabel:SetText(cell.tier); cell.tierLabel:SetColor(C.muted)
+                    cell.full=cell.tier..' · '..TileName(record,displayCatalog)..' · '..record.id
+                end
             else
+                cell.tierLabel:SetText(cell.tier); cell.tierLabel:SetColor(C.muted)
                 cell.icon:Hide(); cell.empty:SetText(id and '?' or '+'); cell.empty:Show()
                 cell.full=cell.tier..' · '..(id and T('hotbuild.common.unavailable',id) or T('hotbuild.common.empty_cell'))
             end

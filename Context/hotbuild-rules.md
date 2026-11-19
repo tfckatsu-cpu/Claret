@@ -46,4 +46,18 @@ Single choke point: Adapter:CanBuild (ClaretHotbuild/modules/Adapter.lua). Prese
 - Mixed selections: Model:Execute keeps the factory subset (temporary SelectUnits transaction with restoration on both paths), so an engineer next to a factory never receives the queue order.
 - Priority probe parity: the hotbuild-priority probe in Runtime copies actorySelection and actoryTechTab from the real context, so the factory tech-tab filter is evaluated identically before and during dispatch (otherwise the key was swallowed).
 - Shift on a factory: ExecuteFactoryShift falls back to the native action when the preset applies nothing; an inapplicable preset must not kill the Shift shortcut.
-- Tests: Tests/hotbuild-adapter.lua (mex, factory+structure, factory+engineer, ACU/SACU placement, shift x5, attached-factory guards) and Tests/hotbuild-context-runtime.lua (shift fallback).
+- Tests: Tests/hotbuild-adapter.lua (mex, factory+structure, factory+engineer, ACU/SACU placement, shift keeps count 1, attached-factory guards) and Tests/hotbuild-context-runtime.lua (shift fallback).
+
+## Unit (factory queue) templates (in-game 0.10.42, refined 0.10.43, 2026-11-19)
+
+Source: FAF profile `build_templates_factory` via `lua/ui/templates_factory.lua` (`GetTemplates`). Records are data only: `{name, icon, templateData = {{id, count}, ...}}`. Creation and renaming stay in the game (construction panel Templates tab or FAF's `create_template_factory`); Claret never writes this profile.
+
+- Identity: `claret_unit_template_<hash>` is computed from member ids, their order and counts, never from the name or list index. A changed or deleted source makes the old binding unavailable; another template at the same index is never substituted.
+- Availability: dispatch lives in `Adapter:CanBuild` (branch before the tech-tab check) and `Adapter:TemplatePlan`. Every entry must be in the factory's engine list `EntityCategoryGetUnitList(GetUnitCommandData({unit})[3])`; an entry may follow an earlier factory upgrade in the same queue, mirroring FAF's rule that lets a T1 factory queue a T2 template. Replays, observers and non-factory selections never queue.
+- Dispatch: `IssueBlueprintCommand('UNITCOMMAND_BuildFactory', id, count)` per entry through `WithFactorySelection` (shared with single-unit factory orders, including the explicit selection transaction). Shift never repeats a unit order: the composition is queued once with its saved counts.
+- Faction-bound (user decision 2026-11-19): no cross-faction variants are created and no other faction cell is filled; the same composition is saved per faction.
+- Catalog composition in Runtime: `Catalog` → `TemplateCatalog` → `UnitTemplateCatalog`; `:Catalog():RefreshTemplates()` refreshes the chain on editor/picker open and on key press, without polling.
+- Editor: unit templates appear in the unit rows of their faction and type, take the tier of the highest member, show the burgundy accent and the localized TEMPLATE label, and report the unit count in the picker list.
+- `BuildKeyLabels` skips every `claret_` pseudo-id so queue templates never create construction key labels.
+- Shift no longer multiplies unit orders (user decision 2026-11-19, superseding build 2026-1117-147): a unit preset queues one unit and a queue template queues its saved counts.
+- Tests: `Tests/hotbuild-unit-templates.lua`; the shared factory path stays covered by `Tests/hotbuild-adapter.lua`.

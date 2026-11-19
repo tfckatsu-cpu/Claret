@@ -176,13 +176,13 @@ assert(adapter:Build('uea0101', adapter:Context(false)))
 assert(#commands == beforeMixedFactory + 1 and #commands[#commands].units == 1
     and commands[#commands].units[1] == factory, 'only the factory receives the queue order')
 
--- Shift keeps the explicit count of five for factory orders.
+-- Shift never multiplies a unit order: one press queues one unit.
 selected = {factory}
 local shiftContext = adapter:Context(false)
 shiftContext.shiftHeld = true
 local beforeShift = #commands
 assert(adapter:Build('uea0101', shiftContext))
-assert(#commands == beforeShift + 1 and commands[#commands].count == 5, 'shift queues five units')
+assert(#commands == beforeShift + 1 and commands[#commands].count == 1, 'shift must not queue five units')
 
 -- Attached factories queue only while finished and owned by a real factory.
 selected = {unit({EXTERNALFACTORY=true}, {'uea0101'}, nil, unit({ENGINEER=true}, {'ueb1103'}))}

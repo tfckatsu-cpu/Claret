@@ -141,7 +141,14 @@ function Create(parent, layout, pages, memory)
                 if page.id == memory.pageId then initialIndex = index; break end
             end
         end
-        Open(initialIndex)
+        -- The host is still hidden while the section is constructed. Building an
+        -- embedded editor there leaves size-only Maui controls with a circular
+        -- Left/Top chain, so the remembered page is built once it is on screen.
+        state.OpenInitial = function()
+            if state.opened or state.disposed then return end
+            state.opened = true
+            Open(initialIndex)
+        end
     end)
     if not ok then root:Destroy(); error(err) end
 
@@ -169,6 +176,7 @@ function Create(parent, layout, pages, memory)
         if state.child and state.child.OnKeyboardEvent then state.child.OnKeyboardEvent(event) end
     end
     root.AfterParentShow = function()
+        if state.OpenInitial then state.OpenInitial() end
         if state.child and state.child.AfterParentShow then
             state.child:AfterParentShow()
         end

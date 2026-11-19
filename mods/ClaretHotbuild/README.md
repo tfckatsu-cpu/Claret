@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.41
+# Claret Hotbuild — prototype 0.10.44
 
 Build 20261113-30: double-tap actions for compatible standalone actions can be configured on the **Keyboard** tab. When an action and a building preset share an assignment, the preset takes priority if the current builder can use it; otherwise, the action runs. Existing saved assignments and additional fields are preserved. In-game verification is pending.
 
@@ -6,7 +6,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.41, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.44, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 
@@ -68,7 +68,7 @@ Templates are read from the standard `build_templates` profile without executing
 
 When a binding is pressed, a template is available if at least one selected engineer can build every building in it; factories and the combined capabilities of several engineers who cannot individually build the whole template do not qualify. After validation, the normal placement mode for the whole template starts through `StartCommandMode`/`SetActiveBuildTemplate`, with geometry passed as a copy. Templates use the same cycle and panel as regular buildings. Templates are refreshed when opening the editor/picker and when pressing the binding, without continuous polling.
 
-Current limitations: only standard build templates from `build_templates`, not factory queues; only valid templates for one of the four factions, containing existing buildings from a single faction, with a maximum of 256 buildings. Loading templates from third-party mods and keeping an independent copy of a deleted template are not supported. Cross-faction conversion is described below.
+Current limitations: only standard build templates from `build_templates` (factory queue templates have their own section below); only valid templates for one of the four factions, containing existing buildings from a single faction, with a maximum of 256 buildings. Loading templates from third-party mods and keeping an independent copy of a deleted template are not supported. Cross-faction conversion is described below.
 
 API cross-check: FAF3840, `C:/ProgramData/FAForever/gamedata/lua.nx2`, 2026-11-10. `build_templates.lua:GetTemplates` reads the `build_templates` profile; a record contains `name/icon/templateData`, where the first two `templateData` entries are numeric dimensions followed by rows of `{blueprintId, orientation, x, z}`. `construction.lua:OnClickHandler` handles `type templates` by calling `StartCommandMode('build', {name=first blueprint})` and `SetActiveBuildTemplate(templateData)`. After its own availability check, Claret starts the same user-facing mode in its own code. Reference and game source files were not changed.
 
@@ -87,6 +87,24 @@ Principle cross-check: `Context/sources/MainMods/ReUI.Hotbuild/Modules/viewmodel
 In a new match, choose a simple template from a generator/storage building in one faction, check that it fills four faction cells, save it, and execute it with engineers of the other factions. Check contents and geometry; a template with a unique building should have only confirmed variants. Local tests do not replace this check.
 
 In the dropdown, templates are sorted before regular buildings. They have a burgundy border and a **TEMPLATE** label; the same label and color appear in the saved binding cell.
+
+## Unit (factory queue) templates — Hotbuild 0.10.43
+
+The unit rows of the picker now include saved factory queue templates: one key queues a whole composition such as 3 tanks + 1 mobile AA. Templates are created and renamed in the game itself — the **Templates** tab of the construction panel with a factory selected (save-template button), or FAF's `create_template_factory` action. Claret only reads them from the `build_templates_factory` profile and never executes data from settings.
+
+A unit template is listed in the row of its faction and unit type, shows a burgundy border and the **TEMPLATE** label with its unit count in the picker list, and marks its bind cell with the same accent and a ▧ glyph. Its tier is the highest tier in the queue, so a T2 template is picked in the T2 cell. A queue template occupies one cell and one position in the binding order, exactly like a building template.
+
+The identifier `claret_unit_template_<hash>` is computed from the member units, their order and their counts; the name and list index are not part of it. Renaming or reordering a source template therefore keeps the binding. A changed or deleted source makes the old binding unavailable and is never replaced by a neighboring template with the same index. Nothing is copied into the ClaretHotbuild profile and the `entries/grid` format does not change.
+
+Pressing a bound key with a factory selected queues every member in saved order with its saved count. Shift never repeats an order: a press queues the composition once, and a single-unit preset queues one unit. A template is offered only when the selected factory can queue every member: the blueprint must be in the engine list `GetUnitCommandData` → `EntityCategoryGetUnitList`, and one exception follows FAF's own rule — an entry may be queued when an earlier entry of the same template is a factory upgrade that unlocks it, so a T2 queue captured on a T2 factory works from a T1 factory that builds the upgrade first. Replays, observers and non-factory selections receive no order. With a mixed selection only the factories are used, and the UI selection is restored afterwards.
+
+A queue template is faction-bound: no cross-faction variants are created, and selecting it fills only the cell of its own faction. Create one template per faction if the same composition is needed there.
+
+Data checks: member entries must be existing blueprints of one faction and one unit type, counts must be whole positive numbers, a structure is accepted only as a factory upgrade, and a queue without units is rejected. Invalid records are ignored and logged; they are never executed. The catalog is refreshed when the editor or picker opens and when a binding is pressed — there is no background polling.
+
+API cross-check: FAF3840, `C:/ProgramData/FAForever/gamedata/lua.nx2`, 2026-11-19. `lua/ui/templates_factory.lua` reads `build_templates_factory` and stores `{name, icon, templateData = {{id, count}, ...}}`; `lua/keymap/hotbuild.lua` (`buildActionFactoryTemplate`, `availableTemplate`) queues entries with `IssueBlueprintCommand('UNITCOMMAND_BuildFactory', id, count)` and allows a higher entry after a preceding factory upgrade. `lua/ui/game/construction.lua` builds the same list for the construction panel.
+
+Local checks: `Tests/hotbuild-unit-templates.lua` (identity, malformed data, upgrade chain, dispatch counts, shift repeat, mixed selection, faction conversion), plus `hotbuild-adapter.lua` for the shared factory-order path. In a new match: create a template from a factory queue, bind it to a unit cell, and check the queued composition, Shift repeat, a T2 queue pressed from a T1 factory, an upgrade template, restart persistence and the tile label. Local simulations do not confirm engine behavior.
 
 ## Selection-context multifunction bindings — Hotbuild 0.10.1
 

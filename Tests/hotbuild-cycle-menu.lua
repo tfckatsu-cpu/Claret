@@ -121,6 +121,9 @@ modules['/mods/ClaretHotbuild/modules/Catalog.lua']={Create=function() return ca
 local templateModule=setmetatable({},{__index=env})
 assert(loadfile('../mods/ClaretHotbuild/modules/TemplateCatalog.lua','t',templateModule))()
 modules['/mods/ClaretHotbuild/modules/TemplateCatalog.lua']=templateModule
+local unitTemplateModule=setmetatable({},{__index=env})
+assert(loadfile('../mods/ClaretHotbuild/modules/UnitTemplateCatalog.lua','t',unitTemplateModule))()
+modules['/mods/ClaretHotbuild/modules/UnitTemplateCatalog.lua']=unitTemplateModule
 modules['/mods/ClaretHotbuild/modules/Keys.lua']={Create=function() return {Apply=function() return true end,Stop=function() end} end}
 modules['/mods/ClaretHotbuild/modules/KeyboardBindings.lua']={Create=function() return {Refresh=function() return true end,GetPairError=function() return nil end} end}
 modules['/mods/ClaretHotbuild/modules/Adapter.lua']={RegisterActions=function() end,Create=function()

@@ -110,6 +110,13 @@ end
 local host=control()
 local frame=env.Create(host,service,nil)
 assert(frame.Width()>0 and frame.Height()>0)
+-- Maui controls with a size but no position have a circular Left/Top chain; the
+-- game reports it as a lazyvar failure and the tree breaks when a group expands.
+for _,c in ipairs(controls) do
+    if not c.destroyed and c.parent and c.parent~=host and c.HandleEvent and c.x==nil then
+        error('interactive control created without a position')
+    end
+end
 local hint=false
 for _,c in ipairs(controls) do if c.text=='используется на клавишах: F3, Alt-K' then hint=true end end
 assert(hint,'composite shows assigned keys as a read-only hint')

@@ -1,6 +1,6 @@
-Version = '0.10.41'
+Version = '0.10.44'
 -- Bump for every Hotbuild code change so the loaded build is identifiable.
-local BuildStamp = '20261119-151'
+local BuildStamp = '20261119-154'
 LOG('[Claret][build] hotbuild='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {

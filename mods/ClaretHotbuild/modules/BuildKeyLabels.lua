@@ -25,7 +25,7 @@ local LabelColours = {
 
 local function ValidId(value)
     return type(value) == 'string' and value ~= ''
-        and not string.find(string.lower(value), '^claret_template_')
+        and not string.find(string.lower(value), '^claret_')
 end
 
 local function TextSize(length)

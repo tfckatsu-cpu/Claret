@@ -125,9 +125,13 @@ function Create(isReplay)
     function service:Catalog()
         if not catalog then
             local base=Catalog.Create(__blueprints,LOC)
-            catalog=import('/mods/ClaretHotbuild/modules/TemplateCatalog.lua').Create(base,function()
+            local templates=import('/mods/ClaretHotbuild/modules/TemplateCatalog.lua').Create(base,function()
                 return Prefs.GetFromCurrentProfile('build_templates')
             end,import('/lua/keymap/unitkeygroups.lua').unitkeygroups)
+            -- Factory queue templates extend the same catalog API and stay faction-bound.
+            catalog=import('/mods/ClaretHotbuild/modules/UnitTemplateCatalog.lua').Create(templates,function()
+                return Prefs.GetFromCurrentProfile('build_templates_factory')
+            end)
         end
         return catalog
     end

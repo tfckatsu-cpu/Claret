@@ -8,4 +8,4 @@ selectable = true
 enabled = true
 exclusive = false
 ui_only = true
-ReUI = 'ClaretHotbuild=0.10.41'
+ReUI = 'ClaretHotbuild=0.10.44'

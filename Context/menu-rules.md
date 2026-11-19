@@ -21,6 +21,6 @@
 - Hotbuild has three pages: Keyboard, Hotbuild, Contexts. There is no repeat page.
 - Geometry: compact Core section 552×408; standard panel 1128×1110; panel drag header width-72 × 72; binding name field 656×36; picker search 300×36; navigation row 40.
 - Dragging a panel shifts its depth by ±1000. Every overlay, dialog and tooltip must use live depth closures (see ui-rules.md), never a frozen number.
-- Sections register through ReUI.ClaretCore.RegisterSettingsSection; inline(parent, layout) receives layout.scale and may return CanLeave(intent, continuation). Do not use the unused ccessory hook.
+- Sections register through ReUI.ClaretCore.RegisterSettingsSection; inline(parent, layout) receives layout.scale and may return CanLeave(intent, continuation). A remembered page is created on the first `AfterParentShow`, never inside `inline(...)`: building an embedded editor while the panel is hidden leaves size-only Maui controls with a circular `Left`/`Top` chain (`circular dependency in lazy evaluation` in the game log). Do not use the unused ccessory hook.
 - Key capture is temporary; Escape goes through the FAF stack; panels never take game keyboard focus and never install global key handlers.
 - The quick-repeat settings window and its gear were removed in 0.10.38; there is no menu path for them.

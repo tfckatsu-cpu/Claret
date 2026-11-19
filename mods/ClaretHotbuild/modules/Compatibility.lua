@@ -40,6 +40,8 @@ local function PresetTraits(binding, catalog)
     local function CheckOutput(id)
         local record = catalog:Get(id)
         if not record then return end
+        -- A queue template is factory output, never a placement composition.
+        if record.unitTemplate then hasFactoryOutput = true end
         if ProducedByFactory(record) then hasFactoryOutput = true end
         -- Saved templates carry the member blueprint IDs in their geometry data.
         for i = 3, table.getn(record.templateData or {}) do
