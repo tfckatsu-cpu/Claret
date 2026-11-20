@@ -19,7 +19,7 @@ local DETAIL_ROW_GAP = 8
 
 -- The section factory is a module global: FAF's import returns the module
 -- environment, and a `local` name is never visible to the caller.
-function Create(parent, layout, options)
+function Create(parent, layout, options, coreOptions)
     local scale = layout.scale
     local pixel = Helpers.GetPixelScaleFactor()
     local ratio = scale / pixel
@@ -46,6 +46,14 @@ function Create(parent, layout, options)
             entries = {
                 { labelKey = 'claretui.setting.acu', option = options.acuHealth, height = M.coreRowHeight },
                 { labelKey = 'claretui.setting.acu_scale', option = options.acuScale, kind = 'slider', height = 62 },
+            },
+        },
+        {
+            labelKey = 'claretui.tab.minimap',
+            descriptionKey = 'claretui.tab.minimap_description',
+            entries = {
+                { labelKey = 'claretui.setting.minimap_auto', option = coreOptions.minimapAutoHide, height = M.coreRowHeight },
+                { labelKey = 'claretui.setting.minimap_border', option = coreOptions.minimapBorderless, height = M.coreRowHeight },
             },
         },
     }

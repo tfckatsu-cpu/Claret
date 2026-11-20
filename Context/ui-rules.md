@@ -19,6 +19,8 @@ Checklist distilled from real Claret bugs. Read together with `ui-style.md` (vis
 
 ## Controls and lifecycle
 
+- Core's optional minimap auto-hide changes the window's temporary visibility without changing FAF's `stratview` preference. A manual minimap toggle remains authoritative. The independent border option hides window and minimap decoration controls and restores them when disabled. Both options are off by default and appear under UI → Minimap; their saved values remain in Core. The user confirmed the features and checked manual closing in FAF for Core 0.10.25 / Claret UI 0.2.33 on 2026-11-20. Compatibility with other minimap mods was not specified.
+
 - Create controls inside the feature scope (`scope:Own`) or destroy them explicitly; every `OnDestroy` must chain to the previous handler.
 - When replacing `OnFrame`, `OnHide`, `OnTextChanged`, `OnClick`, save the previous handler and call it (or restore it) — otherwise menu focus, hover and animations break.
 - Remove subscriptions (`OnChanged:Remove`, `Localization.Unsubscribe`) and stop `SetNeedsFrameUpdate(true)` when the control closes or hides.

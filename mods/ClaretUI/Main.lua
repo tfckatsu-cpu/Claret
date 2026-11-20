@@ -1,10 +1,10 @@
-Version = '0.2.32'
+Version = '0.2.33'
 -- Bump for every Claret UI code change so the loaded build is identifiable.
-local BuildStamp = '20261120-35'
+local BuildStamp = '20261120-36'
 LOG('[Claret][build] ui='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
-    'ClaretCore >= 0.10.23',
+    'ClaretCore >= 0.10.25',
     'ReUI.Core >= 1.7.0',
     'ReUI.UI >= 1.0.0',
     'ReUI.Options >= 1.2.0',
@@ -32,7 +32,9 @@ function Main(isReplay)
     local UiSection = import('/mods/ClaretUI/modules/UiSection.lua')
     local sectionOk, sectionError = ReUI.ClaretCore.RegisterSettingsSection {
         id = 'ui', title = 'UI', titleKey = 'claretui.section.title', descriptionKey = 'claretui.section.description',
-        inline = function(parent, layout) return UiSection.Create(parent, layout, options) end,
+        inline = function(parent, layout)
+            return UiSection.Create(parent, layout, options, ReUI.Options.Mods['ClaretCore'])
+        end,
     }
     if not sectionOk then error(sectionError) end
 end

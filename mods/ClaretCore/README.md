@@ -1,6 +1,8 @@
-# Claret Core — test build 0.10.23
+# Claret Core — test build 0.10.25
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
+
+Claret UI exposes the minimap options under F10 → Claret → UI → Minimap. Manual minimap visibility remains under FAF control; automatic hiding does not save over that preference. The user confirmed the features and manual closing in game on 2026-11-20; compatibility with other minimap mods was not specified.
 
 Provides a feature registry, lifecycle and resource management (`Own`, `Bind`, `Every`, `Guard`, `Defer`), and a selection composition diagnostics panel. The `probeEnabled` setting controls diagnostic log entries and is available under F10 → Claret → Core when ReUI developer mode is enabled; its previously saved value is preserved. The UI counter panel has been removed.
 

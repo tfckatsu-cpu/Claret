@@ -100,6 +100,10 @@ local game = {
 }
 setmetatable(game, { __index = _G })
 game.import = function(path)
+    if path == '/mods/ClaretCore/modules/Minimap.lua' then return {Create=function() return {
+        ManualToggle=function() end, LayoutChanged=function() end,
+        Start=function() return function() end end,
+    } end} end
     if path == '/mods/ClaretCore/modules/TransportCargo.lua' then return {Create=function(isReplay)
         assert(isReplay == false)
         return {

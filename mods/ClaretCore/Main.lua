@@ -1,5 +1,5 @@
-Version = '0.10.23'
-local BuildStamp = '20261120-55'
+Version = '0.10.25'
+local BuildStamp = '20261120-57'
 LOG('[Claret][build] core='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
@@ -42,6 +42,22 @@ function Main(isReplay)
     end
     options.language.OnChanged:Add(languageChanged)
     local strategicRings = import('/mods/ClaretCore/modules/StrategicRings.lua').Create()
+    local minimap = import('/mods/ClaretCore/modules/Minimap.lua').Create(options.minimapAutoHide, options.minimapBorderless)
+    ReUI.Core.Hook('/lua/ui/game/minimap.lua', 'ToggleMinimap', function(original)
+        return function()
+            if import('/lua/ui/game/gamemain.lua').gameUIHidden then return original() end
+            local result = original()
+            minimap:ManualToggle()
+            return result
+        end
+    end)
+    ReUI.Core.Hook('/lua/ui/game/minimap.lua', 'SetLayout', function(original)
+        return function(layout)
+            local result = original(layout)
+            minimap:LayoutChanged()
+            return result
+        end
+    end)
     ReUI.Core.Hook('/lua/ui/game/painting/PaintingBrush.lua', 'PaintingBrush', function(previousBrush)
         return Class(previousBrush) {
             DeletePaintingAtBrush = function(self, coordinates, radius)
@@ -145,12 +161,14 @@ function Main(isReplay)
         end)
 
         local onDestroy = owner.OnDestroy
+        local stopMinimap = minimap:Start(owner)
         owner.OnDestroy = function(self)
             disposed = true
             uiReady = false
             menuKey:Destroy()
             menu:Destroy()
             transportCargo:Destroy()
+            stopMinimap()
             if strategicRings then strategicRings:Destroy(); strategicRings = nil end
             if registry then
                 registry:Destroy()
