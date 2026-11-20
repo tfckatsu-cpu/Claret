@@ -1,6 +1,11 @@
 local options = {
     enabled = ReUI.Options.OptionValue(true),
+    revealPositions = ReUI.Options.OptionValue(false),
+    revealPositionsDuration = ReUI.Options.OptionValue(0),
+    revealPositionsScale = ReUI.Options.OptionValue(100),
+    revealPositionsFillTransparency = ReUI.Options.OptionValue(100),
     acuHealth = ReUI.Options.OptionValue(true),
+    acuLocked = ReUI.Options.OptionValue(false),
     acuScale = ReUI.Options.OptionValue(100),
     selectionHud = ReUI.Options.OptionValue(false),
     selectionDynamic = ReUI.Options.OptionValue(true),

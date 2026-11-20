@@ -70,10 +70,29 @@ function Create(parent, layout, options, coreOptions)
 
     local groups = {
         {
+            labelKey = 'claretui.positions.title',
+            descriptionKey = 'claretui.positions.description',
+            entries = {
+                { labelKey = 'claretui.positions.enabled', option = options.revealPositions, height = M.coreRowHeight },
+                { labelKey = 'claretui.positions.duration', option = options.revealPositionsDuration, kind = 'choice', height = ROW_HEIGHT,
+                    choices = {
+                        { value = 0, labelKey = 'claretui.positions.never', width = 48 },
+                        { value = 60, labelKey = 'claretui.positions.one_minute', width = 42 },
+                        { value = 300, labelKey = 'claretui.positions.five_minutes', width = 42 },
+                        { value = 600, labelKey = 'claretui.positions.ten_minutes', width = 42 },
+                    },
+                },
+                { labelKey = 'claretui.positions.scale', option = options.revealPositionsScale, kind = 'slider', height = 62 },
+                { labelKey = 'claretui.positions.fill_transparency', option = options.revealPositionsFillTransparency,
+                    kind = 'slider', height = 62, min = 0, max = 100, defaultValue = 100 },
+            },
+        },
+        {
             labelKey = 'claretui.tab.commander',
             descriptionKey = 'claretui.tab.commander_description',
             entries = {
                 { labelKey = 'claretui.setting.acu', option = options.acuHealth, height = M.coreRowHeight },
+                { labelKey = 'claretui.setting.acu_locked', option = options.acuLocked, height = M.coreRowHeight },
                 { labelKey = 'claretui.setting.acu_scale', option = options.acuScale, kind = 'slider', height = 62 },
             },
         },

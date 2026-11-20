@@ -295,6 +295,8 @@ function module:Start(scope, isReplay, options)
     ReadSaved()
 
     local scaleOption = type(options) == 'table' and options.acuScale or nil
+    local lockOption = type(options) == 'table' and options.acuLocked or nil
+    local locked = lockOption ~= nil and lockOption:Get() == true
     if scaleOption ~= nil then
         local savedScale = Probe(function() return scaleOption:Get() end)
         if type(savedScale) == 'number' and savedScale >= MIN_SCALE and savedScale <= MAX_SCALE then
@@ -306,7 +308,7 @@ function module:Start(scope, isReplay, options)
     box.panel = panel
     module.panel = panel
     panel:SetSolidColor(C.scrim)
-    panel:EnableHitTest()
+    if locked then panel:DisableHitTest() else panel:EnableHitTest() end
     -- Live depth: the map group can be raised together with the game UI.
     panel.Depth:Set(function() return mapGroup.Depth() + 10 end)
 
@@ -432,7 +434,7 @@ function module:Start(scope, isReplay, options)
         if box.deathElapsed == nil then return end
         StopBreakup()
         box.deathElapsed = nil
-        panel:EnableHitTest()
+        if locked then panel:DisableHitTest() else panel:EnableHitTest() end
         track:Show()
     end
 
@@ -706,7 +708,12 @@ function module:Start(scope, isReplay, options)
         end
     end
 
+    local activeDrag
+    local function CancelDrag()
+        if activeDrag then activeDrag:OnCancel() end
+    end
     local function StartDrag(event)
+        if locked or activeDrag then return false end
         local draggerModule = Probe(function() return import('/lua/maui/dragger.lua') end)
         local makeDragger = type(draggerModule) == 'table' and Probe(function()
             return draggerModule.Dragger
@@ -732,6 +739,7 @@ function module:Start(scope, isReplay, options)
         local startLeft, startTop = panel.Left(), panel.Top()
         local drag = makeDragger()
         local function Release(control)
+            if activeDrag == control then activeDrag = nil end
             if type(control.Destroy) == 'function' then pcall(control.Destroy, control) end
         end
         drag.OnMove = function(self, x, y)
@@ -759,6 +767,7 @@ function module:Start(scope, isReplay, options)
             if not ok then LOG(LOG_PREFIX .. 'drag cancel failed: ' .. tostring(err)) end
             Release(self)
         end
+        activeDrag = drag
         local posted, postError = pcall(function() PostDragger(root, event.KeyCode, drag) end)
         if not posted then
             LOG(LOG_PREFIX .. 'drag could not start: ' .. tostring(postError))
@@ -788,6 +797,17 @@ function module:Start(scope, isReplay, options)
         return handled == true
     end
 
+    local function ApplyLock()
+        locked = lockOption:Get() == true
+        if locked then CancelDrag() end
+        if locked or box.deathElapsed ~= nil then panel:DisableHitTest() else panel:EnableHitTest() end
+    end
+    if lockOption then lockOption.OnChanged:Add(ApplyLock) end
+    scope:Defer(function()
+        if lockOption then lockOption.OnChanged:Remove(ApplyLock) end
+        CancelDrag()
+    end)
+
     ApplySize()
     ApplyPosition()
     panel:Show()
@@ -800,6 +820,7 @@ function module:Start(scope, isReplay, options)
             local ok, err = pcall(Refresh)
             if not ok then LOG(LOG_PREFIX .. 'visibility refresh failed: ' .. tostring(err)) end
         else
+            CancelDrag()
             SetAlarmPulse(0)
             if box.deathElapsed ~= nil then FinishDeath() end
             label:Hide()

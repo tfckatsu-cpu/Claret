@@ -1,6 +1,7 @@
 -- Claret UI feature host. A feature is a module with Start(self, scope, isReplay)
 -- and optionally SetVisible(self, visible); its option drives that visibility.
 local features = {
+    { id = 'positions', module = '/mods/ClaretUI/modules/features/RevealPositions.lua', option = 'revealPositions' },
     { id = 'acu', module = '/mods/ClaretUI/modules/features/AcuHealth.lua', option = 'acuHealth' },
     { id = 'selection', module = '/mods/ClaretUI/modules/features/SelectionHud.lua' },
     { id = 'mexes', module = '/mods/ClaretUI/modules/features/Mexes.lua', option = 'mexPanel' },

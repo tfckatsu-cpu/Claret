@@ -574,11 +574,12 @@ local function UpdateMarkers(owner)
         ClearMarkers(owner)
         owner.view = view
     end
-    if not owner.options.mexOverlay:Get() or not view or IsDestroyed(view) or view:IsHidden() then
+    local showArrows = owner.options.mexNumbers:Get()
+    local numbered = owner.options.mexOverlay:Get()
+    if (not showArrows and not numbered) or not view or IsDestroyed(view) or view:IsHidden() then
         if next(owner.markers) then ClearMarkers(owner) end
         return
     end
-    local numbered = owner.options.mexNumbers:Get()
     if numbered ~= owner.numbered then
         ClearMarkers(owner)
         owner.numbered = numbered
@@ -586,8 +587,8 @@ local function UpdateMarkers(owner)
     for id, row in pairs(owner.rows) do
         local marker = owner.markers[id]
         local pos
-        local upgrading = row.state ~= 'idle'
-        if Owned(row.unit, owner.army) and (numbered or upgrading) then
+        local showArrow = showArrows and row.state ~= 'idle'
+        if Owned(row.unit, owner.army) and (numbered or showArrow) then
             pos = view:GetScreenPos(row.unit)
         end
         if pos then
@@ -600,9 +601,9 @@ local function UpdateMarkers(owner)
             local y = math.floor(view.Top() + pos.y - plate.Height() / 2)
             if x ~= marker.x then marker.x = x; plate.Left:Set(x) end
             if y ~= marker.y then marker.y = y; plate.Top:Set(y) end
-            if upgrading and not marker.arrow then
+            if showArrow and not marker.arrow then
                 marker.arrow = MakeArrow(plate, ReUI.UI.FloorLayouter(owner.scale), marker.size - 7, -3)
-            elseif not upgrading and marker.arrow then
+            elseif not showArrow and marker.arrow then
                 marker.arrow:Destroy()
                 marker.arrow = nil
             end

@@ -168,7 +168,7 @@ local transparency = option(0)
 local position = option({x=100,y=50})
 function position:Set(value) self.value=value end
 function position:Save() pendingPosition=self.value; self.saves=(self.saves or 0)+1 end
-local options={mexPanelPosition=position,mexPanel={Get=function() return true end},mexOverlay=option(true),mexNumbers=option(false),mexPanelScale=scale,mexPanelMode=mode,mexPanelLocked=locked,mexPanelTransparency=transparency}
+local options={mexPanelPosition=position,mexPanel={Get=function() return true end},mexOverlay=option(false),mexNumbers=option(true),mexPanelScale=scale,mexPanelMode=mode,mexPanelLocked=locked,mexPanelTransparency=transparency}
 assert(loadfile('../mods/ClaretUI/modules/features/Mexes.lua','t',env))()
 env.InstallKeys()
 assert(applied['CTRL-M'] == actions.claret_mex_select_T1_idle and not applied.M)
@@ -351,7 +351,7 @@ assert(arrow())
 click(2,{Right=true,Ctrl=true})
 assert(not a.paused)
 b.pos=nil
-options.mexNumbers.value=true
+options.mexOverlay.value=true
 advance(0.3)
 assert(marker('1','white') and marker('2·','red') and not marker('2','white'))
 local fill, activePlate
@@ -359,8 +359,21 @@ activePlate=marker('1','white')
 assert(activePlate == arrow() and activePlate.fill == 'canvas')
 options.mexNumbers.value=false
 updater:OnFrame(0.01)
-assert(arrow() and activePlate.destroyed and not marker('1','white'))
+assert(not arrow() and marker('1','white') == activePlate and marker('2·','red'))
+options.mexOverlay.value=false
+updater:OnFrame(0.01)
+assert(not arrow() and not marker('1','white'))
 options.mexNumbers.value=true
+updater:OnFrame(0.01)
+assert(arrow() and not marker('1','white'))
+options.mexOverlay.value=true
+updater:OnFrame(0.01)
+activePlate=assert(marker('1','white'))
+assert(activePlate == arrow())
+options.mexOverlay.value=false
+updater:OnFrame(0.01)
+assert(arrow() and activePlate.destroyed and not marker('1','white'))
+options.mexOverlay.value=true
 updater:OnFrame(0.01)
 activePlate=assert(marker('1','white'))
 for _, control in ipairs(controls) do

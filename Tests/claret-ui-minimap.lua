@@ -101,6 +101,30 @@ local function pressLabel(label, ancestor)
     assert(item.parent.HandleEvent, 'label parent must respond to input: ' .. label)
     item.parent:HandleEvent({Type='ButtonPress'})
 end
+pressLabel('claretui.positions.title')
+assert(not options.revealPositions:Get())
+pressLabel('claretui.positions.enabled')
+assert(options.revealPositions:Get() and options.revealPositions.saves == 1)
+local durationRow = assert(findLabel('claretui.positions.duration')).parent
+pressLabel('claretui.positions.five_minutes', durationRow)
+assert(options.revealPositionsDuration:Get() == 300 and options.revealPositionsDuration.saves == 1)
+pressLabel('claretui.positions.ten_minutes', durationRow)
+assert(options.revealPositionsDuration:Get() == 600)
+pressLabel('claretui.positions.one_minute', durationRow)
+assert(options.revealPositionsDuration:Get() == 60)
+pressLabel('claretui.positions.never', durationRow)
+assert(options.revealPositionsDuration:Get() == 0)
+local positionScaleRow = assert(findLabel('claretui.positions.scale')).parent
+for _, item in ipairs(controls) do
+    if item.parent == positionScaleRow and item.OnValueSet then item:OnValueSet(150) end
+end
+assert(options.revealPositionsScale:Get() == 150 and options.revealPositionsScale.saves == 1)
+assert(options.revealPositionsFillTransparency:Get() == 100)
+local fillRow = assert(findLabel('claretui.positions.fill_transparency')).parent
+for _, item in ipairs(controls) do
+    if item.parent == fillRow and item.OnValueChanged then item:OnValueChanged(45); item:OnValueSet(45) end
+end
+assert(options.revealPositionsFillTransparency:Get() == 45 and options.revealPositionsFillTransparency.saves == 1)
 pressLabel('claretui.tab.minimap')
 assert(height, 'opening minimap must size the UI section')
 pressLabel('claretui.setting.minimap_auto')
@@ -134,6 +158,11 @@ assert(height == collapsedHeight and not findLabel('claretui.setting.rings_sonar
 assert(options.ringsSonar:ListenerCount() == 0)
 assert(options.ringSelectionKey:ListenerCount() == 1 and options.ringBuildKey:ListenerCount() == 1)
 print('PASS: All Rings expands, fits the shell, and saves independent shortcuts and filters')
+
+pressLabel('claretui.tab.commander')
+assert(not options.acuLocked:Get())
+pressLabel('claretui.setting.acu_locked')
+assert(options.acuLocked:Get() and options.acuLocked.saves == 1 and options.acuScale:Get() == 100)
 
 pressLabel('claretui.mex.title')
 assert(not options.mexPanel:Get() and options.mexOverlay:Get() and not options.mexNumbers:Get())

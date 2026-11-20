@@ -42,6 +42,70 @@ function check(dir) {
 }
 check(root);
 check('../mods/ClaretHotbuild');
+check('../mods/ClaretUI');
+// LuaPlus rejects varargs in expression position (`f(...)`); such a module loads
+// as an empty table and the game reports a missing global. Claret UI forbids
+// varargs entirely, so the rule is checked on the AST, not on text.
+(function checkNoVarargs(dir) {
+  const pending = [dir];
+  while (pending.length) {
+    const current = pending.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const file = path.join(current, entry.name);
+      if (entry.isDirectory()) { pending.push(file); continue; }
+      if (!file.endsWith('.lua')) continue;
+      const ast = parser.parse(fs.readFileSync(file, 'utf8'), { luaVersion: '5.1' });
+      const stack = [ast];
+      while (stack.length) {
+        const node = stack.pop();
+        if (!node || typeof node !== 'object') continue;
+        if (node.type === 'VarargLiteral') throw new Error(`${file}: varargs are rejected by LuaPlus`);
+        for (const value of Object.values(node)) {
+          if (Array.isArray(value)) stack.push(...value);
+          else if (value && typeof value === 'object') stack.push(value);
+        }
+      }
+    }
+  }
+})('../mods/ClaretUI');
+// FAF's import returns the module environment, not the chunk's return value: a
+// module that only declares `local` helpers and ends with `return { ... }`
+// loads as an empty table and the caller reports a nonexistent global. Every
+// module has to export its API by assigning module globals.
+function checkModuleExports(dir) {
+  const pending = [dir];
+  while (pending.length) {
+    const current = pending.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const file = path.join(current, entry.name);
+      if (entry.isDirectory()) { pending.push(file); continue; }
+      if (!file.endsWith('.lua')) continue;
+      const body = parser.parse(fs.readFileSync(file, 'utf8'), { luaVersion: '5.1' }).body;
+      const last = body[body.length - 1];
+      if (!last || last.type !== 'ReturnStatement') continue;
+      // `local function Create` makes later `Create = ...` assignments hit the
+      // local, so only names that are still globals at that point count.
+      const locals = new Set();
+      let exported = false;
+      const isGlobalTarget = (target) => target.type === 'Identifier' && !locals.has(target.name);
+      for (const node of body) {
+        if (node.type === 'LocalStatement') {
+          for (const target of node.variables) if (target.type === 'Identifier') locals.add(target.name);
+        } else if (node.type === 'AssignmentStatement') {
+          if (node.variables.some(isGlobalTarget)) exported = true;
+        } else if (node.type === 'FunctionDeclaration') {
+          const name = node.identifier && node.identifier.type === 'Identifier' ? node.identifier.name : null;
+          if (node.isLocal) { if (name) locals.add(name); }
+          else if (name && !locals.has(name)) exported = true;
+        }
+      }
+      if (!exported) throw new Error(`${file}: a file-level return is ignored by FAF; export the API through module globals`);
+    }
+  }
+}
+checkModuleExports(root);
+checkModuleExports('../mods/ClaretHotbuild');
+checkModuleExports('../mods/ClaretUI');
 function readLocalizationKeys(file) {
   const source = fs.readFileSync(file, 'utf8');
   const keys = { en: new Set(), ru: new Set() };
@@ -60,6 +124,7 @@ function readLocalizationKeys(file) {
 const localizationFiles = [
   '../mods/ClaretCore/modules/LocalizationStrings.lua',
   '../mods/ClaretHotbuild/modules/LocalizationStrings.lua',
+  '../mods/ClaretUI/modules/LocalizationStrings.lua',
 ];
 const localizationKeys = { en: new Set(), ru: new Set() };
 for (const file of localizationFiles) {
@@ -124,6 +189,22 @@ function checkVersionIdentity(modName, dir) {
 }
 checkVersionIdentity('ClaretCore', root);
 checkVersionIdentity('ClaretHotbuild', '../mods/ClaretHotbuild');
+checkVersionIdentity('ClaretUI', '../mods/ClaretUI');
+// Claret UI is a leaf dependency: Core and Hotbuild must never import it.
+for (const dir of [root, '../mods/ClaretHotbuild']) {
+  const pending = [dir];
+  while (pending.length) {
+    const current = pending.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const file = path.join(current, entry.name);
+      if (entry.isDirectory()) { pending.push(file); continue; }
+      if (!file.endsWith('.lua')) continue;
+      if (/import\(\s*['\"]\/mods\/ClaretUI/.test(fs.readFileSync(file, 'utf8'))) {
+        throw new Error(`${file}: ${dir} must not import ClaretUI`);
+      }
+    }
+  }
+}
 // LuaPlus rejects expression-form varargs accepted by the Lua 5.1 parser.
 // These live integration files do not need varargs at all.
 for (const file of ['../mods/ClaretHotbuild/Main.lua', '../mods/ClaretCore/modules/ReUICargoIndicator.lua']) {

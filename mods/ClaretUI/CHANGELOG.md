@@ -1,5 +1,26 @@
 # История изменений
 
+## Сборка 20261120-83 — 2026-11-20
+- Use flat blue, green, red and yellow faction marks without the brightness boost.
+
+## Сборка 20261120-82 — 2026-11-20
+- Enlarge and brighten faction marks and limit the marker background to the text area.
+
+## Сборка 20261120-81 — 2026-11-20
+- Align starting-position text, icon and underline to screen pixels at fractional scales and use the shared Nunito font.
+
+## Сборка 20261120-80 — 2026-11-20
+- Thicken the starting-position underline and use the game font to investigate text artifacts.
+
+## Сборка 20261120-79 — 2026-11-20
+- Add adjustable transparency for the entire starting-position marker background.
+
+## Сборка 20261120-78 — 2026-11-20
+- Add starting-position marker scale and optional time limit; replace opaque faction backgrounds.
+
+## Сборка 20261120-77 — 2026-11-20
+- Add optional starting-position map labels, with anonymous map spots for hidden random spawns.
+
 ## Сборка 20261120-76 — 2026-11-20
 - Use Selection Info as the menu name in both languages.
 
@@ -20,6 +41,15 @@
 
 ## Сборка 20261120-70 — 2026-11-20
 - Add Selection Info with aggregate stats and composition, using Core's shared selection feed.
+
+## Сборка 20261120-69 — 2026-11-20
+- Map the map-markers switch to the tech and progress badge and the upgrade-indicator switch to the arrow.
+
+## Сборка 20261120-68 — 2026-11-20
+- Make mex map arrows and upgrade badges independently toggleable.
+
+## Сборка 20261120-67 — 2026-11-20
+- Rename the minimap section to Better Minimap and add a saved ACU Health panel lock.
 
 ## Сборка 20261120-66 — 2026-11-20
 - Center the pause mark on the visible green cores of the T1 and T2 icons individually.

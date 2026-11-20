@@ -150,7 +150,8 @@ game.import = function(path)
     end} end
     if path == '/mods/ClaretUI/modules/features/AcuHealth.lua'
         or path == '/mods/ClaretUI/modules/features/AllRings.lua'
-        or path == '/mods/ClaretUI/modules/features/Mexes.lua' then
+        or path == '/mods/ClaretUI/modules/features/Mexes.lua'
+        or path == '/mods/ClaretUI/modules/features/RevealPositions.lua' then
         return {Start = function() end, Install = function() end, InstallKeys = function() end}
     end
     if path == '/mods/ClaretUI/modules/UiSection.lua' then return {} end
