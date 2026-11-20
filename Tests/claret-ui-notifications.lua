@@ -143,6 +143,16 @@ assert(#alerts == 6, 'A synced ID should still resolve when its handle arrives a
 assert(alerts[6].kind == 'nuke' and not alerts[6].icon, 'A surface ship should keep a text-only alert')
 
 options.notificationsExperimental:Set(true)
+env.__blueprints.xea0002 = { General = { UnitName = 'Defense Satellite' } }
+env.__blueprints.xsl0402 = { General = { UnitName = 'Othuy' } }
+env.__blueprints.xeb2402 = { General = { UnitName = 'Novax Center' } }
+syncCallbacks.EnhanceMessage({
+    { army = 1, category = 'experimentals', trigger = 'completed', source = 'xea0002' },
+    { army = 1, category = 'experimentals', trigger = 'completed', source = 'xsl0402' },
+    { army = 1, category = 'experimentals', trigger = 'completed', source = 'xeb2402' },
+})
+assert(#alerts == 7 and alerts[7].value == 'Novax Center', 'Only the station should show a completion alert')
+table.remove(alerts)
 syncCallbacks.EnhanceMessage({
     { army = 1, category = 'experimentals', trigger = 'started', source = 'ueb2401' },
     { army = 2, category = 'experimentals', trigger = 'completed', source = 'ueb2401' },

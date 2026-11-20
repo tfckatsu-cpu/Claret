@@ -1,4 +1,4 @@
-# Claret UI — test build 0.2.100
+# Claret UI — test build 0.2.101
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
@@ -42,6 +42,8 @@ The user confirmed All Rings in FAF for Claret UI 0.2.38 (build 20261120-41) on 
 Do not run the original mod next to the equivalent Claret UI feature.
 
 ## Notifications
+
+Experimental completion alerts skip the spawned Novax satellite (`xea0002`) and Othuy (`xsl0402`). The Novax Center and Ythotha still qualify.
 
 The project owner confirmed the 0.2.86 build in FAF on 2026-11-20. Individual scenarios were not specified.
 

@@ -1,5 +1,8 @@
 # История изменений
 
+## Сборка 20261120-104 — 2026-11-20
+- Skip completion notifications for the Novax satellite and Othuy.
+
 ## Сборка 20261120-103 — 2026-11-20
 - Add an InfoShare list position lock that passes mouse input through to the game.
 

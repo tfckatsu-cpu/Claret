@@ -1,5 +1,6 @@
 local Game = import('/lua/ui/game/gamemain.lua')
 local identifier = 'ClaretUI.Notifications'
+local spawnedExperimentals = { xea0002 = true, xsl0402 = true }
 local hqLayers = {
     land = { suffix = '01', frame = 'land' },
     air = { suffix = '02', frame = 'air' },
@@ -58,7 +59,7 @@ function Start(self, scope, isReplay, options)
                         display:Show('hq', 'hq_' .. layer, tech, icon, frame)
                     end
                 elseif message.category == 'experimentals' and options.notificationsExperimental:Get() then
-                    local bp = __blueprints[message.source]
+                    local bp = not spawnedExperimentals[message.source] and __blueprints[message.source]
                     if bp then
                         local general = bp.General or {}
                         local icon, frame = UnitIcon(message.source, factoryFrames[general.Icon] or 'land')
