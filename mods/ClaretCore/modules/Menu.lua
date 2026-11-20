@@ -345,13 +345,89 @@ function Create(keyBinding)
                 end
                 return true
             end
-            local resizePanelOutline=Theme.RoundedPanel(state.panel,L,width,height,C.canvas,C.border,true)
-            local function SetPanelSize(panelWidth,panelHeight,minHeight,minWidth)
+            state.panel:SetSolidColor(C.transparent)
+            local panelBackdrop=Surface(state.panel,0,0,width,height,C.canvas)
+            panelBackdrop.Depth:Set(function() return state.panel.Depth() end)
+            panelBackdrop:DisableHitTest()
+            local resizePanelOutline=Theme.RoundedPanel(panelBackdrop,L,width,height,C.canvas,C.border,true)
+            local function SetPanelBackdrop(columns)
+                if not columns then
+                    if state.panelParts then
+                        for _,part in ipairs(state.panelParts) do part:Hide() end
+                        for _,frame in ipairs(state.columnFrames) do frame.control:Hide() end
+                        state.columnJoin:Hide()
+                        state.columnTop:Hide()
+                        state.panel:EnableHitTest()
+                        if state.content then state.content:EnableHitTest() end
+                        panelBackdrop:Show()
+                    end
+                    return
+                end
+                if not state.panelParts then
+                    state.panelParts={}
+                    for index=1,3 do
+                        local part=Surface(state.panel,0,0,1,1,C.transparent)
+                        part.HandleEvent=function(self,event) return state.panel:HandleEvent(event) end
+                        state.panelParts[index]=part
+                    end
+                    state.columnFrames={}
+                    for index=1,2 do
+                        local frame=Surface(state.panel,0,0,width,height,C.canvas)
+                        frame.Depth:Set(function() return state.panel.Depth()-3 end)
+                        frame:DisableHitTest()
+                        state.columnFrames[index]={control=frame,resize=Theme.RoundedPanel(frame,L,width,height,C.canvas,C.border,true)}
+                    end
+                    state.columnJoin=Surface(state.panel,0,0,1,1,C.canvas)
+                    state.columnTop=Surface(state.panel,0,0,1,1,C.border)
+                    state.columnJoin:DisableHitTest()
+                    state.columnTop:DisableHitTest()
+                end
+                panelBackdrop:Hide()
+                state.panel:DisableHitTest()
+                if state.content then state.content:DisableHitTest() end
+                local split=24+columns.split
+                local headerHeight=100
+                local bottom=state.panelHeight-headerHeight
+                local leftHeight=math.min(bottom,columns.left+24)
+                local rightHeight=math.min(bottom,columns.right+24)
+                L(state.panelParts[1]):AtLeftTopIn(state.panel,0,0):Width(state.panelWidth):Height(headerHeight)
+                L(state.panelParts[2]):AtLeftTopIn(state.panel,0,headerHeight):Width(split):Height(leftHeight)
+                L(state.panelParts[3]):AtLeftTopIn(state.panel,split,headerHeight):Width(state.panelWidth-split):Height(rightHeight)
+                local left,right=state.columnFrames[1],state.columnFrames[2]
+                local rightWidth=state.panelWidth-split
+                L(left.control):AtLeftTopIn(state.panel,0,0):Width(split):Height(headerHeight+leftHeight)
+                L(right.control):AtLeftTopIn(state.panel,split,0):Width(rightWidth):Height(headerHeight+rightHeight)
+                left.resize(split,headerHeight+leftHeight)
+                right.resize(rightWidth,headerHeight+rightHeight)
+                left.control:Show()
+                right.control:Show()
+                -- Cover the internal edges where the two rounded surfaces share a header and body.
+                local joinHalf=2*metrics.panelRadius
+                L(state.columnJoin):AtLeftTopIn(state.panel,split-joinHalf,1):Width(2*joinHalf)
+                    :Height(headerHeight+math.min(leftHeight,rightHeight)-metrics.panelRadius-1)
+                L(state.columnTop):AtLeftTopIn(state.panel,split-joinHalf,0):Width(2*joinHalf):Height(1)
+                state.columnJoin:Show()
+                state.columnTop:Show()
+                for _,part in ipairs(state.panelParts) do part:Show() end
+            end
+            local function SetPanelSize(panelWidth,panelHeight,minHeight,minWidth,columns)
                 state.panelWidth=math.max(minWidth or metrics.corePanelWidth,math.min(width,panelWidth or width))
                 state.panelHeight=math.max(minHeight or 400,math.min(height,panelHeight or height))
                 panelPosition.width=state.panelWidth
                 L(state.panel):Width(state.panelWidth):Height(state.panelHeight)
+                L(panelBackdrop):Width(state.panelWidth):Height(state.panelHeight)
                 resizePanelOutline(state.panelWidth,state.panelHeight)
+                SetPanelBackdrop(columns)
+                -- The scroll viewport must follow the panel: an oversized container
+                -- swallows clicks in the empty band below a shrunk window.
+                if state.content and state.contentInset then L(state.content):AtLeftTopIn(state.panel,state.contentInset,88):Width(state.panelWidth-state.contentInset*2):Height(state.panelHeight-112) end
+                if state.inlineHost then
+                    L(state.inlineHost):Width(state.panelWidth-48)
+                    if state.inlineEditor and state.inlineEditor.OnResize then
+                        local resized,resizeError=pcall(state.inlineEditor.OnResize,state.inlineEditor,state.panelWidth-48,state.panelHeight-124)
+                        if not resized then WARN('[Claret] Inline resize failed: '..tostring(resizeError)) end
+                    end
+                end
                 if state.headerDivider then L(state.headerDivider):Width(state.panelWidth-48) end
                 if state.panelClose then L(state.panelClose.control):AtLeftTopIn(state.panel,state.panelWidth-64,16) end
                 if state.panelDragHeader then L(state.panelDragHeader):Width(state.panelWidth-72) end
@@ -364,6 +440,9 @@ function Create(keyBinding)
                 SetPanelSize(state.panelWidth,value)
             end
             state.panelDragHeader=DragHeader(state.panel,width-72,panelPosition)
+            local function SetPanelWidth(value)
+                SetPanelSize(value or width,state.panelHeight)
+            end
             state.title=Text(state.panel,'',24,20)
             state.title:SetFont(Theme.Fonts.heading,metrics.title*ratio)
             state.panelClose=Button(state.panel,'×',width-64,16,40,function() closePanel() end,{})
@@ -428,6 +507,7 @@ function Create(keyBinding)
                     state.selected=nil; state.accessory=action; memory.section=nil
                     SetPanelSize(384,232,232,384)
                     state.title:SetText(action.titleKey and T(action.titleKey) or action.title or '')
+                    state.contentInset=nil
                     state.content=Group(state.panel)
                     state.content.Depth:Set(function() return state.panel.Depth()+1 end)
                     L(state.content):AtLeftTopIn(state.panel,0,88):Width(state.panelWidth):Height(state.panelHeight-88)
@@ -441,12 +521,13 @@ function Create(keyBinding)
             end
             state.Render=function()
                 Unbind(); Focus(nil); state.contentItems={}
-                if state.content then state.content:Destroy() end
+                if state.content then state.content:Destroy(); state.content=nil end
                 local section=sections[state.selected]
                 SetPanelSize(section and section.id=='core' and metrics.corePanelWidth or width,
                     section and section.id=='core' and metrics.corePanelHeight or height)
                 local compactCore=section and section.id=='core'
                 local contentInset=compactCore and 16 or 24
+                state.contentInset=contentInset
                 state.content=Group(state.panel); L(state.content):AtLeftTopIn(state.panel,contentInset,88):Width(state.panelWidth-contentInset*2):Height(state.panelHeight-112)
                 state.content.Depth:Set(function() return state.panel.Depth()+1 end)
                 if not section then Text(state.content,T('core.menu.no_sections'),0,0,C.muted); return end
@@ -725,8 +806,11 @@ function Create(keyBinding)
                         state.inlineHost.Depth:Set(function() return state.panel.Depth()+1 end)
                         state.inlineHost:DisableHitTest()
                         L(state.inlineHost):AtLeftTopIn(state.panel,24,100):Width(1080):Height(984)
-                        local success,openError=pcall(function() state.inlineEditor=section.inline(state.inlineHost,{scale=scale,setHeight=function(inlineHeight)
+                        local success,openError=pcall(function() state.inlineEditor=section.inline(state.inlineHost,{scale=scale,setWidth=function(inlineWidth) SetPanelWidth(inlineWidth and (48+inlineWidth) or width) end,setHeight=function(inlineHeight)
                                 SetPanelHeight(inlineHeight and (100+inlineHeight+24) or height)
+                            end,setSize=function(inlineWidth,inlineHeight,columns)
+                                SetPanelSize(inlineWidth+48,inlineHeight+124,124,48,columns)
+                                L(state.inlineHost):Height(state.panelHeight-124)
                             end}) end)
                         if not success or not state.inlineEditor then
                             WARN('[Claret] Inline editor failed: '..tostring(openError))

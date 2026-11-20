@@ -333,10 +333,11 @@ print('PASS: immediate key persistence, capture/retry/Escape, loaded key caps, d
 
 -- The separate Hotbuild entry point registers settings without opening its runtime/UI.
 local inlineMenu=env.Create()
-local embedded,mayLeave,inlineHost,pendingLeave,resizeInline
+local embedded,mayLeave,inlineHost,pendingLeave,resizeInline,fitInline
 inlineMenu:Register({id='core',title='Small'})
 inlineMenu:Register({id='hotbuild',title='Large',inline=function(host,layout)
     inlineHost=host; resizeInline=layout.setHeight; assert(layout.scale>0)
+    fitInline=layout.setSize
     embedded=control(host)
     embedded.CanLeave=function(intent,continuation)
         if mayLeave then return true end
@@ -355,6 +356,37 @@ local panel=inlineHost.parent
 -- The wide Hotbuild section keeps the full panel metrics (Menu.lua:446-447).
 assert(panel.Width()==theme.Metrics.panelWidth and panel.Height()==theme.Metrics.panelHeight and not panel.hidden)
 resizeInline(626); assert(panel.Height()==750, 'inline editor can resize its own panel')
+fitInline(224,44)
+assert(panel.Width()==272 and panel.Height()==168 and inlineHost.Width()==224 and inlineHost.Height()==44,
+    'compact window and inline host fit a single navigation row')
+fitInline(624,300)
+assert(panel.Width()==672 and panel.Height()==424 and inlineHost.Width()==624 and inlineHost.Height()==300,
+    'window and inline host grow together for a taller settings page')
+fitInline(624,300,{split=232,left=44,right=300})
+local leftBody,rightBody
+for _,item in ipairs(controls) do
+    if item.parent==panel and item.y==100 and item.HandleEvent then
+        if item.x==0 then leftBody=item end
+        if item.x==256 then rightBody=item end
+    end
+end
+assert(panel.hitTestDisabled and leftBody and rightBody and leftBody.Height()==68 and rightBody.Height()==324,
+    'only the visible parts of independently sized columns catch input')
+local decoratedFrames={}
+for _,item in ipairs(controls) do
+    if item.texture and item.texture:find('panel%-shadow') and item.parent.parent==panel and not item.parent.hidden then
+        decoratedFrames[item.parent]=true
+    end
+end
+local decoratedCount=0
+for frame in pairs(decoratedFrames) do
+    assert(frame.hitTestDisabled, 'column decoration must pass pointer input through')
+    decoratedCount=decoratedCount+1
+end
+assert(decoratedCount==2, 'both columns retain themed shadows while expanded')
+fitInline(224,44)
+assert(leftBody.hidden and rightBody.hidden and not panel.hitTestDisabled,
+    'collapsing restores the regular rectangular panel')
 mayLeave=false; click('Small'); assert(not embedded.destroyed)
 local cancelNavigation=pendingLeave; assert(cancelNavigation); cancelNavigation(false)
 click('Small'); local saveNavigation=pendingLeave; assert(saveNavigation)
