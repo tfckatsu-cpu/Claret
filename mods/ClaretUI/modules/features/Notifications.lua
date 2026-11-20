@@ -7,6 +7,7 @@ local hqLayers = {
 }
 local hqFactions = { [0] = 'ueb', [1] = 'uab', [2] = 'urb', [3] = 'xsb' }
 local icons = '/mods/ClaretUI/textures/notifications/'
+local factoryFrames = { land = 'land', air = 'air', sea = 'sea', amph = 'amph' }
 
 local function NukeIcon(unit)
     if unit:IsInCategory('STRUCTURE') then return icons .. 'nuke-silo.png' end
@@ -14,16 +15,20 @@ local function NukeIcon(unit)
     return nil
 end
 
+local function UnitIcon(id, frame)
+    local UI = import('/lua/ui/uiutil.lua')
+    local dir = '/icons/units/'
+    local icon = UI.UIFile(dir .. id .. '_icon.dds', true)
+    if not icon or not DiskGetFileInfo(icon) then return nil end
+    return icon, UI.UIFile(dir .. frame .. '_up.dds')
+end
+
 local function HQIcon(army, tech, layer)
     local armies = GetArmiesTable()
     local data = armies and armies.armiesTable and armies.armiesTable[army]
     local faction = data and hqFactions[data.faction]
     if not faction then return nil end
-    local UI = import('/lua/ui/uiutil.lua')
-    local dir = '/icons/units/'
-    local icon = UI.UIFile(dir .. faction .. '0' .. tech .. layer.suffix .. '_icon.dds', true)
-    if not icon or not DiskGetFileInfo(icon) then return nil end
-    return icon, UI.UIFile(dir .. layer.frame .. '_up.dds')
+    return UnitIcon(faction .. '0' .. tech .. layer.suffix, layer.frame)
 end
 
 local function Owned(unit, army)
@@ -39,6 +44,7 @@ function Start(self, scope, isReplay, options)
     local builders = {}
     local sampling = false
     local nextSample = 0
+    local nukeEnabled, smdEnabled
 
     local function OnEnhancements(messages)
         if GetFocusArmy() ~= army then return end
@@ -50,6 +56,13 @@ function Start(self, scope, isReplay, options)
                     if hq then
                         local icon, frame = HQIcon(army, tech, hq)
                         display:Show('hq', 'hq_' .. layer, tech, icon, frame)
+                    end
+                elseif message.category == 'experimentals' and options.notificationsExperimental:Get() then
+                    local bp = __blueprints[message.source]
+                    if bp then
+                        local general = bp.General or {}
+                        local icon, frame = UnitIcon(message.source, factoryFrames[general.Icon] or 'land')
+                        display:Show('experimental', nil, general.UnitName or bp.Description or message.source, icon, frame)
                     end
                 elseif message.id and options.notificationsACU:Get() and not string.find(message.source, 'Remove', 1, true) then
                     local unit = GetUnitById(message.id)
@@ -76,9 +89,14 @@ function Start(self, scope, isReplay, options)
     end
 
     local function Discover(unit)
-        if Owned(unit, army) and unit:IsInCategory('NUKE') then
-            local id = unit:GetEntityId()
-            if not watched[id] then watched[id] = { unit = unit } end
+        if not Owned(unit, army) then return end
+        local id = unit:GetEntityId()
+        if watched[id] then return end
+        local nuke = unit:IsInCategory('NUKE')
+        local smd = unit:IsInCategory('ANTIMISSILE') and unit:IsInCategory('SILO')
+            and unit:IsInCategory('STRUCTURE') and unit:IsInCategory('TECH3')
+        if nuke or smd then
+            watched[id] = { unit = unit, nuke = nuke, smd = smd }
         end
     end
 
@@ -128,10 +146,10 @@ function Start(self, scope, isReplay, options)
             local unit = state.unit
             if not Owned(unit, army) then
                 watched[id] = nil
-            else
+            elseif (state.nuke and nukeEnabled) or (state.smd and smdEnabled) then
                 local missiles = unit:GetMissileInfo()
                 local count = missiles and missiles.nukeSiloStorageCount
-                if type(count) == 'number' and count >= 0 then
+                if state.nuke and nukeEnabled and type(count) == 'number' and count >= 0 then
                     local previous = state.count
                     state.count = count
                     if previous and count > previous then
@@ -139,6 +157,22 @@ function Start(self, scope, isReplay, options)
                     end
                 else
                     state.count = nil
+                end
+                local interceptors = missiles and missiles.tacticalSiloStorageCount
+                if state.smd and smdEnabled and type(interceptors) == 'number' and interceptors >= 0 then
+                    local previous = state.interceptors
+                    state.interceptors = interceptors
+                    if previous and interceptors > previous then
+                        local bp = unit:GetBlueprint()
+                        local icon, frame
+                        if bp and bp.BlueprintId then
+                            local general = bp.General or {}
+                            icon, frame = UnitIcon(bp.BlueprintId, factoryFrames[general.Icon] or 'land')
+                        end
+                        display:Show('smd', nil, { added = interceptors - previous, stock = interceptors }, icon, frame)
+                    end
+                else
+                    state.interceptors = nil
                 end
             end
         end
@@ -154,11 +188,19 @@ function Start(self, scope, isReplay, options)
     end
 
     local function UpdateSampling()
-        if not options.notificationsNuke:Get() or GetFocusArmy() ~= army then
+        nukeEnabled = options.notificationsNuke:Get()
+        smdEnabled = options.notificationsSmd:Get()
+        if not (nukeEnabled or smdEnabled) or GetFocusArmy() ~= army then
             StopSampling()
             return
         end
-        if sampling then return end
+        if sampling then
+            for _, state in pairs(watched) do
+                if not nukeEnabled then state.count = nil end
+                if not smdEnabled then state.interceptors = nil end
+            end
+            return
+        end
         sampling = true
         nextSample = 0
         OnUnitData(UnitData)
@@ -170,6 +212,7 @@ function Start(self, scope, isReplay, options)
 
     scope:Defer(StopSampling)
     scope:Bind(options.notificationsNuke.OnChanged, UpdateSampling)
+    scope:Bind(options.notificationsSmd.OnChanged, UpdateSampling)
     scope:Defer(function()
         RemoveOnSyncHashedCallback('EnhanceMessage', identifier)
         RemoveOnSyncHashedCallback('FocusArmyChanged', identifier)

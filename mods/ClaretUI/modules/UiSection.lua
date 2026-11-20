@@ -160,6 +160,8 @@ function Create(parent, layout, options, coreOptions)
                 { labelKey = 'claretui.notifications.hq_enabled', option = options.notificationsHQ, height = M.coreRowHeight },
                 { labelKey = 'claretui.notifications.acu_enabled', option = options.notificationsACU, height = ROW_HEIGHT },
                 { labelKey = 'claretui.notifications.nuke_enabled', option = options.notificationsNuke, height = ROW_HEIGHT },
+                { labelKey = 'claretui.notifications.experimental_enabled', option = options.notificationsExperimental, height = ROW_HEIGHT },
+                { labelKey = 'claretui.notifications.smd_enabled', option = options.notificationsSmd, height = ROW_HEIGHT },
                 { labelKey = 'claretui.notifications.mode', option = options.notificationsMode, kind = 'choice', height = ROW_HEIGHT,
                     choices = {
                         { value = 'compact', labelKey = 'claretui.notifications.mode_compact', width = 112 },

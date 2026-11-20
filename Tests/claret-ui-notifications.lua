@@ -36,7 +36,11 @@ env.GetFocusArmy = function() return army end
 env.GetSystemTimeSeconds = function() return time end
 env.GetSelectedUnits = function() return selected end
 env.GetArmiesTable = function() return { armiesTable = { { faction = 2 } } } end
-env.DiskGetFileInfo = function(path) return path == 'gun.dds' or path == '/icons/units/urb0303_icon.dds' end
+env.__blueprints = { ueb2401 = { General = { UnitName = 'Mavor', Icon = 'land' } } }
+env.DiskGetFileInfo = function(path)
+    return path == 'gun.dds' or path == '/icons/units/urb0303_icon.dds' or path == '/icons/units/ueb2401_icon.dds'
+        or path == '/icons/units/ueb4302_icon.dds'
+end
 env.AddOnSyncHashedCallback = function(callback, category) syncCallbacks[category] = callback end
 env.RemoveOnSyncHashedCallback = function(category) syncCallbacks[category] = nil end
 env.import = function(path)
@@ -75,7 +79,8 @@ local function Option(initial)
     end
     return option
 end
-local options = { notificationsHQ = Option(true), notificationsACU = Option(true), notificationsNuke = Option(false) }
+local options = { notificationsHQ = Option(true), notificationsACU = Option(true), notificationsNuke = Option(false),
+    notificationsExperimental = Option(false), notificationsSmd = Option(false) }
 local function Advance()
     time = time + 1
     if beat then beat() end
@@ -137,6 +142,37 @@ Advance()
 assert(#alerts == 6, 'A synced ID should still resolve when its handle arrives after the first sample')
 assert(alerts[6].kind == 'nuke' and not alerts[6].icon, 'A surface ship should keep a text-only alert')
 
+options.notificationsExperimental:Set(true)
+syncCallbacks.EnhanceMessage({
+    { army = 1, category = 'experimentals', trigger = 'started', source = 'ueb2401' },
+    { army = 2, category = 'experimentals', trigger = 'completed', source = 'ueb2401' },
+    { army = 1, category = 'experimentals', trigger = 'completed', source = 'ueb2401' },
+})
+assert(#alerts == 7 and alerts[7].value == 'Mavor' and alerts[7].icon == '/icons/units/ueb2401_icon.dds',
+    'An own completed experimental should show its name and thumbnail')
+
+options.notificationsNuke:Set(false)
+local smd = Unit(16, 1, { ANTIMISSILE = true, SILO = true, STRUCTURE = true, TECH3 = true })
+smd.GetBlueprint = function() return { BlueprintId = 'ueb4302', General = { Icon = 'land' } } end
+env.UnitData[16] = {}
+smd.tactical = 1
+options.notificationsSmd:Set(true)
+Advance()
+assert(#alerts == 7, 'SMD should establish a baseline even when nuke alerts are disabled')
+smd.tactical = 2
+Advance()
+assert(#alerts == 8 and alerts[8].kind == 'smd' and alerts[8].value.added == 1 and alerts[8].value.stock == 2,
+    'SMD should announce additional interceptors even with existing stock')
+assert(alerts[8].icon == '/icons/units/ueb4302_icon.dds' and alerts[8].frame == '/icons/units/land_up.dds',
+    'SMD should use the charged installation thumbnail and construction frame')
+smd.tactical = 0
+Advance()
+assert(#alerts == 8, 'Firing interceptors should not show a readiness alert')
+smd.tactical = 3
+Advance()
+assert(#alerts == 9 and alerts[9].value.added == 3 and alerts[9].value.stock == 3,
+    'Updates between samples should show the net increase and stock')
+
 army = 2
 syncCallbacks.FocusArmyChanged()
 assert(not beat and #alerts == 0, 'Leaving the original army should clear alerts and stop sampling')
@@ -144,7 +180,7 @@ army = 1
 syncCallbacks.FocusArmyChanged()
 Advance()
 assert(#alerts == 0, 'Returning to the original army should establish new baselines')
-options.notificationsNuke:Set(false)
+options.notificationsSmd:Set(false)
 assert(not beat and not syncCallbacks.UnitData and not next(selectionObservers), 'Disabling missiles should remove their listeners')
 for index = #cleanups, 1, -1 do cleanups[index]() end
 assert(not next(syncCallbacks), 'Match teardown should remove all sync listeners')

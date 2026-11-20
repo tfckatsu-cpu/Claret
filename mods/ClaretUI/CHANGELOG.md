@@ -1,5 +1,11 @@
 # История изменений
 
+## Сборка 20261120-91 — 2026-11-20
+- Show the charged SMD installation's construction thumbnail in its notification.
+
+## Сборка 20261120-90 — 2026-11-20
+- Add own experimental completion and SMD interceptor stock notifications.
+
 ## Сборка 20261120-89 — 2026-11-20
 - Correct Russian gender and number agreement in commander upgrade notifications.
 

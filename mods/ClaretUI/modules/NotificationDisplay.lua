@@ -54,7 +54,7 @@ function Create(scope, options)
             background = Bitmap(card)
             accent = Bitmap(card)
             background:SetSolidColor(C.surface)
-            accent:SetSolidColor(event.kind == 'nuke' and C.warning or C.accent)
+            accent:SetSolidColor((event.kind == 'nuke' or event.kind == 'smd') and C.warning or C.accent)
             parts = { background, accent }
         end
         if event.icon then
@@ -104,6 +104,10 @@ function Create(scope, options)
         local text
         if event.kind == 'acu' then
             text = UpgradeMessage(event.value)
+        elseif event.kind == 'smd' then
+            text = string.format(Text('smd'), event.value.added, event.value.stock)
+        elseif event.kind == 'experimental' then
+            text = string.format(Text('experimental'), LOC(event.value))
         else
             text = Text(event.textKey or event.kind)
             if event.value then text = string.format(text, event.value) end
@@ -228,7 +232,8 @@ function Create(scope, options)
         Fill()
     end)
     scope:Bind(options.notificationsScale.OnChanged, Refresh)
-    for kind, option in pairs({ hq = options.notificationsHQ, acu = options.notificationsACU, nuke = options.notificationsNuke }) do
+    for kind, option in pairs({ hq = options.notificationsHQ, acu = options.notificationsACU,
+        nuke = options.notificationsNuke, experimental = options.notificationsExperimental, smd = options.notificationsSmd }) do
         local eventKind = kind
         scope:Bind(option.OnChanged, function(_, enabled)
             if not enabled then Dismiss(eventKind) end

@@ -2,7 +2,7 @@
 
 Snapshot of decisions and versions. The map of the knowledge base is `README.md`; the state of the current stage is `../Stage/stage-1-status.md`.
 
-Local versions checked on 2026-11-20: Claret Core 0.10.27 (mod 46, build 20261120-59), Claret UI 0.2.86 (mod 89, build 20261120-89), and Claret Hotbuild 0.10.49 (mod 77, build 20261119-159). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840 is the reference game snapshot. See the stage status for in-game confirmation.
+Local versions checked on 2026-11-20: Claret Core 0.10.27 (mod 46, build 20261120-59), Claret UI 0.2.88 (mod 91, build 20261120-91), and Claret Hotbuild 0.10.49 (mod 77, build 20261119-159). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840 is the reference game snapshot. See the stage status for in-game confirmation.
 
 ## Product shape
 

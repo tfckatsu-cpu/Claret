@@ -1,4 +1,4 @@
-# Claret UI — test build 0.2.86
+# Claret UI — test build 0.2.88
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
@@ -37,11 +37,16 @@ Do not run the original mod next to the equivalent Claret UI feature.
 
 The project owner confirmed the 0.2.86 build in FAF on 2026-11-20. Individual scenarios were not specified.
 
-Under **F10 → Claret → UI → Notifications**, enable each event independently. All three switches start off. **Compact** is the default display. It places up to three single-line cards above the lower HUD for four seconds each and saves a 50–200% size setting. **Center** shows one line at a time directly over the map, with a slide and fade lasting 2.6 seconds in total. Both use the FAF UI scale and pass pointer input through to the game. The card grows to fit the complete line and reduces the font size when the available width is too small.
+On 2026-11-20 the project owner confirmed SMD notifications in FAF, then confirmed 0.2.88 with the SMD thumbnail. Experimental completion and SMD discovery without selection remain without separate in-game confirmation.
+
+Under **F10 → Claret → UI → Notifications**, enable each event independently. All five switches start off. **Compact** is the default display. It places up to three single-line cards above the lower HUD for four seconds each and saves a 50–200% size setting. **Center** shows one line at a time directly over the map, with a slide and fade lasting 2.6 seconds in total. Both use the FAF UI scale and pass pointer input through to the game. The card grows to fit the complete line and reduces the font size when the available width is too small.
 
 - **HQ upgrade completed** uses the stock FAF completion signal for the player's land, air, and naval T2/T3 HQs. The notification uses the stock construction thumbnail and button frame. The event supplies the HQ tier and factory type. The thumbnail uses the player's faction because the event omits the completed unit ID and faction. An HQ built with another faction's technology may therefore show a thumbnail for the player's faction.
 - **Commander upgrade completed** uses the player's ACU completion signal and shows a short EN/RU message with the installed enhancement's game icon. Messages are keyed by enhancement ID, with ACU blueprint overrides where needed. Russian messages agree with the upgrade label in gender and number. Seraphim-specific and other unmapped upgrades use their localized game names in a neutral message. If the game lacks a matching texture, the alert shows only the message.
 - **Strategic missile ready** uses increases in a known, owned launcher's strategic ammunition, such as `0 → 1` or `1 → 2`. All increases use the same brief readiness message. Launch structures use the silo icon and submarines use the icon with waves. Other launchers show text alone. First readings establish a baseline. The feature uses synced unit IDs, read-only selection observations and selected builders' targets to discover launchers. Ammo is sampled every 0.5 seconds while the switch is on. Completion and launch between samples can cancel out in the count. Coverage of launchers that never appear in those sources depends on FAF's unit sync and awaits live verification.
+
+- **Experimental completed** uses the stock FAF completion signal for the player's experimentals. It shows the localized blueprint name and a construction thumbnail when available.
+- **SMD interceptor ready** shows every observed increase in a known, owned T3 strategic defense installation's stock, including rearming after firing. The alert shows the gain, the resulting count and the installation's construction thumbnail when available. Detection uses the same discovery and sampling as strategic missiles. Coverage and net-count limitations apply to both.
 
 The feature is active during a player's own live army view. Its FAF notification subscriptions and missile watcher are scoped to the match. Event sources feed the same display, which owns card timing and animation. Strategic Missile Construction Alerts v2 was consulted for behaviour on 2026-11-20. Claret UI uses its own code and the shared Claret theme.
 

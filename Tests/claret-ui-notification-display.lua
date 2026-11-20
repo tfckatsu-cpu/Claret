@@ -69,7 +69,8 @@ local function Option(value)
     return option
 end
 local options = { notificationsMode = Option('compact'), notificationsScale = Option(100),
-    notificationsHQ = Option(true), notificationsACU = Option(true), notificationsNuke = Option(true) }
+    notificationsHQ = Option(true), notificationsACU = Option(true), notificationsNuke = Option(true),
+    notificationsExperimental = Option(true), notificationsSmd = Option(true) }
 assert(loadfile('../mods/ClaretUI/modules/NotificationDisplay.lua', 't', env))()
 local display = env.Create(scope, options)
 local root = children[1]
@@ -171,5 +172,11 @@ assert(Parts(Cards()[1])[1].text == 'Билли нюка — готова.', 'Th
 display:Clear()
 display:Show('acu', nil, { id = 'NaniteTorpedoTube', unitId = 'url0001', name = 'Torpedo launcher' })
 assert(Parts(Cards()[1])[1].text == 'Торпеды — готовы.', 'Torpedoes should use the plural form')
+display:Clear()
+display:Show('smd', nil, { added = 1, stock = 3 })
+assert(Parts(Cards()[1])[1].text == 'СМД +1 · зарядов 3', 'The SMD line should show both counts')
+display:Clear()
+display:Show('experimental', nil, 'Мавор')
+assert(Parts(Cards()[1])[1].text == 'Построено «Мавор».', 'Experimental names should appear in the completion message')
 
 print('PASS: Claret UI notification display scales, animates, and expires each card independently')
