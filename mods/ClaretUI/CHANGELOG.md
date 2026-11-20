@@ -1,5 +1,41 @@
 # История изменений
 
+## Сборка 20261120-103 — 2026-11-20
+- Add an InfoShare list position lock that passes mouse input through to the game.
+
+## Сборка 20261120-102 — 2026-11-20
+- Keep InfoShare progress fill independent of background transparency.
+
+## Сборка 20261120-101 — 2026-11-20
+- Allocate InfoShare list rows only for visible work.
+
+## Сборка 20261120-100 — 2026-11-20
+- Keep InfoShare results for 1.5 seconds before fading.
+
+## Сборка 20261120-99 — 2026-11-20
+- Keep unused InfoShare rows and icons hidden during fade transitions.
+
+## Сборка 20261120-98 — 2026-11-20
+- Fade InfoShare map labels and the work list in and out.
+
+## Сборка 20261120-97 — 2026-11-20
+- Share InfoShare work positions automatically and keep display modes and sliders in the main settings.
+
+## Сборка 20261120-96 — 2026-11-20
+- Apply InfoShare appearance settings immediately and resize existing map labels in place.
+
+## Сборка 20261120-95 — 2026-11-20
+- Add InfoShare list thumbnails and commander upgrade icons, group advanced settings, and share work automatically with allies.
+
+## Сборка 20261120-94 — 2026-11-20
+- Correct InfoShare row fill, add independent scales and background transparency, and improve discovery of unselected experimentals.
+
+## Сборка 20261120-93 — 2026-11-20
+- Use outlined white map labels and independent experimental and SMD icons. Fill the work-list row background by progress.
+
+## Сборка 20261120-92 — 2026-11-20
+- Add InfoShare work list and world labels with independent allied sharing controls.
+
 ## Сборка 20261120-91 — 2026-11-20
 - Show the charged SMD installation's construction thumbnail in its notification.
 

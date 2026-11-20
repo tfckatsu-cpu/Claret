@@ -154,6 +154,29 @@ function Create(parent, layout, options, coreOptions)
             },
         },
         {
+            labelKey = 'claretui.infoshare.title',
+            descriptionKey = 'claretui.infoshare.description',
+            entries = {
+                { labelKey = 'claretui.infoshare.List', option = options.infoShareList, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.World', option = options.infoShareWorld, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Locked', option = options.infoShareLocked, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Scale', option = options.infoShareScale, kind = 'slider', height = 62 },
+                { labelKey = 'claretui.infoshare.Transparency', option = options.infoShareTransparency,
+                    kind = 'slider', height = 62, min = 0, max = 100, defaultValue = 0 },
+                { labelKey = 'claretui.infoshare.LabelScale', option = options.infoShareLabelScale, kind = 'slider', height = 62 },
+                { labelKey = 'claretui.selection.advanced', kind = 'disclosure', height = ROW_HEIGHT },
+            },
+            advancedEntries = {
+                { labelKey = 'claretui.infoshare.ExperimentalIcon', option = options.infoShareExperimentalIcon, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.SmdIcon', option = options.infoShareSmdIcon, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Own', option = options.infoShareOwn, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Allies', option = options.infoShareAllies, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Smd', option = options.infoShareSmd, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Experimental', option = options.infoShareExperimental, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.Acu', option = options.infoShareAcu, height = ROW_HEIGHT },
+            },
+        },
+        {
             labelKey = 'claretui.notifications.title',
             descriptionKey = 'claretui.notifications.description',
             entries = {

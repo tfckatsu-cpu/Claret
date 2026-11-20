@@ -2,7 +2,7 @@
 
 Snapshot of decisions and versions. The map of the knowledge base is `README.md`; the state of the current stage is `../Stage/stage-1-status.md`.
 
-Local versions checked on 2026-11-20: Claret Core 0.10.27 (mod 46, build 20261120-59), Claret UI 0.2.88 (mod 91, build 20261120-91), and Claret Hotbuild 0.10.49 (mod 77, build 20261119-159). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840 is the reference game snapshot. See the stage status for in-game confirmation.
+Local versions checked on 2026-11-20: Claret Core 0.10.27 (mod 46, build 20261120-59), Claret UI 0.2.100 (mod 103, build 20261120-103), and Claret Hotbuild 0.10.49 (mod 77, build 20261119-159). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840 is the reference game snapshot. See the stage status for in-game confirmation.
 
 ## Product shape
 
@@ -13,6 +13,7 @@ Local versions checked on 2026-11-20: Claret Core 0.10.27 (mod 46, build 2026112
 - The menu is a compact launcher plus a standard panel; the Core section is compact (552×408), Hotbuild keeps the standard size. Hotbuild has three pages: Keyboard, Hotbuild, Contexts.
 - The quick-repeat window and its gear were removed in 0.10.38; the per-row `quickRepeat` field remains as legacy saved data.
 - **Selection Info** keeps its English name in both locales. It uses Core's FAF selection feed and suspends Core's composition panel while active. See the [Claret UI README](../mods/ClaretUI/README.md#selection-info) for the display and saved controls.
+- **InfoShare** tracks SMD construction, experimentals, and ACU upgrades. Work and known positions go to connected allies while Claret UI is enabled, independent of display settings. Stock Notify provides no SMD construction event. See the [Claret UI README](../mods/ClaretUI/README.md#infoshare).
 
 ## Hotbuild data model
 

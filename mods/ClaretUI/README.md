@@ -1,6 +1,14 @@
-# Claret UI — test build 0.2.88
+# Claret UI — test build 0.2.100
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
+
+## InfoShare
+
+Use F10 → Claret → UI → InfoShare to toggle the work list and labels above units independently. InfoShare tracks SMD construction, experimental construction and commander upgrades. SMD interceptor readiness remains a separate notification. The list shows up to five rows and scrolls for additional work. The list and map labels fade in and out. Progress fill remains visible at every background transparency setting. The list size, background transparency and map label size can be set independently. Drag the header to save the list position. Locking the list makes it pass clicks and wheel input through to the game. Map labels use outlined white text, with separate optional unit icons for experimentals and SMD. Active work is listed first, and results remain for 1.5 seconds before fading out.
+
+Work in all three categories is shared automatically with connected allies while Claret UI is enabled, including with both displays off. The positions of shared work are included when available. The list shows unit and upgrade icons. The display toggles, position lock and appearance sliders are in the main settings, with filters and map icon toggles under Advanced. Stock FAF Notify can supply experimental and commander events for allies without InfoShare. Stock experimental events are grouped by blueprint because they have no per-unit identifier. Stock Notify provides no SMD construction event. An unfinished structure that disappears is marked interrupted. Stale snapshots expire without implying cancellation.
+
+Reference: installed TeamInfo Share v11 by 4z0t and FAF lua.nx2, checked 2026-11-20.
 
 ## Features
 
