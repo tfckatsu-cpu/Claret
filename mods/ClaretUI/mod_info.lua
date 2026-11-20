@@ -1,11 +1,11 @@
 name = 'Claret UI (Test)'
 uid = 'claret-ui-001'
-version = 83
-description = 'Claret UI: ACU health, selection info, unit range previews, mex controls, and minimap settings. Requires Claret Core and ReUI.'
+version = 89
+description = 'Claret UI: notifications, ACU health, selection info, unit range previews, mex controls, and minimap settings. Requires Claret Core and ReUI.'
 author = 'Claret Project'
 url = ''
 selectable = true
 enabled = true
 exclusive = false
 ui_only = true
-ReUI = 'ClaretUI=0.2.80'
+ReUI = 'ClaretUI=0.2.86'

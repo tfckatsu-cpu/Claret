@@ -6,6 +6,7 @@ local features = {
     { id = 'selection', module = '/mods/ClaretUI/modules/features/SelectionHud.lua' },
     { id = 'mexes', module = '/mods/ClaretUI/modules/features/Mexes.lua', option = 'mexPanel' },
     { id = 'allRings', module = '/mods/ClaretUI/modules/features/AllRings.lua', option = 'allRings' },
+    { id = 'notifications', module = '/mods/ClaretUI/modules/features/Notifications.lua' },
 }
 
 local service = {}

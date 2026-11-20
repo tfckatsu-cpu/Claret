@@ -1,5 +1,23 @@
 # История изменений
 
+## Сборка 20261120-89 — 2026-11-20
+- Correct Russian gender and number agreement in commander upgrade notifications.
+
+## Сборка 20261120-88 — 2026-11-20
+- Use the project owner's missile icons for strategic ammo increases at silos and on submarines.
+
+## Сборка 20261120-87 — 2026-11-20
+- Use short EN/RU labels for common and selected faction-specific commander upgrades.
+
+## Сборка 20261120-86 — 2026-11-20
+- Fit complete notification lines to the viewport and show framed construction thumbnails for HQs.
+
+## Сборка 20261120-85 — 2026-11-20
+- Use single-line alerts with stock HQ and commander enhancement icons. Remove the center alert background.
+
+## Сборка 20261120-84 — 2026-11-20
+- Add compact and animated center notifications for own HQ and ACU upgrades and strategic missile stock increases.
+
 ## Сборка 20261120-83 — 2026-11-20
 - Use flat blue, green, red and yellow faction marks without the brightness boost.
 

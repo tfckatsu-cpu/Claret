@@ -14,6 +14,7 @@ Current versions and pending FAF checks are listed in `quick-reference.md` and `
 | Colours, fonts, spacing, component states, visual reference | `ui-style.md` |
 | Menu does not open/close, F10 entry, key capture, drag, section switching, drafts | `menu-rules.md` |
 | Selection Info stats, display modes, or interaction | [Claret UI README](../mods/ClaretUI/README.md#selection-info) |
+| On-screen alerts, HQ and ACU completion, strategic missile stock, display styles | [Claret UI README](../mods/ClaretUI/README.md#notifications) |
 | Hotkey does nothing, preset/context assignment, double-press, templates, engineer chains, saved key data | `hotbuild-rules.md` |
 | Profile fails to load, "damaged records" line, unknown version, save blocked | `hotbuild-rules.md` (data model) then `tech-findings.md` (profiles) |
 | Lua error, missing global, module fails to load, `#`/`continue`, upvalue limit, `pcall` cost | `tech-findings.md` |

@@ -153,6 +153,22 @@ function Create(parent, layout, options, coreOptions)
                     kind = 'slider', height = 62, min = 0, max = 100, defaultValue = 0 },
             },
         },
+        {
+            labelKey = 'claretui.notifications.title',
+            descriptionKey = 'claretui.notifications.description',
+            entries = {
+                { labelKey = 'claretui.notifications.hq_enabled', option = options.notificationsHQ, height = M.coreRowHeight },
+                { labelKey = 'claretui.notifications.acu_enabled', option = options.notificationsACU, height = ROW_HEIGHT },
+                { labelKey = 'claretui.notifications.nuke_enabled', option = options.notificationsNuke, height = ROW_HEIGHT },
+                { labelKey = 'claretui.notifications.mode', option = options.notificationsMode, kind = 'choice', height = ROW_HEIGHT,
+                    choices = {
+                        { value = 'compact', labelKey = 'claretui.notifications.mode_compact', width = 112 },
+                        { value = 'center', labelKey = 'claretui.notifications.mode_center', width = 112 },
+                    },
+                },
+                { labelKey = 'claretui.notifications.scale', option = options.notificationsScale, kind = 'slider', height = 62 },
+            },
+        },
     }
 
     local root = Group(parent)

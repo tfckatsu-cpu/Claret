@@ -12,6 +12,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | ASE | 4z0t, Nomander |  | v3; Context/sources/MainMods/ASE/mod_info.lua |
 | Redux ACU Icons (installed as ASI Medium) | macdeffy | [reuse permission](https://forum.faforever.com/topic/2926/redux-strategic-icons) | v1; installed mods/ASI Medium/mod_info.lua, checked 2026-11-20; three mex DDS textures used with permission from macdeffy |
 | Gold mex upgrade arrow | Source supplied by the project owner | `Золотая стрелка улучшения.png` | PNG supplied 2026-11-20, resized for the panel and map markers in Claret UI 0.2.51 |
+| Silo and submarine missile icons | Source supplied by the project owner | `Ядерная_ракета_без_линий.png` and `Красная ракета и радиационный символ в волнах.png` | PNGs supplied 2026-11-20 and resized for notification textures in Claret UI 0.2.85 |
 | Beer | 4z0t |  | v1; Context/sources/MainMods/Beer/mod_info.lua |
 | Bi4UI.StrategicRings | Bi4ara | not specified | v20; Context/sources/MainMods/Bi4UI.StrategicRings/mod_info.lua |
 | BindStorage | Fuper |  | v1; Context/sources/MainMods/BindStorage/mod_info.lua |
@@ -22,6 +23,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | dear-windowing | (Jip) Willem Wijnia | not specified | v9; Context/sources/MainMods/dear-windowing/mod_info.lua |
 | DelisRedundantEcoHelp | Deli |  | v3; Context/sources/MainMods/DelisRedundantEcoHelp/mod_info.lua |
 | DynamicSelectionInfo | Nuggets HotCheese | Not specified | v3 / ReUI module 1.2.0; installed `../mods/DynamicSelectionInfo/mod_info.lua`, checked 2026-11-20. Selection HUD behaviour reference. |
+| Strategic Missile Construction Alerts | SonofaMitch | Not specified | v2; installed `../mods/StrategicMissileAlerts/mod_info.lua` and `modules/NukeAlerts.lua`, checked 2026-11-20. Behaviour reference for missile notifications. |
 | EconomyMiddle | 4z0t |  | v2; Context/sources/MainMods/EconomyMiddle/mod_info.lua |
 | EUT | 4z0t |  | v11; installed mods/EUT/mod_info.lua, checked 2026-11-20; mex panel and overlay behaviour reference |
 | Extra mini map | Eternal- |  | v3; Context/sources/MainMods/Extra mini map/mod_info.lua |
