@@ -1,7 +1,14 @@
-ReUI.Options.Mods['ClaretUI'] = {
+local options = {
     enabled = ReUI.Options.OptionValue(true),
     acuHealth = ReUI.Options.OptionValue(true),
     acuScale = ReUI.Options.OptionValue(100),
+    selectionHud = ReUI.Options.OptionValue(false),
+    selectionDynamic = ReUI.Options.OptionValue(true),
+    selectionLabels = ReUI.Options.OptionValue(true),
+    selectionLocked = ReUI.Options.OptionValue(false),
+    selectionPosition = ReUI.Options.OptionValue({}),
+    selectionTransparency = ReUI.Options.OptionValue(0),
+    selectionScale = ReUI.Options.OptionValue(100),
     mexPanel = ReUI.Options.OptionValue(false),
     mexPanelMode = ReUI.Options.OptionValue('static'),
     mexOverlay = ReUI.Options.OptionValue(true),
@@ -25,6 +32,11 @@ ReUI.Options.Mods['ClaretUI'] = {
     ringsSonar = ReUI.Options.OptionValue(true),
     ringsCounterIntel = ReUI.Options.OptionValue(true),
 }
+
+for _, field in ipairs(import('/mods/ClaretUI/modules/SelectionHudFields.lua').Fields) do
+    options['selection_' .. field.key] = ReUI.Options.OptionValue(true)
+end
+ReUI.Options.Mods['ClaretUI'] = options
 
 -- Values keep their existing ReUI preference paths; UI lives in the Claret menu.
 function Main() end

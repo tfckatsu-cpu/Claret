@@ -3,7 +3,8 @@
 ---@param parent Control
 ---@param scope table
 ---@param event table
-function Start(parent, scope, event)
+---@param selection UserUnit[]
+function Start(parent, scope, event, selection)
     local Localization = import('/mods/ClaretCore/modules/Localization.lua').Localization
     local Theme = import('/mods/ClaretCore/modules/Theme.lua')
     local C = Theme.Colors
@@ -57,6 +58,5 @@ function Start(parent, scope, event)
         end
     end
     scope:Bind(event, function(sender, units) Refresh(units or {}) end)
-    -- Only initial creation reads the accessor; events carry their own new selection.
-    Refresh(GetSelectedUnits() or {})
+    Refresh(selection)
 end

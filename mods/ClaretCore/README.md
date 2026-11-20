@@ -1,4 +1,4 @@
-# Claret Core — test build 0.10.25
+# Claret Core — test build 0.10.27
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
 
@@ -26,6 +26,8 @@ A separate mod declares a `ReUI.Require` dependency on `ClaretCore >= 0.10.0` an
 - Registration is allowed before the UI is created and is deferred. Registration after UI creation is applied immediately.
 - Startup resources belong to `scope`; it is cleaned up when the feature is disabled, a handler fails, or the session ends.
 - `GetFeatureState(id)` returns the registered feature's state, and also returns an error message on failure.
+
+`ReUI.ClaretCore.UseSelectionHud(scope, refresh)` supplies the current selection to a replacement HUD and subscribes it to FAF's `ObserveSelection` through Core. Core pauses its composition panel for the lifetime of the replacement scope, then restores it according to the saved Core setting. Only one replacement can use the feed at a time.
 
 ## Hotbuild is a separate mod
 

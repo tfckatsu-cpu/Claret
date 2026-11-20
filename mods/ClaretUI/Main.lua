@@ -1,10 +1,10 @@
-Version = '0.2.63'
+Version = '0.2.73'
 -- Bump for every Claret UI code change so the loaded build is identifiable.
-local BuildStamp = '20261120-66'
+local BuildStamp = '20261120-76'
 LOG('[Claret][build] ui='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
-    'ClaretCore >= 0.10.25',
+    'ClaretCore >= 0.10.27',
     'ReUI.Core >= 1.7.0',
     'ReUI.UI >= 1.0.0',
     'ReUI.Options >= 1.2.0',

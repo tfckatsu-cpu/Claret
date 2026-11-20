@@ -21,7 +21,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | Ctrl | 4z0t |  | v2; Context/sources/MainMods/Ctrl/mod_info.lua |
 | dear-windowing | (Jip) Willem Wijnia | not specified | v9; Context/sources/MainMods/dear-windowing/mod_info.lua |
 | DelisRedundantEcoHelp | Deli |  | v3; Context/sources/MainMods/DelisRedundantEcoHelp/mod_info.lua |
-| DynamicSelectionInfo | Nuggets HotCheese |  | v3; Context/sources/MainMods/DynamicSelectionInfo/mod_info.lua |
+| DynamicSelectionInfo | Nuggets HotCheese | Not specified | v3 / ReUI module 1.2.0; installed `../mods/DynamicSelectionInfo/mod_info.lua`, checked 2026-11-20. Selection HUD behaviour reference. |
 | EconomyMiddle | 4z0t |  | v2; Context/sources/MainMods/EconomyMiddle/mod_info.lua |
 | EUT | 4z0t |  | v11; installed mods/EUT/mod_info.lua, checked 2026-11-20; mex panel and overlay behaviour reference |
 | Extra mini map | Eternal- |  | v3; Context/sources/MainMods/Extra mini map/mod_info.lua |

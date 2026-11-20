@@ -1,4 +1,4 @@
-# Claret UI — test build 0.2.63
+# Claret UI — test build 0.2.73
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
@@ -10,7 +10,8 @@ Child mod of Claret Core: game-interface overlays that Core does not own. The mo
 | Minimap | Optional zoom auto-hide and border hiding; implemented in Core | ZeP_MiniMapZoom and Extra mini map as references |
 | All Rings | `All Rings`; configurable preview keys and range filters | [Rings For All](https://github.com/4z0t/FAF-UI-Mods/blob/develop/Docs/Overview/RingsForAll.md) by 4z0t and Nomander, installed release 7 (2026-11-20) |
 | Mass extractors | Show mex panel, map markers and numbered mode | ECO UI Tools (EUT) v11 by 4z0t, installed copy checked on 2026-11-20 |
-| Selection info, team info, missile alerts, eco panel, reveal positions, idle engineers, score/reclaim/economy | — | planned |
+| Selection Info | Show selection HUD | DynamicSelectionInfo v3 / ReUI module 1.2.0 by Nuggets HotCheese, installed copy checked on 2026-11-20 |
+| Team info, missile alerts, eco panel, reveal positions, idle engineers, score/reclaim/economy | — | planned |
 
 In **F10 → Claret → UI**, the left column lists feature groups. Selecting a group keeps that column the same width and expands the right side to show the group's settings. Select the same group again to collapse the right side. Each column ends below its own content, and both share a title bar.
 
@@ -30,9 +31,19 @@ The user confirmed All Rings in FAF for Claret UI 0.2.38 (build 20261120-41) on 
 
 Do not run the original mod next to the equivalent Claret UI feature.
 
+## Selection Info
+
+Enable **F10 → Claret → UI → Selection Info → Show selection HUD**. The panel is off by default. Individual stat switches are under **Advanced**, which starts collapsed. Values are grouped into resources, costs, results and combat, with an optional unit count. The panel collapses empty groups and columns. **Show labels and headings** switches to a numbers-only display. The value colors use the shared theme's bright HUD palette. Health is green, mass is light green, energy is yellow, shields are cyan, and mass destroyed is red.
+
+**Dynamic display** is enabled by default. A field appears when it applies to at least one selected unit. Applicable fields can display zero, such as an empty shield, a builder's reclaim total, or resource flows that cancel out. With dynamic display disabled, the HUD displays all individually enabled fields, including zeros.
+
+Drag with the left mouse button to save the HUD position. **Lock panel position** disables dragging and makes the HUD click-through. **Panel size** scales both the HUD and its text from 50% to 200% and saves the chosen size. The saved position is independent of the HUD size. **Panel background transparency** adjusts the fill alone from 0% to 100%.
+
+The panel takes a snapshot on each visible selection event and hides when selection is cleared. Health and economy values reflect the last selection event. DPS is outside this build's stat set. While the HUD is enabled, Core's composition panel is suspended. Turning the HUD off restores Core's panel according to its saved setting. Disable DynamicSelectionInfo in the FAF mod manager if using Claret's panel.
+
 ## Requirements
 
-Claret Core 0.10.25 or newer and ReUI (Core 1.7.0, UI 1.0.0, Options 1.2.0). Client-side only; no simulation changes.
+Claret Core 0.10.27 or newer and ReUI (Core 1.7.0, UI 1.0.0, Options 1.2.0). Client-side only.
 
 ## Mass extractors
 

@@ -8,6 +8,7 @@ local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local UI = import('/lua/ui/uiutil.lua')
 local Helpers = import('/lua/maui/layouthelpers.lua')
 local IntegerSlider = import('/lua/maui/slider.lua').IntegerSlider
+local selectionFields = import('/mods/ClaretUI/modules/SelectionHudFields.lua').Fields
 
 local LIST_WIDTH = 224
 local DETAIL_WIDTH = 384
@@ -51,6 +52,22 @@ function Create(parent, layout, options, coreOptions)
         return control
     end
 
+    local selectionEntries = {
+        { labelKey = 'claretui.selection.enabled', option = options.selectionHud, height = M.coreRowHeight },
+        { labelKey = 'claretui.selection.dynamic', option = options.selectionDynamic, height = ROW_HEIGHT },
+        { labelKey = 'claretui.selection.labels', option = options.selectionLabels, height = ROW_HEIGHT },
+        { labelKey = 'claretui.mex.panel_locked', option = options.selectionLocked, height = ROW_HEIGHT },
+        { labelKey = 'claretui.mex.panel_scale', option = options.selectionScale, kind = 'slider', height = 62 },
+        { labelKey = 'claretui.mex.panel_transparency', option = options.selectionTransparency,
+            kind = 'slider', height = 62, min = 0, max = 100, defaultValue = 0 },
+        { labelKey = 'claretui.selection.advanced', kind = 'disclosure', height = ROW_HEIGHT },
+    }
+    local selectionAdvanced = {}
+    for _, field in ipairs(selectionFields) do
+        table.insert(selectionAdvanced, { labelKey = 'claretui.selection.' .. field.key,
+            option = options['selection_' .. field.key], height = ROW_HEIGHT })
+    end
+
     local groups = {
         {
             labelKey = 'claretui.tab.commander',
@@ -59,6 +76,12 @@ function Create(parent, layout, options, coreOptions)
                 { labelKey = 'claretui.setting.acu', option = options.acuHealth, height = M.coreRowHeight },
                 { labelKey = 'claretui.setting.acu_scale', option = options.acuScale, kind = 'slider', height = 62 },
             },
+        },
+        {
+            labelKey = 'claretui.selection.title',
+            descriptionKey = 'claretui.selection.description',
+            entries = selectionEntries,
+            advancedEntries = selectionAdvanced,
         },
         {
             labelKey = 'claretui.tab.minimap',

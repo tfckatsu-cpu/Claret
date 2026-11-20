@@ -2,7 +2,7 @@
 
 Agent-facing reference for the Claret project. Written in English; the chat with the user stays in Russian. Everything here describes the current code unless a document says otherwise. When a document and the code disagree, the code wins — then fix the document in the same task.
 
-Current versions: Claret Core 0.10.16 (mod 35, build 20261119-48), Claret Hotbuild 0.10.41 (mod 77, build 20261119-151); the committed Core mirror is still 0.10.15 (mod 34, build 20261119-47) until the panel shell is confirmed in game. ReUI Main 1.3.2, ReUI.Core 1.7.0, ReUI.Options 1.2.0. FAF3840, game archive `lua.nx2`.
+Current versions and pending FAF checks are listed in `quick-reference.md` and `../Stage/stage-1-status.md`.
 
 ## How to choose a file
 
@@ -13,6 +13,7 @@ Current versions: Claret Core 0.10.16 (mod 35, build 20261119-48), Claret Hotbui
 | Button/panel/label looks wrong, layout shifts, scale applied twice, dialog behind a panel, control not destroyed, tooltip stuck | `ui-rules.md` then `ui-style.md` |
 | Colours, fonts, spacing, component states, visual reference | `ui-style.md` |
 | Menu does not open/close, F10 entry, key capture, drag, section switching, drafts | `menu-rules.md` |
+| Selection Info stats, display modes, or interaction | [Claret UI README](../mods/ClaretUI/README.md#selection-info) |
 | Hotkey does nothing, preset/context assignment, double-press, templates, engineer chains, saved key data | `hotbuild-rules.md` |
 | Profile fails to load, "damaged records" line, unknown version, save blocked | `hotbuild-rules.md` (data model) then `tech-findings.md` (profiles) |
 | Lua error, missing global, module fails to load, `#`/`continue`, upvalue limit, `pcall` cost | `tech-findings.md` |

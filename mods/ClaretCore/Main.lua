@@ -1,5 +1,5 @@
-Version = '0.10.25'
-local BuildStamp = '20261120-57'
+Version = '0.10.27'
+local BuildStamp = '20261120-59'
 LOG('[Claret][build] core='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
@@ -116,6 +116,30 @@ function Main(isReplay)
     local pending = {}
     local registered = { probe = true, selectionSummary = true }
     local disposed = false
+    local currentSelection
+    local selectionHudActive = false
+
+    local function GetSelection()
+        return currentSelection or GetSelectedUnits() or {}
+    end
+
+    local function UpdateSelectionSummary()
+        if registry and not disposed then
+            registry:SetEnabled('selectionSummary', not selectionHudActive and options.selectionEnabled:Get())
+        end
+    end
+
+    local function UseSelectionHud(scope, refresh)
+        assert(registry and not disposed and not selectionHudActive, 'Selection HUD is unavailable')
+        scope:Defer(function()
+            selectionHudActive = false
+            UpdateSelectionSummary()
+        end)
+        selectionHudActive = true
+        UpdateSelectionSummary()
+        scope:Bind(selectionChanged, function(_, selection) refresh(selection) end)
+        refresh(GetSelection())
+    end
 
     local function RegisterFeature(id, start, option)
         if disposed then return false, 'Claret session is disposed' end
@@ -133,20 +157,6 @@ function Main(isReplay)
         return true
     end
 
-    ReUI.Core.Hook('/lua/ui/game/gamemain.lua', 'OnSelectionChanged', function(original, module)
-        local isIgnored = rawget(module, 'IsIgnoredSelection')
-        return function(oldSelection, newSelection, added, removed)
-            local ignored = isIgnored and isIgnored()
-            local result = original(oldSelection, newSelection, added, removed)
-            -- GetSelectedUnits can still describe the previous selection here.
-            if not ignored then
-                transportCargo:Reset()
-                if registry then selectionChanged:Invoke(nil, newSelection or {}) end
-            end
-            return result
-        end
-    end)
-
     ReUI.Core.OnPostCreateUI(function()
         local Group = import('/lua/maui/group.lua').Group
         local parent = GetFrame(0)
@@ -160,11 +170,22 @@ function Main(isReplay)
             LOG(logPrefix .. message)
         end)
 
+        -- FAF publishes this event only for visible selections. The accessor may
+        -- still report the previous selection while the observer is running.
+        local observeSelection = import('/lua/ui/game/gamemain.lua').ObserveSelection
+        observeSelection:AddObserver(function(info)
+            currentSelection = info.newSelection or {}
+            transportCargo:Reset()
+            selectionChanged:Invoke(nil, currentSelection)
+        end, 'ClaretCore')
         local onDestroy = owner.OnDestroy
         local stopMinimap = minimap:Start(owner)
         owner.OnDestroy = function(self)
             disposed = true
             uiReady = false
+            observeSelection:AddObserver(nil, 'ClaretCore')
+            options.selectionEnabled.OnChanged:Remove(UpdateSelectionSummary)
+            currentSelection = nil
             menuKey:Destroy()
             menu:Destroy()
             transportCargo:Destroy()
@@ -181,9 +202,10 @@ function Main(isReplay)
         end
 
         registry:Register('selectionSummary', function(scope)
-            SelectionSummary.Start(owner, scope, selectionChanged)
+            SelectionSummary.Start(owner, scope, selectionChanged, GetSelection())
         end)
-        registry:BindOption('selectionSummary', options.selectionEnabled)
+        options.selectionEnabled.OnChanged:Add(UpdateSelectionSummary)
+        UpdateSelectionSummary()
         for _, feature in ipairs(pending) do
             registry:Register(feature.id, feature.start)
             registry:BindOption(feature.id, feature.option)
@@ -207,6 +229,7 @@ function Main(isReplay)
             return registry:GetState(id)
         end,
         RegisterFeature = RegisterFeature,
+        UseSelectionHud = UseSelectionHud,
         RegisterSettingsSection = function(definition) return menu:Register(definition) end,
         Localization = Localization,
         IsMenuOpen = function() return menu:IsOpen() end,

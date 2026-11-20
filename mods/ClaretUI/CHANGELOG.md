@@ -1,5 +1,26 @@
 # История изменений
 
+## Сборка 20261120-76 — 2026-11-20
+- Use Selection Info as the menu name in both languages.
+
+## Сборка 20261120-75 — 2026-11-20
+- Use brighter selection HUD values and move individual stat switches into a collapsed Advanced section.
+
+## Сборка 20261120-74 — 2026-11-20
+- Drag Selection Info with the left mouse button and resize it with a saved 50–200% scale setting.
+
+## Сборка 20261120-73 — 2026-11-20
+- Add a saved dynamic display switch that hides stats based on the capabilities of the whole selection.
+
+## Сборка 20261120-72 — 2026-11-20
+- Group selection HUD stats and give values distinct colors. Add optional labels, position lock, saved placement and background transparency.
+
+## Сборка 20261120-71 — 2026-11-20
+- Give Selection Info a compact grid with larger values and individually configurable fields.
+
+## Сборка 20261120-70 — 2026-11-20
+- Add Selection Info with aggregate stats and composition, using Core's shared selection feed.
+
 ## Сборка 20261120-66 — 2026-11-20
 - Center the pause mark on the visible green cores of the T1 and T2 icons individually.
 

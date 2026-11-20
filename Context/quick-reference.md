@@ -2,16 +2,17 @@
 
 Snapshot of decisions and versions. The map of the knowledge base is `README.md`; the state of the current stage is `../Stage/stage-1-status.md`.
 
-Versions (2026-11-19): Claret Core 0.10.16 (mod 35, build 20261119-48) is loaded in game and awaits confirmation; last committed and mirrored is Core 0.10.15 (mod 34, build 20261119-47). Claret Hotbuild 0.10.41 (mod 77, build 20261119-151), committed and mirrored. ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840.
+Local versions checked on 2026-11-20: Claret Core 0.10.27 (mod 46, build 20261120-59), Claret UI 0.2.73 (mod 76, build 20261120-76), and Claret Hotbuild 0.10.49 (mod 77, build 20261119-159). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. FAF3840 is the reference game snapshot. See the stage status for in-game confirmation.
 
 ## Product shape
 
 - Ecosystem of separate UI-only mods with a shared Core. Core provides the feature registry, menu, theme, localization and selection diagnostics; it never imports Hotbuild.
-- Working mods: `../mods/ClaretCore` and `../mods/ClaretHotbuild`. Other mods, `Context/sources/` and the game folder are read-only.
+- Working mods: `../mods/ClaretCore`, `../mods/ClaretHotbuild`, and `../mods/ClaretUI`. Other mods, `Context/sources/` and the game folder are read-only.
 - Settings live in **F10 → Claret** through `ReUI.ClaretCore.RegisterSettingsSection`; there are no ReUI Options tabs for Claret.
 - Hotbuild is always active: there is no toggle, and a saved `enabled=false` is ignored.
 - The menu is a compact launcher plus a standard panel; the Core section is compact (552×408), Hotbuild keeps the standard size. Hotbuild has three pages: Keyboard, Hotbuild, Contexts.
 - The quick-repeat window and its gear were removed in 0.10.38; the per-row `quickRepeat` field remains as legacy saved data.
+- **Selection Info** keeps its English name in both locales. It uses Core's FAF selection feed and suspends Core's composition panel while active. See the [Claret UI README](../mods/ClaretUI/README.md#selection-info) for the display and saved controls.
 
 ## Hotbuild data model
 
@@ -34,7 +35,7 @@ Versions (2026-11-19): Claret Core 0.10.16 (mod 35, build 20261119-48) is loaded
 
 - UI work: read `ui-rules.md` and `ui-style.md`. Menu: `menu-rules.md`. Hotbuild: `hotbuild-rules.md`.
 - LuaPlus: no `#`, no `continue`, no `goto`, `table.getn`, `import`; ≤32 upvalues per function; module tables are strict.
-- Tests: `node Tests/check-core.cjs --quiet` — auto-discovery, 66 tests; static checks for `#`, `continue`, Core→Hotbuild imports and version identity. Green is required before a task is done.
+- Tests: `node Tests/check-core.cjs --quiet` — auto-discovery and static checks. Green is required before a task is done.
 - Version identity: `Version` in `Main.lua` = `ReUI` in `mod_info.lua` = README heading; `BuildStamp` = newest CHANGELOG build.
 - After in-game confirmation: sync only the changed paths with `Tools/Sync-ClaretMods.ps1`, review the diff, commit separately, push to `dev`.
 

@@ -49,6 +49,11 @@ local env = setmetatable({ReUI={
     ClaretCore={Localization={Text=function(key) return key end}},
 }, import=function(path)
     if path == '/mods/ClaretCore/modules/Theme.lua' then return theme end
+    if path == '/mods/ClaretUI/modules/SelectionHudFields.lua' then
+        local fields = {}
+        assert(loadfile('..' .. path, 't', fields))()
+        return fields
+    end
     if path == '/lua/maui/group.lua' then return {Group=control} end
     if path == '/lua/maui/bitmap.lua' then return {Bitmap=control} end
     if path == '/lua/ui/uiutil.lua' then return {SkinnableFile=function(p) return p end, CreateText=function(parent, text)
@@ -67,7 +72,12 @@ local env = setmetatable({ReUI={
     error('unexpected import ' .. path)
 end}, {__index=_G})
 assert(loadfile('../mods/ClaretUI/modules/UiSection.lua', 't', env))()
-env.ReUI.Options = {OptionValue=option, Mods={}}
+env.ReUI.Options = {OptionValue=option, Mods=setmetatable({}, {__newindex=function(self, key, values)
+    for _, field in ipairs(env.import('/mods/ClaretUI/modules/SelectionHudFields.lua').Fields) do
+        assert(values['selection_' .. field.key], 'ReUI loads saved options at registration')
+    end
+    rawset(self, key, values)
+end})}
 assert(loadfile('../mods/ClaretUI/Options.lua', 't', env))()
 local options = env.ReUI.Options.Mods.ClaretUI
 local auto, border = option(false), option(false)
@@ -153,3 +163,47 @@ assert(options.mexPanelTransparency:Get() == 75 and options.mexPanelTransparency
 slider:OnValueSet(100)
 assert(options.mexPanelTransparency:Get() == 100 and options.mexPanelTransparency.saves == 1)
 print('PASS: Mass extractor panel sliders preview and save independent values')
+
+pressLabel('claretui.selection.title')
+assert(not options.selectionHud:Get())
+pressLabel('claretui.selection.enabled')
+assert(options.selectionHud:Get() and options.selectionHud.saves == 1)
+assert(options.selectionDynamic:Get())
+pressLabel('claretui.selection.dynamic')
+assert(not options.selectionDynamic:Get() and options.selectionDynamic.saves == 1)
+local selectionCollapsedHeight = height
+assert(not findLabel('claretui.selection.massRate'))
+pressLabel('claretui.selection.advanced')
+assert(height > selectionCollapsedHeight and height + 124 <= 1110)
+pressLabel('claretui.selection.massRate')
+assert(not options.selection_massRate:Get() and options.selection_massRate.saves == 1)
+assert(options.selection_energyRate:Get() and options.selectionHud:Get())
+pressLabel('claretui.selection.advanced')
+assert(height == selectionCollapsedHeight and not findLabel('claretui.selection.massRate'))
+pressLabel('claretui.selection.advanced')
+assert(findLabel('claretui.selection.massRate') and not options.selection_massRate:Get())
+pressLabel('claretui.selection.advanced')
+pressLabel('claretui.selection.labels')
+pressLabel('claretui.mex.panel_locked')
+assert(not options.selectionLabels:Get() and options.selectionLabels.saves == 1)
+assert(options.selectionLocked:Get() and options.selectionLocked.saves == 1)
+local selectionTransparencyRow = assert(findLabel('claretui.mex.panel_transparency')).parent
+for _, item in ipairs(controls) do
+    if item.parent == selectionTransparencyRow and item.OnValueSet then item:OnValueSet(80) end
+end
+assert(options.selectionTransparency:Get() == 80 and options.selectionTransparency.saves == 1)
+local selectionScaleRow = assert(findLabel('claretui.mex.panel_scale')).parent
+for _, item in ipairs(controls) do
+    if item.parent == selectionScaleRow and item.OnValueSet then
+        assert(item:GetValue() == 100)
+        item:OnValueChanged(125)
+        assert(options.selectionScale:Get() == 125 and options.selectionScale.saves == 0)
+        item:OnValueSet(175)
+    end
+end
+assert(options.selectionScale:Get() == 175 and options.selectionScale.saves == 1)
+assert(not findLabel('claretui.selection.typeCount') and not findLabel('claretui.selection.unitName'))
+assert(height + 124 <= 1110)
+pressLabel('claretui.selection.enabled')
+assert(not options.selectionHud:Get() and options.selectionHud.saves == 2)
+print('PASS: Selection Info switches fit the menu and save independent settings')
