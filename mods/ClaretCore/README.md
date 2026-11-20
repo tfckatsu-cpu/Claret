@@ -1,4 +1,4 @@
-# Claret Core — test build 0.10.21
+# Claret Core — test build 0.10.23
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
 

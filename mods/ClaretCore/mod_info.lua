@@ -1,6 +1,6 @@
 name = "Claret Core (Test)"
 uid = "claret-core-001"
-version = 40
+version = 42
 description = "Shared localization, feature lifecycle, resource cleanup, and diagnostics for Claret mods. Requires ReUI."
 author = "Claret Project"
 url = ""
@@ -8,4 +8,4 @@ selectable = true
 enabled = true
 exclusive = false
 ui_only = true
-ReUI = "ClaretCore=0.10.21"
+ReUI = "ClaretCore=0.10.23"

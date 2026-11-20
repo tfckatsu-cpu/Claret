@@ -19,6 +19,7 @@ Colors = {
     accentText = 'ffe5a1b0',
     danger = 'fff06b7a',
     success = 'ff99bd69',
+    health = 'ff28b84a',
     warning = 'fff0b64d',
     warningSurface = 'ff342817',
     warningBorder = 'ff80602e',
@@ -209,5 +210,38 @@ function Outline(control, layout, width, height, color)
     return function(value)
         for _, line in ipairs(lines) do line:SetSolidColor(value) end
     end, Resize
+end
+
+-- Visual part of a settings toggle. The host row owns input and persistence.
+function SettingsSwitch(row, layout, rowWidth, rowHeight, textScale, compact)
+    local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
+    local UI = import('/lua/ui/uiutil.lua')
+    local width, height = compact and 48 or 56, compact and 28 or 32
+    local thumbWidth, thumbHeight = compact and 18 or 20, compact and 20 or 24
+    local x = rowWidth - 16 - width
+    local switch = Bitmap(row)
+    switch:DisableHitTest()
+    switch.Depth:Set(function() return row.Depth() + 1 end)
+    layout(switch):AtLeftTopIn(row, x, math.floor((rowHeight - height) / 2)):Width(width):Height(height)
+    local paintOutline = Outline(switch, layout, width, height)
+
+    local thumb = Bitmap(switch)
+    thumb:DisableHitTest()
+    thumb.Depth:Set(function() return switch.Depth() + 1 end)
+    layout(thumb):Width(thumbWidth):Height(thumbHeight)
+
+    local state = UI.CreateText(row, '', Metrics.text * textScale, Fonts.body)
+    state:DisableHitTest()
+    state.Depth:Set(function() return row.Depth() + 2 end)
+    layout(state):AtLeftTopIn(row, x - 32, math.floor((rowHeight - Metrics.text) / 2))
+
+    return function(on)
+        state:SetText(on and '●' or '○')
+        state:SetColor(on and Colors.accentText or Colors.muted)
+        switch:SetSolidColor(on and Colors.accent or Colors.surface)
+        paintOutline(on and Colors.selectedBorder or Colors.muted)
+        layout(thumb):AtLeftTopIn(switch, on and width - thumbWidth - 4 or 4, 4)
+        thumb:SetSolidColor(on and Colors.text or Colors.muted)
+    end
 end
 

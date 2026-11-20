@@ -598,25 +598,10 @@ function Create(keyBinding)
                     if toggle.centerLabel then L(label):AtCenterIn(item.control,0,compactCore and -48 or -56) end
                     local description=toggle.descriptionKey and T(toggle.descriptionKey) or toggle.description
                     if description and description~='' then Text(item.control,description,16,compactCore and 32 or 36,C.muted) end
-                    local switchWidth=compactCore and 48 or 56
-                    local switchHeight=compactCore and 28 or 32
-                    local switchX=cardWidth-16-switchWidth
-                    local switchY=math.floor((optionHeight-switchHeight)/2)
-                    local switch=Surface(item.control,switchX,switchY,switchWidth,switchHeight,C.surface); switch:DisableHitTest()
-                    local switchBorder=Theme.Outline(switch,L,switchWidth,switchHeight)
-                    local thumbWidth=compactCore and 18 or 20
-                    local thumbHeight=compactCore and 20 or 24
-                    local thumb=Surface(switch,4,4,thumbWidth,thumbHeight,C.text); thumb:DisableHitTest()
-                    local stateLabel=Text(item.control,'',switchX-32,math.floor((optionHeight-16)/2),C.muted)
+                    local paintSwitch=Theme.SettingsSwitch(item.control,L,cardWidth,optionHeight,ratio,compactCore)
                     status=Status(item.control,compactCore and 12 or 416,compactCore and 38 or 54,compactCore and cardWidth-24 or 240)
                     update=function()
-                        local value=option:Get()
-                        stateLabel:SetText(value and '●' or '○')
-                        stateLabel:SetColor(value and C.accentText or C.muted)
-                        switch:SetSolidColor(value and C.accent or C.surface)
-                        switchBorder(value and C.selectedBorder or C.muted)
-                        L(thumb):AtLeftTopIn(switch,value and switchWidth-thumbWidth-4 or 4,4)
-                        thumb:SetSolidColor(value and C.text or C.muted)
+                        paintSwitch(option:Get())
                     end
                     option.OnChanged:Add(update); table.insert(state.bindings,{option=option,callback=update}); update()
                     end
