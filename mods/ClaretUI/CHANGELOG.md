@@ -1,5 +1,81 @@
 # История изменений
 
+## Сборка 20261120-66 — 2026-11-20
+- Center the pause mark on the visible green cores of the T1 and T2 icons individually.
+
+## Сборка 20261120-65 — 2026-11-20
+- Draw the pause mark at full opacity above the icon and flush saved panel coordinates after dragging.
+
+## Сборка 20261120-64 — 2026-11-20
+- Save the mex panel position between matches, center the visible pause mark, and rename the section to Mex Overhaul in both languages.
+
+## Сборка 20261120-63 — 2026-11-20
+- Center the pause mark over the mex icon, move cell counts to the top, and reduce the bottom space.
+
+## Сборка 20261120-62 — 2026-11-20
+- Apply transparency to one continuous mex panel backdrop to eliminate seams and overlapping fills.
+
+## Сборка 20261120-61 — 2026-11-20
+- Move the map upgrade arrow closer to the mex icon, move panel counts down, and add a background transparency slider.
+
+## Сборка 20261120-60 — 2026-11-20
+- Drag the mex panel with the left mouse button and optionally lock its position in settings.
+
+## Сборка 20261120-59 — 2026-11-20
+- Create the mex panel backdrop only for nonempty layouts and destroy it when the panel closes or empties.
+
+## Сборка 20261120-58 — 2026-11-20
+- Added temporary diagnostics for mex HUD startup, visibility, the first game beat, and changes in observed mex counts.
+
+## Сборка 20261120-57 — 2026-11-20
+- Create only the cells in the current mex panel layout so a parent visibility change cannot reveal empty tiers.
+
+## Сборка 20261120-56 — 2026-11-20
+- Apply each tier layout immediately and keep empty-tier cells hidden and non-interactive in Adaptive mode.
+
+## Сборка 20261120-55 — 2026-11-20
+- Подложка отделена от ячеек мекс-панели. Видимость ячеек перепроверяется при открытии панели, ошибки переключения записываются в журнал FAF.
+
+## Сборка 20261120-54 — 2026-11-20
+- Исправлен запуск панели мексов с масштабом ReUI. Восстановлены счётчики, полосы прогресса, ручные действия и переключение режимов.
+- Анимация панели и обновление меток работают при свёрнутой панели. Золотая стрелка из приложенного исходника используется в ячейках и на карте.
+
+## Сборка 20261120-53 — 2026-11-20
+- Добавлен выбор статичного и динамического режима панели мексов. В динамическом режиме пустые тиры скрываются, ширина и позиции ячеек плавно анимируются; без мексов панель сворачивается и скрывается.
+
+## Сборка 20261120-52 — 2026-11-20
+- Увеличен значок мекса в каждой ячейке панели с 24 до 36 логических пикселей; центрирование сохранено.
+
+## Сборка 20261120-51 — 2026-11-20
+- Use the installed Redux ACU Icons mex textures in the panel and move a larger pause mark to the top of the icon.
+
+## Сборка 20261120-50 — 2026-11-20
+- Use FAF strategic and pause icons in the mex panel and anchor each progress fill inside its own track.
+
+## Сборка 20261120-49 — 2026-11-20
+- Reduced the black mex tech badge to 16 logical pixels and restored the bottom-to-top upgrade fill.
+
+## Сборка 20261120-48 — 2026-11-20
+- Reduced the mex badge progress fill to a thin strip along the bottom.
+
+## Сборка 20261120-47 — 2026-11-20
+- Show the upgrade arrow and progress only while a live upgrade target exists. Keep the digit light above a subdued green fill.
+
+## Сборка 20261120-46 — 2026-11-20
+- Enlarged the yellow upgrade arrow and removed the tech badge controls entirely from arrow-only mode.
+
+## Сборка 20261120-45 — 2026-11-20
+- Retained live mexes and their upgrade targets across discovery, recognized active upgrades before filtering unfinished units, and used FAF's projected visibility.
+
+## Сборка 20261120-44 — 2026-11-20
+- Anchored the yellow upgrade arrow to the mex icon edge, projected markers every frame and displayed upgrades from the moment the target appears.
+
+## Сборка 20261120-43 — 2026-11-20
+- Added a live mex panel scale slider and removed the capped-only restriction on manual T2 upgrades.
+
+## Сборка 20261120-42 — 2026-11-20
+- Added a manual mass-extractor panel and two map marker modes based on the installed EUT v11.
+
 ## Сборка 20261120-41 — 2026-11-20
 - Removed the separate hover shortcut setting. The attack shortcut now controls both hover and selection previews.
 

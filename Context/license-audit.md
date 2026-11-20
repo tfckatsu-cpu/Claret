@@ -10,7 +10,7 @@ Fact: `sources/LICENSE` contains MIT, copyright 2022 4z0t; `sources/MainMods/Tea
 | AKA | 5 | 4z0t | https://github.com/4z0t/FAF-UI-Mods | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/AKA/mod_info.lua; copyright: MIT License |
 | AOE | 5 | 4z0t |  | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/AOE/mod_info.lua; copyright:  |
 | ASE | 3 | 4z0t, Nomander |  | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/ASE/mod_info.lua; copyright:  |
-| ASI Medium | 1 | macdeffy | not specified | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/ASI Medium/mod_info.lua; copyright:  |
+| ASI Medium (Redux ACU Icons) | 1 | macdeffy | [Redux Strategic Icons](https://forum.faforever.com/topic/2926/redux-strategic-icons) | Author permits use of the icons with credit | Installed manifest and author statement checked 2026-11-20 |
 | Beer | 1 | 4z0t |  | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/Beer/mod_info.lua; copyright: Beeeeeeeeer |
 | Bi4UI.StrategicRings | 20 | Bi4ara | not specified | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/Bi4UI.StrategicRings/mod_info.lua; copyright:  |
 | BindStorage | 1 | Fuper |  | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/BindStorage/mod_info.lua; copyright: nah |

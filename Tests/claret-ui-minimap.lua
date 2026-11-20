@@ -51,11 +51,19 @@ local env = setmetatable({ReUI={
     if path == '/mods/ClaretCore/modules/Theme.lua' then return theme end
     if path == '/lua/maui/group.lua' then return {Group=control} end
     if path == '/lua/maui/bitmap.lua' then return {Bitmap=control} end
-    if path == '/lua/ui/uiutil.lua' then return {CreateText=function(parent, text)
+    if path == '/lua/ui/uiutil.lua' then return {SkinnableFile=function(p) return p end, CreateText=function(parent, text)
         local item=control(parent); item.text=text; return item
     end} end
     if path == '/lua/maui/layouthelpers.lua' then return {GetPixelScaleFactor=function() return 1 end} end
-    if path == '/lua/maui/slider.lua' then return {} end
+    if path == '/lua/maui/slider.lua' then return {IntegerSlider=function(parent, _, min, max, step)
+        assert(((min == 50 and max == 200) or (min == 0 and max == 100)) and step == 5)
+        local c=control(parent)
+        c._background=control(c)
+        c._thumb=control(c)
+        function c:SetValue(v) self.value=v end
+        function c:GetValue() return self.value end
+        return c
+    end} end
     error('unexpected import ' .. path)
 end}, {__index=_G})
 assert(loadfile('../mods/ClaretUI/modules/UiSection.lua', 't', env))()
@@ -116,3 +124,32 @@ assert(height == collapsedHeight and not findLabel('claretui.setting.rings_sonar
 assert(options.ringsSonar:ListenerCount() == 0)
 assert(options.ringSelectionKey:ListenerCount() == 1 and options.ringBuildKey:ListenerCount() == 1)
 print('PASS: All Rings expands, fits the shell, and saves independent shortcuts and filters')
+
+pressLabel('claretui.mex.title')
+assert(not options.mexPanel:Get() and options.mexOverlay:Get() and not options.mexNumbers:Get())
+pressLabel('claretui.mex.panel')
+pressLabel('claretui.mex.numbers')
+pressLabel('claretui.mex.panel_locked')
+assert(options.mexPanelLocked:Get() and options.mexPanelLocked.saves == 1)
+assert(options.mexPanel:Get() and options.mexPanel.saves == 1)
+assert(options.mexNumbers:Get() and options.mexNumbers.saves == 1 and options.mexOverlay.saves == 0)
+local sliderRow = assert(findLabel('claretui.mex.panel_scale')).parent
+local slider
+for _, item in ipairs(controls) do
+    if item.parent == sliderRow and item.OnValueSet then slider=item end
+end
+assert(slider and slider:GetValue() == 100)
+slider:OnValueChanged(125)
+assert(options.mexPanelScale:Get() == 125 and options.mexPanelScale.saves == 0)
+slider:OnValueSet(150)
+assert(options.mexPanelScale:Get() == 150 and options.mexPanelScale.saves == 1)
+local transparencyRow = assert(findLabel('claretui.mex.panel_transparency')).parent
+for _, item in ipairs(controls) do
+    if item.parent == transparencyRow and item.OnValueSet then slider=item end
+end
+assert(slider:GetValue() == 0)
+slider:OnValueChanged(75)
+assert(options.mexPanelTransparency:Get() == 75 and options.mexPanelTransparency.saves == 0)
+slider:OnValueSet(100)
+assert(options.mexPanelTransparency:Get() == 100 and options.mexPanelTransparency.saves == 1)
+print('PASS: Mass extractor panel sliders preview and save independent values')

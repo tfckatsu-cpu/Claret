@@ -92,6 +92,25 @@ function Create(parent, layout, options, coreOptions)
                 { labelKey = 'claretui.setting.rings_counter_intel', option = options.ringsCounterIntel, height = ROW_HEIGHT },
             },
         },
+        {
+            labelKey = 'claretui.mex.title',
+            descriptionKey = 'claretui.mex.description',
+            entries = {
+                { labelKey = 'claretui.mex.panel', option = options.mexPanel, height = ROW_HEIGHT },
+                { labelKey = 'claretui.mex.panel_mode', option = options.mexPanelMode, kind = 'choice', height = ROW_HEIGHT,
+                    choices = {
+                        { value = 'static', labelKey = 'claretui.mex.mode_static', width = 82 },
+                        { value = 'dynamic', labelKey = 'claretui.mex.mode_dynamic', width = 106 },
+                    },
+                },
+                { labelKey = 'claretui.mex.overlay', option = options.mexOverlay, height = ROW_HEIGHT },
+                { labelKey = 'claretui.mex.numbers', option = options.mexNumbers, height = ROW_HEIGHT },
+                { labelKey = 'claretui.mex.panel_locked', option = options.mexPanelLocked, height = ROW_HEIGHT },
+                { labelKey = 'claretui.mex.panel_scale', option = options.mexPanelScale, kind = 'slider', height = 62 },
+                { labelKey = 'claretui.mex.panel_transparency', option = options.mexPanelTransparency,
+                    kind = 'slider', height = 62, min = 0, max = 100, defaultValue = 0 },
+            },
+        },
     }
 
     local root = Group(parent)
@@ -185,9 +204,10 @@ function Create(parent, layout, options, coreOptions)
             local label = Text(row, entry.labelKey, 16, 6, M.buttonText, C.text)
             if entry.kind == 'slider' then
                 L(label):AtLeftTopIn(row, 16, 2)
+                local min, max = entry.min or 50, entry.max or 200
                 local sliderWidth = DETAIL_WIDTH - 32
                 local slider = IntegerSlider(
-                    row, false, 50, 200, 5,
+                    row, false, min, max, 5,
                     UI.SkinnableFile('/slider02/slider_btn_up.dds'),
                     UI.SkinnableFile('/slider02/slider_btn_over.dds'),
                     UI.SkinnableFile('/slider02/slider_btn_down.dds'),
@@ -202,7 +222,7 @@ function Create(parent, layout, options, coreOptions)
                 local value = Text(row, nil, 0, 2, M.secondaryText, C.accentText)
                 value.Left:Set(function() return slider.Right() - value.Width() end)
                 local initial = option:Get()
-                if type(initial) ~= 'number' or initial ~= initial or initial < 50 or initial > 200 then initial = 100 end
+                if type(initial) ~= 'number' or initial ~= initial or initial < min or initial > max then initial = entry.defaultValue or 100 end
                 slider:SetValue(initial)
                 value:SetText(string.format('%d%%', slider:GetValue()))
                 slider.OnValueChanged = function(control, newValue)
@@ -215,10 +235,10 @@ function Create(parent, layout, options, coreOptions)
                 end
                 local labelKey = entry.labelKey
                 table.insert(refreshRows, function() label:SetText(T(labelKey)) end)
-            elseif entry.kind == 'keypair' then
+            elseif entry.kind == 'keypair' or entry.kind == 'choice' then
                 label:SetFont(Theme.Fonts.body, M.secondaryText * ratio)
                 L(label):AtLeftTopIn(row, 16, math.floor((entry.height - M.secondaryText) / 2) - 4)
-                local choices = PREVIEW_KEYS
+                local choices = entry.choices or PREVIEW_KEYS
                 local x = DETAIL_WIDTH - 12
                 for _, choice in ipairs(choices) do x = x - choice.width - 4 end
                 x = x + 4

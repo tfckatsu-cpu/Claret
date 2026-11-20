@@ -10,7 +10,8 @@ Names and links below are copied from manifests for source attribution. No code 
 | AKA | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v5; Context/sources/MainMods/AKA/mod_info.lua |
 | AOE | 4z0t |  | v5; Context/sources/MainMods/AOE/mod_info.lua |
 | ASE | 4z0t, Nomander |  | v3; Context/sources/MainMods/ASE/mod_info.lua |
-| ASI Medium | macdeffy | not specified | v1; Context/sources/MainMods/ASI Medium/mod_info.lua |
+| Redux ACU Icons (installed as ASI Medium) | macdeffy | [reuse permission](https://forum.faforever.com/topic/2926/redux-strategic-icons) | v1; installed mods/ASI Medium/mod_info.lua, checked 2026-11-20; three mex DDS textures used with permission from macdeffy |
+| Gold mex upgrade arrow | Source supplied by the project owner | `Золотая стрелка улучшения.png` | PNG supplied 2026-11-20, resized for the panel and map markers in Claret UI 0.2.51 |
 | Beer | 4z0t |  | v1; Context/sources/MainMods/Beer/mod_info.lua |
 | Bi4UI.StrategicRings | Bi4ara | not specified | v20; Context/sources/MainMods/Bi4UI.StrategicRings/mod_info.lua |
 | BindStorage | Fuper |  | v1; Context/sources/MainMods/BindStorage/mod_info.lua |
@@ -22,7 +23,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | DelisRedundantEcoHelp | Deli |  | v3; Context/sources/MainMods/DelisRedundantEcoHelp/mod_info.lua |
 | DynamicSelectionInfo | Nuggets HotCheese |  | v3; Context/sources/MainMods/DynamicSelectionInfo/mod_info.lua |
 | EconomyMiddle | 4z0t |  | v2; Context/sources/MainMods/EconomyMiddle/mod_info.lua |
-| EUT | 4z0t |  | v11; Context/sources/MainMods/EUT/mod_info.lua |
+| EUT | 4z0t |  | v11; installed mods/EUT/mod_info.lua, checked 2026-11-20; mex panel and overlay behaviour reference |
 | Extra mini map | Eternal- |  | v3; Context/sources/MainMods/Extra mini map/mod_info.lua |
 | FactoryTemplates | 4z0t |  | v2; Context/sources/MainMods/FactoryTemplates/mod_info.lua |
 | GS | 4z0t |  | v7; Context/sources/MainMods/GS/mod_info.lua |

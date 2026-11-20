@@ -2,6 +2,7 @@
 -- and optionally SetVisible(self, visible); its option drives that visibility.
 local features = {
     { id = 'acu', module = '/mods/ClaretUI/modules/features/AcuHealth.lua', option = 'acuHealth' },
+    { id = 'mexes', module = '/mods/ClaretUI/modules/features/Mexes.lua', option = 'mexPanel' },
     { id = 'allRings', module = '/mods/ClaretUI/modules/features/AllRings.lua', option = 'allRings' },
 }
 
@@ -26,8 +27,8 @@ function service:Start(scope)
             local option = self.options[definition.option]
             if option and type(feature.SetVisible) == 'function' then
                 local function Apply(sender, value)
-                    local shown = pcall(feature.SetVisible, feature, value ~= false)
-                    if not shown then WARN('[ClaretUI] visibility failed: ' .. definition.id) end
+                    local shown, err = pcall(feature.SetVisible, feature, value ~= false)
+                    if not shown then WARN('[ClaretUI] visibility failed: ' .. definition.id .. ': ' .. tostring(err)) end
                 end
                 local added = pcall(function() option.OnChanged:Add(Apply) end)
                 if added then
