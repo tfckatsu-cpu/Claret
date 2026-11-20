@@ -16,6 +16,18 @@ local ROW_HEIGHT = M.rowHeight
 local ROW_GAP = 8
 local DETAIL_HEADER_HEIGHT = 68
 local DETAIL_ROW_GAP = 8
+local PREVIEW_KEYS = {
+    { value = 'SHIFT', labelKey = 'claretui.key.shift', width = 60 },
+    { value = 'CONTROL', labelKey = 'claretui.key.control', width = 60 },
+}
+
+local function VisibleEntries(group)
+    if not group.advancedOpen then return group.entries end
+    local entries = {}
+    for _, entry in ipairs(group.entries) do table.insert(entries, entry) end
+    for _, entry in ipairs(group.advancedEntries) do table.insert(entries, entry) end
+    return entries
+end
 
 -- The section factory is a module global: FAF's import returns the module
 -- environment, and a `local` name is never visible to the caller.
@@ -54,6 +66,30 @@ function Create(parent, layout, options, coreOptions)
             entries = {
                 { labelKey = 'claretui.setting.minimap_auto', option = coreOptions.minimapAutoHide, height = M.coreRowHeight },
                 { labelKey = 'claretui.setting.minimap_border', option = coreOptions.minimapBorderless, height = M.coreRowHeight },
+            },
+        },
+        {
+            labelKey = 'claretui.tab.rings',
+            descriptionKey = 'claretui.tab.rings_description',
+            entries = {
+                { labelKey = 'claretui.setting.rings_attack_key', kind = 'keypair', option = options.ringSelectionKey, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_build_key', kind = 'keypair', option = options.ringBuildKey, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_enabled', option = options.allRings, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_reclaim_hint', kind = 'hint', height = 28 },
+                { labelKey = 'claretui.setting.rings_advanced', kind = 'disclosure', height = ROW_HEIGHT },
+            },
+            advancedEntries = {
+                { labelKey = 'claretui.setting.rings_minimap', option = options.ringsMinimap, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_actual_build', option = options.ringsActualBuild, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_direct_fire', option = options.ringsDirectFire, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_indirect_fire', option = options.ringsIndirectFire, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_anti_air', option = options.ringsAntiAir, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_anti_navy', option = options.ringsAntiNavy, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_countermeasure', option = options.ringsCountermeasure, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_omni', option = options.ringsOmni, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_radar', option = options.ringsRadar, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_sonar', option = options.ringsSonar, height = ROW_HEIGHT },
+                { labelKey = 'claretui.setting.rings_counter_intel', option = options.ringsCounterIntel, height = ROW_HEIGHT },
             },
         },
     }
@@ -112,6 +148,23 @@ function Create(parent, layout, options, coreOptions)
         end
     end
 
+    local function ApplySize()
+        if not selected then
+            layout.setSize(LIST_WIDTH, listHeight)
+            return
+        end
+        local detailHeight = DETAIL_HEADER_HEIGHT
+        for index, entry in ipairs(VisibleEntries(selected)) do
+            detailHeight = detailHeight + entry.height
+            if index > 1 then detailHeight = detailHeight + DETAIL_ROW_GAP end
+        end
+        layout.setSize(detailLeft + DETAIL_WIDTH, math.max(listHeight, detailHeight), {
+            split = LIST_WIDTH + DETAIL_GAP / 2,
+            left = listHeight,
+            right = detailHeight,
+        })
+    end
+
     local function BuildDetail(group)
         local page = Group(root)
         page:DisableHitTest()
@@ -124,7 +177,7 @@ function Create(parent, layout, options, coreOptions)
         local description = Text(page, group.descriptionKey, 0, 32, M.secondaryText, C.muted)
         local refreshRows = {}
         local y = DETAIL_HEADER_HEIGHT
-        for _, entry in ipairs(group.entries) do
+        for _, entry in ipairs(VisibleEntries(group)) do
             local option = entry.option
             local row = Group(page)
             row.Depth:Set(function() return page.Depth() + 1 end)
@@ -162,7 +215,96 @@ function Create(parent, layout, options, coreOptions)
                 end
                 local labelKey = entry.labelKey
                 table.insert(refreshRows, function() label:SetText(T(labelKey)) end)
-                y = y + entry.height + DETAIL_ROW_GAP
+            elseif entry.kind == 'keypair' then
+                label:SetFont(Theme.Fonts.body, M.secondaryText * ratio)
+                L(label):AtLeftTopIn(row, 16, math.floor((entry.height - M.secondaryText) / 2) - 4)
+                local choices = PREVIEW_KEYS
+                local x = DETAIL_WIDTH - 12
+                for _, choice in ipairs(choices) do x = x - choice.width - 4 end
+                x = x + 4
+                local paints = {}
+                for _, choice in ipairs(choices) do
+                    local valueKey, labelKey = choice.value, choice.labelKey
+                    local button = Group(row)
+                    button:EnableHitTest()
+                    button.Depth:Set(function() return row.Depth() + 2 end)
+                    L(button):AtLeftTopIn(row, x, 4):Width(choice.width):Height(entry.height - 8)
+                    x = x + choice.width + 4
+                    local paintButton = ButtonSurface(button, choice.width, entry.height - 8)
+                    local value = Text(button, labelKey, 0, 0, M.label, C.text)
+                    L(value):AtCenterIn(button)
+                    local mark = Bitmap(button)
+                    mark:DisableHitTest()
+                    mark.Depth:Set(function() return button.Depth() + 2 end)
+                    L(mark):AtLeftTopIn(button, (choice.width - 12) / 2, entry.height - 12):Width(12):Height(2)
+                    local hover, pressed = false, false
+                    local function Paint()
+                        local active = option:Get() == valueKey
+                        mark:SetSolidColor(active and C.accentText or C.transparent)
+                        paintButton(pressed and C.pressed or hover and C.hover or active and C.selected or C.canvas,
+                            active and C.selectedBorder or C.border)
+                    end
+                    button.HandleEvent = function(self, event)
+                        if event.Type == 'MouseEnter' then hover = true
+                        elseif event.Type == 'MouseExit' then hover, pressed = false, false
+                        elseif event.Type == 'ButtonRelease' then pressed = false
+                        elseif event.Type == 'ButtonPress' and not (event.Modifiers and event.Modifiers.Right) then
+                            pressed = true
+                            if option:Get() ~= valueKey then
+                                option:Set(valueKey)
+                                option:Save()
+                            end
+                        end
+                        Paint()
+                        return true
+                    end
+                    table.insert(paints, Paint)
+                    table.insert(refreshRows, function() value:SetText(T(labelKey)) end)
+                end
+                local function Sync()
+                    for _, paint in ipairs(paints) do paint() end
+                end
+                option.OnChanged:Add(Sync)
+                local oldDestroy = row.OnDestroy
+                row.OnDestroy = function(self)
+                    option.OnChanged:Remove(Sync)
+                    if oldDestroy then oldDestroy(self) end
+                end
+                Sync()
+                local labelKey = entry.labelKey
+                table.insert(refreshRows, function() label:SetText(T(labelKey)) end)
+            elseif entry.kind == 'hint' then
+                label:SetFont(Theme.Fonts.body, M.caption * ratio)
+                label:SetColor(C.muted)
+                L(label):AtLeftTopIn(row, 16, 6)
+                local labelKey = entry.labelKey
+                table.insert(refreshRows, function() label:SetText(T(labelKey)) end)
+            elseif entry.kind == 'disclosure' then
+                local paintDisclosure = ButtonSurface(row, DETAIL_WIDTH, entry.height)
+                local top = math.floor((entry.height - M.buttonText) / 2) - 4
+                local mark = Text(row, nil, 16, top, M.buttonText, C.accentText)
+                mark:SetText(group.advancedOpen and '−' or '+')
+                L(label):AtLeftTopIn(row, 40, top)
+                local hover = false
+                local function Paint()
+                    paintDisclosure(hover and C.hover or C.surface, C.border)
+                end
+                row.HandleEvent = function(self, event)
+                    if event.Type == 'MouseEnter' then hover = true
+                    elseif event.Type == 'MouseExit' then hover = false
+                    elseif event.Type == 'ButtonPress' and not (event.Modifiers and event.Modifiers.Right) then
+                        group.advancedOpen = not group.advancedOpen
+                        ClearDetail()
+                        ApplySize()
+                        BuildDetail(group)
+                        return true
+                    end
+                    Paint()
+                    return true
+                end
+                local labelKey = entry.labelKey
+                table.insert(refreshRows, function() label:SetText(T(labelKey)) end)
+                Paint()
             else
                 label:SetFont(Theme.Fonts.body, M.text * ratio)
                 L(label):AtLeftTopIn(row, 16, math.floor((entry.height - M.text) / 2) - 4)
@@ -204,31 +346,14 @@ function Create(parent, layout, options, coreOptions)
                     label:SetText(T(labelKey))
                     Paint()
                 end)
-                y = y + entry.height + DETAIL_ROW_GAP
             end
+            y = y + entry.height + DETAIL_ROW_GAP
         end
         refreshDetail = function()
             title:SetText(T(group.labelKey))
             description:SetText(T(group.descriptionKey))
             for _, refresh in ipairs(refreshRows) do refresh() end
         end
-    end
-
-    local function ApplySize()
-        if not selected then
-            layout.setSize(LIST_WIDTH, listHeight)
-            return
-        end
-        local detailHeight = DETAIL_HEADER_HEIGHT
-        for index, entry in ipairs(selected.entries) do
-            detailHeight = detailHeight + entry.height
-            if index > 1 then detailHeight = detailHeight + DETAIL_ROW_GAP end
-        end
-        layout.setSize(detailLeft + DETAIL_WIDTH, math.max(listHeight, detailHeight), {
-            split = LIST_WIDTH + DETAIL_GAP / 2,
-            left = listHeight,
-            right = detailHeight,
-        })
     end
 
     local function Navigate(group)

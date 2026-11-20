@@ -1,5 +1,21 @@
 # История изменений
 
+## Сборка 20261120-41 — 2026-11-20
+- Removed the separate hover shortcut setting. The attack shortcut now controls both hover and selection previews.
+
+## Сборка 20261120-40 — 2026-11-20
+- Clarified the Russian label for linking hover to the attack shortcut.
+
+## Сборка 20261120-39 — 2026-11-20
+- Updated the Russian labels for the anti-navy and omni range filters in All Rings.
+
+## Сборка 20261120-38 — 2026-11-20
+- Put attack and build range shortcuts first in All Rings, with separate Shift and Ctrl buttons and a collapsed Advanced section.
+- Hover follows the attack shortcut by default. Existing explicit hover shortcuts are preserved.
+
+## Сборка 20261120-37 — 2026-11-20
+- Added All Rings to Claret UI with hover, selection, build and reclaim previews, minimap rendering, and profile settings in UI → All Rings.
+
 ## Сборка 20261120-36 — 2026-11-20
 - Minimap settings are available inside the UI section.
 

@@ -2,6 +2,7 @@
 -- and optionally SetVisible(self, visible); its option drives that visibility.
 local features = {
     { id = 'acu', module = '/mods/ClaretUI/modules/features/AcuHealth.lua', option = 'acuHealth' },
+    { id = 'allRings', module = '/mods/ClaretUI/modules/features/AllRings.lua', option = 'allRings' },
 }
 
 local service = {}
@@ -14,6 +15,7 @@ end
 function service:Start(scope)
     if self.started then return end
     self.started = true
+    scope:Defer(function() self.started = false end)
     for _, definition in ipairs(features) do
         local loaded, feature = pcall(function() return import(definition.module) end)
         if not loaded or type(feature) ~= 'table' then

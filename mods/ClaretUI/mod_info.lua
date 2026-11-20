@@ -1,11 +1,11 @@
 name = 'Claret UI (Test)'
 uid = 'claret-ui-001'
-version = 36
-description = 'Claret UI: minimap, economy, selection and team overlays for the game interface. Requires Claret Core and ReUI.'
+version = 41
+description = 'Claret UI: ACU health, unit range previews, and minimap settings. Requires Claret Core and ReUI.'
 author = 'Claret Project'
 url = ''
 selectable = true
 enabled = true
 exclusive = false
 ui_only = true
-ReUI = 'ClaretUI=0.2.33'
+ReUI = 'ClaretUI=0.2.38'

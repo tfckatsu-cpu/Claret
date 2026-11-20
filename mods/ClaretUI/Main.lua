@@ -1,6 +1,6 @@
-Version = '0.2.33'
+Version = '0.2.38'
 -- Bump for every Claret UI code change so the loaded build is identifiable.
-local BuildStamp = '20261120-36'
+local BuildStamp = '20261120-41'
 LOG('[Claret][build] ui='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
@@ -18,6 +18,7 @@ function Main(isReplay)
     local localizationOk, localizationError = Localization.Register('claretui', localizationTables)
     if not localizationOk then error(localizationError) end
     local options = ReUI.Options.Mods['ClaretUI']
+    import('/mods/ClaretUI/modules/features/AllRings.lua').Install()
     local Runtime = import('/mods/ClaretUI/modules/Runtime.lua')
     local service
     local function Ensure()
