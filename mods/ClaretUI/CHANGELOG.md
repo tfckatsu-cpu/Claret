@@ -1,5 +1,8 @@
 # История изменений
 
+## Сборка 20261120-105 — 2026-11-20
+- Suppress experimental completion alerts from the local FAF spawn menu.
+
 ## Сборка 20261120-104 — 2026-11-20
 - Skip completion notifications for the Novax satellite and Othuy.
 

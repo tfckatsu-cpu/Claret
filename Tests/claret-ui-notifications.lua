@@ -34,6 +34,7 @@ env.UnitData = { ['10'] = {}, [11] = {} }
 env.GetUnitById = function(id) return units[id] end
 env.GetFocusArmy = function() return army end
 env.GetSystemTimeSeconds = function() return time end
+env.GetGameTimeSeconds = env.GetSystemTimeSeconds
 env.GetSelectedUnits = function() return selected end
 env.GetArmiesTable = function() return { armiesTable = { { faction = 2 } } } end
 env.__blueprints = { ueb2401 = { General = { UnitName = 'Mavor', Icon = 'land' } } }
@@ -192,6 +193,35 @@ Advance()
 assert(#alerts == 0, 'Returning to the original army should establish new baselines')
 options.notificationsSmd:Set(false)
 assert(not beat and not syncCallbacks.UnitData and not next(selectionObservers), 'Disabling missiles should remove their listeners')
+env.__blueprints.xrl0403 = { TechCategory = 'EXPERIMENTAL', General = { UnitName = 'Megalith' } }
+local megalithComplete = { army = 1, category = 'experimentals', trigger = 'completed', source = 'xrl0403' }
+local mode = { cheat = true, army = 1, count = 15 }
+local forwarded
+local hook = {
+    OnCommandIssued = function(command) forwarded = command end,
+    GetCommandMode = function() return { 'build', mode } end,
+    import = function() return env end,
+}
+assert(loadfile('../mods/ClaretUI/hook/lua/ui/game/commandmode.lua', 't', hook))()
+local spawn = { CommandType = 'BuildMobile', Units = {}, Blueprint = 'xrl0403' }
+hook.OnCommandIssued(spawn)
+assert(forwarded == spawn, 'The hook forwards the original FAF command unchanged')
+local completions = {}
+for index = 1, 15 do completions[index] = megalithComplete end
+syncCallbacks.EnhanceMessage(completions)
+assert(#alerts == 0, 'Spawning 15 Megaliths should suppress all 15 notices')
+syncCallbacks.EnhanceMessage({ megalithComplete })
+assert(#alerts == 1 and alerts[1].value == 'Megalith', 'A simultaneous completion above the spawn count still alerts')
+hook.OnCommandIssued(spawn)
+Advance()
+Advance()
+syncCallbacks.EnhanceMessage({ megalithComplete })
+assert(#alerts == 2, 'A normal completion after the spawn window still alerts')
+mode.MeshOnly = true
+hook.OnCommandIssued(spawn)
+syncCallbacks.EnhanceMessage({ megalithComplete })
+assert(#alerts == 3, 'Mesh previews should not register a spawn')
+
 for index = #cleanups, 1, -1 do cleanups[index]() end
 assert(not next(syncCallbacks), 'Match teardown should remove all sync listeners')
 

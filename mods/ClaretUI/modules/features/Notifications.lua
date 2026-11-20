@@ -1,6 +1,12 @@
 local Game = import('/lua/ui/game/gamemain.lua')
 local identifier = 'ClaretUI.Notifications'
 local spawnedExperimentals = { xea0002 = true, xsl0402 = true }
+local spawnWindow = 1.5
+local onCheatSpawn
+
+function RecordCheatSpawn(army, blueprint, count)
+    if onCheatSpawn then onCheatSpawn(army, blueprint, count) end
+end
 local hqLayers = {
     land = { suffix = '01', frame = 'land' },
     air = { suffix = '02', frame = 'air' },
@@ -47,6 +53,38 @@ function Start(self, scope, isReplay, options)
     local nextSample = 0
     local nukeEnabled, smdEnabled
 
+    local spawned = {}
+
+    local function TrackSpawn(targetArmy, blueprint, count)
+        if targetArmy ~= army or GetFocusArmy() ~= army or type(blueprint) ~= 'string' then return end
+        blueprint = string.lower(blueprint)
+        local bp = __blueprints[blueprint]
+        if not bp or bp.TechCategory ~= 'EXPERIMENTAL' or spawnedExperimentals[blueprint] then return end
+        count = count or 1
+        if type(count) ~= 'number' or count ~= count or count < 1 or count == math.huge then return end
+        local now = GetGameTimeSeconds()
+        local previous = spawned[blueprint]
+        local remaining = previous and previous.untilTime >= now and previous.remaining or 0
+        spawned[blueprint] = { remaining = remaining + math.floor(count), untilTime = now + spawnWindow }
+    end
+
+    -- Notify only supplies the blueprint for an experimental. Consume at most the
+    -- requested count so a simultaneous completion still leaves one normal alert.
+    local function ConsumeSpawn(blueprint)
+        local state = spawned[blueprint]
+        if not state then return false end
+        if GetGameTimeSeconds() > state.untilTime then
+            spawned[blueprint] = nil
+            return false
+        end
+        state.remaining = state.remaining - 1
+        if state.remaining == 0 then spawned[blueprint] = nil end
+        return true
+    end
+
+    onCheatSpawn = TrackSpawn
+    scope:Defer(function() onCheatSpawn = nil end)
+
     local function OnEnhancements(messages)
         if GetFocusArmy() ~= army then return end
         for _, message in ipairs(messages) do
@@ -58,9 +96,10 @@ function Start(self, scope, isReplay, options)
                         local icon, frame = HQIcon(army, tech, hq)
                         display:Show('hq', 'hq_' .. layer, tech, icon, frame)
                     end
-                elseif message.category == 'experimentals' and options.notificationsExperimental:Get() then
+                elseif message.category == 'experimentals' then
+                    local spawnedByCheat = ConsumeSpawn(message.source)
                     local bp = not spawnedExperimentals[message.source] and __blueprints[message.source]
-                    if bp then
+                    if bp and not spawnedByCheat and options.notificationsExperimental:Get() then
                         local general = bp.General or {}
                         local icon, frame = UnitIcon(message.source, factoryFrames[general.Icon] or 'land')
                         display:Show('experimental', nil, general.UnitName or bp.Description or message.source, icon, frame)
@@ -221,6 +260,7 @@ function Start(self, scope, isReplay, options)
     AddOnSyncHashedCallback(OnEnhancements, 'EnhanceMessage', identifier)
     AddOnSyncHashedCallback(function()
         display:Clear()
+        spawned = {}
         StopSampling()
         UpdateSampling()
     end, 'FocusArmyChanged', identifier)

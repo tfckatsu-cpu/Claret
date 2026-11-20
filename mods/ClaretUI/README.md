@@ -1,4 +1,4 @@
-# Claret UI — test build 0.2.101
+# Claret UI — test build 0.2.102
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
@@ -43,7 +43,7 @@ Do not run the original mod next to the equivalent Claret UI feature.
 
 ## Notifications
 
-Experimental completion alerts skip the spawned Novax satellite (`xea0002`) and Othuy (`xsl0402`). The Novax Center and Ythotha still qualify.
+Experimental completion alerts skip the spawned Novax satellite (`xea0002`) and Othuy (`xsl0402`). The Novax Center and Ythotha still qualify. For a local spawn-menu command, Claret suppresses up to the requested number of matching experimental completions within 1.5 game seconds. FAF identifies these events by blueprint, so an overlapping build of the same type is distinguished only by the total number of completions. The user confirmed the overall result in FAF on 2026-11-21 for build 20261120-105.
 
 The project owner confirmed the 0.2.86 build in FAF on 2026-11-20. Individual scenarios were not specified.
 
