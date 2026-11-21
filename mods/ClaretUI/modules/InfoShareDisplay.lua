@@ -75,6 +75,10 @@ function Create(scope, options)
     title.Depth:Set(function() return panel.Depth() + 3 end)
     title.Left:Set(function() return panel.Left() + math.floor(10 * PanelScale()) end)
     title.Top:Set(function() return panel.Top() + math.floor(7 * PanelScale()) end)
+    localization.Subscribe(title, function()
+        title:SetText(localization.Text('claretui.infoshare.title'))
+    end)
+    scope:Defer(function() localization.Unsubscribe(title) end)
 
     local rowControls = {}
     local function CreateRow(index)

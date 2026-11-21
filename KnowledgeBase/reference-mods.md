@@ -6,9 +6,9 @@ Claret mods (checked 2026-11-21):
 
 | Mod | Version | Mod version | UID |
 |---|---|---|---|
-| Claret Core | 0.10.27 | 46 | `claret-core-001` |
-| Claret UI | 0.2.120 | 122 | `claret-ui-001` |
-| Claret Hotbuild | 0.10.60 | 85 | `claret-hotbuild-001` |
+| Claret Core | 0.10.37 | 56 | `claret-core-001` |
+| Claret UI | 0.2.123 | 125 | `claret-ui-001` |
+| Claret Hotbuild | 0.10.61 | 86 | `claret-hotbuild-001` |
 
 All three are `ui_only = true` and require ReUI. ReUI installed: Main 1.3.2, Core 1.7.0, Options 1.2.0. Readable reference sources are Main 1.4.0 — a newer version; never assume identical behaviour.
 
@@ -133,6 +133,6 @@ One line per mod, from manifests and installed code. Behaviour is not verified i
 ## Sources on disk
 
 - `Context/sources/` — read-only copies, git-ignored. Start at `Context/sources/SOURCES.md`, then `rg --no-ignore <pattern> Context/sources/<Mod>`.
-- `Context/compiled-lua.txt` — decompiled reference dump.
-- `Context/reui-decompiled/` — 92 decompiled ReUI files from 9 installed mods, manifest with SHA-256; syntax-parsed, not execution-verified.
+- `Context/.local/compiled-lua.txt` — decompiled reference dump.
+- `Context/.local/reui-decompiled/` — 92 decompiled ReUI files from 9 installed mods, manifest with SHA-256; syntax-parsed, not execution-verified.
 - Game snapshot `C:/ProgramData/FAForever/gamedata/lua.nx2` — read-only, never extract into the mod folders.

@@ -9,6 +9,7 @@
 - `CanLeave(intent)` lets an editor request confirmation when closing or switching sections with an unsaved draft.
 - Separate windows connect through actions; respect `RequestClose()`/`OnDestroy` and restore focus.
 - Simple settings save immediately through the existing OptionValue and profile; there is no “Apply” button.
+- Core's settings size offers 100%, 125%, and 150%. The original fitted size is 125%. The launcher and its settings sections use the saved value on reopen and fit the available screen. The option is local to the settings shell and its embedded pages.
 - Launcher and section panels never capture keyboard focus: game hotkeys remain available. They do not handle Tab/Shift+Tab or Enter/Space navigation. FAF’s Escape stack closes the menu, with nested dialogs and active key capture handled first.
 - Key-assignment capture temporarily takes keyboard focus and releases it on save, cancellation, or teardown. Text fields take focus only while focused. The Hotbuild keyboard reads physical Ctrl, Shift, and Alt while the page is visible, including when the pointer is over the map, without keyboard focus or consuming game input; on-screen modifier controls remain available.
 - Menu bind: stable ID `ClaretCore_OpenMenu`, category Claret; default Ctrl-Alt-C is assigned once, only if free.

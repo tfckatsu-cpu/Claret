@@ -10,7 +10,7 @@ Claret UI 0.2.120 defers background engineer and mex selection scans for the fir
 
 ## Method (user-run, reproducible)
 
-1. FAF 3840, replay **28072660**. Check it still plays on this version. Fix map, camera, resolution, UI scale, graphics, speed 1x, VSync off.
+1. Choose a replay that plays on the FAF build under test. Fix map, camera, resolution, UI scale, graphics, speed 1x, VSync off.
 2. Choose one interval (e.g. 05:00–10:00 game time) and warm up every run the same way. Record the interval actually used.
 3. Baseline A: target feature off, required libraries still enabled. Variant B: only the target feature on. Add a clean-UI baseline if library cost also matters. Save the mod list with UIDs.
 4. Three runs each, alternating A/B, with restarts. Camera fixed — movement and zoom change overlay cost.

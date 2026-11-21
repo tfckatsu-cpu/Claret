@@ -4,7 +4,7 @@ function TraceInput(enabled,owner)
     local probe=options and options.probeEnabled
     if probe and probe:Get() then LOG('[Claret][input] capture='..(enabled and 'on' or 'off')..' owner='..owner) end
 end
-function Create(keyBinding)
+function Create(keyBinding, scaleOption)
     local sections, ids = {}, {}
     local sectionOrder={core=1,hotbuild=2,ui=3,cinema=4}
     local function InsertSection(definition)
@@ -85,7 +85,11 @@ function Create(keyBinding)
         local launcherHeight=math.min(metrics.launcherHeight,112+visibleSections*48)
         local groupWidth=launcherWidth+gap+width
         local pixel=Helpers.GetPixelScaleFactor()
-        local scale=math.min(pixel,(parent.Width()-24)/groupWidth,(parent.Height()-24)/height)
+        local fit=math.min((parent.Width()-24)/groupWidth,(parent.Height()-24)/height)
+        local percent=scaleOption and scaleOption:Get()
+        if percent~=100 and percent~=150 then percent=125 end
+        -- 125% is the original fitted size, so 100% reduces it even on a smaller screen.
+        local scale=math.min(fit,math.min(pixel,fit)*(percent/125))
         local L=ReUI.UI.FloorLayouter(scale)
         local ratio=scale/pixel
         local root=Group(parent); window=root
@@ -575,7 +579,7 @@ function Create(keyBinding)
                 end
                 local y=0
                 if rowCount>0 then
-                    if Visible(y,20) then Text(state.content,T(section.id=='core' and 'core.menu.panels' or 'core.menu.options'),0,y-offset,C.muted) end
+                    if Visible(y,20) then Text(state.content,T('core.menu.options'),0,y-offset,C.muted) end
                     y=y+28
                 end
                 for _,toggle in ipairs(section.toggles or {}) do
@@ -660,10 +664,10 @@ function Create(keyBinding)
                                     end)
                                     if not saved then
                                         pcall(function() option:Set(previous); option:Save(); SavePreferences() end)
-                                        WARN('[Claret] Could not save interface language: '..tostring(saveError))
+                                        WARN('[Claret] Could not save menu setting: '..tostring(saveError))
                                         status(T('core.menu.save_failed'),true)
                                     else
-                                        status(T('core.menu.saved'),false,true)
+                                        status(T(selector.savedKey or 'core.menu.saved'),false,true)
                                     end
                                     update()
                                 end,state.contentItems,C.surface)

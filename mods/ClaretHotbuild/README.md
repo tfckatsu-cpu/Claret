@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.60
+# Claret Hotbuild — prototype 0.10.61
 
 The build-cycle preview shows the available buildings while placing through Hotbuild. T1–T3 labels sit at the bottom center of each icon. The row fades in and out over 150 ms.
 
@@ -8,7 +8,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.60, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.61, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 
@@ -50,7 +50,7 @@ Building cycle menu: when a builder presses a binding, a panel shows available b
 
 ## Keyboard page — 0.10.14
 
-Open **F10 → Claret → Hotbuild → Keyboard**. Press a key on the layout, then choose one of three assignment types: a saved Hotbuild preset, a saved multifunction binding, or a standalone action from the context catalog. A multifunction binding runs directly: a normal binding keeps its behavior based on the selection context, while an absolute binding uses only the empty-selection action regardless of the current selection. Actions from the empty-selection context work regardless of the current selection. For eligible standalone actions, the editor offers a double-tap action for the same unit type.
+Open **F10 → Claret → Hotbuild → Keyboard**. Press a key on the layout, then choose one of three assignment types: a saved Hotbuild preset, a saved multifunction binding, or a standalone action from the context catalog. A multifunction binding runs directly: a normal binding keeps its behavior based on the selection context, while an absolute binding uses only the empty-selection action regardless of the current selection. Actions from the empty-selection context work regardless of the current selection. All T1–T3 land, air and naval factories can each be selected directly across the map. The same three actions are offered in the Empty selection context. For eligible standalone actions, the editor offers a double-tap action for the same unit type.
 
 The **Ctrl**, **Shift**, and **Alt** toggles set the modifiers for the next assignment. The **+ Shift** button assigns both the chosen chord and its Shift variant. Confirm each occupied chord before either assignment is saved. The key displays assignments for all modifier combinations at once. The page legend maps colors to combinations: no modifiers, Ctrl, Shift, Ctrl+Shift, Alt, Ctrl+Alt, Shift+Alt, and Ctrl+Shift+Alt. A single assignment colors the key for its combination; multiple assignments appear as colored indicators. The key tooltip lists combinations and actions, including assignments from other mods and old assignments.
 

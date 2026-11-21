@@ -54,9 +54,10 @@ Names and links below are copied from manifests for source attribution. No code 
 - Nunito Regular / SemiBold: The Nunito Project Authors, SIL Open Font License 1.1; TTFs were provided by the user; notices from their archive are kept in ClaretCore/fonts/Nunito. Project source: https://github.com/googlefonts/nunito. Checked 2026-11-12.
 
 - Claret logos: PNG files were provided by the user on 2026-11-14 (`claret`, `claret Lyrics`); no author or license information was supplied.
+- DPG clan banner: supplied by the user on 2026-11-21 for the welcome window. The shipped PNG has a transparent background.
 
-- 2026-11-13, research restoration of the installed ReUI/ReUI.*: authors per manifests are 4z0t; Construction/Score — 4z0t, HotCheese; MissilePanel — Nuggets. Author link: https://github.com/4z0t/FAF-UI-Mods. Versions and SHA-256 are in Context/reui-decompiled/manifest.json. The local MIT notice from 2022 by 4z0t is kept in Context/reui-decompiled/LICENSE.reference.txt; whether every installed build and asset falls under that license was not separately established. No code was copied into Claret.
-- unluac (dev tool only): tehtmi, copyright 2011–2020; parts by Thomas Klaeger, 2014; MIT. Fork https://github.com/Jeong-Min-Cho/unluac, commit 744c8149d93f7739f17b7f0f506822fb93ba7193, CLI 1.2.3.569; checked 2026-11-13. Sources and notice are in .tools/unluac/license.txt; adaptation notes in Context/reui-decompiled/README.md.
+- 2026-11-13, research restoration of the installed ReUI/ReUI.*: authors per manifests are 4z0t; Construction/Score — 4z0t, HotCheese; MissilePanel — Nuggets. Author link: https://github.com/4z0t/FAF-UI-Mods. Versions and SHA-256 are in Context/.local/reui-decompiled/manifest.json. The local MIT notice from 2022 by 4z0t is kept in Context/.local/reui-decompiled/LICENSE.reference.txt; whether every installed build and asset falls under that license was not separately established. No code was copied into Claret.
+- unluac (dev tool only): tehtmi, copyright 2011–2020; parts by Thomas Klaeger, 2014; MIT. Fork https://github.com/Jeong-Min-Cho/unluac, commit 744c8149d93f7739f17b7f0f506822fb93ba7193, CLI 1.2.3.569; checked 2026-11-13. Sources and notice are in .tools/unluac/license.txt; adaptation notes in Context/.local/reui-decompiled/README.md.
 
 ## Claret UI reuse policy (2026-11-19)
 

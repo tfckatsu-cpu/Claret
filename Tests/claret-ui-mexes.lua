@@ -174,7 +174,7 @@ local transparency = option(0)
 local position = option({x=100,y=50})
 function position:Set(value) self.value=value end
 function position:Save() pendingPosition=self.value; self.saves=(self.saves or 0)+1 end
-local options={mexPanelPosition=position,mexPanel={Get=function() return true end},mexOverlay=option(false),mexNumbers=option(true),mexPanelScale=scale,mexPanelMode=mode,mexPanelLocked=locked,mexPanelTransparency=transparency}
+local options={mexPanelPosition=position,mexPanel={Get=function() return true end},mexOverlay=option(false),mexOverlayScale=option(100),mexNumbers=option(true),mexPanelScale=scale,mexPanelMode=mode,mexPanelLocked=locked,mexPanelTransparency=transparency}
 assert(loadfile('../mods/ClaretUI/modules/features/Mexes.lua','t',env))()
 env.InstallKeys()
 assert(applied['CTRL-M'] == actions.claret_mex_select_T1_idle and not applied.M)
@@ -366,6 +366,15 @@ b.pos=nil
 options.mexOverlay.value=true
 advance(0.3)
 assert(marker(1,'red') and marker(2,'white') and not marker(2,'red'))
+local panelWidth = panel.Width()
+options.mexOverlayScale.value = 200
+updater:OnFrame(0.01)
+assert(marker(1,'red').Width() == 36 and panel.Width() == panelWidth)
+options.mexOverlayScale.value = 50
+updater:OnFrame(0.01)
+assert(marker(1,'red').Width() == 9)
+options.mexOverlayScale.value = 100
+updater:OnFrame(0.01)
 local fill, activePlate
 activePlate=marker(1,'red')
 assert(activePlate == arrow())

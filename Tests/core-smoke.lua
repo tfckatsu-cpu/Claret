@@ -209,7 +209,7 @@ game.import('/mods/ClaretCore/Options.lua').Main()
 local option = options.Mods.ClaretCore.probeEnabled
 assert(option:Get() == false, 'probe must be disabled by default')
 option:Set(true) -- Exercise the probe lifecycle explicitly.
-local selectionOption = options.Mods.ClaretCore.selectionEnabled
+assert(options.Mods.ClaretCore.selectionEnabled == nil, 'the removed panel has no setting')
 local core = main.Main(false)
 local cargoSelection = {{id='transport'}}
 assert(not core.AppendTransportCargo(cargoSelection) and #cargoSelections == 0,
@@ -266,8 +266,6 @@ for _, control in ipairs(controls) do
     assert(control.text ~= 'Claret Core | ACTIVE' and control.text ~= 'UI updates: 0',
         'diagnostics must not create the removed overlay')
 end
-local summary = controls[5]
-assert(summary.text == 'Units: 0 | Types: 0')
 local function unit(id, dead)
     return { IsDead = function() return dead end, GetBlueprint = function() return { BlueprintId = id } end }
 end
@@ -275,27 +273,15 @@ local nextSelected = { unit('a'), unit('a'), unit('b'), unit('c', true) }
 local resetsBeforeChange = cargoResets
 changeSelection(nil, nextSelected)
 assert(cargoResets == resetsBeforeChange + 1)
-assert(summary.text == 'Units: 3 | Types: 2')
 selected = nextSelected
 changeSelection(selected, nil)
-assert(summary.text == 'Units: 0 | Types: 0')
 changeSelection(nil, selected)
-local writes = summary.textWrites
-changeSelection(nil, selected)
-assert(summary.textWrites == writes)
 local previousReads = selectionReads
 local resetsBeforeIgnored = cargoResets
 ignored = true; changeSelection(nil, {}); ignored = false
 assert(selectionReads == previousReads and cargoResets == resetsBeforeIgnored)
-assert(summary.text == 'Units: 3 | Types: 2')
-selectionOption:Set(false)
-changeSelection(nil, selected)
-assert(selectionReads == previousReads and summary.destroyed)
-selectionOption:Set(true)
-assert(selectionReads == previousReads, 'recreated panel uses the current event snapshot')
-summary = controls[#controls]
 option:Set(false); option:Set(true)
-assert(driverCount() == 0 and not summary.destroyed, 'diagnostics switch does not affect selection UI')
+assert(driverCount() == 0, 'diagnostics switch does not create selection UI')
 
 local function hudPanel()
     for _, item in ipairs(controls) do if item.selectionHud and not item.destroyed then return item end end
@@ -328,8 +314,7 @@ local warningsBeforeHud = #warnings
 uiOptions.selectionHud:Set(true)
 local panel = assert(hudPanel(), warnings[#warnings])
 assert(core.Localization.Text('claretui.selection.title') == 'Selection Info')
-assert(not panel.hidden and summary.destroyed and selectionOption:Get())
-assert(core.GetFeatureState('selectionSummary') == 'disabled')
+assert(not panel.hidden)
 assert(not hudText(panel, 'Tank') and hudText(panel, 'Units') and not hudText(panel, 'Types') and hudText(panel, '1'))
 assert(hudText(panel, '52') and hudText(panel, '270') and hudText(panel, '41') and hudText(panel, '205'))
 assert(not hudText(panel, 'Build power') and not hudText(panel, 'Reclaimed') and not hudText(panel, 'Shield'))
@@ -433,21 +418,17 @@ for _, item in ipairs(controls) do
 end
 assert(shieldZero == '0')
 assert(hudText(panel, 'Reclaimed'), 'a commander can reclaim even with a zero total')
-selectionOption:Set(false); selectionOption:Set(true)
-assert(core.GetFeatureState('selectionSummary') == 'disabled', 'Core option cannot show a second panel')
 local title = assert(hudText(panel, 'Combat'))
 local titleWrites = title.textWrites
 uiOptions.selectionHud:Set(false)
-assert(panel.destroyed and not hudPanel() and core.GetFeatureState('selectionSummary') == 'running')
+assert(panel.destroyed and not hudPanel())
 assert(next(uiOptions.selection_massRate.OnChanged.callbacks) == nil)
 assert(next(uiOptions.selectionScale.OnChanged.callbacks) == nil)
-assert(selectionOption:Get(), 'HUD does not rewrite Core settings')
 core.Localization.SetLanguage('ru')
 assert(title.textWrites == titleWrites, 'disabling the HUD removes its language subscription')
 core.Localization.SetLanguage('en')
 readCount = samples
 changeSelection(nil, {builder}); assert(samples == readCount)
-selectionOption:Set(false)
 assert(next(selectionEvent.callbacks) == nil, 'disabled HUD and Core leave no selection subscribers')
 uiOptions.selectionHud:Set(true)
 panel = assert(hudPanel())
@@ -458,7 +439,7 @@ assert(not hudPanel() and next(selectionEvent.callbacks) == nil)
 assert(next(uiOptions.selectionHud.OnChanged.callbacks) == nil)
 uiOptions.enabled:Set(true)
 panel = assert(hudPanel())
-assert(core.GetFeatureState('selectionSummary') == 'disabled' and driverCount() == 0)
+assert(driverCount() == 0)
 assert(#warnings == warningsBeforeHud, warnings[#warnings])
 uiOptions.selectionLocked:Set(false)
 assert(panel:HandleEvent(press))
@@ -473,7 +454,6 @@ assert(next(lateOption.OnChanged.callbacks) == nil)
 assert(not core.RegisterFeature('afterDispose', function() end, lateOption))
 assert(not core.RegisterSettingsSection({id='afterDispose',title='Disposed'}))
 assert(driverCount() == 0 and next(option.OnChanged.callbacks) == nil)
-assert(next(selectionOption.OnChanged.callbacks) == nil)
 assert(panel.destroyed and next(selectionObservers) == nil and next(selectionEvent.callbacks) == nil)
 assert(next(uiOptions.selectionHud.OnChanged.callbacks) == nil)
 previousReads = selectionReads; changeSelection(nil, selected)

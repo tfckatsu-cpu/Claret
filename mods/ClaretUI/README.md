@@ -1,8 +1,12 @@
-# Claret UI — test build 0.2.120
+# Claret UI — test build 0.2.123
+
+**Show installed ACU upgrades** adds icons below the left edge of the ACU Health panel. An installed upgrade replaces the icons for its prerequisites. The icons disappear on commander death.
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
 ## InfoShare
+
+The InfoShare panel title follows the selected interface language during the match.
 
 Use F10 → Claret → UI → InfoShare to toggle the work list and labels above units independently. InfoShare tracks SMD construction, experimental construction and commander upgrades. SMD interceptor readiness remains a separate notification. The list shows up to five rows and scrolls for additional work. The list and map labels fade in and out. Progress fill remains visible at every background transparency setting. The list size, background transparency and map label size can be set independently. Drag the header to save the list position. Locking the list makes it pass clicks and wheel input through to the game. Map labels use outlined white text, with separate optional unit icons for experimentals and SMD. Active work is listed first, and results remain for 1.5 seconds before fading out.
 
@@ -85,7 +89,7 @@ Enable **F10 → Claret → UI → Selection Info → Show selection HUD**. The 
 
 Drag with the left mouse button to save the HUD position. **Lock panel position** disables dragging and makes the HUD click-through. **Panel size** scales both the HUD and its text from 50% to 200% and saves the chosen size. The saved position is independent of the HUD size. **Panel background transparency** adjusts the fill alone from 0% to 100%.
 
-The panel takes a snapshot on each visible selection event and hides when selection is cleared. Health and economy values reflect the last selection event. DPS is outside this build's stat set. While the HUD is enabled, Core's composition panel is suspended. Turning the HUD off restores Core's panel according to its saved setting. Disable DynamicSelectionInfo in the FAF mod manager if using Claret's panel.
+The panel takes a snapshot on each visible selection event and hides when selection is cleared. Health and economy values reflect the last selection event. DPS is outside this build's stat set. Disable DynamicSelectionInfo in the FAF mod manager if using Claret's panel.
 
 ## Requirements
 
@@ -102,7 +106,7 @@ In **F10 → Claret → UI → Mex Overhaul**, turn on **Show mex panel**. **Pan
 | Upgrading T1/T2 | Select all | Pause all | Select highest progress | Pause lowest progress |
 | T3 | Select all | Select on screen | Select all | Select on screen |
 
-Each cell shows its count above the mex icon. On paused upgrades, the opaque pause mark is aligned to the green core of the T1 or T2 mex icon. **Panel background transparency** applies to one continuous panel backdrop from 0% to 100%. Cell fills are drawn only at 0% transparency. Icons, counts, and progress tracks stay visible. The panel shows tracks for up to ten upgrades per cell, ordered by progress. Fills grow from the left edge of their own track and remain inside the cell at each panel scale. **Panel size** scales the panel from 50% to 200% in 5% increments and saves the value in the current profile. Map marker sizes are independent of this setting. The **Claret UI** category in FAF's hotkey dialog contains the corresponding selection and upgrade commands, including joint T1/T2 commands for active or paused upgrades. Hotkeys dispatch while the panel is enabled. No keys are assigned by default.
+Each cell shows its count above the mex icon. On paused upgrades, the opaque pause mark is aligned to the green core of the T1 or T2 mex icon. **Panel background transparency** applies to one continuous panel backdrop from 0% to 100%. Cell fills are drawn only at 0% transparency. Icons, counts, and progress tracks stay visible. The panel shows tracks for up to ten upgrades per cell, ordered by progress. Fills grow from the left edge of their own track and remain inside the cell at each panel scale. **Panel size** scales the panel from 50% to 200% in 5% increments and saves the value in the current profile. **Map marker size** scales the numbered overlay from 50% to 200% independently of the panel. The **Claret UI** category in FAF's hotkey dialog contains the corresponding selection and upgrade commands, including joint T1/T2 commands for active or paused upgrades. Hotkeys dispatch while the panel is enabled. No keys are assigned by default.
 
 **Show map markers** displays the same 18-pixel tier badges as Engineer Indicators, scaled by the game's UI scale. The digit is white when the mex has no upgrade in progress and red during an upgrade, including when paused. A green line under the badge shows upgrade progress. **Show upgrade indicator** independently enables a gold arrow for active and paused upgrades. The incomplete target receives no separate badge. Completion shows the new tier in white, cancellation returns the source digit to white, and destruction removes the marker. FAF projects markers in the primary world view. Live mexes and their upgrade targets remain cached across discovery refreshes. The panel and markers are available for the player's army in a live game. All orders require a click or assigned key press.
 

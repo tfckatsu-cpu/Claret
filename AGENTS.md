@@ -9,7 +9,7 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 - Do internal work and subagent tasks in English; subagents answer in English.
 
 ## Start of work (keep it cheap)
-- Read `Stage/stage-1-status.md` — the current state of the stage.
+- Read the local `Stage/stage-1-status.md` when available. In a clean clone, start with `Context/quick-reference.md`.
 - The map of the knowledge base is `Context/README.md`: it lists the owner document for every rule and a routing table "task or symptom -> file". Read one or two owners, not the whole folder.
 - `Stage/stage-1-research.md` is a large history archive. Never read it whole: search it (rg) by topic and read only the relevant section.
 - Read other files only when the task needs them:
@@ -19,12 +19,12 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
   - In-game verification: `Skills/claret-project/SKILL.md`.
   - Current facts: `Context/quick-reference.md`; goals: `Credits and more/goals.md`; mods and versions: `Context/mod-inventory.md`; API and dialect: `Context/tech-findings.md`, `Context/reui-notes.md`.
   - Tests: `Context/testing.md`; release and commit: `Context/release-checklist.md`; decisions: `Context/decisions.md`; known gaps: `Context/known-limitations.md`.
-  - Superseded analyses: `Context/history/` — rationale only, never a current spec.
+  - Superseded analyses: `Context/.local/history/` — rationale only, never a current spec.
 - Context/sources/ holds copies of other mods used as references.
   Start from Context/sources/SOURCES.md to pick the relevant mod, then search
   only inside that mod's folder: `rg --no-ignore <pattern> Context/sources/<Mod>`
   (the folder is git-ignored, so plain rg may skip it). Read fragments only.
-  Same for Context/compiled-lua.txt and FAF lua.nx2.
+  Same for Context/.local/compiled-lua.txt and FAF lua.nx2.
 - Limit long command output (e.g. `| tail -n 80`); read logs from the end.
 
 ## Scope and permissions
@@ -57,7 +57,7 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 
 ## Accuracy and sources
 - Distinguish fact, assumption and unknown. Give claims and licenses a source, version and check date; record authors and links in `Credits and more/CREDITS.md`.
-- `friend-notes.md`, `community-notes.md`, `prestudy-notes.md` are unverified until checked against code/docs. A needed fix may be missing from the public version of a mod: check the specific version.
+- `Context/.local/friend-notes.md`, `Context/.local/community-notes.md`, `Context/.local/prestudy-notes.md` are unverified until checked against code/docs. A needed fix may be missing from the public version of a mod: check the specific version.
 - Check the license of each mod separately. ReUI's MIT license (4z0t, 2022) does not automatically cover neighbouring mods; keep required notices when code use is allowed.
 - A mod is a folder with `mod_info.lua`; count libraries separately, nested components as part of their mod. Docs and assets without `mod_info.lua` are not mods.
 - On conflicts, follow the latest user decisions and the current code/`mod_info.lua`, not old version numbers in notes.

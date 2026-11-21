@@ -1,5 +1,5 @@
-Version = '0.10.27'
-local BuildStamp = '20261120-59'
+Version = '0.10.37'
+local BuildStamp = '20261121-69'
 LOG('[Claret][build] core='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
@@ -75,9 +75,8 @@ function Main(isReplay)
     local menuKey = import('/mods/ClaretCore/modules/MenuKey.lua').Create(function()
         if uiReady then menu:Toggle() end
     end)
-    menu = import('/mods/ClaretCore/modules/Menu.lua').Create(menuKey)
+    menu = import('/mods/ClaretCore/modules/Menu.lua').Create(menuKey, options.menuScale)
     local coreToggles = {
-        {labelKey = 'core.setting.selection', option = options.selectionEnabled, centerLabel = true},
         {labelKey = 'core.setting.welcome', option = options.welcomeDismissed, centerLabel = true},
     }
     if rawget(_G, 'REUI_DEV_MODE') then
@@ -100,6 +99,15 @@ function Main(isReplay)
                 if language ~= 'en' and language ~= 'ru' then language = Localization.GetLanguage() end
                 return Localization.Text(language == 'ru' and 'core.language.russian' or 'core.language.english')
             end,
+        }, {
+            labelKey = 'core.menu.scale', option = options.menuScale,
+            values = {
+                {id = 100, shortLabel = '100%'},
+                {id = 125, shortLabel = '125%'},
+                {id = 150, shortLabel = '150%'},
+            },
+            segmented = true,
+            savedKey = 'core.menu.scale_saved',
         }},
     }
     ReUI.Core.OnPreCreateUI(function()
@@ -110,11 +118,10 @@ function Main(isReplay)
         }
     end)
     local Registry = import('/mods/ClaretCore/modules/Registry.lua')
-    local SelectionSummary = import('/mods/ClaretCore/modules/SelectionSummary.lua')
     local selectionChanged = ReUI.Core.Events.Event('ClaretSelection')
     local registry
     local pending = {}
-    local registered = { probe = true, selectionSummary = true }
+    local registered = { probe = true }
     local disposed = false
     local currentSelection
     local selectionHudActive = false
@@ -123,20 +130,12 @@ function Main(isReplay)
         return currentSelection or GetSelectedUnits() or {}
     end
 
-    local function UpdateSelectionSummary()
-        if registry and not disposed then
-            registry:SetEnabled('selectionSummary', not selectionHudActive and options.selectionEnabled:Get())
-        end
-    end
-
     local function UseSelectionHud(scope, refresh)
         assert(registry and not disposed and not selectionHudActive, 'Selection HUD is unavailable')
         scope:Defer(function()
             selectionHudActive = false
-            UpdateSelectionSummary()
         end)
         selectionHudActive = true
-        UpdateSelectionSummary()
         scope:Bind(selectionChanged, function(_, selection) refresh(selection) end)
         refresh(GetSelection())
     end
@@ -184,7 +183,6 @@ function Main(isReplay)
             disposed = true
             uiReady = false
             observeSelection:AddObserver(nil, 'ClaretCore')
-            options.selectionEnabled.OnChanged:Remove(UpdateSelectionSummary)
             currentSelection = nil
             menuKey:Destroy()
             menu:Destroy()
@@ -201,11 +199,6 @@ function Main(isReplay)
             onDestroy(self)
         end
 
-        registry:Register('selectionSummary', function(scope)
-            SelectionSummary.Start(owner, scope, selectionChanged, GetSelection())
-        end)
-        options.selectionEnabled.OnChanged:Add(UpdateSelectionSummary)
-        UpdateSelectionSummary()
         for _, feature in ipairs(pending) do
             registry:Register(feature.id, feature.start)
             registry:BindOption(feature.id, feature.option)

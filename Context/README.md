@@ -2,7 +2,7 @@
 
 Agent-facing reference for the Claret project. Written in English; the chat with the user stays in Russian. Everything here describes the current code unless a document says otherwise. When a document and the code disagree, the code wins — then fix the document in the same task.
 
-Current versions and pending FAF checks are listed in `quick-reference.md` and `../Stage/stage-1-status.md`.
+Current versions are listed in `quick-reference.md`. The local working checkout also records pending FAF checks in its private stage notes.
 
 ## How to choose a file
 
@@ -28,9 +28,8 @@ Current versions and pending FAF checks are listed in `quick-reference.md` and `
 | Other mods, versions, UIDs, licenses, cross-mod dependencies | `mod-inventory.md`, `license-audit.md`, `dependency-map.md` |
 | Performance work | `performance-hotspots.md` |
 | Naming, wording, glossary | `localization-glossary.md` |
-| Current project state and plans | `../Stage/stage-1-status.md` |
 
-If a task spans two areas (for example a Hotbuild UI change), read the feature owner first, then the UI owner. Do not read `history/` unless you need the rationale behind an old decision.
+If a task spans two areas (for example a Hotbuild UI change), read the feature owner first, then the UI owner. Do not read `.local/history/` unless you need the rationale behind an old decision.
 
 ## Owners: one rule, one document
 
@@ -58,17 +57,17 @@ Rules that used to live in several files now live in one owner and are linked fr
 ## Freshness
 
 - Every document starts with a header: what it describes, against which versions it was verified, and the date.
-- A document that no longer matches the code is either updated or moved to `history/` — it is never left as current-looking prose.
-- Review notes (`friend-notes.md`, `community-notes.md`, `prestudy-notes.md`) are unverified by definition; they keep their "unchecked" header and are not used as specifications.
+- A document that no longer matches the code is either updated or moved to `.local/history/` — it is never left as current-looking prose.
+- `.local/prestudy-notes.md` contains unverified findings from public sources. Private research notes belong under the ignored `Context/.local/` directory.
 
 ## History
 
-`history/` holds superseded analyses and target specs kept for rationale: Hotbuild keys analysis, keyboard open performance study, context plan, the 2026-11-13 context target spec. They describe older builds (0.10.15, pre-pair) and must not be used as current specs. Add new history there instead of deleting context; delete only duplicates and noise.
+`.local/history/` holds superseded analyses and target specs kept for rationale: Hotbuild keys analysis, keyboard open performance study, context plan, the 2026-11-13 context target spec. They describe older builds (0.10.15, pre-pair) and must not be used as current specs. Add new history there instead of deleting context; delete only duplicates and noise.
 
 ## Sources
 
 - `../KnowledgeBase/` — derived, self-contained AI-facing copy: entry router, cheat sheet, topic files and the native key-action list. It has no authority of its own: change the owner document here first, then regenerate the copy.
 
 - `sources/` — read-only copies of other mods (git-ignored); start from `sources/SOURCES.md`.
-- `reui-decompiled/` — decompiled ReUI reference; check the installed version before relying on an API.
+- `.local/reui-decompiled/` — decompiled ReUI reference; check the installed version before relying on an API.
 - `claret-ui-reference.png` — visual reference.

@@ -70,6 +70,6 @@ Never promote these to rules without a check against `lua.nx2` or a live session
 ## Documentation hygiene
 
 - `Stage/stage-1-status.md` and `stage-1-research.md` are Russian working notes, not specifications.
-- `friend-notes.md`, `community-notes.md`, `prestudy-notes.md` are unverified by definition.
+- `Context/.local/friend-notes.md`, `Context/.local/community-notes.md`, `Context/.local/prestudy-notes.md` are unverified by definition.
 - Empty-texture log noise `GetResource: Invalid name ""` was observed once and not investigated.
 - A document that no longer matches the code is updated or moved to history; it is never left as current-looking prose.

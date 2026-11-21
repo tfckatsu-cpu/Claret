@@ -2,7 +2,7 @@
 
 > **Answers:** what ReUI provides, which versions are installed, how loader/hooks/options/layout behave, licensing. **Read when:** an API is assumed but unverified, a hook does not chain, an option does not save, layout calls behave oddly. **Next:** `engine.md` for the engine side; `architecture.md` for registration.
 
-ReUI is the external UI library Claret builds on. Installed versions (checked 2026-11-20): **Main 1.3.2, Core 1.7.0, Options 1.2.0**. Readable reference sources in `Context/sources/` are **Main 1.4.0 / Options 2.0.0** — a newer version, not proof of the installed behaviour. Installed ReUI UI files are partly bytecode; decompiled reference lives in `Context/reui-decompiled/`.
+ReUI is the external UI library Claret builds on. Installed versions (checked 2026-11-20): **Main 1.3.2, Core 1.7.0, Options 1.2.0**. Readable reference sources in `Context/sources/` are **Main 1.4.0 / Options 2.0.0** — a newer version, not proof of the installed behaviour. Installed ReUI UI files are partly bytecode; decompiled reference lives in `Context/.local/reui-decompiled/`.
 
 ## Foundation decision
 
@@ -40,7 +40,7 @@ Claret deliberately does **not** use ReUI Options tabs for its own settings: the
 
 ```lua
 ReUI.Options.Mods['ClaretCore'] = {
-    selectionEnabled = ReUI.Options.OptionValue(true),
+    probeEnabled = ReUI.Options.OptionValue(false),
     language = ReUI.Options.OptionValue('auto'),
 }
 function Main() end

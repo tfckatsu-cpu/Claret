@@ -1,4 +1,6 @@
-# Claret Core — test build 0.10.27
+# Claret Core — test build 0.10.37
+
+**Settings size** offers 100%, 125%, and 150% in the Core section. The default 125% keeps the original size. The saved size applies when the settings menu next opens and is capped to fit the screen.
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
 
@@ -27,7 +29,7 @@ A separate mod declares a `ReUI.Require` dependency on `ClaretCore >= 0.10.0` an
 - Startup resources belong to `scope`; it is cleaned up when the feature is disabled, a handler fails, or the session ends.
 - `GetFeatureState(id)` returns the registered feature's state, and also returns an error message on failure.
 
-`ReUI.ClaretCore.UseSelectionHud(scope, refresh)` supplies the current selection to a replacement HUD and subscribes it to FAF's `ObserveSelection` through Core. Core pauses its composition panel for the lifetime of the replacement scope, then restores it according to the saved Core setting. Only one replacement can use the feed at a time.
+`ReUI.ClaretCore.UseSelectionHud(scope, refresh)` supplies the current selection and subscribes a HUD to FAF's `ObserveSelection` through Core. One HUD can use the feed at a time.
 
 ## Hotbuild is a separate mod
 
@@ -77,9 +79,7 @@ In a new match, test a transport with one or more loaded mobile units: invoke th
 
 ## Installing Nunito
 
-Run `fonts/Install-Nunito.cmd` once from the ClaretCore folder. The installer looks for the original game folder using the FAF client's settings and `fa_path.lua`; if it cannot find it, it asks you to select the folder manually. Select the game folder containing `bin` and `fonts`, not the mod folder or `FAF/bin`.
-
-Only `Nunito-Regular.ttf` and `Nunito-SemiBold.ttf` from `fonts/Nunito` are copied. Reinstalling the same files makes no changes; files with those names but different contents are not overwritten. If access is denied, run CMD as administrator. Fully close and restart the game after installation. Node, a special init, and a client launch command are not required. You can run the installer again after moving the game.
+Copy `Nunito-Regular.ttf` and `Nunito-SemiBold.ttf` from `ClaretCore/fonts/Nunito` to the original Forged Alliance installation's `fonts` folder, beside its `bin` folder. Fully close and restart the game after copying. Nunito is optional and the interface falls back to the default font.
 
 The original TTF files and SIL OFL 1.1 notices remain in `fonts/Nunito`. To uninstall manually, remove only these two files from the game's `fonts` folder.
 

@@ -171,6 +171,11 @@ for _,domain in ipairs({'land','naval','air'}) do
         end
     end
     assert(ContextActions.Get('select_'..domain..'_factories_screen').hidden,'old combined assignment remains available but hidden')
+    local all=ContextActions.Get('select_'..domain..'_factories_map')
+    local category='STRUCTURE FACTORY '..string.upper(domain)
+    assert(not all.hidden and ContextActions.Supports(all.id,'empty')
+        and all.select=='UI_SelectByCategory '..category..' TECH1,'..category..' TECH2,'..category..' TECH3',
+        'all three tiers on the whole map are offered for '..domain)
 end
 local instant=assert(ContextActions.Get('kill_selected_units'))
 local delayed=assert(ContextActions.Get('suicide'))

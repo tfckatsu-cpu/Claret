@@ -32,5 +32,5 @@ Current gaps that are accepted, deferred or unverified. Update this page when a 
 
 - Historical `ClaretHotbuild/CHANGELOG.md` entries stay in Russian; new entries are English.
 - `Stage/stage-1-status.md` and `stage-1-research.md` are Russian working notes, not knowledge base.
-- `friend-notes.md`, `community-notes.md`, `prestudy-notes.md` are unverified by definition.
+- `Context/.local/friend-notes.md`, `Context/.local/community-notes.md`, `.local/prestudy-notes.md` are unverified by definition.
 - Empty-texture log noise (`GetResource: Invalid name ""`) was observed in a session and not investigated.

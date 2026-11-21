@@ -106,7 +106,7 @@ Localization.Text('claretui.section.title')
 | `Localization.Register/Text/SetLanguage/GetLanguage` | strings |
 | `IsMenuOpen()` | a Claret panel is open |
 | `IsKeyCaptureActive()` | settings are capturing a combination |
-| `UseSelectionHud(scope, refresh)` | own FAF's `ObserveSelection`; pauses Core's composition panel; one owner at a time |
+| `UseSelectionHud(scope, refresh)` | subscribe to Core's selection feed; one owner at a time |
 | `AppendTransportCargo(selection)` | add one loaded mobile unit to FAF's selective-unload list; does not issue the unload |
 | `CreateStrategicRing(visionOnly)` | ring group for the object under the cursor; stock eraser removes it |
 | Theme (`Theme.Colors`, `Theme.Metrics`, `Theme.Fonts`, `RoundedPanel`, `SettingsSwitch`) | visual tokens and components |

@@ -263,13 +263,19 @@ assert(scrollbarWidget==originalScrollbar and not originalScrollbar.destroyed,'s
 pageScroll=scrollbarTarget; pageScroll:ScrollSetTop('Vert',1000)
 assert(textControl('Setting 20'),'last setting is reachable through the scrollbar')
 longMenu:Destroy(); assert(next(callbacks)==nil,'scrolling removes all option listeners')
-local scaleMenu=env.Create()
+local menuScale={value=125,Get=option.Get}
+function menuScale:Set(value) self.value=value end
+function menuScale:Save() self.saved=self.value end
+local scaleMenu=env.Create(nil,menuScale)
 scaleMenu:Register({id='core',title='Scale'})
-for _,case in ipairs({{1920,1080,1},{2560,1440,1.25},{1280,720,0.8}}) do
+for _,case in ipairs({{1920,1080,1,125},{1920,1080,1.25,100},{2560,1440,1,150},{1280,720,0.8,150},{1920,1080,1,110}}) do
     root.Width:Set(case[1]); root.Height:Set(case[2]); pixelScale=case[3]
+    menuScale:Set(case[4])
     scaleMenu:Open()
     -- Fit group is launcher 248 + gap 16 + panel 1128 = 1392 wide (Menu.lua:86).
-    local expected=math.min(case[3],(case[1]-24)/1392,(case[2]-24)/1110)
+    local fit=math.min((case[1]-24)/1392,(case[2]-24)/1110)
+    local factor=case[4]==100 and 0.8 or case[4]==150 and 1.2 or 1
+    local expected=math.min(fit,math.min(case[3],fit)*factor)
     assert(math.abs(lastLayoutScale-expected)<0.00001,'group fits screen with UI scale applied once')
     assert(1392*lastLayoutScale<=case[1]-24 and 1110*lastLayoutScale<=case[2]-24,'both panels stay inside screen margins')
     escapes[#escapes]()

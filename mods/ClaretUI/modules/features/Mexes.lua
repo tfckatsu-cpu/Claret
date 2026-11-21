@@ -574,9 +574,12 @@ local function UpdateMarkers(owner)
         if next(owner.markers) then ClearMarkers(owner) end
         return
     end
-    if numbered ~= owner.numbered then
+    local percent = numbered and owner.options.mexOverlayScale:Get() or 100
+    if type(percent) ~= 'number' or percent ~= percent or percent < 50 or percent > 200 then percent = 100 end
+    local scale = owner.scale * percent / 100
+    if numbered ~= owner.numbered or scale ~= owner.markerScale then
         ClearMarkers(owner)
-        owner.numbered = numbered
+        owner.numbered, owner.markerScale = numbered, scale
     end
     for id, row in pairs(owner.rows) do
         local marker = owner.markers[id]
@@ -587,7 +590,7 @@ local function UpdateMarkers(owner)
         end
         if pos then
             if not marker then
-                marker = MakeMarker(view, owner.scale, numbered)
+                marker = MakeMarker(view, scale, numbered)
                 owner.markers[id] = marker
             end
             local plate = marker.plate
@@ -596,7 +599,7 @@ local function UpdateMarkers(owner)
             if x ~= marker.x then marker.x = x; plate.Left:Set(x) end
             if y ~= marker.y then marker.y = y; plate.Top:Set(y) end
             if showArrow and not marker.arrow then
-                marker.arrow = MakeArrow(plate, ReUI.UI.FloorLayouter(owner.scale), marker.size - 7, -3)
+                marker.arrow = MakeArrow(plate, ReUI.UI.FloorLayouter(scale), marker.size - 7, -3)
             elseif not showArrow and marker.arrow then
                 marker.arrow:Destroy()
                 marker.arrow = nil

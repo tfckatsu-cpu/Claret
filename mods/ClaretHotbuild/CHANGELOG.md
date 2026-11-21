@@ -1,5 +1,8 @@
 # История изменений
 
+## Сборка 20261121-171 — 2026-11-21
+- Offer map-wide selectors for all T1–T3 land, air, and naval factories in the keyboard and composite action pickers.
+
 ## Сборка 20261121-170 — 2026-11-21
 - Show a single physical key on construction tiles, using its color for modifiers even when multiple bindings are available.
 

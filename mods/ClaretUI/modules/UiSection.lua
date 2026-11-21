@@ -92,6 +92,7 @@ function Create(parent, layout, options, coreOptions)
             descriptionKey = 'claretui.tab.commander_description',
             entries = {
                 { labelKey = 'claretui.setting.acu', option = options.acuHealth, height = M.coreRowHeight },
+                { labelKey = 'claretui.setting.acu_upgrades', option = options.acuUpgradeIcons, height = M.coreRowHeight },
                 { labelKey = 'claretui.setting.acu_locked', option = options.acuLocked, height = M.coreRowHeight },
                 { labelKey = 'claretui.setting.acu_scale', option = options.acuScale, kind = 'slider', height = 62 },
             },
@@ -158,6 +159,7 @@ function Create(parent, layout, options, coreOptions)
                     },
                 },
                 { labelKey = 'claretui.mex.overlay', option = options.mexOverlay, height = ROW_HEIGHT },
+                { labelKey = 'claretui.mex.overlay_scale', option = options.mexOverlayScale, kind = 'slider', height = 62 },
                 { labelKey = 'claretui.mex.numbers', option = options.mexNumbers, height = ROW_HEIGHT },
                 { labelKey = 'claretui.mex.panel_locked', option = options.mexPanelLocked, height = ROW_HEIGHT },
                 { labelKey = 'claretui.mex.panel_scale', option = options.mexPanelScale, kind = 'slider', height = 62 },

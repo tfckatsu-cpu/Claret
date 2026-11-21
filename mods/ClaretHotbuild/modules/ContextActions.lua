@@ -177,9 +177,9 @@ for _, ping in ipairs({'marker','alert','move','attack'}) do
     })
 end
 
--- Keep the previous combined-level IDs executable for existing assignments.
+-- Keep the old combined on-screen selectors executable for existing assignments.
 for _, action in ipairs(definitions) do
-    if string.find(action.id, '^select_.*_factories_') then action.hidden=true end
+    if string.find(action.id, '^select_.*_factories_screen$') then action.hidden=true end
 end
 for _, domain in ipairs({
     {id='land', category='LAND', labelKey='hotbuild.domain.land'},

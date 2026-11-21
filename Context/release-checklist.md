@@ -52,7 +52,7 @@ powershell -NoProfile -File .\Tools\Sync-ClaretMods.ps1 -Mod <ClaretCore|ClaretH
 
 - Rewrite `Stage/stage-1-status.md` (results, decisions, pending checks, open questions, ≤ ~5000 characters).
 - Add 2–3 lines to `Stage/stage-1-research.md` (date, change, decision).
-- Update the owner document in `Context/` if behaviour changed; move superseded text to `Context/history/`.
+- Update the owner document in `Context/` if behaviour changed; move superseded text to `Context/.local/history/`.
 
 ## Rollback
 

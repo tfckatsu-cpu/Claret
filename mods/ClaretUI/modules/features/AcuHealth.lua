@@ -306,6 +306,7 @@ function module:Start(scope, isReplay, options)
 
     local panel = scope:Own(Bitmap(mapGroup))
     box.panel = panel
+    box.paintUpgrades = import('/mods/ClaretUI/modules/AcuUpgradeIcons.lua').Create(panel, BASE_WIDTH)
     module.panel = panel
     panel:SetSolidColor(C.scrim)
     if locked then panel:DisableHitTest() else panel:EnableHitTest() end
@@ -610,6 +611,7 @@ function module:Start(scope, isReplay, options)
         end
 
         if hp == nil or maxHp == nil or maxHp <= 0 then
+            box.paintUpgrades(nil)
             box.lastHp = nil
             box.alarm = 0
             if unit == nil and sameFocus and box.current.kind == 'dead' then dead = true end
@@ -621,6 +623,11 @@ function module:Start(scope, isReplay, options)
             return
         end
         LogState('alive')
+        if options.acuUpgradeIcons:Get() then
+            box.paintUpgrades(unit)
+        else
+            box.paintUpgrades(nil)
+        end
         local regen = Probe(function() return unit:GetStat('HitpointsRegeneration', 0).Value end)
         if type(regen) ~= 'number' or regen ~= regen then regen = 0 end
         box.lastHp = hp
@@ -808,6 +815,9 @@ function module:Start(scope, isReplay, options)
         CancelDrag()
     end)
 
+    scope:Bind(options.acuUpgradeIcons.OnChanged, function()
+        if box.visible then Refresh() end
+    end)
     ApplySize()
     ApplyPosition()
     panel:Show()

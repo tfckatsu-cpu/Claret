@@ -56,7 +56,7 @@ HUD value tokens (Selection Info uses these; headings stay `muted`):
 
 Key-combination colours (modifier ordinal 0–7): `keyCombo0` `ff7f8794` (none), `keyCombo1` `ff64b5f6` (Ctrl), `keyCombo2` `ffc792ea` (Shift), `keyCombo3` `ff4db6ac` (Ctrl+Shift), `keyCombo4` `ffffba66` (Alt), `keyCombo5` `ffff7785` (Ctrl+Alt), `keyCombo6` `ff9ccc65` (Shift+Alt), `keyCombo7` `ff7986cb` (Ctrl+Shift+Alt).
 
-Fonts: `Theme.Fonts.body` = `Nunito`, `Theme.Fonts.heading` = `Nunito SemiBold`. TTFs ship in `ClaretCore/fonts/Nunito` (SIL OFL 1.1) and are copied into the game's `fonts` folder by `fonts/Install-Nunito.cmd`. A missing font silently falls back — check `DiskGetFileInfo` if a layout depends on metrics.
+Fonts: `Theme.Fonts.body` = `Nunito`, `Theme.Fonts.heading` = `Nunito SemiBold`. Copy both TTFs from `ClaretCore/fonts/Nunito` (SIL OFL 1.1) to the game installation's `fonts` folder beside `bin`, then restart the game. The interface falls back to the default font when Nunito is missing.
 
 ## Metrics
 

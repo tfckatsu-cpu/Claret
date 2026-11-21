@@ -155,6 +155,39 @@ function Create(parent, keyBinding, dismissedOption, languageOption)
     logo:DisableHitTest()
     L(logo):AtLeftTopIn(panel, (width - 280) / 2, 16):Width(280):Height(150)
 
+    local clanBanner = Bitmap(panel)
+    clanBanner:SetTexture('/mods/ClaretCore/textures/branding/dpg-wordmark.png')
+    clanBanner:DisableHitTest()
+    L(clanBanner):AtLeftTopIn(panel, 76, 49):Width(168):Height(67)
+
+    local clanCredit = Group(panel)
+    clanCredit:DisableHitTest()
+    L(clanCredit):AtLeftTopIn(panel, 24, 132):Width(272):Height(54)
+    local credit = BindLabel(clanCredit, 'core.welcome.clan_credit', Theme.Fonts.heading, 20, C.text)
+    L(credit):AtCenterIn(clanCredit, -12)
+    local clanName = BindLabel(clanCredit, 'core.welcome.clan_name', Theme.Fonts.heading, 24, C.text)
+    L(clanName):AtCenterIn(clanCredit, 13)
+
+    local function AddLink(key, url, y)
+        local link = Group(panel)
+        L(link):AtLeftTopIn(panel, 24, y):Width(272):Height(20)
+        local label = BindLabel(link, key, Theme.Fonts.body, 14, C.accentText)
+        L(label):AtCenterIn(link)
+        link.HandleEvent = function(_, event)
+            if event.Type == 'MouseEnter' then
+                label:SetColor(C.text)
+            elseif event.Type == 'MouseExit' then
+                label:SetColor(C.accentText)
+            elseif event.Type == 'ButtonPress' and not (event.Modifiers and event.Modifiers.Right) then
+                OpenURL(url)
+                return true
+            end
+            return false
+        end
+    end
+    AddLink('core.welcome.project_link', 'https://github.com/tfckatsu-cpu/Claret', 185)
+    AddLink('core.welcome.discord_link', 'https://discord.gg/JupcdJbu7U', 205)
+
     local titleBox = Group(panel)
     L(titleBox):AtLeftTopIn(panel, 32, 176):Width(width - 64):Height(36)
     titleBox:DisableHitTest()

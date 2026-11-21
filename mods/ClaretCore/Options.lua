@@ -1,6 +1,6 @@
 ReUI.Options.Mods['ClaretCore'] = {
     probeEnabled = ReUI.Options.OptionValue(false),
-    selectionEnabled = ReUI.Options.OptionValue(true),
+    menuScale = ReUI.Options.OptionValue(125),
     welcomeDismissed = ReUI.Options.OptionValue(false),
     minimapAutoHide = ReUI.Options.OptionValue(false),
     minimapBorderless = ReUI.Options.OptionValue(false),

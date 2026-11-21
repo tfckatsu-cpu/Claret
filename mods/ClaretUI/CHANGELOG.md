@@ -1,5 +1,14 @@
 # История изменений
 
+## Сборка 20261121-126 — 2026-11-21
+- Show optional installed upgrade icons below the ACU Health panel, suppressing prerequisites of installed upgrades.
+
+## Сборка 20261121-125 — 2026-11-21
+- Refresh the InfoShare panel title when the interface language changes.
+
+## Сборка 20261121-124 — 2026-11-21
+- Add a separate size slider for numbered mex map markers.
+
 ## Сборка 20261121-123 — 2026-11-21
 - Defer background engineer and mex selection scans until 15 seconds of game time. Mex scans also wait for active commands and input capture to finish.
 
