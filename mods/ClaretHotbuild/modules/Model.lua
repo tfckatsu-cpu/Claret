@@ -180,8 +180,11 @@ end
 function Create(saved)
     local bindings = {}
     local byId = {}
+    local entries = {}
+    local quarantine = {}
     local actions = {}
     local warnings = {}
+    local shapeError
     local model = {}
 
     function model:List()
@@ -201,33 +204,69 @@ function Create(saved)
         if not byId[validated.id] and table.getn(bindings) >= MAX_BINDINGS then
             return nil, 'Too many bindings (maximum 64)'
         end
-        for _, other in ipairs(bindings) do
-            if other.id ~= validated.id and validated.key ~= '' and other.key == validated.key then
-                return nil, 'Key already assigned to ' .. other.name
-            end
-        end
-        if byId[validated.id] then
+        -- Legacy `key` values are metadata; bindings are owned by keyboard pairs.
+        local existing = byId[validated.id]
+        if existing then
             for i, other in ipairs(bindings) do
-                if other.id == validated.id then bindings[i] = validated; break end
+                if other == existing then bindings[i] = validated; break end
+            end
+            for _, entry in ipairs(entries) do
+                if entry.binding == existing then entry.binding = validated; break end
             end
         else
             table.insert(bindings, validated)
+            table.insert(entries, { binding = validated })
         end
         byId[validated.id] = validated
         return true
     end
 
     function model:Delete(id)
-        if not byId[id] then return false end
-        for i, binding in ipairs(bindings) do
-            if binding.id == id then table.remove(bindings, i); break end
+        local binding = byId[id]
+        if not binding then return false end
+        for i, other in ipairs(bindings) do
+            if other == binding then table.remove(bindings, i); break end
+        end
+        for i, entry in ipairs(entries) do
+            if entry.binding == binding then table.remove(entries, i); break end
         end
         byId[id] = nil
         return true
     end
 
+    -- Valid records first in their loaded order, then raw quarantined records
+    -- exactly as they were read: no field, ID or ordering is lost.
     function model:Export()
-        return { version = 1, bindings = self:List() }
+        local result = {}
+        for _, entry in ipairs(entries) do
+            if entry.binding then
+                table.insert(result, CopyBinding(entry.binding))
+            else
+                table.insert(result, entry.raw)
+            end
+        end
+        return { version = 1, bindings = result }
+    end
+
+    function model:CanWrite()
+        return shapeError == nil
+    end
+
+    function model:GetQuarantine()
+        local result = {}
+        for _, item in ipairs(quarantine) do
+            table.insert(result, { index = item.index, id = item.id, reason = item.reason })
+        end
+        return result
+    end
+
+    -- IDs of quarantined presets whose FAF actions and key assignments must survive.
+    function model:GetQuarantinedIds()
+        local result = {}
+        for _, item in ipairs(quarantine) do
+            if item.id then result[item.id] = true end
+        end
+        return result
     end
 
     function model:GetLoadWarnings()
@@ -313,22 +352,27 @@ function Create(saved)
 
     if saved ~= nil then
         if type(saved) ~= 'table' or saved.version ~= 1 or not IsList(saved.bindings) then
-            table.insert(warnings, 'Saved Hotbuild data has an unsupported or invalid format; using an empty list')
+            shapeError = 'Saved Hotbuild data has an unsupported or invalid format; saved assignments are kept unchanged'
+            table.insert(warnings, shapeError)
         else
             local seen = {}
             for i, binding in ipairs(saved.bindings) do
+                local id = type(binding) == 'table' and type(binding.id) == 'string' and binding.id or nil
+                local reason
                 if i > MAX_BINDINGS then
-                    table.insert(warnings, 'Saved bindings beyond the maximum of 64 were ignored')
-                    break
-                end
-                local ok, err
-                if type(binding) == 'table' and seen[binding.id] then
-                    err = 'Duplicate saved binding ID'
+                    reason = 'Saved bindings beyond the maximum of 64 were ignored'
+                elseif id and seen[id] then
+                    reason = 'Duplicate saved binding ID: ' .. id
                 else
-                    ok, err = model:Put(binding)
+                    local ok, err = model:Put(binding)
+                    if ok then seen[id] = true
+                    else reason = 'Saved binding ' .. tostring(i) .. ' ignored: ' .. tostring(err) end
                 end
-                if ok then seen[binding.id] = true
-                else table.insert(warnings, 'Saved binding ' .. tostring(i) .. ' ignored: ' .. tostring(err)) end
+                if reason then
+                    table.insert(quarantine, { index = i, id = id, reason = reason })
+                    table.insert(entries, { raw = binding })
+                    table.insert(warnings, reason)
+                end
             end
         end
     end

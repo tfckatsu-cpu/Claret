@@ -1,0 +1,98 @@
+diff --git a/Options.lua b/Options.lua
+index 70a06e5..0893f6d 100644
+--- a/Options.lua
++++ b/Options.lua
+@@ -13,6 +13,9 @@ local options = {
+     engineerIndicatorsScale = ReUI.Options.OptionValue(100),
+     engineerIndicatorsOptimize = ReUI.Options.OptionValue(false),
+     engineerIndicatorsIdleOnly = ReUI.Options.OptionValue(false),
++    reclaimOverlay = ReUI.Options.OptionValue(false),
++    reclaimMinimumMass = ReUI.Options.OptionValue(10),
++    reclaimLabelScale = ReUI.Options.OptionValue(100),
+     selectionDynamic = ReUI.Options.OptionValue(true),
+     selectionLabels = ReUI.Options.OptionValue(true),
+     selectionLocked = ReUI.Options.OptionValue(false),
+diff --git a/modules/Runtime.lua b/modules/Runtime.lua
+index 79e4144..ab414f9 100644
+--- a/modules/Runtime.lua
++++ b/modules/Runtime.lua
+@@ -5,6 +5,7 @@ local features = {
+     { id = 'acu', module = '/mods/ClaretUI/modules/features/AcuHealth.lua', option = 'acuHealth' },
+     { id = 'selection', module = '/mods/ClaretUI/modules/features/SelectionHud.lua' },
+     { id = 'engineerIndicators', module = '/mods/ClaretUI/modules/features/EngineerIndicators.lua', option = 'engineerIndicators' },
++    { id = 'reclaim', module = '/mods/ClaretUI/modules/features/Reclaim.lua', option = 'reclaimOverlay' },
+     { id = 'mexes', module = '/mods/ClaretUI/modules/features/Mexes.lua', option = 'mexPanel' },
+     { id = 'allRings', module = '/mods/ClaretUI/modules/features/AllRings.lua', option = 'allRings' },
+     { id = 'infoShare', module = '/mods/ClaretUI/modules/features/InfoShare.lua' },
+diff --git a/modules/UiSection.lua b/modules/UiSection.lua
+index 49b1717..052216e 100644
+--- a/modules/UiSection.lua
++++ b/modules/UiSection.lua
+@@ -114,6 +114,16 @@ function Create(parent, layout, options, coreOptions)
+                     option = options.engineerIndicatorsOptimize, height = M.coreRowHeight },
+             },
+         },
++        {
++            labelKey = 'claretui.reclaim.title',
++            descriptionKey = 'claretui.reclaim.description',
++            entries = {
++                { labelKey = 'claretui.reclaim.enabled', option = options.reclaimOverlay, height = M.coreRowHeight },
++                { labelKey = 'claretui.reclaim.minimum_mass', option = options.reclaimMinimumMass,
++                    kind = 'slider', height = 62, min = 10, max = 500, step = 1, defaultValue = 10, valueSuffix = '' },
++                { labelKey = 'claretui.reclaim.scale', option = options.reclaimLabelScale, kind = 'slider', height = 62 },
++            },
++        },
+         {
+             labelKey = 'claretui.tab.minimap',
+             descriptionKey = 'claretui.tab.minimap_description',
+@@ -302,7 +312,7 @@ function Create(parent, layout, options, coreOptions)
+                 local min, max = entry.min or 50, entry.max or 200
+                 local sliderWidth = DETAIL_WIDTH - 32
+                 local slider = IntegerSlider(
+-                    row, false, min, max, 5,
++                    row, false, min, max, entry.step or 5,
+                     UI.SkinnableFile('/slider02/slider_btn_up.dds'),
+                     UI.SkinnableFile('/slider02/slider_btn_over.dds'),
+                     UI.SkinnableFile('/slider02/slider_btn_down.dds'),
+@@ -319,9 +329,11 @@ function Create(parent, layout, options, coreOptions)
+                 local initial = option:Get()
+                 if type(initial) ~= 'number' or initial ~= initial or initial < min or initial > max then initial = entry.defaultValue or 100 end
+                 slider:SetValue(initial)
+-                value:SetText(string.format('%d%%', slider:GetValue()))
++                local suffix = entry.valueSuffix
++                if suffix == nil then suffix = '%' end
++                value:SetText(string.format('%d%s', slider:GetValue(), suffix))
+                 slider.OnValueChanged = function(control, newValue)
+-                    value:SetText(string.format('%d%%', newValue))
++                    value:SetText(string.format('%d%s', newValue, suffix))
+                     option:Set(newValue)
+                 end
+                 slider.OnValueSet = function(control, newValue)
+diff --git a/modules/LocalizationStrings.lua b/modules/LocalizationStrings.lua
+index 6fb7fdc..23bf1f2 100644
+--- a/modules/LocalizationStrings.lua
++++ b/modules/LocalizationStrings.lua
+@@ -82,6 +82,11 @@ Strings = {
+         ['claretui.engineers.idle_only'] = 'Idle engineers only',
+         ['claretui.engineers.optimize'] = 'Optimize display',
+         ['claretui.engineers.optimize_hint'] = 'Shows up to 128 markers to reduce rendering load.',
++        ['claretui.reclaim.title'] = 'Reclaim',
++        ['claretui.reclaim.description'] = 'Ctrl+Shift previews reclaim mass.',
++        ['claretui.reclaim.enabled'] = 'Claret overlay',
++        ['claretui.reclaim.minimum_mass'] = 'Minimum mass',
++        ['claretui.reclaim.scale'] = 'Label size',
+         ['claretui.selection.massRate'] = 'Mass/s',
+         ['claretui.selection.energyRate'] = 'Energy/s',
+         ['claretui.selection.buildPower'] = 'Build power',
+@@ -249,6 +254,11 @@ Strings = {
+         ['claretui.engineers.idle_only'] = 'Только свободные инженеры',
+         ['claretui.engineers.optimize'] = 'Оптимизация отображения',
+         ['claretui.engineers.optimize_hint'] = 'До 128 значков, чтобы снизить нагрузку.',
++        ['claretui.reclaim.title'] = 'Реклейм',
++        ['claretui.reclaim.description'] = 'Ctrl+Shift показывает остаток массы.',
++        ['claretui.reclaim.enabled'] = 'Отображение Claret',
++        ['claretui.reclaim.minimum_mass'] = 'Минимум массы',
++        ['claretui.reclaim.scale'] = 'Размер меток',
+         ['claretui.selection.massRate'] = 'Масса/с',
+         ['claretui.selection.energyRate'] = 'Энергия/с',
+         ['claretui.selection.buildPower'] = 'БП',

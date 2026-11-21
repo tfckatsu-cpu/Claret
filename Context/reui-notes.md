@@ -1,75 +1,113 @@
-# ReUI: результаты чтения
+# ReUI: Source Review Findings
 
-Дата: 2026-11-10. Область: отдельные исходники ReUI version 8 / UID reui-1.4.0. У установленной версии 7 / UID reui-1.3.2 часть реализации бинарная; выводы ниже нельзя автоматически переносить на неё.
+Review date: 2026-11-10. Scope: separate ReUI version 8 source copy / UID `reui-1.4.0`. The installed version is version 7 / UID `reui-1.3.2`; some of its implementation is bytecode, so do not automatically transfer findings to it.
 
-## Загрузка и зависимости
-Факт: `sources/ReUI/Core/Modules/Loader.lua` разбирает версии major.minor.revision и сравнения >=, <=, >, <, =, ==. Обнаруживает повторную загрузку модуля в процессе загрузки (возможный цикл), сохраняет ошибки, проверяет статусы зависимостей. Ошибка Main помечает модуль failed; зависимый Main не запускается. Проверяется включение зависимости типа mod по UID среди активных модов.
-Факт: Wrap выполняет загрузку модулей, callbacks до CreateUI, исходный CreateUI, callbacks после и Dispose. Пред- и постобработчики вызываются через pcall.
-Вывод-рекомендация: выключение установленного мода-зависимости и выключение одной функции в уже загруженном модуле — разные операции. Для переключателя функции нужен собственный жизненный цикл: остановка таймеров, отписка, уничтожение UI, очистка состояния. Наличие ReUI.Require этого не обеспечивает.
+## Loading and dependencies
 
-## Хуки
-Факт: `sources/ReUI/Core/Core.lua` накапливает хуки и перед созданием UI получает текущий член импортированного модуля, передаёт его callback и записывает возвращённую замену. После создания UI новая регистрация Hook запрещена. Автоматического разрешения конфликтов в этой реализации не найдено; есть комментарий о необходимости проверки конфликтов.
-Предположение: цепочка сохраняется, если каждый участник корректно вызывает предыдущую функцию и сохраняет её контракт. Другой мод может оборвать цепочку; механизм ReUI сам по себе от этого не защищает.
+Fact: `sources/ReUI/Core/Modules/Loader.lua` parses major.minor.revision versions and comparisons `>=`, `<=`, `>`, `<`, `=`, `==`. It detects a module being loaded twice (possible cycle), records errors, and checks dependency status. A Main error marks the module failed; dependent Main code does not run. Mod-type dependencies are checked by UID among active mods.
 
-## Настройки
-Факт: `Options/Options.lua` регистрирует пункт меню через tabs.AddToMenu и OnPreCreateUI, лениво импортирует Options.lua модов, предоставляет Add и Window. Ошибка Main настроек отдельного мода перехватывается.
-Факт: `Options/Modules/OptionRef.lua` использует GetPreference/SetPreference по составному пути. `Options.lua` содержит чтение старых значений через Prefs.GetFromCurrentProfile и перенос в новый путь; `Options/Modules/OptionControls/OptionsWindow.lua:149` вызывает SavePreferences. Поэтому сводить всю текущую систему к одному профилевому ключу некорректно.
+Fact: `Wrap` loads modules, runs callbacks before `CreateUI`, calls original `CreateUI`, runs callbacks afterward, and disposes. Pre/post callbacks run through `pcall`.
 
-## Оценка
-Рекомендация: использовать раздельные фазы загрузки и UI, ленивое создание настроек, явные зависимости и изоляцию ошибок на границах модулей.
-Предположение о затратах: цепочки LINQ могут создавать объекты и замыкания; количество абстракций само по себе не доказывает потери FPS. Сравнить на одинаковой нагрузке с простым циклом до выбора реализации.
-Неизвестно: стоимость Layouter/Views, реальное число аллокаций, полнота cleanup, поведение установленного бинарного Loader. Эти части требуют отдельного чтения и измерений.
+Recommendation: disabling an installed dependency mod is different from disabling one feature in an already loaded mod. A feature toggle needs its own lifecycle: stop timers, unsubscribe, destroy UI, and clear state. `ReUI.Require` does not provide this.
 
-## Углублённый разбор для выбора основы Claret (2026-11-10)
+## Hooks
 
-Область проверки: предоставленная папка sources/ReUI (Main 1.4.0, манифест version 8). Проверено чтением реализации, без запуска. Версии компонентов: Core 1.7.0, Options 2.0.0, UI 1.5.0, UI.Controls 1.1.0, Units 1.1.0, WorldView 1.0.0, Animation 1.1.0, LINQ 1.4.1. Это не аудит каждой строки библиотеки и не бенчмарк.
+Fact: `sources/ReUI/Core/Core.lua` accumulates hooks; before UI creation it gets the current member of the imported module, passes it to a callback, and writes back the returned replacement. Hook registration is prohibited after UI creation. No automatic hook-conflict resolution was found; a comment notes the need to check conflicts.
 
-### 1. Зависимости действительно модульные, но основной мод имеет побочные функции
-Факт: Main.lua требует Core >=1.7.0, UI.QoL >=1.1.0 и FAF >=3816. UI.QoL требует Options, UI и LINQ. Поэтому включение штатного ReUI не эквивалентно включению одного маленького Core. Loader также обрабатывает все активные UI-моды с полем ReUI; нагрузка зависит от набора включённых модов.
-Факт: UI/QoL/Options.lua задаёт по умолчанию movableMenuPanel=true, multifunctionPanelCollapsed=true, menuPanelCollapsed=true. UI/QoL/Main.lua ставит хуки панелей; некоторые условны по настройкам, коррекция стрелки multifunction — безусловная. Здесь же предусмотрены расширенные диалоги пингов и отключения, выключенные по умолчанию.
-Вывод: Claret может использовать только нужные API, однако штатный пакет ReUI всё равно загружает обязательную ветку QoL. При конфликте оформления сначала согласовать настройки и владение панелями. Отдельная копия Core внутри Claret уже была бы форком, а не обычной зависимостью.
+Assumption: a chain works if each participant calls the previous function correctly and preserves its contract. Another mod can break the chain; ReUI itself does not prevent that.
 
-### 2. Загрузчик и хуки
-Факт: Loader.lua ищет файлы по пути, выведенному из имени модуля; проверяет ограничения версий компонентов. Число version в mod_info.lua и Version компонента — разные уровни версионирования. В этой исходной копии CheckPreloadedModule дополнительно проверяет соответствие UID найденной папки активному моду.
-Факт: Core.Hook заменяет поле модуля результатом callback. Значит, преимущество — упорядоченная точка регистрации и возможность обернуть предыдущую функцию, а не принципиально иной механизм перехвата. Автоматического приоритета конфликтующих хуков и снятия хука в Core.lua не найдено. После PostCreateUI регистрация Hook запрещается.
-Факт: Dispose загрузчика очищает служебные списки загрузки, а не выключает пользовательские функции во время матча. Перехват ошибки Main не откатывает уже сделанные им изменения; ошибка отдельного pre/post callback логируется, но сама по себе не переводит все связанные пользовательские объекты в безопасное состояние.
-Рекомендация: для Claret нужен отдельный контракт включения/выключения функций и учёт ресурсов даже при выборе ReUI. Хук можно установить один раз и проверять состояние функции внутри, если это допустимо по стоимости и поведению.
+## Settings
 
-### 3. Настройки — наиболее выгодная готовая часть
-Факт: ReactiveOption хранит текущее и предыдущее значение, поддерживает Set/Save/Restore, события OnChanged/OnSaved и Bind с немедленным первым вызовом. OnChanged здесь обычный Event, не SafeEvent. Ошибка подписчика может прервать последовательность вызовов; это не утверждение о частоте таких ошибок.
-Факт: OptionControl подписывается при создании и отписывается в OnDestroy. Следовательно, в библиотеке уже есть явная работа с очисткой; утверждение «подписки ReUI всегда текут» необоснованно. При собственном Bind в Claret отписка остаётся обязанностью Claret.
-Факт: OptionsWindow вызывает SavePreferences по кнопке Save, если есть изменённые отслеживаемые настройки; Cancel возвращает предыдущие значения. Это готовая поддержка живого предпросмотра и отмены, которую пришлось бы повторить в собственном окне.
-Ограничение: внешний вид одного общего окна Claret и категории функций всё равно нужно проектировать. ReUI.Options не означает автоматическую совместимость настроек старых модов с Claret; миграции потребуются отдельно.
+Fact: `Options/Options.lua` registers a menu item via `tabs.AddToMenu` and `OnPreCreateUI`, lazily imports mods' Options.lua, and provides Add and Window. An individual mod's Options Main error is caught.
 
-### 4. UI, Layouter и Views
-Факт: UI.lua экспортирует Layoutable, BaseLayout, Layouter и варианты округления. Controls.lua расширяет стандартные Maui Bitmap/Group/Text/Checkbox; это те же игровые контролы с дополнительными возможностями, а не новый движок рендеринга.
-Факт: Layoutable применяет раскладку при создании и явной смене Layout; Layouter опирается на LazyVar и layouthelpers. В прочитанных Layoutable/Layouter нет постоянного цикла полного пересчёта всех панелей каждый кадр. Значит, переписывать раскладку ради избавления от якобы такого цикла оснований нет.
-Предположение: дополнительная цена состоит в создании объектов/привязок и разрешении зависимостей при изменениях; измерения нужны на реальном окне.
-Факт: FloorLayoutFor и RoundLayoutFor — общие экземпляры, хранящие текущий control. Не хранить незавершённую цепочку и не использовать один экземпляр через yield; повторный вход может поменять выбранный control. Это ограничение API, не доказанный баг существующих модов.
-Факт: DynamicScrollable.GetDataSize проходит данные до конца; CalcVisible проходит от начала до верхней строки и рисует видимые строки. Для длинного часто обновляемого списка стоимость зависит от размера/позиции. Для небольшого окна настроек это не основание переписывать контейнер, для тысяч записей нужен замер и возможный индексированный вариант.
+Fact: `Options/Modules/OptionRef.lua` uses GetPreference/SetPreference on a composite path. `Options.lua` reads old values through `Prefs.GetFromCurrentProfile` and migrates them to the new path; `Options/Modules/OptionControls/OptionsWindow.lua:149` calls SavePreferences. It is inaccurate to reduce the whole current system to one profile key.
 
-### 5. Где есть работа каждый кадр
-Факт: WorldView заменяет класс игрового worldview расширенным классом, вызывает OnFrame включённых компонентов и затем исходный OnFrame. Для основного вида включает frame updates. ComponentContainer пропускает disabled-компоненты, но проверяет их при проходе; DestroyComponents явно уничтожает компоненты.
-Факт: Grid/Modules/AGridItem.lua направляет OnFrame активному компоненту и уничтожает компоненты в OnDestroy. Цена определяется количеством активных items и их обработчиками; библиотечный посредник сам по себе не доказывает значительную нагрузку.
-Факт: Animation.Animator включает frame updates при Add и отключает, когда список анимаций опустел. Это полезная оптимизация. При delta>0.05 он разбивает обновление на ceil(delta/0.05) подшагов. Гипотеза: при долгом кадре и большом количестве анимаций дополнительные проходы могут усиливать нагрузку; предел подшагов в этом месте отсутствует. Требуется измерить, а не приписывать ему любые фризы.
-Факт: Animator создаётся в Main компонента Animation. Main модулей вызываются до исходного CreateUI, поэтому правило проекта «никаких контролов до CreateUI» нельзя объявлять универсальным описанием самой ReUI: библиотека уже создаёт этот служебный Group раньше. Доступность root frame в целевой версии проверяется в игре.
+## Assessment
 
-### 6. Сервис юнитов есть и в ReUI
-Факт: Units/Units.lua получает список при обращении к Get; использует GameTick, интервалы updateCacheTicks=10 и updateAllTicks=50. Полный сбор — скрытое выделение ALLUNITS с восстановлением выделения и command mode. Между полными сборами удаляет погибших и добавляет focus-объекты. При смене армии сбрасывает слабую таблицу.
-Вывод: это кеш с ограниченной свежестью, не постоянная событийная картина всех появляющихся юнитов. Повторно писать такой сервис без измерений не обязательно. Но бюджет распределения полного сбора по кадрам, потребительские фильтры и гарантии задержки не предоставлены как готовый планировщик.
-Факт: HiddenSelect вызывает callback без защиты восстановления состояния при исключении. Если callback выбросит ошибку, следующие операции восстановления не выполнятся в этой функции. Это конкретный риск, а не наблюдавшийся в игре сбой.
-Факт: Units требует Selection, а Selection — Options. Поэтому использование кеша добавляет также механизм обработки выделения. Selection предоставляет приоритеты и Add/Remove обработчиков. Выбирать сервис нужно с учётом этой связки.
+Recommendation: use separate loading and UI phases, lazily create settings, declare dependencies explicitly, and isolate errors at module boundaries.
 
-### 7. LINQ и лицензия
-Факт: LINQ содержит ленивые итераторы, объекты перечислений, сортировки и материализацию ToArray. Нельзя считать все цепочки полными дополнительными проходами: часть операций объединяет обход лениво. Нельзя и обещать, что это быстрее специализированного цикла. Для критического участка Claret допустим простой цикл, даже если UI использует ReUI.
-Факт: заголовок LINQ.lua содержит copyright 2025 4z0t и All rights reserved, тогда как корневой sources/LICENSE — MIT, copyright 2022 4z0t. Наличие обоих текстов требует уточнить область лицензирования для копирования/форка; отдельного заключения о правах здесь не делается. Сами исходники не менялись.
+Cost hypothesis: LINQ chains may allocate objects and closures; abstraction count alone does not prove FPS loss. Compare against a simple loop under the same workload before choosing an implementation.
 
-### 8. Версии и проверка гипотез
-Факт: установленный Main.lua сообщает 1.3.2 и требует Core>=1.7.0, UI.QoL>=1.0.0; отдельный — 1.4.0 и QoL>=1.1.0. Совпадение минимальной Core-версии не доказывает тождество реализации. Манифесты version 7/8 не являются версиями каждого API.
-Источник истории: https://github.com/4z0t/FAF-UI-Mods/commits/develop/ . Доступная кешированная страница показывает обновления, но не даёт надёжного актуального списка всех поломок на дату проверки. Страница issues не загрузилась. Частоту несовместимости не оценивать по догадке.
+Unknown: cost of Layouter/Views, actual allocation count, cleanup completeness, and behavior of the installed binary Loader. These require separate inspection and measurement.
 
-Для решения вопроса производительности сравнить: A — минимальный UI; B — только ReUI с записанными QoL-настройками; C — тот же ReUI и одна функция Claret; D — функционально равный прототип без ReUI, только если B-A или конкретный компонент действительно мешает. Использовать три прогона, одинаковые камера/реплей и определение метрик из performance-hotspots.md. Не сравнивать новый пустой Core с ReUI и десятком включённых модов.
-# Восстановление установленного семейства ReUI
+## Detailed Review for the Claret Foundation Decision (2026-11-10)
 
-2026-11-13: по запросу пользователя декомпилированы все 92 байткодных Lua-файла 9 установленных модов ReUI/ReUI.*; 68 текстовых файлов не дублировались. Карта реализации, метод, версии и ограничения: [reui-decompiled/README.md](reui-decompiled/README.md); пофайловый указатель: [reui-decompiled/index.md](reui-decompiled/index.md). 92 обратные сборки дизассемблирования совпали побайтно; Lua-вывод прошёл синтаксический разбор. Исполнение в FAF и семантическая эквивалентность не проверены. Оригиналы не менялись. Construction 1.3.0 уже текстовый: его SetupConstructionControl подменяет строительный кластер; встроенная отметка груза связана с TransportCargoContext и DisplayBPID(..., "down"). Это не полная замена всего нижнего HUD.
+Scope: supplied `sources/ReUI` folder (Main 1.4.0, manifest version 8). Read source, did not run it. Component versions: Core 1.7.0, Options 2.0.0, UI 1.5.0, UI.Controls 1.1.0, Units 1.1.0, WorldView 1.0.0, Animation 1.1.0, LINQ 1.4.1. This is not a line-by-line library audit or benchmark.
 
+### 1. Dependencies are modular, but the main mod has side effects
+
+Fact: Main.lua requires Core >=1.7.0, UI.QoL >=1.1.0, and FAF >=3816. UI.QoL requires Options, UI, and LINQ. Enabling standard ReUI is therefore not equivalent to enabling only a small Core. Loader also handles all active UI mods with a ReUI field; workload depends on which mods are enabled.
+
+Fact: UI/QoL/Options.lua defaults `movableMenuPanel=true`, `multifunctionPanelCollapsed=true`, `menuPanelCollapsed=true`. UI/QoL/Main.lua hooks panels; some behavior is conditional on settings, while multifunction-arrow correction is unconditional. It also provides advanced ping and disable dialogs, off by default.
+
+Conclusion: Claret can use only required APIs, but standard ReUI still loads the required QoL branch. If styling conflicts, first agree on settings and panel ownership. A separate copy of Core inside Claret would be a fork, not an ordinary dependency.
+
+### 2. Loader and hooks
+
+Fact: Loader.lua finds files using paths derived from module names and checks component version constraints. `version` in mod_info.lua and a component's Version are separate versioning levels. In this source copy, CheckPreloadedModule also checks that the UID of a found folder matches the active mod.
+
+Fact: Core.Hook replaces a module field with the callback result. Its benefit is an ordered registration point and a way to wrap the previous function, not a fundamentally different interception mechanism. Core.lua has no automatic priority for conflicting hooks and no hook removal. Hook registration is prohibited after PostCreateUI.
+
+Fact: loader Dispose clears loader bookkeeping; it does not disable user features during a match. A caught Main error does not roll back changes already made. A pre/post callback error is logged, but does not automatically move all related user objects into a safe state.
+
+Recommendation: Claret needs its own feature enable/disable contract and resource tracking even if it uses ReUI. A hook can be installed once and check feature state inside it, if cost and behavior allow.
+
+### 3. Settings are the most valuable ready-made part
+
+Fact: ReactiveOption stores current and previous values, supports Set/Save/Restore, OnChanged/OnSaved events, and Bind with an immediate first call. OnChanged is an ordinary Event, not SafeEvent. A subscriber error may interrupt dispatch; this is not a claim that such errors are frequent.
+
+Fact: OptionControl subscribes at creation and unsubscribes in OnDestroy. The library has explicit cleanup; the claim that “ReUI subscriptions always leak” is unsupported. Claret remains responsible for unsubscribing its own Bind calls.
+
+Fact: OptionsWindow calls SavePreferences when Save is clicked and tracked settings changed; Cancel restores previous values. This ready-made live preview/cancel behavior would need to be recreated in a custom window.
+
+Limitation: a shared Claret window and feature categories still need design. ReUI.Options does not automatically make older mod settings compatible with Claret; separate migrations will be needed.
+
+### 4. UI, Layouter, and Views
+
+Fact: UI.lua exports Layoutable, BaseLayout, Layouter, and rounding variants. Controls.lua extends standard Maui Bitmap/Group/Text/Checkbox controls; they are still game controls with extra capabilities, not a new rendering engine.
+
+Fact: Layoutable applies layout at creation and explicit Layout changes; Layouter uses LazyVar and layouthelpers. No continuous full-panel recalculation loop per frame was found in the reviewed Layoutable/Layouter files. This gives no basis for rewriting layout to remove such a supposed loop.
+
+Hypothesis: additional cost comes from creating objects/bindings and resolving dependencies after changes; measurement is needed on a real window.
+
+Fact: FloorLayoutFor and RoundLayoutFor are shared instances storing the current control. Do not retain a partial chain or use one instance across a yield; reentry can change the selected control. This is an API limitation, not a proven bug in existing mods.
+
+Fact: DynamicScrollable.GetDataSize traverses all data; CalcVisible walks from the beginning to the first visible row and draws visible rows. For long, frequently updated lists, cost depends on size/position. This is not a reason to rewrite a small settings container; thousands of entries need measurement and possibly an indexed variant.
+
+### 5. Work performed every frame
+
+Fact: WorldView replaces the game worldview class with an extended class, calls OnFrame on enabled components, then calls original OnFrame. It enables frame updates for the main view. ComponentContainer skips disabled components but checks them during traversal; DestroyComponents explicitly destroys components.
+
+Fact: Grid/Modules/AGridItem.lua routes OnFrame to the active component and destroys components in OnDestroy. Cost depends on active item count and handlers; a library layer alone does not prove significant load.
+
+Fact: Animation.Animator enables frame updates on Add and disables them when the animation list empties. For delta>0.05 it splits updates into `ceil(delta/0.05)` substeps. Hypothesis: long frames and many animations may amplify load; this point has no substep cap. Measure it rather than attributing all stalls to it.
+
+Fact: Animator is created in Animation Main. Module Main functions run before original CreateUI, so the project rule “no controls before CreateUI” is not a universal description of ReUI itself: the library creates this service Group earlier. Root-frame availability in the target version must be checked in-game.
+
+### 6. ReUI also has a unit service
+
+Fact: Units/Units.lua fetches a list when Get is called; it uses GameTick and intervals `updateCacheTicks=10`, `updateAllTicks=50`. Full collection uses hidden ALLUNITS selection with selection and command-mode restoration. Between full collections, it removes dead units and adds focus objects. It resets the weak table on army change.
+
+Conclusion: this is a cache with bounded staleness, not a continuously event-driven picture of every appearing unit. Rewriting this service without measurement is not necessarily required. However, it does not provide a ready scheduler for spreading full scans across frames, consumer filters, or latency guarantees.
+
+Fact: HiddenSelect invokes its callback without protecting state restoration from exceptions. If the callback throws, the remaining restoration operations in this function do not run. This is a concrete risk, not an observed in-game failure.
+
+Fact: Units requires Selection, which requires Options. Using the cache also adds selection handling. Selection provides priorities and Add/Remove handlers; choose the service with that dependency chain in mind.
+
+### 7. LINQ and license
+
+Fact: LINQ includes lazy iterators, enumeration objects, sorting, and ToArray materialization. Not every chain means full extra traversals; some operations combine lazy traversal. It is also not proven faster than a specialized loop. A simple loop is acceptable for a Claret hot path even if the UI uses ReUI.
+
+Fact: LINQ.lua header says copyright 2025 4z0t and All rights reserved, while root `sources/LICENSE` says MIT, copyright 2022 4z0t. Clarify license scope before copying/forking; no legal conclusion is made here. Sources were not modified.
+
+### 8. Versions and hypothesis checks
+
+Fact: installed Main.lua reports 1.3.2 and requires Core>=1.7.0, UI.QoL>=1.0.0; separate source copy is 1.4.0 and QoL>=1.1.0. Matching minimum Core version does not prove implementation equivalence. Manifest versions 7/8 are not versions of every API.
+
+History source: https://github.com/4z0t/FAF-UI-Mods/commits/develop/ . The cached page shows updates but not a reliable current list of all breakages as of review. The issues page did not load. Do not guess incompatibility frequency.
+
+To answer the performance question, compare A: minimal UI; B: ReUI only, with QoL settings recorded; C: same ReUI plus one Claret feature; D: functionally equivalent prototype without ReUI, only if B-A or a specific component is materially costly. Use three runs with identical camera/replay and the metric definitions in `performance-hotspots.md`. Do not compare an empty new Core against ReUI plus ten enabled mods.
+
+## Recovered Installed ReUI Family
+
+2026-11-13: at the user's request, all 92 bytecode Lua files from 9 installed ReUI/ReUI.* mods were decompiled; 68 text files were not duplicated. Architecture map, method, versions, and limitations: [.local/reui-decompiled/README.md](.local/reui-decompiled/README.md); file-by-file index: [.local/reui-decompiled/index.md](.local/reui-decompiled/index.md). All 92 disassembly round-trips matched byte-for-byte; Lua output passed syntax parsing. Execution in FAF and semantic equivalence were not verified. Originals were not changed. Construction 1.3.0 is already readable: its `SetupConstructionControl` replaces the construction cluster; its built-in cargo marker is linked to `TransportCargoContext` and `DisplayBPID(..., "down")`. This is not a replacement of the entire bottom HUD.

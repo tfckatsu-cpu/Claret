@@ -1,10 +1,22 @@
-# Claret Core — test build 0.10.1
+# Claret Core — test build 0.10.41
+
+**Settings size** offers 100%, 125%, and 150% in the Core section. The default 125% keeps the original size. The saved size applies when the settings menu next opens and is capped to fit the screen.
 
 Shared foundation for Claret, UID `claret-core-001`. Requires ReUI. Core works on its own and does not depend on Claret Hotbuild.
 
+Claret UI exposes the minimap options under F10 → Claret → UI → Minimap. Manual minimap visibility remains under FAF control; automatic hiding does not save over that preference. The user confirmed the features and manual closing in game on 2026-11-20; compatibility with other minimap mods was not specified.
+
 Provides a feature registry, lifecycle and resource management (`Own`, `Bind`, `Every`, `Guard`, `Defer`), and a selection composition diagnostics panel. The `probeEnabled` setting controls diagnostic log entries and is available under F10 → Claret → Core when ReUI developer mode is enabled; its previously saved value is preserved. The UI counter panel has been removed.
 
+Text sizes and states come from `Theme.Metrics` (`text`, `secondaryText`, `buttonText`, `launcherText`, `title`, `heading`, `label`, `caption`, `glyph`) and `Theme.Colors.disabledText` / `accentPressed`; do not hardcode point sizes or state colours in screens. Shell panels use `Theme.RoundedPanel(control, layout, width, height, fill, border, shadow)` with `Metrics.panelRadius`; the corner, ring and shadow masks live in `textures/ui/`, carry baked canvas/border colours, and must be regenerated if the radius or those colours change.
+
 The Claret interface follows the game language by default. To override it, choose **English** or **Russian** under F10 → Claret → Core → **Interface language**. The preference is saved, and open Claret windows update immediately without restarting the game.
+
+## Experimental / deferred features (not wired)
+
+`modules/Construction*.lua`, `modules/Orders*.lua`, `modules/Multifunction*.lua`, `modules/SelectionIgnore*.lua` and `modules/CargoSelection.lua` are an experimental, deliberately deferred implementation of a planned replacement for the ReUI construction, orders and multi-function HUD. They are not abandoned or broken code: the modules are preserved and covered by the local checks, and their tests stay in place.
+
+No shipped session imports or registers them, so they never load in game (`import` is lazy). Wiring them — including an explicit ownership decision against `ReUI.Construction` — is outside the current scope and is a separate future step. Do not delete them as dead code.
 
 ## Connecting other mods
 
@@ -17,15 +29,17 @@ A separate mod declares a `ReUI.Require` dependency on `ClaretCore >= 0.10.0` an
 - Startup resources belong to `scope`; it is cleaned up when the feature is disabled, a handler fails, or the session ends.
 - `GetFeatureState(id)` returns the registered feature's state, and also returns an error message on failure.
 
+`ReUI.ClaretCore.UseSelectionHud(scope, refresh)` supplies the current selection and subscribes a HUD to FAF's `ObserveSelection` through Core. One HUD can use the feed at a time.
+
 ## Hotbuild is a separate mod
 
-The editor, catalog, bindings, their profile, keyboard hooks, and actions are in the separate `ClaretHotbuild` mod. To use them, enable **ReUI**, **Claret Core (Test)**, and **Claret Hotbuild (Test)**, then start a new match. Hotbuild is always active; there is no menu toggle. Its editor is integrated into the main menu at F10 → Claret → Hotbuild. Documentation and test scenarios are in the ClaretHotbuild README.
+The editor, catalog, bindings, their profile, keyboard hooks, and actions are in the separate `ClaretHotbuild` mod. To use them, enable **ReUI**, **Claret Core**, and **Claret Hotbuild**, then start a new match. Hotbuild is always active; there is no menu toggle. Its editor is integrated into the main menu at F10 → Claret → Hotbuild. Documentation and test scenarios are in the ClaretHotbuild README.
 
 ## Separate menu — 0.6.0
 
 Claret has its own entry in the in-game menu; its tabs have been removed from ReUI Options. The ReUI library dependency remains. Toggles apply and save immediately through the existing `OptionValue` objects, with no change to settings paths. The embedded Hotbuild editor occupies the Hotbuild section of the shared Claret menu; its draft is protected when changing sections or closing the menu. Closing the menu removes subscriptions and the Escape handler.
 
-`ReUI.ClaretCore.RegisterSettingsSection(definition)` registers a section for a separate mod. Fields: a unique `id`, `title`, a short single-line `description`, `toggles = {{label, description, option}}`, `actions = {{label, open(parent)}}`, and/or `inline(parent, layout)`. `inline` creates the section content inside the shared window and returns a control with an optional `CanLeave(intent, continuation)` method. Before closing or changing sections, Core calls this method. It can return `true` to allow the transition immediately, or call `continuation(true)` after confirmation; `continuation(false)` cancels the operation. When opening a confirmation, the method can return `nil` to defer the decision. `intent` is the string `close` or `section`. Use `layout.scale` for geometry. The launcher and the separate settings panel use fixed dimensions from `Theme.Metrics` and share a scale that fits the screen. Ordinary long settings lists are virtualized; embedded editors handle their own scrolling. In a mixed section, simple rows are virtualized while the embedded editor remains fully visible and stays in place when scrolling. For child windows registered through `actions`, `open(parent)` returns a window with `RequestClose()` and `OnDestroy`, owned by the passed `parent`. The section list on the left scrolls when there are more than six sections. Registration does not create UI; duplicate IDs and registration after the session ends are rejected. A new section appears the next time the menu is opened.
+`ReUI.ClaretCore.RegisterSettingsSection(definition)` registers a section for a separate mod. Fields: a unique `id`, `title`, a short single-line `description`, `toggles = {{label, description, option}}`, `actions = {{label, open(parent)}}`, and/or `inline(parent, layout)`. `inline` creates the section content inside the shared window and returns a control with an optional `CanLeave(intent, continuation)` method. Before closing or changing sections, Core calls this method. It can return `true` to allow the transition immediately, or call `continuation(true)` after confirmation; `continuation(false)` cancels the operation. When opening a confirmation, the method can return `nil` to defer the decision. `intent` is the string `close` or `section`. Use `layout.scale` for geometry. The launcher and the separate settings panel use default dimensions from `Theme.Metrics` and share a scale that fits the screen. Inline-only pages can call `layout.setSize(width, height)` with logical content dimensions after the host is shown. Ordinary long settings lists are virtualized; embedded editors handle their own scrolling. In a mixed section, simple rows are virtualized while the embedded editor remains fully visible and stays in place when scrolling. For child windows registered through `actions`, `open(parent)` returns a window with `RequestClose()` and `OnDestroy`, owned by the passed `parent`. The section list on the left scrolls when there are more than six sections. Registration does not create UI; duplicate IDs and registration after the session ends are rejected. A new section appears the next time the menu is opened.
 
 Test the editor under F10 → Claret → Hotbuild. Hotbuild is always active; a previously saved disabled value is ignored. Change a binding without saving and check draft protection on Escape/close, return to Claret, and reopen the editor. Check scaling, layers, mouse capture, the absence of Claret sections in ReUI Options, and Core running without Hotbuild installed. The user performs in-game checks in a new match.
 
@@ -41,7 +55,7 @@ The user confirmed the UI counter and the corrected selection panel in 0.2.1. Th
 
 From Claret Project, `node Tests/check-core.cjs` checks both mods: syntax and logic scenarios, including Core without Hotbuild, early/late feature registration, the separate Hotbuild entry point, and option persistence/migration. These are simulations, not engine runs.
 
-The Claret visual style is defined in the project's `Context/ui-style.md`; the shared `Theme.lua` in Core 0.5.0 provides tokens to all modules. Hotbuild 0.10.1 requires Core >= 0.10.0.
+The Claret visual style is defined in the project's `Context/ui-style.md`; the shared `Theme.lua` in Core 0.5.0 provides tokens to all modules. Hotbuild 0.10.41 requires Core >= 0.10.15.
 
 Settings presentation (2026-11-10): toggle rows are fully clickable, show On/Off and a description, and display a save confirmation next to the row for 1.5 seconds. Sections use shared components and the theme. A hotkey is saved immediately after successful input; a conflict shows the occupied action and preserves the previous combination. An empty assignment disables the clear button. Tab/Shift+Tab move focus, Enter/Space activate, and Esc cancels capture or closes the menu. Focusing an input field transfers focus to the editor. Hotbuild is always active and cannot be disabled through the menu. The appearance and actual input still need in-game verification in FAF; local checks are not in-game screenshots.
 
@@ -65,14 +79,12 @@ In a new match, test a transport with one or more loaded mobile units: invoke th
 
 ## Installing Nunito
 
-Run `fonts/Install-Nunito.cmd` once from the ClaretCore folder. The installer looks for the original game folder using the FAF client's settings and `fa_path.lua`; if it cannot find it, it asks you to select the folder manually. Select the game folder containing `bin` and `fonts`, not the mod folder or `FAF/bin`.
-
-Only `Nunito-Regular.ttf` and `Nunito-SemiBold.ttf` from `fonts/Nunito` are copied. Reinstalling the same files makes no changes; files with those names but different contents are not overwritten. If access is denied, run CMD as administrator. Fully close and restart the game after installation. Node, a special init, and a client launch command are not required. You can run the installer again after moving the game.
+Copy `Nunito-Regular.ttf` and `Nunito-SemiBold.ttf` from `ClaretCore/fonts/Nunito` to the original Forged Alliance installation's `fonts` folder, beside its `bin` folder. Fully close and restart the game after copying. Nunito is optional and the interface falls back to the default font.
 
 The original TTF files and SIL OFL 1.1 notices remain in `fonts/Nunito`. To uninstall manually, remove only these two files from the game's `fonts` folder.
 
 `ReUI.ClaretCore.IsKeyCaptureActive()` reports whether settings are temporarily capturing a key combination; it returns `false` after saving, cancelling, or destroying the menu.
 
-## Стратегические кольца
+## Strategic rings
 
-Core рисует кольца для двух клавиатурных действий Hotbuild. `CreateStrategicRing(false)` создаёт доступные радиусы разведки, оружия, щита, стелса и взрыва для объекта под курсором; `CreateStrategicRing(true)` создаёт его радиус обзора. Перекрывающиеся плоские радиусы одного типа объединяются в общий контур. Штатный ластик FAF по Alt+ПКМ удаляет группу колец объекта. Реализация находится в Core и не требует Bi4UI.StrategicRings.
+Core draws rings for two Hotbuild keyboard actions. `CreateStrategicRing(false)` creates the available scouting, weapon, shield, stealth and blast radii for the object under the cursor; `CreateStrategicRing(true)` creates its vision radius. Overlapping flat radii of the same kind merge into one outline. FAF stock eraser (Alt+RMB) removes the ring group of an object. The implementation lives in Core and does not require Bi4UI.StrategicRings.

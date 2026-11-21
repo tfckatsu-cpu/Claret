@@ -15,6 +15,10 @@ local Compatibility = import('/mods/ClaretHotbuild/modules/Compatibility.lua')
 local KeyboardBindings = import('/mods/ClaretHotbuild/modules/KeyboardBindings.lua')
 local current
 
+local function CompositeSupports(id, kind)
+    return id ~= 'load_transports' and ContextActions.Supports(id,kind)
+end
+
 local function IsKeyCaptureActive()
     local core=ReUI.ClaretCore
     return core and core.IsKeyCaptureActive and core.IsKeyCaptureActive() or false
@@ -46,7 +50,7 @@ local function Dispatch(method,prefix,id,kind,chord,shiftHeld)
     end
     if type(current[method])~='function' then
         if tracing then LOG('[Claret][keys] dispatch action='..action..' result=no_handler') end
-        return current[method](current,id)
+        return false,'no_handler'
     end
     if current.active and not current.isReplay and not IsKeyCaptureActive() then
         local quickId
@@ -125,9 +129,13 @@ function Create(isReplay)
     function service:Catalog()
         if not catalog then
             local base=Catalog.Create(__blueprints,LOC)
-            catalog=import('/mods/ClaretHotbuild/modules/TemplateCatalog.lua').Create(base,function()
+            local templates=import('/mods/ClaretHotbuild/modules/TemplateCatalog.lua').Create(base,function()
                 return Prefs.GetFromCurrentProfile('build_templates')
             end,import('/lua/keymap/unitkeygroups.lua').unitkeygroups)
+            -- Factory queue templates extend the same catalog API and stay faction-bound.
+            catalog=import('/mods/ClaretHotbuild/modules/UnitTemplateCatalog.lua').Create(templates,function()
+                return Prefs.GetFromCurrentProfile('build_templates_factory')
+            end)
         end
         return catalog
     end
@@ -144,53 +152,56 @@ function Create(isReplay)
     function service:BreakQuick() continuation:ClearQuick() end
     function service:TouchQuick(id) continuation:TouchQuick(id) end
 
-    local function RememberQuick(binding,kind,id,context)
-        local row=binding and service.contextModel:ResolveRow(binding,kind)
-        local main=row and row.action and ContextActions.Get(row.action)
-        local action=row and row.quickRepeat and ContextActions.Get(row.quickRepeat)
-        if main and main.continuation then continuation:ClearQuick(); return end
-        local original=context.absolute
-        context.absolute=original or kind=='empty'
-        continuation:RememberQuick(id,action,context,true)
-        context.absolute=original
+    local function RememberComposite(id,action,context)
+        if action.continuation=='double' then
+            continuation:Clear()
+        else
+            continuation:Remember(id,action,context)
+        end
     end
 
-    local groups = {{'land','air','navy'},{'acu','sacu','engineer'}, {'silo_tactical','silo_nuclear'}}
+    local selectionContexts = {'land','air','navy','acu','sacu','engineer','factory',
+        'silo_tactical','silo_nuclear','transport','mex','scout','other'}
+    local armyContexts = {land=true,air=true,navy=true}
+    local contextGroup = {
+        land='units',air='units',navy='units',acu='builder',sacu='builder',engineer='builder',
+        silo_tactical='missiles',silo_nuclear='missiles',
+    }
     local function ResolveContext(binding, selection, unitsOnly)
-        local function rowAction(kind)
-            for _,row in ipairs(binding.rows or {}) do if row.context==kind then return row.action end end
+        if ContextActions.MatchesContext(selection,'empty') then
+            if unitsOnly then return false end
+            local row=service.contextModel:ResolveRow(binding,'empty')
+            local id=row and row.action
+            return id~=nil and id~='load_transports',id,'empty'
         end
-        local function group(children)
-            local actionId, winningKind
-            for _,kind in ipairs(children) do
-                if ContextActions.MatchesContext(selection,kind) then
-                    local id=service.contextModel:ResolveAction(binding,kind)
-                    if id then
-                        if not ContextActions.Supports(id,kind) then return true,nil,kind end
-                        if actionId and actionId~=id then return true,nil,kind end
-                        actionId=id; winningKind=kind
+        local count, assigned = 0, 0
+        local actionId, winningKind
+        local allArmy, conflict = true, false
+        local present=ContextActions.PresentContexts(selection)
+        for _,kind in ipairs(selectionContexts) do
+            if present[kind] then
+                count=count+1
+                allArmy=allArmy and armyContexts[kind]==true
+                local row=service.contextModel:ResolveRow(binding,kind)
+                local id=row and row.action
+                if id and id~='load_transports' then
+                    assigned=assigned+1
+                    if not CompositeSupports(id,kind) or (actionId and actionId~=id) then conflict=true end
+                    actionId=id
+                    if not winningKind or (contextGroup[kind] and contextGroup[kind]==contextGroup[winningKind]) then
+                        winningKind=kind
                     end
                 end
             end
-            return actionId~=nil,actionId,winningKind
         end
-        local matched,id,kind=group(groups[1])
-        if matched then return matched,id,kind end
-        if unitsOnly then return false end
-        if ContextActions.MatchesContext(selection,'empty') then
-            id=rowAction('empty'); if id then return true,id,'empty' end
+        if assigned==0 and allArmy and count>0 and not unitsOnly then
+            local row=service.contextModel:ResolveRow(binding,'other')
+            local id=row and row.action
+            return id~=nil and id~='load_transports',id,'other',true
         end
-        matched,id,kind=group(groups[2]); if matched then return matched,id,kind end
-        if ContextActions.MatchesContext(selection,'factory') then
-            id=rowAction('factory'); if id then return true,id,'factory' end
-        end
-        matched,id,kind=group(groups[3]); if matched then return matched,id,kind end
-        for _,name in ipairs({'transport','mex','scout','other'}) do
-            if ContextActions.MatchesContext(selection,name) or (name=='other' and ContextActions.MatchesContext(selection,'units')) then
-                id=rowAction(name); if id then return true,id,name,name=='other' and ContextActions.MatchesContext(selection,'units') end
-            end
-        end
-        return false
+        if assigned==0 or (unitsOnly and count==1 and not allArmy) then return false end
+        if conflict or assigned~=count then return true,nil,winningKind end
+        return true,actionId,winningKind
     end
 
     local function ExecuteRow(binding,kind,action,context,id)
@@ -201,7 +212,7 @@ function Create(isReplay)
         local result,outcome=ContextActions.ExecuteWithOutcome(action,context,id)
         if outcome~='not_found' then return result end
         local fallback=ContextActions.Get(row.fallback)
-        if not fallback or not ContextActions.Supports(row.fallback,kind) then return result end
+        if not fallback or not CompositeSupports(row.fallback,kind) then return result end
         local fresh=adapter:Context(service.isReplay)
         fresh.absolute=context.absolute or kind=='empty'
         fresh.legacyUnits=context.legacyUnits
@@ -210,22 +221,47 @@ function Create(isReplay)
         return fallbackResult or result
     end
 
-    local function RunResolved(binding,context,id,unitsOnly,quickId)
+    local function RunResolved(binding,context,id,unitsOnly)
         local matched,actionId,kind,legacyUnits=ResolveContext(binding,context.selection,unitsOnly)
         if not matched then return false end
         local action=actionId and ContextActions.Get(actionId)
         context.legacyUnits=legacyUnits
         context.resolvedContext=kind
-        if not action or not ContextActions.Supports(actionId,kind) or not ContextActions.Available(action,context) then
+        if not action or not CompositeSupports(actionId,kind) or not ContextActions.Available(action,context) then
             return true,false,T('hotbuild.runtime.s001')
         end
         local called,result=pcall(ExecuteRow,binding,kind,action,context,id)
         if not called then return true,false,tostring(result) end
         if result then
-            continuation:Remember(id,action,context)
-            RememberQuick(binding,kind,quickId or id,context)
+            RememberComposite(id,action,context)
         end
         return true,result,result and actionId or T('hotbuild.runtime.s002')
+    end
+
+    local function RunEngineerStart(binding,context,id,chord,presetId)
+        if not binding or not ContextActions.MatchesContext(context.selection,'empty') then return false end
+        local row=service.contextModel:ResolveRow(binding,'empty')
+        local action=row and row.action and ContextActions.Get(row.action)
+        if not action or not action.special or not string.find(action.special,'^next_engineer_') then return false end
+        local key=chord and keys:HeldChord(chord) or (presetId and keys:HeldKey(presetId))
+        if key and not holdModule then holdModule=import('/mods/ClaretHotbuild/modules/EngineerHold.lua') end
+        local hold=key and holdModule
+        if hold and hold.Active(key) then return true,true,action.id end
+        continuation:Clear()
+        local called,result=pcall(ExecuteRow,binding,'empty',action,context,id)
+        if not called then return true,false,tostring(result) end
+        if result then
+            continuation:Remember(id,action,context)
+            if hold then
+                hold.Start(key,function()
+                    if not service.active or IsKeyCaptureActive() or service.isReplay then hold.Stop(key); return end
+                    local fresh=adapter:Context(service.isReplay)
+                    local handled,added=continuation:Continue(id,fresh)
+                    if not handled or not added then hold.Stop(key) end
+                end)
+            end
+        end
+        return true,result,result and action.id or T('hotbuild.runtime.s005')
     end
 
     local function RunCursor(binding,context,id)
@@ -245,16 +281,15 @@ function Create(isReplay)
     end
 
     function service:RefreshKeys()
-        if table.getn(self.model:GetLoadWarnings()) > 0 or table.getn(self.contextModel:GetLoadWarnings()) > 0 then
-            return false, T('hotbuild.runtime.s004')
+        local ok, message = true, nil
+        if self.model:CanWrite() then
+            ok, message = keys:Apply(self.model:List(), self.model:GetQuarantinedIds())
         end
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
-        local ok, message = keys:Apply(self.model:List())
-        if type(keys.ApplyAbsolute)=='function' then
+        if type(keys.ApplyAbsolute)=='function' and self.contextModel:CanSave() then
             local contextKeysOk, contextKeysMessage = keys:ApplyAbsolute(self.contextModel:List())
             if not contextKeysOk then ok, message = contextKeysOk, contextKeysMessage end
         end
-        keyboardBindings:Refresh()
+        if not keyboardBindings:GetPairError() then keyboardBindings:Refresh() end
         if not ok then WARN('[ClaretHotbuild] ' .. tostring(message)) end
         return ok, message
     end
@@ -296,34 +331,13 @@ function Create(isReplay)
         if not chord and keyboardBindings:GetPairError() then
             activeContext=activeBinding and activeBinding.grid and activeBinding.grid.context
         end
-        local dispatchId=chord and ('keyboard:pair:'..chord) or id
-        local quickId=quickChord and ('keyboard:pair:'..quickChord) or dispatchId
+        local activeChord=chord or quickChord
+        local dispatchId=activeChord and ('keyboard:pair:'..activeChord) or id
         local composite=activeContext and self.contextModel:Get(activeContext)
         local cursorMatched,cursorResult,cursorMessage=RunCursor(composite,context,dispatchId)
         if cursorMatched then return cursorResult,cursorMessage end
-        local quickHandled,quickResult,quickMessage=continuation:ContinueQuick(quickId,context,dispatchId)
-        if quickHandled then return quickResult,quickMessage end
-        for _,row in ipairs(composite and composite.rows or {}) do
-            local action=row.context=='empty' and row.action and ContextActions.Get(row.action)
-            if action and action.continuation=='accumulate' and action.special and string.find(action.special,'^next_engineer_') then
-                local key=chord and keys:HeldChord(chord) or keys:HeldKey(id)
-                if key and not holdModule then holdModule=import('/mods/ClaretHotbuild/modules/EngineerHold.lua') end
-                local hold=key and holdModule
-                if hold and hold.Active(key) then return true,action.id end
-                continuation:Clear()
-                local called,result=pcall(ExecuteRow,composite,'empty',action,context,dispatchId)
-                if not called then return nil,'Context action failed: '..tostring(result) end
-                if result then RememberQuick(composite,'empty',quickId,context) end
-                if hold and self.active and not IsKeyCaptureActive() then
-                    hold.Start(key,function()
-                        if not self.active or IsKeyCaptureActive() or self.isReplay then hold.Stop(key); return end
-                        local fresh=adapter:Context(self.isReplay)
-                        ContextActions.Execute(action,fresh,dispatchId)
-                    end)
-                end
-                return result,result and action.id or T('hotbuild.runtime.s005')
-            end
-        end
+        local engineerMatched,engineerResult,engineerMessage=RunEngineerStart(composite,context,dispatchId,activeChord,id)
+        if engineerMatched then return engineerResult,engineerMessage end
         local continued, continuationResult, continuationMessage = continuation:Continue(dispatchId, context)
         if continued then return continuationResult, continuationMessage end
         local commandMode = import('/lua/ui/game/commandmode.lua').GetCommandMode()
@@ -338,14 +352,15 @@ function Create(isReplay)
             if not contextId then return false end
             local composite = self.contextModel:Get(contextId)
             if not composite then return true, nil, T('hotbuild.runtime.s006')..tostring(contextId) end
-            return RunResolved(composite,context,dispatchId,unitsOnly,quickId)
+            return RunResolved(composite,context,dispatchId,unitsOnly)
         end
         local matched, ok, message
         local hotbuildPriority = false
         if ContextActions.HasOrdinaryBuilder(context.selection) and binding then
             local builderContext={selection=ContextActions.OrdinaryBuilders(context.selection),isReplay=context.isReplay,
                 focusArmy=context.focusArmy,orders=context.orders,plans={},sources=nil,
-                bindingEntries=binding.entries}
+                bindingEntries=binding.entries,
+                factorySelection=context.factorySelection,factoryTechTab=context.factoryTechTab}
             for _, entry in ipairs(binding.entries or {}) do
                 if entry.kind == 'blueprint' then
                     local ok,canBuild=pcall(adapter.CanBuild,adapter,entry.id,builderContext)
@@ -427,10 +442,10 @@ function Create(isReplay)
         for _,row in ipairs(composite.rows or {}) do
             if row.context=='empty' then actionId=row.action; break end
         end
-        local action=actionId and ContextActions.Get(actionId)
+        local action=actionId and CompositeSupports(actionId,'empty') and ContextActions.Get(actionId)
         if not action then return false, T('hotbuild.runtime.s008') end
-        local continuationId=chord and ('keyboard:pair:'..chord) or ('absolute:'..id)
-        local quickId=quickChord and ('keyboard:pair:'..quickChord) or continuationId
+        local activeChord=chord or quickChord
+        local continuationId=activeChord and ('keyboard:pair:'..activeChord) or ('absolute:'..id)
         local contextOk,context=pcall(function()
             if not adapter then adapter=Adapter.Create(self:Catalog()) end
             return adapter:Context(self.isReplay)
@@ -438,8 +453,6 @@ function Create(isReplay)
         if not contextOk then return false, tostring(context) end
         context.absolute=true
         local actual=context
-        local quickHandled,quickResult,quickMessage=continuation:ContinueQuick(quickId,actual,continuationId)
-        if quickHandled then return quickResult,quickMessage end
         if action.continuation=='accumulate' and action.special and string.find(action.special,'^next_engineer_') then
             local key=chord and keys:HeldChord(chord) or (type(keys.HeldAbsoluteKey)=='function' and keys:HeldAbsoluteKey(id) or nil)
             if key and not holdModule then holdModule=import('/mods/ClaretHotbuild/modules/EngineerHold.lua') end
@@ -455,14 +468,14 @@ function Create(isReplay)
                     ContextActions.Execute(action,fresh,continuationId)
                 end)
             end
-            if result then continuation:Remember(continuationId,action,actual); RememberQuick(composite,'empty',quickId,actual) end
+            if result then RememberComposite(continuationId,action,actual) end
             return result,result and action.id or T('hotbuild.runtime.s009')
         end
         local continued,result,message=continuation:Continue(continuationId,actual)
         if continued then return result,message end
         local called,executed=pcall(ExecuteRow,composite,'empty',action,actual,continuationId)
         if not called then return nil,'Absolute context action failed: '..tostring(executed) end
-        if executed then continuation:Remember(continuationId,action,actual); RememberQuick(composite,'empty',quickId,actual) end
+        if executed then RememberComposite(continuationId,action,actual) end
         return executed,executed and action.id or T('hotbuild.runtime.s010')
     end
 
@@ -505,6 +518,16 @@ function Create(isReplay)
             return adapter:Context(self.isReplay)
         end)
         if not good then return false,tostring(context) end
+        local double=chord and keyboardBindings:GetDouble(chord)
+        local second=double and double.first==actionId and ContextActions.Get(double.second)
+        if second and second.id=='load_transports' then
+            continuation:Clear()
+            if ContextActions.Available(second,context) then
+                action=second
+                actionId=second.id
+            end
+            second=nil
+        end
         if ContextActions.Supports(actionId,'empty') then context.absolute=true end
         local id='keyboard:action:'..actionId
         local quickId=chord and ('keyboard:pair:'..chord) or id
@@ -517,8 +540,6 @@ function Create(isReplay)
         if not called then return false,tostring(executed) end
         if executed then
             continuation:Remember(id,action,context)
-            local double=chord and keyboardBindings:GetDouble(chord)
-            local second=double and double.first==actionId and ContextActions.Get(double.second)
             if second then
                 continuation:RememberQuick(quickId,second,context,true)
             end
@@ -536,15 +557,15 @@ function Create(isReplay)
             return adapter:Context(self.isReplay)
         end)
         if not good then return false,tostring(context) end
-        local continuationId=chord and ('keyboard:pair:'..chord) or ('keyboard:composite:'..compositeId)
-        local quickId=quickChord and ('keyboard:pair:'..quickChord) or continuationId
+        local activeChord=chord or quickChord
+        local continuationId=activeChord and ('keyboard:pair:'..activeChord) or ('keyboard:composite:'..compositeId)
         local cursorMatched,cursorResult,cursorMessage=RunCursor(composite,context,continuationId)
         if cursorMatched then return cursorResult,cursorMessage end
-        local quickHandled,quickResult,quickMessage=continuation:ContinueQuick(quickId,context,continuationId)
-        if quickHandled then return quickResult,quickMessage end
+        local engineerMatched,engineerResult,engineerMessage=RunEngineerStart(composite,context,continuationId,activeChord)
+        if engineerMatched then return engineerResult,engineerMessage end
         local continued,continueResult,continueMessage=continuation:Continue(continuationId,context)
         if continued then return continueResult,continueMessage end
-        local matched,result,message=RunResolved(composite,context,continuationId,false,quickId)
+        local matched,result,message=RunResolved(composite,context,continuationId,false)
         if matched then return result,message end
         return false,T('hotbuild.runtime.s015')
     end
@@ -566,7 +587,8 @@ function Create(isReplay)
             if binding and contextOk and ContextActions.HasOrdinaryBuilder(context.selection) then
                 local builders={selection=ContextActions.OrdinaryBuilders(context.selection),isReplay=context.isReplay,
                     focusArmy=context.focusArmy,orders=context.orders,plans={},sources=nil,
-                    bindingEntries=binding.entries}
+                    bindingEntries=binding.entries,
+                    factorySelection=context.factorySelection,factoryTechTab=context.factoryTechTab}
                 for _,entry in ipairs(binding.entries or {}) do
                     if entry.kind=='blueprint' then
                         local ok,canBuild=pcall(adapter.CanBuild,adapter,entry.id,builders)
@@ -586,10 +608,7 @@ function Create(isReplay)
             if not good then return false,tostring(context) end
             local selectedTarget=false
             if second.id=='load_transports' then
-                selectedTarget=ContextActions.MatchesContext(context.selection,'transport')
-                    and (ContextActions.MatchesContext(context.selection,'land')
-                        or ContextActions.MatchesContext(context.selection,'air')
-                        or ContextActions.MatchesContext(context.selection,'navy'))
+                selectedTarget=ContextActions.Available(second,context)
             else
                 for _,kind in ipairs(second.contexts or {}) do
                     if kind~='empty' and ContextActions.MatchesContext(context.selection,kind) then
@@ -625,7 +644,8 @@ function Create(isReplay)
                 if probe and probe:Get() then
                     LOG('[Claret][keys] factory_shift_intercept chord='..chord..' active=true')
                 end
-                return self:Execute(pair.preset,pair.composite,chord,nil,true)
+                local executed,message = self:Execute(pair.preset,pair.composite,chord,nil,true)
+                if executed then return executed,message end
             end
         end
         if type(nativeAction)=='string' and type(ConExecute)=='function' then
@@ -636,7 +656,7 @@ function Create(isReplay)
     end
 
     function service:ValidatePreset(binding)
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
+        if not self.model:CanWrite() then return false, T('hotbuild.runtime.s018') end
         local candidate=Model.Create(self.model:Export())
         local ok,message=candidate:Put(binding)
         if not ok then return false,message end
@@ -662,10 +682,7 @@ function Create(isReplay)
 
     -- Save only after validation of the entire proposed configuration.
     function service:Commit(binding, removeId)
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
-        if table.getn(self.model:GetLoadWarnings()) > 0 then
-            return false, T('hotbuild.runtime.s018')
-        end
+        if not self.model:CanWrite() then return false, T('hotbuild.runtime.s018') end
         if not removeId and binding and type(binding.name)=='string' and string.find(binding.name, '[^ -~]') then
             return false, T('hotbuild.runtime.s019')
         end
@@ -692,7 +709,7 @@ function Create(isReplay)
             Prefs.SetToCurrentProfile('ClaretHotbuild', before)
             return false, 'Could not save: ' .. tostring(message)
         end
-        if removeId then
+        if removeId and not keyboardBindings:GetPairError() then
             local cleared,clearMessage=keyboardBindings:ClearPresetAssignments(removeId)
             if not cleared then
                 pcall(function()
@@ -713,16 +730,8 @@ function Create(isReplay)
     end
 
     function service:CommitContext(binding, removeId, confirmedDelete)
-        if keyboardBindings:GetPairError() then return false,keyboardBindings:GetPairError() end
         if not self.contextModel:CanSave() then return false, T('hotbuild.runtime.s022') end
-        if binding and table.getn(self.model:GetLoadWarnings()) > 0 then
-            return false, T('hotbuild.runtime.s023'),
-                {kind='absolute_link',bindings={}}
-        end
         if removeId then
-            if table.getn(self.model:GetLoadWarnings()) > 0 then
-                return false, T('hotbuild.runtime.s024')
-            end
             if keyboardBindings:HasDirectAssignment({kind='composite',id=removeId}) and confirmedDelete~=true then
                 return false,T('hotbuild.runtime.s025')
             end
@@ -746,7 +755,7 @@ function Create(isReplay)
             Prefs.SetToCurrentProfile('ClaretHotbuildContexts',before)
             return false,T('hotbuild.runtime.s026')..tostring(message)
         end
-        if removeId then
+        if removeId and not keyboardBindings:GetPairError() then
             local cleared,clearMessage=keyboardBindings:ClearCompositeAssignments(removeId)
             if not cleared then
                 pcall(function()

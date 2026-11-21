@@ -7,9 +7,25 @@ local KeySigns = {
     LeftBracket = '[', RightBracket = ']', Chevron = '<', Backtick = '`',
 }
 
+-- Label colours for the construction tiles. Plain and Alt follow the native
+-- FAF white/orange; Ctrl is the muted red and Shift the muted yellow chosen
+-- for readability on the dark tile background (not acid tones). The native
+-- Ctrl+Alt red is replaced by the brighter coral. Shift combinations keep
+-- the Theme.Colors.keyCombo* tones used by the keyboard-editor legend.
+local LabelColours = {
+    plain = 'ffffffff',
+    ctrl = 'ffd26060',
+    shift = 'ffe8cf6e',
+    ctrlShift = 'ff4db6ac',
+    alt = 'ffffbf80',
+    ctrlAlt = 'ffff7785',
+    shiftAlt = 'ff9ccc65',
+    ctrlShiftAlt = 'ff7986cb',
+}
+
 local function ValidId(value)
     return type(value) == 'string' and value ~= ''
-        and not string.find(string.lower(value), '^claret_template_')
+        and not string.find(string.lower(value), '^claret_')
 end
 
 local function TextSize(length)
@@ -32,13 +48,21 @@ local function ReadChord(assignment)
     local key = KeySigns[assignment.key] or assignment.key
     -- Construction tiles show the physical key only. Modifiers still matter
     -- to dispatch, but must not turn the tile label into a chord.
-    local colour = Colours.plain
+    local colour = LabelColours.plain
+    if ctrl and alt and shift then colour = LabelColours.ctrlShiftAlt
+    elseif ctrl and alt then colour = LabelColours.ctrlAlt
+    elseif ctrl and shift then colour = LabelColours.ctrlShift
+    elseif shift and alt then colour = LabelColours.shiftAlt
+    elseif ctrl then colour = LabelColours.ctrl
+    elseif alt then colour = LabelColours.alt
+    elseif shift then colour = LabelColours.shift end
     local full = {}
     if ctrl then table.insert(full, 'Ctrl') end
     if alt then table.insert(full, 'Alt') end
     if shift then table.insert(full, 'Shift') end
     table.insert(full, key and (shift and (KeySigns[assignment.key] or assignment.key) or key))
-    return assignment.ref.id, { key = key, colour = colour, chord = table.concat(full, '+') }
+    return assignment.ref.id, { key = key, colour = colour, chord = table.concat(full, '+'),
+        plain = not (ctrl or alt or shift) }
 end
 
 local function CopyEntries(binding)
@@ -93,24 +117,32 @@ function Build(model, assignments)
             if not byKey[chord.key] then
                 byKey[chord.key] = chord
                 table.insert(keys, chord.key)
+            elseif chord.plain then
+                byKey[chord.key] = chord
             end
         end
         table.sort(keys)
+        -- The unmodified assignment has display priority: when the same
+        -- blueprint is reachable both with and without modifiers, show the
+        -- plain key (white); modifier chords stay in the metadata only.
+        local displayKey = keys[1]
+        for _, candidate in ipairs(keys) do
+            if byKey[candidate].plain then displayKey = candidate; break end
+        end
         if table.getn(keys) == 1 then
             relations[blueprintId] = {
-                key = keys[1],
-                colour = Colours.plain,
-                textsize = TextSize(string.len(keys[1])),
+                key = displayKey,
+                colour = byKey[displayKey].colour,
+                textsize = TextSize(string.len(displayKey)),
                 chords = chords,
                 ambiguous = false,
             }
         else
-            -- ReUI/FA accept one HotKeyData per BPID. Show the first stable key
-            -- with a plus marker; retain every full chord in metadata.
+            -- ReUI/FA accept one label per blueprint. Retain all chords in metadata.
             relations[blueprintId] = {
-                key = keys[1] .. '+',
-                colour = Colours.plain,
-                textsize = TextSize(string.len(keys[1] .. '+')),
+                key = displayKey,
+                colour = byKey[displayKey].colour,
+                textsize = TextSize(string.len(displayKey)),
                 chords = chords,
                 chordCount = table.getn(chords),
                 ambiguous = true,

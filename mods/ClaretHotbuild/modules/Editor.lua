@@ -86,7 +86,7 @@ local function CatalogName(name, record, catalog)
     return Short(name,34)
 end
 local function TileName(record, catalog)
-    if record.templateData then return Short(record.name,18) end
+    if record.templateData or record.unitTemplate then return Short(record.name,18) end
     return CatalogName(record.name,record,catalog)
 end
 local function ApplyPickerChoice(state,selection,record)
@@ -231,7 +231,7 @@ function Create(parent, service, embedded, memory)
         local bg=Panel(frame,0,0,1080,920,C.canvas); bg.Depth:Set(function() return frame.Depth()+1 end); bg:DisableHitTest()
         local function Text(owner,text,x,y,size,color)
             if type(text)=='string' and string.sub(text,1,9)=='hotbuild.' then text=T(text) end
-            local t=UI.CreateText(owner,text,(size or 14)*ratio,Theme.Fonts.body)
+            local t=UI.CreateText(owner,text,(size or Theme.Metrics.secondaryText)*ratio,Theme.Fonts.body)
             t.Depth:Set(function() return owner.Depth()+2 end)
             t:SetColor(color or C.text); t:DisableHitTest()
             L(t):AtLeftTopIn(owner,x,y); return t
@@ -241,15 +241,19 @@ function Create(parent, service, embedded, memory)
             local h=Theme.Metrics.buttonHeight
             local b=Panel(owner,x,y,w,h,normal); local border=Theme.Outline(b,L,w,h)
             local label=Text(b,text,0,0,Theme.Metrics.buttonText); L(label):AtCenterIn(b)
+            local hovered=false
+            local function Paint()
+                if b.saveButton and not b.saveEnabled then b:SetSolidColor(C.disabled); border(C.border); return end
+                b:SetSolidColor(b.pressed and (primary and C.accentPressed or C.pressed) or hovered and (primary and C.accentHover or C.hover) or normal)
+                border(hovered and C.selectedBorder or C.border)
+            end
             b.HandleEvent=function(self,e)
-                if e.Type=='MouseEnter' then
-                    self:SetSolidColor(self.saveButton and not self.saveEnabled and C.disabled or (primary and C.accentHover or C.hover))
-                    border(self.saveButton and not self.saveEnabled and C.border or C.selectedBorder)
-                elseif e.Type=='MouseExit' then
-                    self:SetSolidColor(self.saveButton and not self.saveEnabled and C.disabled or normal); border(C.border)
+                if e.Type=='MouseEnter' then hovered=true; Paint()
+                elseif e.Type=='MouseExit' then hovered=false; self.pressed=false; Paint()
+                elseif e.Type=='ButtonRelease' then self.pressed=false; Paint()
                 elseif e.Type=='ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then
                     if self.saveButton and not self.saveEnabled then return true end
-                    fn(); return true
+                    self.pressed=true; Paint(); fn(); return true
                 end
                 return true
             end
@@ -290,7 +294,7 @@ function Create(parent, service, embedded, memory)
         local leaveIntent=nil
         local leaveDialog,leaveOverlay,leaveContinuation
         local compatibilityDialog,compatibilityOverlay
-        local status=Text(frame,'',24,893,12,C.muted)
+        local status=Text(frame,'',24,893,Theme.Metrics.caption,C.muted)
         local function Status(message,error,arg1,arg2,arg3)
             if type(message)=='string' and string.sub(message,1,9)=='hotbuild.' then message=T(message,arg1,arg2,arg3) end
             status:SetColor(error and C.danger or C.muted); status:SetText(Short(message,130))
@@ -363,10 +367,10 @@ function Create(parent, service, embedded, memory)
             CloseLeaveDialog()
             leaveIntent=intent
             leaveContinuation=continuation
-            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(frame.Depth()+80)
+            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(function() return frame.Depth()+80 end)
             leaveOverlay.HandleEvent=function(self,e) if e.Type=='ButtonPress' then return true end; return true end
             local dialogWidth,dialogHeight=560,224
-            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(frame.Depth()+90)
+            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(function() return frame.Depth()+90 end)
             Theme.AnimateCentered(leaveDialog,frame,L)
             local back=Panel(leaveDialog,0,0,dialogWidth,dialogHeight,C.surface); back.Depth:Set(leaveDialog.Depth); Theme.Outline(back,L,dialogWidth,dialogHeight,C.selectedBorder)
             Text(leaveDialog,T('hotbuild.common.unsaved_title'),24,20,20)
@@ -491,7 +495,7 @@ function Create(parent, service, embedded, memory)
         local nameBorder=Panel(frame,315,88,300,36,C.transparent)
         local nameOutline=Theme.Outline(nameBorder,L,300,36,C.border)
         nameBorder:DisableHitTest()
-        local nameWarning=Text(frame,'',315,48,13,C.danger)
+        local nameWarning=Text(frame,'',315,48,Theme.Metrics.label,C.danger)
         local function InvalidName(value)
             return type(value)=='string' and string.find(value,'[^ -~]')~=nil
         end
@@ -540,72 +544,154 @@ function Create(parent, service, embedded, memory)
             if legacyIssue then Status(T(legacyIssue)..' '..T('hotbuild.editor.status.create_binding'),true); return false end
             return true
         end
-        Panel(frame,24,18,4,22,C.accent):DisableHitTest(); Text(frame,'Hotbuild',40,14,22)
+        Panel(frame, 24, 20, 4, 24, C.accent):DisableHitTest()
+        Text(frame, 'hotbuild.page.hotbuild.title', 40, 16, Theme.Metrics.title)
         Text(frame,T('hotbuild.editor.binding'),24,67,14,C.muted); Text(frame,T('hotbuild.editor.name'),315,67,14,C.muted)
         local selectorButton=Button(frame,'',24,88,270,function() end)
-        local selectorLabel=Text(selectorButton,'',12,7,15)
-        local selectorArrow=Text(selectorButton,'▼',244,7,13,C.muted)
+        local selectorLabel=Text(selectorButton,'',12,7,Theme.Metrics.buttonText)
+        local selectorArrow=Text(selectorButton,'▼',244,7,Theme.Metrics.label,C.muted)
         local listPanel, listOverlay, listTop, deleteIntent = nil, nil, 1, nil
+        local visibleRows, rowHeight = 9, 38
         local function CloseList()
+            deleteIntent=nil
             if listPanel then listPanel:Destroy(); listPanel=nil end
             if listOverlay then listOverlay:Destroy(); listOverlay=nil end
         end
-        local function OpenList()
-            CloseList()
+        local function BuildList()
+            if listPanel then listPanel:Destroy(); listPanel=nil end
+            if listOverlay then listOverlay:Destroy(); listOverlay=nil end
             local bindings=service.model:List()
-            listTop=math.max(1,math.min(listTop,math.max(1,table.getn(bindings)-7)))
+            local listHeight=12+visibleRows*rowHeight
+            listTop=math.max(1,math.min(listTop,math.max(1,table.getn(bindings)-visibleRows+1)))
             listOverlay=Panel(frame,0,0,1080,920,C.transparent)
             listOverlay.Depth:Set(function() return frame.Depth()+80 end)
             listOverlay.HandleEvent=function(self,e)
                 if e.Type=='ButtonPress' then CloseList() end
                 return true
             end
-            listPanel=Group(frame); L(listPanel):AtLeftTopIn(frame,24,126):Width(270):Height(310)
+            listPanel=Group(frame); L(listPanel):AtLeftTopIn(frame,24,126):Width(372):Height(listHeight)
             Theme.AnimateAnchored(listPanel,frame,L,24,126)
             listPanel.Depth:Set(function() return frame.Depth()+100 end)
-            local background=Panel(listPanel,0,0,270,310,C.canvas); background.Depth:Set(listPanel.Depth)
-            Theme.Outline(background,L,270,310)
-            for i=1,8 do
-                local binding=bindings[listTop+i-1]
-                if binding then
-                    local id=binding.id
-                    local selectButton=Button(listPanel,Short(binding.name,25),2,2+(i-1)*38,232,function()
-                        if not MayLeave('select:'..id) then return end
-                        Load(service.model:Get(id)); CloseList(); SyncSelector(); Refresh()
-                    end)
-                    local remove=Button(listPanel,'×',236,2+(i-1)*38,32,function()
-                        if dirty then Status(T('hotbuild.editor.status.save_or_confirm'),true); return end
-                        if deleteIntent~=id then deleteIntent=id; Status(T('hotbuild.editor.status.delete_confirm',binding.name),true); return end
-                        local saved,msg=service:Commit(nil,id); deleteIntent=nil
-                        if saved then
-                            if draft and draft.id==id then Load(service.model:List()[1]) end
-                            CloseList(); SyncSelector(); Refresh()
-                        end
-                        Status(saved and T('hotbuild.editor.status.deleted') or msg,not saved)
-                    end)
-                    for _,button in ipairs({selectButton,remove}) do
-                        local handle=button.HandleEvent
-                        button.HandleEvent=function(self,e)
-                            if e.Type=='WheelRotation' then
-                                listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-7),listTop+(e.WheelRotation>0 and -1 or 1)))
-                                OpenList(); return true
-                            end
-                            return handle(self,e)
-                        end
-                    end
-                    Tooltip.AddAutoUpdatedControlTooltip(remove,function() return T('hotbuild.editor.delete_binding') end,function() return binding.name end)
+            local background=Panel(listPanel,0,0,372,listHeight,C.canvas); background.Depth:Set(listPanel.Depth)
+            Theme.Outline(background,L,372,listHeight)
+            local listScrollbar
+            local slots={}
+            local function PaintDelete(slot)
+                local armed=slot.record and deleteIntent==slot.record.id
+                slot.delete:SetSolidColor(armed and C.selected or C.danger)
+                slot.deleteOutline(armed and C.accentText or C.border)
+                slot.deleteLabel:SetColor(armed and C.accentText or C.text)
+            end
+            local function PaintSelect(slot,hovered)
+                local selected=slot.record and draft and draft.id==slot.record.id
+                if hovered then
+                    slot.select:SetSolidColor(C.hover); slot.selectOutline(C.selectedBorder)
+                else
+                    slot.select:SetSolidColor(selected and C.selected or C.raised)
+                    slot.selectOutline(selected and C.selectedBorder or C.border)
                 end
             end
-            local function ScrollList(self,e)
-                if e.Type=='WheelRotation' then
-                    listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-7),listTop+(e.WheelRotation>0 and -1 or 1)))
-                    OpenList(); return true
+            local function RenderRows()
+                for i=1,visibleRows do
+                    local slot=slots[i]
+                    local binding=bindings[listTop+i-1]
+                    slot.record=binding
+                    if binding then
+                        slot.select:Show(); slot.delete:Show()
+                        slot.label:SetText(Short(binding.name,50))
+                        PaintSelect(slot,false); PaintDelete(slot)
+                    else
+                        slot.select:Hide(); slot.delete:Hide()
+                    end
                 end
+            end
+            local function MoveTop(delta)
+                listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-visibleRows+1),listTop+delta))
+                RenderRows()
+            end
+            for i=1,visibleRows do
+                local slot={}
+                slot.select=Panel(listPanel,8,6+(i-1)*rowHeight,300,34,C.raised)
+                slot.selectOutline=Theme.Outline(slot.select,L,300,34)
+                slot.label=Text(slot.select,'',10,0,Theme.Metrics.secondaryText); L(slot.label):AtCenterIn(slot.select)
+                slot.delete=Panel(listPanel,314,6+(i-1)*rowHeight,34,34,C.danger)
+                slot.deleteOutline=Theme.Outline(slot.delete,L,34,34)
+                slot.deleteLabel=Text(slot.delete,'×',0,0,19); L(slot.deleteLabel):AtCenterIn(slot.delete)
+                slot.select.HandleEvent=function(self,e)
+                    if e.Type=='MouseEnter' then PaintSelect(slot,true)
+                    elseif e.Type=='MouseExit' then PaintSelect(slot,false)
+                    elseif e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1)
+                    elseif e.Type=='ButtonPress' and slot.record then
+                        local id=slot.record.id
+                        if not MayLeave('select:'..id) then return true end
+                        Load(service.model:Get(id)); CloseList(); SyncSelector(); Refresh()
+                    end
+                    return true
+                end
+                slot.delete.HandleEvent=function(self,e)
+                    local binding=slot.record
+                    if not binding then return true end
+                    if e.Type=='MouseEnter' then
+                        self:SetSolidColor(deleteIntent==binding.id and C.selected or C.hover)
+                        slot.deleteOutline(C.selectedBorder)
+                    elseif e.Type=='MouseExit' then
+                        PaintDelete(slot)
+                    elseif e.Type=='ButtonPress' or e.Type=='DoubleClick' then
+                        if dirty then Status(T('hotbuild.editor.status.save_or_confirm'),true); return true end
+                        if deleteIntent~=binding.id then
+                            deleteIntent=binding.id
+                            RenderRows()
+                            Status(T('hotbuild.editor.status.delete_confirm',binding.name),true)
+                            return true
+                        end
+                        local saved,msg=service:Commit(nil,binding.id)
+                        deleteIntent=nil
+                        if saved then
+                            if draft and draft.id==binding.id then Load(service.model:List()[1]) end
+                            SyncSelector(); Refresh()
+                        end
+                        Status(saved and T('hotbuild.editor.status.deleted') or msg,not saved)
+                        BuildList()
+                    end
+                    return true
+                end
+                Tooltip.AddAutoUpdatedControlTooltip(slot.delete,function() return T('hotbuild.editor.delete_binding') end,function() return slot.record and slot.record.name or '' end)
+                slots[i]=slot
+            end
+            local function SyncScrollbar()
+                if table.getn(bindings)>visibleRows then
+                    if not listScrollbar then
+                        listScrollbar=UI.CreateVertScrollbarFor(listPanel,-20)
+                        if listScrollbar.Depth then listScrollbar.Depth:Set(function() return listPanel.Depth()+4 end) end
+                    end
+                    if listScrollbar.Show then listScrollbar:Show() end
+                elseif listScrollbar and listScrollbar.Hide then
+                    listScrollbar:Hide()
+                end
+            end
+            function listPanel:GetScrollValues()
+                local total=table.getn(bindings)
+                return 1,math.max(visibleRows,total),listTop,math.max(listTop,math.min(total,listTop+visibleRows-1))
+            end
+            function listPanel:IsScrollable() return table.getn(bindings)>visibleRows end
+            function listPanel:ScrollSetTop(axis,value)
+                listTop=math.max(1,math.min(math.max(1,table.getn(bindings)-visibleRows+1),math.floor(value)))
+                RenderRows()
+            end
+            function listPanel:ScrollLines(axis,delta) self:ScrollSetTop(axis,listTop+delta) end
+            function listPanel:ScrollPages(axis,delta) self:ScrollSetTop(axis,listTop+delta*visibleRows) end
+            local function ScrollList(self,e)
+                if e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1) end
                 return true
             end
             background.HandleEvent=ScrollList
             listPanel.HandleEvent=ScrollList
-
+            RenderRows()
+            SyncScrollbar()
+        end
+        local function OpenList()
+            CloseList()
+            BuildList()
         end
         local selectorButtonHandle=selectorButton.HandleEvent
         selectorButton.HandleEvent=function(self,e)
@@ -625,7 +711,7 @@ function Create(parent, service, embedded, memory)
             Load({id='b'..n,name=T('hotbuild.editor.status.new_binding'),key='',entries={}}); Change(); SyncSelector(); Refresh()
         end)
         frame.RequestClose=function()
-            if MayLeave('close',function() frame:Destroy() end) then frame:Destroy() end
+            if MayLeave('close',function(allowed) if allowed then frame:Destroy() end end) then frame:Destroy() end
         end
         frame.CanLeave=MayLeave
         if not embedded then Button(frame,'×',1038,8,30,frame.RequestClose) end
@@ -761,7 +847,7 @@ function Create(parent, service, embedded, memory)
             local function ApplyStyle()
                 button:SetSolidColor(not button.enabled and C.canvas or (hovered and C.hover or C.raised))
                 outline(not button.enabled and C.canvas or (hovered and C.selectedBorder or C.border))
-                label:SetColor(not button.enabled and C.disabled or (hovered and C.text or C.muted))
+                label:SetColor(not button.enabled and C.disabledText or (hovered and C.text or C.muted))
             end
             button.ClearHover=function()
                 hovered=false
@@ -877,8 +963,9 @@ function Create(parent, service, embedded, memory)
         saveButton.saveButton=true; saveButton.saveEnabled=false; saveButton:SetSolidColor(C.disabled)
         local keyHint=Text(frame,T('hotbuild.common.used_keys','—'),625,128,13,C.muted)
         -- Picker is created once per click and destroyed on selection/close.
-        local popup, pickerOverlay
+        local popup, pickerOverlay, pickerPreview
         ClosePopup=function()
+            if pickerPreview then pickerPreview:Destroy(); pickerPreview=nil end
             if popup then popup:Destroy(); popup=nil end
             if pickerOverlay then pickerOverlay:Destroy(); pickerOverlay=nil end
         end
@@ -890,6 +977,7 @@ function Create(parent, service, embedded, memory)
         }
         local function PickCategory(r)
             if r.templateData then return T('hotbuild.editor.picker.templates') end
+            if r.unitTemplate then return T('hotbuild.editor.picker.unit_templates') end
             local labels={'hotbuild.editor.picker.production','hotbuild.editor.picker.economy','hotbuild.editor.picker.defense','hotbuild.editor.picker.other_buildings','hotbuild.editor.picker.units'}
             return T(labels[Categories(r)])
         end
@@ -912,7 +1000,9 @@ function Create(parent, service, embedded, memory)
             local search=SearchField(popup,18,64,684,80)
             local container=Panel(popup,18,105,662,478,C.canvas)
             local pool,found,top={}, {},1
+            local ShowPreview, HidePreview
             local function Render()
+                if HidePreview then HidePreview() end
                 local q=search.GetText and search:GetText() or ''
                 local candidates=catalog:List({search='',faction=faction,kind=kind})
                 found={}; q=Fold(q)
@@ -920,12 +1010,14 @@ function Create(parent, service, embedded, memory)
                     if (not tier or UnitSlot(record.tech)==tier)
                         and (q=='' or string.find(Fold(TileName(record,displayCatalog)),q,1,true)
                         or string.find(Fold(record.search or record.name),q,1,true)
-                        or (record.templateData and string.find(Fold(record.name),q,1,true))) then
+                        or ((record.templateData or record.unitTemplate) and string.find(Fold(record.name),q,1,true))) then
                         table.insert(found,record)
                     end
                 end
                 table.sort(found,function(a,b)
-                    if (a.templateData~=nil)~=(b.templateData~=nil) then return a.templateData~=nil end
+                    local left=a.templateData~=nil or a.unitTemplate==true
+                    local right=b.templateData~=nil or b.unitTemplate==true
+                    if left~=right then return left end
                     local ta,tb=techRank[a.tech] or 5,techRank[b.tech] or 5
                     if ta~=tb then return ta<tb end
                     local ca,cb=Categories(a),Categories(b)
@@ -938,11 +1030,17 @@ function Create(parent, service, embedded, memory)
                     local r=found[top+i-1]; slot.record=r
                     if r then
                         slot.control:Show(); slot.control:SetSolidColor(C.raised)
-                        if slot.outline then slot.outline(r.templateData and C.accent or C.border) end
+                        if slot.outline then slot.outline((r.templateData or r.unitTemplate) and C.accent or C.border) end
                         slot.icon:SetTexture(UI.UIFile(r.icon,true)); slot.title:SetText(TileName(r,displayCatalog))
-                        slot.title:SetColor(r.templateData and C.accentText or C.text)
-                        slot.meta:SetText(r.templateData and T('hotbuild.editor.template_count',table.getn(r.templateData)-2) or (r.tech..' · '..r.id))
-                        slot.meta:SetColor(r.templateData and C.accentText or C.muted)
+                        slot.title:SetColor((r.templateData or r.unitTemplate) and C.accentText or C.text)
+                        if r.templateData then
+                            slot.meta:SetText(T('hotbuild.editor.template_count',table.getn(r.templateData)-2))
+                        elseif r.unitTemplate then
+                            slot.meta:SetText(T('hotbuild.editor.unit_template_count',r.unitCount or 0))
+                        else
+                            slot.meta:SetText(r.tech..' · '..r.id)
+                        end
+                        slot.meta:SetColor((r.templateData or r.unitTemplate) and C.accentText or C.muted)
                     else slot.control:Hide() end
                 end
             end
@@ -955,6 +1053,186 @@ function Create(parent, service, embedded, memory)
                 return true
             end
             UI.CreateVertScrollbarFor(container)
+            -- Hover preview: a template row shows its composition without leaving the list.
+            local LayerTexture={LAND='/textures/ui/common/icons/units/land_up.dds',
+                NAVAL='/textures/ui/common/icons/units/sea_up.dds',
+                AIR='/textures/ui/common/icons/units/air_up.dds'}
+            -- Skirt size and centre offset exactly as the game's own template maths
+            -- (lua/ui/templateUtils.lua, ReUI.Construction.Templates): icons are
+            -- centred on their anchor and sized by the skirt, so neighbours tile.
+            local function SkirtOf(member)
+                local bp=member and member.blueprint
+                local foot=type(bp)=='table' and rawget(bp,'Footprint') or nil
+                local phys=type(bp)=='table' and rawget(bp,'Physics') or nil
+                local fx=type(foot)=='table' and tonumber(rawget(foot,'SizeX')) or nil
+                local fz=type(foot)=='table' and tonumber(rawget(foot,'SizeZ')) or nil
+                fx=fx or (type(bp)=='table' and tonumber(rawget(bp,'SizeX'))) or 1
+                fz=fz or (type(bp)=='table' and tonumber(rawget(bp,'SizeZ'))) or 1
+                local sx=type(phys)=='table' and tonumber(rawget(phys,'SkirtSizeX')) or nil
+                local sz=type(phys)=='table' and tonumber(rawget(phys,'SkirtSizeZ')) or nil
+                local ox=type(phys)=='table' and tonumber(rawget(phys,'SkirtOffsetX')) or 0
+                local oz=type(phys)=='table' and tonumber(rawget(phys,'SkirtOffsetZ')) or 0
+                local w=math.max(1,sx or fx)
+                local h=math.max(1,sz or fz)
+                return w,h,((ox+((w+ox)-fx))/2),((oz+((h+oz)-fz))/2)
+            end
+            -- Terrain under a building follows its layer, as the game's preview does.
+            local function LayerOf(member)
+                local kind=member and member.kind or nil
+                if kind~='STRUCTURE' then
+                    if kind=='AIR' then return 'AIR' end
+                    if kind=='NAVAL' then return 'NAVAL' end
+                    return 'LAND'
+                end
+                local bp=member.blueprint
+                local hash=type(bp)=='table' and rawget(bp,'CategoriesHash') or nil
+                if type(hash)=='table' and hash.NAVAL then return 'NAVAL' end
+                local list=type(bp)=='table' and rawget(bp,'Categories') or nil
+                if type(list)=='table' then
+                    for _,value in ipairs(list) do if value=='NAVAL' then return 'NAVAL' end end
+                end
+                return 'LAND'
+            end
+            local function PreviewTile(owner,x,y,w,h,member,count,cell,layer)
+                local tile=Panel(owner,x,y,w,h,C.raised)
+                local background=layer and LayerTexture[layer] or nil
+                if background then tile:SetTexture(background) end
+                if member and member.icon then
+                    if background then
+                        -- Terrain stays visible around the building silhouette.
+                        local icon=Panel(tile,0,0,w,h,C.canvas)
+                        icon:SetTexture(UI.UIFile(member.icon,true))
+                    else
+                        tile:SetTexture(UI.UIFile(member.icon,true))
+                    end
+                end
+                -- A cell outline makes every building read as one grid slot.
+                if cell then Theme.Outline(tile,L,w,h,C.border) end
+                if count and count>1 then
+                    local text=tostring(count)
+                    local font=math.min(15,math.max(11,math.floor(math.min(w,h)*0.42)))
+                    local plateW=math.floor(font*0.6)*string.len(text)+5
+                    local plateH=font+3
+                    Panel(tile,w-plateW-1,h-plateH-2,plateW,plateH,'b3000000')
+                    local badge=Text(tile,text,w-plateW,h-plateH-4,font,'ffffffff')
+                    if badge.SetDropShadow then badge:SetDropShadow(true) end
+                end
+                return tile
+            end
+            local function PreviewCells(record)
+                local cells={}
+                if record.unitTemplate then
+                    for _,entry in ipairs(record.queueData or {}) do
+                        local member=catalog:Get(entry[1])
+                        if member then
+                            local w,h,ox,oz=SkirtOf(member)
+                            table.insert(cells,{member=member,count=entry[2],px=0,pz=0,w=w,h=h,ox=ox,oz=oz})
+                        end
+                    end
+                    return cells
+                end
+                local data=record.templateData or {}
+                for index=3,table.getn(data) do
+                    local entry=data[index]
+                    local member=catalog:Get(entry[1])
+                    if member then
+                        local w,h,ox,oz=SkirtOf(member)
+                        table.insert(cells,{member=member,px=entry[3] or 0,pz=entry[4] or 0,w=w,h=h,ox=ox,oz=oz})
+                    end
+                end
+                return cells
+            end
+            HidePreview=function()
+                if pickerPreview then pickerPreview:Destroy(); pickerPreview=nil end
+            end
+            ShowPreview=function(record,slotIndex)
+                HidePreview()
+                if not (record and (record.templateData or record.unitTemplate)) then return end
+                local cells=PreviewCells(record)
+                if table.getn(cells)==0 then return end
+                local pad,header,maxWidth,maxHeight=12,38,420,230
+                local width,height,draw
+                if record.unitTemplate then
+                    -- Queues read best as one horizontal strip of icons.
+                    local count=table.getn(cells)
+                    local gap=4
+                    local size=math.min(52,math.floor((maxWidth-(count-1)*gap)/count))
+                    size=math.max(20,size)
+                    local visible=count
+                    if visible*(size+gap)-gap>maxWidth then
+                        visible=math.max(1,math.floor((maxWidth+gap)/(size+gap)))
+                    end
+                    local contentW=visible*(size+gap)-gap
+                    width=math.max(170,contentW+pad*2)
+                    height=header+size+pad
+                    draw=function()
+                        for index=1,visible do
+                            local cell=cells[index]
+                            PreviewTile(pickerPreview,pad+(index-1)*(size+gap),header,size,size,
+                                cell.member,cell.count,false,nil)
+                        end
+                        if visible<count then
+                            Text(pickerPreview,'+'..(count-visible),pad+contentW+2,header+size-14,11,C.muted)
+                        end
+                    end
+                else
+                    -- One scale for the whole template, icons centred on their anchors:
+                    -- this is how the game and ReUI lay a template out.
+                    local minX,maxX,minZ,maxZ
+                    for _,cell in ipairs(cells) do
+                        local x0=cell.px-cell.w/2+cell.ox
+                        local x1=cell.px+cell.w/2+cell.ox
+                        local z0=cell.pz-cell.h/2+cell.oz
+                        local z1=cell.pz+cell.h/2+cell.oz
+                        minX=minX and math.min(minX,x0) or x0
+                        minZ=minZ and math.min(minZ,z0) or z0
+                        maxX=maxX and math.max(maxX,x1) or x1
+                        maxZ=maxZ and math.max(maxZ,z1) or z1
+                    end
+                    local spanX=(maxX or 0)-(minX or 0)
+                    local spanZ=(maxZ or 0)-(minZ or 0)
+                    local midX=((minX or 0)+(maxX or 0))/2
+                    local midZ=((minZ or 0)+(maxZ or 0))/2
+                    local cell=math.min(44,math.floor(maxWidth/math.max(spanX,spanZ,1)),
+                        math.floor(maxHeight/math.max(spanX,spanZ,1)))
+                    if spanX<0.01 or spanZ<0.01 or cell<4 then
+                        width,height=170,header+14
+                        draw=function() end
+                    else
+                        cell=math.max(4,cell)
+                        local contentW=spanX*cell
+                        local contentH=spanZ*cell
+                        width=math.max(170,math.min(444,contentW+pad*2))
+                        height=header+contentH+pad
+                        -- Cell outlines stay readable for normal templates; a wall
+                        -- template with a hundred parts keeps only the grid gaps.
+                        local outlines=table.getn(cells)<=64
+                        draw=function()
+                            for _,c in ipairs(cells) do
+                                local w=c.w*cell
+                                local h=c.h*cell
+                                local x=pad+contentW/2+(c.px+c.ox-midX)*cell-w/2
+                                local z=header+contentH/2+(c.pz+c.oz-midZ)*cell-h/2
+                                PreviewTile(pickerPreview,math.floor(x),math.floor(z),
+                                    math.max(1,math.floor(w-1)),math.max(1,math.floor(h-1)),
+                                    c.member,nil,outlines,LayerOf(c.member))
+                            end
+                        end
+                    end
+                end
+                local top=105+(slotIndex-1)*43+20-height/2
+                top=math.max(107,math.min(math.max(107,583-height-4),top))
+                local left=math.max(220,664-width-8)
+                pickerPreview=Group(popup); L(pickerPreview):AtLeftTopIn(popup,left,top):Width(width):Height(height)
+                pickerPreview.Depth:Set(function() return popup.Depth()+5 end)
+                pickerPreview:DisableHitTest()
+                Panel(pickerPreview,0,0,width,height,C.canvas)
+                Theme.Outline(pickerPreview,L,width,height,C.selectedBorder)
+                Text(pickerPreview,TileName(record,displayCatalog),pad,5,13,C.accentText)
+                Text(pickerPreview,record.unitTemplate and T('hotbuild.editor.unit_template_count',record.unitCount or 0)
+                    or T('hotbuild.editor.template_count',table.getn(record.templateData)-2),pad,21,10,C.muted)
+                draw()
+            end
             local selection={kind=kind,index=index,faction=faction,tier=tier}
             local function Choose(record)
                 ApplyPickerChoice(pickerApplyState,selection,record)
@@ -966,9 +1244,12 @@ function Create(parent, service, embedded, memory)
                 pool[i]={control=row,icon=icon,title=title,meta=meta,
                     outline=Theme.Outline(row,L,662,41,C.border)}
                 row.HandleEvent=function(self,e)
-                    if e.Type=='WheelRotation' then return container.HandleEvent(container,e) end
-                    if e.Type=='MouseEnter' then self:SetSolidColor(C.hover)
-                    elseif e.Type=='MouseExit' then self:SetSolidColor(C.raised)
+                    if e.Type=='WheelRotation' then HidePreview(); return container.HandleEvent(container,e) end
+                    if e.Type=='MouseEnter' then
+                        self:SetSolidColor(C.hover)
+                        ShowPreview(pool[slotIndex].record,slotIndex)
+                    elseif e.Type=='MouseExit' then
+                        self:SetSolidColor(C.raised); HidePreview()
                     elseif e.Type=='ButtonPress' and not (e.Modifiers and e.Modifiers.Right) and pool[slotIndex].record then Choose(pool[slotIndex].record); return true end
                     return true
                 end
@@ -995,8 +1276,16 @@ function Create(parent, service, embedded, memory)
             local record=id and catalog:Get(id)
             if record then
                 cell.icon:SetTexture(UI.UIFile(record.icon,true)); cell.icon:Show(); cell.empty:Hide()
-                cell.full=cell.tier..' · '..TileName(record,displayCatalog)..' · '..record.id
+                if record.unitTemplate then
+                    -- A 76 px bind cell fits the accent marker; the tooltip and list carry the word.
+                    cell.tierLabel:SetText('▧'); cell.tierLabel:SetColor(C.accentText)
+                    cell.full=cell.tier..' · '..T('hotbuild.editor.template')..' · '..TileName(record,displayCatalog)..' · '..record.id
+                else
+                    cell.tierLabel:SetText(cell.tier); cell.tierLabel:SetColor(C.muted)
+                    cell.full=cell.tier..' · '..TileName(record,displayCatalog)..' · '..record.id
+                end
             else
+                cell.tierLabel:SetText(cell.tier); cell.tierLabel:SetColor(C.muted)
                 cell.icon:Hide(); cell.empty:SetText(id and '?' or '+'); cell.empty:Show()
                 cell.full=cell.tier..' · '..(id and T('hotbuild.common.unavailable',id) or T('hotbuild.common.empty_cell'))
             end
@@ -1095,6 +1384,10 @@ function Create(parent, service, embedded, memory)
         end
         s.buildingScrollbar=buildingScrollbar
         SyncSelector(); Refresh()
+        local problems=service.model:GetQuarantine()
+        if table.getn(problems)>0 then
+            s.statusFn(T('hotbuild.problems.summary',table.getn(problems),problems[1].reason),true)
+        end
         frame.AfterParentShow=function() Refresh() end
     end)
     if not ok then frame:Destroy(); error(err) end

@@ -107,7 +107,7 @@ Strings = {
         ["hotbuild.action.build_templates.label"] = "FAF: Build template",
         ["hotbuild.action.build_templates.description"] = "Calls the native FAF Templates action for the selected builder.",
         ["hotbuild.action.upgrade_structure.label"] = "FAF: Upgrade structure under cursor",
-        ["hotbuild.action.upgrade_structure_pause.label"] = "Pause",
+        ["hotbuild.action.upgrade_structure_pause.label"] = "Upgrade with pause",
         ["hotbuild.action.create_template_factory.label"] = "Create queue template from this factory",
         ["hotbuild.action.fire_beetle_detonate.label"] = "Detonate Fire Beetle",
         ["hotbuild.action.pause_unit_all.label"] = "Pause entire selection",
@@ -116,12 +116,12 @@ Strings = {
         ["hotbuild.action.toggle_intel.label"] = "Toggle intel",
         ["hotbuild.action.toggle_jamming.label"] = "Toggle jamming",
         ["hotbuild.action.toggle_cloak.label"] = "Toggle cloak",
-        ["hotbuild.action.toggle_all.label"] = "Toggle all abilities",
+        ["hotbuild.action.toggle_all.label"] = "Toggle all unit abilities",
         ["hotbuild.action.cycle_mex_screen.label"] = "Next extractor on screen",
         ["hotbuild.action.cycle_mex_map.label"] = "Next extractor on map",
         ["hotbuild.action.upgrade_structure_under_cursor.label"] = "Upgrade structure under cursor",
         ["hotbuild.action.upgrade_mex_select_next.label"] = "Upgrade extractor and select the next nearest one",
-        ["hotbuild.action.upgrade_mex.label"] = "Upgrade selected extractor",
+        ["hotbuild.action.upgrade_mex.label"] = "Upgrade selected extractors",
         ["hotbuild.action.overcharge.label"] = "Overcharge",
         ["hotbuild.action.acu_tech.label"] = "ACU: Engineering",
         ["hotbuild.action.acu_ras.label"] = "ACU: Resource production",
@@ -272,7 +272,7 @@ Strings = {
         ["hotbuild.action.build_templates.label"] = "FAF: строительные шаблоны",
         ["hotbuild.action.build_templates.description"] = "Вызывает штатное действие FAF Templates для выбранного строителя.",
         ["hotbuild.action.upgrade_structure.label"] = "FAF: улучшить структуру под курсором",
-        ["hotbuild.action.upgrade_structure_pause.label"] = "Пауза",
+        ["hotbuild.action.upgrade_structure_pause.label"] = "Улучшение с паузой",
         ["hotbuild.action.create_template_factory.label"] = "Шаблон очереди с этого завода",
         ["hotbuild.action.fire_beetle_detonate.label"] = "Взорвать Fire Beetle",
         ["hotbuild.action.pause_unit_all.label"] = "Пауза всего выделения",
@@ -281,12 +281,12 @@ Strings = {
         ["hotbuild.action.toggle_intel.label"] = "Переключить разведку",
         ["hotbuild.action.toggle_jamming.label"] = "Переключить глушение",
         ["hotbuild.action.toggle_cloak.label"] = "Переключить маскировку",
-        ["hotbuild.action.toggle_all.label"] = "Переключить все возможности",
+        ["hotbuild.action.toggle_all.label"] = "Переключить все функции",
         ["hotbuild.action.cycle_mex_screen.label"] = "Следующий добытчик на экране",
         ["hotbuild.action.cycle_mex_map.label"] = "Следующий добытчик на карте",
         ["hotbuild.action.upgrade_structure_under_cursor.label"] = "Улучшить структуру под курсором",
         ["hotbuild.action.upgrade_mex_select_next.label"] = "Улучшить добытчик и выбрать ближайший следующий",
-        ["hotbuild.action.upgrade_mex.label"] = "Улучшить выбранный добытчик",
+        ["hotbuild.action.upgrade_mex.label"] = "Улучшить выбранные добытчики",
         ["hotbuild.action.overcharge.label"] = "Overcharge",
         ["hotbuild.action.acu_tech.label"] = "ACU: улучшить инженерию",
         ["hotbuild.action.acu_ras.label"] = "ACU: улучшить производство ресурсов",
@@ -348,22 +348,6 @@ Strings.en['hotbuild.page.contexts.title'] = 'Multifunction'
 Strings.ru['hotbuild.page.contexts.title'] = 'Мультифункциональные'
 Strings.en['hotbuild.page.contexts.description'] = 'Create actions for different selection contexts.'
 Strings.ru['hotbuild.page.contexts.description'] = 'Создание действий для разных контекстов выделения.'
-Strings.en['hotbuild.page.repeat.title'] = 'Repeat'
-Strings.ru['hotbuild.page.repeat.title'] = 'Повтор'
-Strings.en['hotbuild.page.repeat.description'] = 'Quick repeat action interval.'
-Strings.ru['hotbuild.page.repeat.description'] = 'Интервал быстрого повтора действия.'
-Strings.en['hotbuild.repeat.title'] = 'Quick repeat window'
-Strings.ru['hotbuild.repeat.title'] = 'Окно быстрого повтора'
-Strings.en['hotbuild.repeat.description'] = 'Interval in seconds. Saved immediately.'
-Strings.ru['hotbuild.repeat.description'] = 'Интервал в секундах. Сохраняется сразу.'
-Strings.en['hotbuild.repeat.unit'] = '/s'
-Strings.ru['hotbuild.repeat.unit'] = '/с'
-Strings.en['hotbuild.repeat.invalid'] = 'Enter a positive, finite number.'
-Strings.ru['hotbuild.repeat.invalid'] = 'Введите положительное конечное число.'
-Strings.en['hotbuild.repeat.save_failed'] = 'Could not save the value: %s'
-Strings.ru['hotbuild.repeat.save_failed'] = 'Не удалось сохранить значение: %s'
-Strings.en['hotbuild.repeat.saved'] = 'Saved: %s s'
-Strings.ru['hotbuild.repeat.saved'] = 'Сохранено: %s с'
 
 Strings.en['hotbuild.common.close'] = 'Close'; Strings.ru['hotbuild.common.close'] = 'Закрыть'
 Strings.en['hotbuild.common.cancel'] = 'Cancel'; Strings.ru['hotbuild.common.cancel'] = 'Отмена'
@@ -401,12 +385,14 @@ Strings.en['hotbuild.editor.bindings'] = 'Bindings'; Strings.ru['hotbuild.editor
 Strings.en['hotbuild.editor.no_bindings'] = 'No bindings'; Strings.ru['hotbuild.editor.no_bindings'] = 'Нет биндов'
 Strings.en['hotbuild.editor.template'] = 'TEMPLATE'; Strings.ru['hotbuild.editor.template'] = 'ШАБЛОН'
 Strings.en['hotbuild.editor.template_count'] = '▧ TEMPLATE · %s buildings'; Strings.ru['hotbuild.editor.template_count'] = '▧ ШАБЛОН · %s построек'
+Strings.en['hotbuild.editor.unit_template_count'] = '▧ UNIT TEMPLATE · %s units'; Strings.ru['hotbuild.editor.unit_template_count'] = '▧ ШАБЛОН ЮНИТОВ · %s юнитов'
 Strings.en['hotbuild.editor.choose_object'] = 'Choose an item · %s%s'; Strings.ru['hotbuild.editor.choose_object'] = 'Выберите объект · %s%s'
 Strings.en['hotbuild.editor.tier_hint'] = 'T1 → T2 → T3; sorted by role within each tier'; Strings.ru['hotbuild.editor.tier_hint'] = 'T1 → T2 → T3; внутри уровня — по назначению'
 Strings.en['hotbuild.editor.gate_hint'] = 'Select one SACU for this faction'; Strings.ru['hotbuild.editor.gate_hint'] = 'Выберите одного SACU для этой фракции'
 Strings.en['hotbuild.editor.unavailable'] = 'Unavailable: %s'; Strings.ru['hotbuild.editor.unavailable'] = 'Недоступно: %s'
 Strings.en['hotbuild.editor.empty'] = 'Empty cell'; Strings.ru['hotbuild.editor.empty'] = 'Пустая ячейка'
 Strings.en['hotbuild.editor.picker.templates'] = 'Build templates'; Strings.ru['hotbuild.editor.picker.templates'] = 'Шаблоны строительства'
+Strings.en['hotbuild.editor.picker.unit_templates'] = 'Unit templates'; Strings.ru['hotbuild.editor.picker.unit_templates'] = 'Шаблоны юнитов'
 Strings.en['hotbuild.editor.picker.production'] = 'Production'; Strings.ru['hotbuild.editor.picker.production'] = 'Производство'
 Strings.en['hotbuild.editor.picker.economy'] = 'Economy'; Strings.ru['hotbuild.editor.picker.economy'] = 'Экономика'
 Strings.en['hotbuild.editor.picker.defense'] = 'Defense'; Strings.ru['hotbuild.editor.picker.defense'] = 'Оборона'
@@ -414,6 +400,7 @@ Strings.en['hotbuild.editor.picker.other_buildings'] = 'Other buildings'; String
 Strings.en['hotbuild.editor.picker.units'] = 'Units'; Strings.ru['hotbuild.editor.picker.units'] = 'Юниты'
 Strings.en['hotbuild.editor.status.incompatible'] = 'Could not finish navigation: %s'; Strings.ru['hotbuild.editor.status.incompatible'] = 'Не удалось завершить переход: %s'
 Strings.en['hotbuild.editor.status.delete_confirm'] = 'Press × again to delete “%s”.'; Strings.ru['hotbuild.editor.status.delete_confirm'] = 'Повторно нажмите ×, чтобы удалить «%s».'
+Strings.en['hotbuild.problems.summary'] = 'Damaged records: %d — %s'; Strings.ru['hotbuild.problems.summary'] = 'Повреждённых записей: %d — %s'
 Strings.en['hotbuild.editor.status.deleted'] = 'Binding deleted.'; Strings.ru['hotbuild.editor.status.deleted'] = 'Бинд удалён.'
 Strings.en['hotbuild.editor.status.new_binding'] = 'New binding'; Strings.ru['hotbuild.editor.status.new_binding'] = 'New binding'
 Strings.en['hotbuild.editor.status.legacy_action'] = 'The old binding contains an action or an unknown item.'; Strings.ru['hotbuild.editor.status.legacy_action'] = 'Старый бинд содержит действие или неизвестный объект.'
@@ -437,7 +424,6 @@ Strings.en['hotbuild.domain_header.air'] = 'Air'; Strings.ru['hotbuild.domain_he
 Strings.en['hotbuild.domain_header.naval'] = 'Naval'; Strings.ru['hotbuild.domain_header.naval'] = 'Флот'
 Strings.en['hotbuild.domain_header.gate'] = 'Gates'; Strings.ru['hotbuild.domain_header.gate'] = 'Врата'
 
-Strings.en['hotbuild.keyboard.title'] = 'Claret / Hotbuild Keyboard'; Strings.ru['hotbuild.keyboard.title'] = 'Claret / Клавиатура Hotbuild'
 Strings.en['hotbuild.keyboard.instructions'] = 'Left-click to assign, right-click to clear. Ctrl, Shift, and Alt show combinations.'; Strings.ru['hotbuild.keyboard.instructions'] = 'ЛКМ — назначить, ПКМ — снять назначение. Ctrl, Shift и Alt показывают сочетания.'
 Strings.en['hotbuild.keyboard.group.selection'] = 'Unit selection'; Strings.ru['hotbuild.keyboard.group.selection'] = 'Выбор юнитов'
 Strings.en['hotbuild.keyboard.group.split'] = 'Split selection'; Strings.ru['hotbuild.keyboard.group.split'] = 'Разделение выделения'
@@ -446,6 +432,16 @@ Strings.en['hotbuild.keyboard.group.transport'] = 'Transport'; Strings.ru['hotbu
 Strings.en['hotbuild.keyboard.group.build'] = 'Building and production'; Strings.ru['hotbuild.keyboard.group.build'] = 'Строительство и производство'
 Strings.en['hotbuild.keyboard.group.toggle'] = 'Modes and toggles'; Strings.ru['hotbuild.keyboard.group.toggle'] = 'Режимы и переключатели'
 Strings.en['hotbuild.keyboard.group.orders'] = 'Orders and other'; Strings.ru['hotbuild.keyboard.group.orders'] = 'Приказы и прочее'
+Strings.en['hotbuild.keyboard.group.communication'] = 'Communication'
+Strings.ru['hotbuild.keyboard.group.communication'] = 'Коммуникация'
+Strings.en['hotbuild.action.ping_marker.label'] = 'Text marker'
+Strings.ru['hotbuild.action.ping_marker.label'] = 'Текстовая метка'
+Strings.en['hotbuild.action.ping_alert.label'] = 'Alert ping'
+Strings.ru['hotbuild.action.ping_alert.label'] = 'Пинг тревоги'
+Strings.en['hotbuild.action.ping_move.label'] = 'Move ping'
+Strings.ru['hotbuild.action.ping_move.label'] = 'Пинг движения'
+Strings.en['hotbuild.action.ping_attack.label'] = 'Attack ping'
+Strings.ru['hotbuild.action.ping_attack.label'] = 'Пинг атаки'
 Strings.en['hotbuild.keyboard.group.air'] = 'Air'; Strings.ru['hotbuild.keyboard.group.air'] = 'Авиация'
 Strings.en['hotbuild.keyboard.legacy'] = ' · obsolete assignment'; Strings.ru['hotbuild.keyboard.legacy'] = ' · старое назначение'
 Strings.en['hotbuild.keyboard.building'] = 'Building: %s'; Strings.ru['hotbuild.keyboard.building'] = 'Стройка: %s'
@@ -491,7 +487,6 @@ Strings.en['hotbuild.keyboard.numpad_closed'] = '▸ NumPad'; Strings.ru['hotbui
 Strings.en['hotbuild.keyboard.numpad_open'] = '▾ NumPad'; Strings.ru['hotbuild.keyboard.numpad_open'] = '▾ NumPad'
 
 
-Strings.en['hotbuild.context_editor.s001'] = 'Claret / Multifunction'; Strings.ru['hotbuild.context_editor.s001'] = 'Claret / Мультифункциональные'
 Strings.en['hotbuild.context_editor.s002'] = 'Select a context on the left, then choose an action for it on the right.'; Strings.ru['hotbuild.context_editor.s002'] = 'Выберите контекст слева, затем задайте для него действие справа.'
 Strings.en['hotbuild.context_editor.s003'] = 'There are unsaved changes.'; Strings.ru['hotbuild.context_editor.s003'] = 'Есть несохранённые изменения.'
 Strings.en['hotbuild.context_editor.s004'] = '● unsaved'; Strings.ru['hotbuild.context_editor.s004'] = '● не сохранено'
@@ -566,7 +561,7 @@ Strings.en['hotbuild.context_editor.s071'] = 'Empty selection'; Strings.ru['hotb
 Strings.en['hotbuild.context_editor.s072'] = '. You can clear the saved assignment; to change it, replace the chain action first.'; Strings.ru['hotbuild.context_editor.s072'] = '. Сохранённое назначение можно очистить; для изменения сначала замените действие цепочки.'
 Strings.en['hotbuild.context_editor.s073'] = 'Assign action'; Strings.ru['hotbuild.context_editor.s073'] = 'Назначить действие'
 Strings.en['hotbuild.context_editor.s074'] = 'Shared action: '; Strings.ru['hotbuild.context_editor.s074'] = 'Общее действие: '
-Strings.en['hotbuild.context_editor.s075'] = 'Click to expand child contexts.'; Strings.ru['hotbuild.context_editor.s075'] = 'Нажмите, чтобы раскрыть дочерние контексты.'
+Strings.en['hotbuild.context_editor.s075'] = 'Click to select this context.'; Strings.ru['hotbuild.context_editor.s075'] = 'Нажмите, чтобы выбрать этот контекст.'
 Strings.en['hotbuild.context_editor.s076'] = 'action'; Strings.ru['hotbuild.context_editor.s076'] = 'действие'
 Strings.en['hotbuild.context_editor.s077'] = 'quick repeat'; Strings.ru['hotbuild.context_editor.s077'] = 'быстрый повтор'
 Strings.en['hotbuild.context_editor.s078'] = 'obsolete · '; Strings.ru['hotbuild.context_editor.s078'] = 'устарело · '
@@ -737,6 +732,9 @@ Strings.en['hotbuild.templates.s001'] = 'Template '; Strings.ru['hotbuild.templa
 Strings.en['hotbuild.templates.s002'] = 'Build template · '; Strings.ru['hotbuild.templates.s002'] = 'Шаблон строительства · '
 Strings.en['hotbuild.templates.s003'] = ' buildings'; Strings.ru['hotbuild.templates.s003'] = ' построек'
 Strings.en['hotbuild.templates.s004'] = ' build template'; Strings.ru['hotbuild.templates.s004'] = ' шаблон строительства'
+Strings.en['hotbuild.templates.s005'] = 'Unit template · '; Strings.ru['hotbuild.templates.s005'] = 'Шаблон юнитов · '
+Strings.en['hotbuild.templates.s006'] = ' units'; Strings.ru['hotbuild.templates.s006'] = ' юнитов'
+Strings.en['hotbuild.templates.s007'] = ' unit template'; Strings.ru['hotbuild.templates.s007'] = ' шаблон юнитов'
 
 Strings.en['hotbuild.keyboard_editor.s001'] = 'Assign: '; Strings.ru['hotbuild.keyboard_editor.s001'] = 'Назначить: '
 Strings.en['hotbuild.keyboard_editor.s002'] = 'empty'; Strings.ru['hotbuild.keyboard_editor.s002'] = 'пусто'

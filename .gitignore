@@ -1,5 +1,7 @@
 # Reference material and developer-only tools
 Context/sources/
+Context/.local/
+/Stage/
 .tools/
 
 # Temporary files and logs

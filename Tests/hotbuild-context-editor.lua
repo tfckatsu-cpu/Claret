@@ -14,6 +14,7 @@ local function control(parent)
     end
     controls[#controls+1]=c
     function c:SetSolidColor(v) self.color=v end
+    function c:SetTexture(v) self.texture=v end
     function c:SetNeedsFrameUpdate(v) self.needsFrameUpdate=v end
     function c:SetColor(v) self.color=v end
     function c:SetText(v) self.text=v end
@@ -109,6 +110,13 @@ end
 local host=control()
 local frame=env.Create(host,service,nil)
 assert(frame.Width()>0 and frame.Height()>0)
+-- Maui controls with a size but no position have a circular Left/Top chain; the
+-- game reports it as a lazyvar failure and the tree breaks when a group expands.
+for _,c in ipairs(controls) do
+    if not c.destroyed and c.parent and c.parent~=host and c.HandleEvent and c.x==nil then
+        error('interactive control created without a position')
+    end
+end
 local hint=false
 for _,c in ipairs(controls) do if c.text=='используется на клавишах: F3, Alt-K' then hint=true end end
 assert(hint,'composite shows assigned keys as a read-only hint')
@@ -145,7 +153,7 @@ local function clickDeleteSaved(root)
         local owner=c
         while owner and owner~=root do owner=owner.parent end
         if owner==root and not c.destroyed and c.HandleEvent then table.insert(seen,tostring(c.Width())..'x'..tostring(c.Height())..'@'..tostring(c.x)..':'..tostring(c.text)) end
-        if not c.destroyed and owner==root and c.HandleEvent and c.Width()==34 and c.Height()==34 and c.x==330 then
+        if not c.destroyed and owner==root and c.HandleEvent and c.Width()==34 and c.Height()==34 and c.x==314 then
             c:HandleEvent({Type='ButtonPress',Modifiers={Left=true}}); return
         end
     end
@@ -189,7 +197,7 @@ local function treeButton(root,id)
         if not c.destroyed and inside(c,root) and type(c.text)=='string'
             and isTitle
             and button and button.HandleEvent and panel and panel.parent==root
-            and panel.Width()==480 and panel.Height()==580 then return button
+            and panel.Width()==480 and panel.Height()==614 then return button
         end
     end
 end
@@ -271,15 +279,8 @@ local function findIn(root,text)
             (type(c.text)=='string' and (string.find(c.text,text,1,true) or (display and string.find(c.text,display,1,true))))) then return c end
     end
 end
-local function expandBuilders(root)
-    clickIn(root,'Строители')
-end
-local function collapseBuilders(root)
-    clickIn(root,'Строители')
-end
 local function clickAcu(root)
     local target=assert(treeButton(root,'ACU'),'ACU context exists')
-    if target.hidden then expandBuilders(root); target=assert(treeButton(root,'ACU'),'expanding builders reveals ACU') end
     assert(not target.hidden,'ACU context is visible before selection')
     target:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
 end
@@ -309,17 +310,17 @@ local deletePickerList=false
 for _,c in ipairs(controls) do if not c.destroyed and inside(c,savedDeleteFrame) and c.GetScrollValues and c.Width()==372 then deletePickerList=true end end
 assert(deletePickerList,'delete fixture opens its saved-set list')
 clickDeleteSaved(savedDeleteFrame)
-assert(findIn(savedDeleteFrame,'Удалить сохранённый набор?') and findIn(savedDeleteFrame,'Delete me')
-    and findIn(savedDeleteFrame,'Удалить и снять с клавиш?')
-    and findIn(savedDeleteFrame,'Назначено на: F3, Alt-K'),
-    'delete confirmation names the set and shows all assigned keys')
-clickIn(savedDeleteFrame,'Отмена')
 assert(not deleteCalled and savedDeleteService.contextModel:Get('delete_me'),
-    'canceling deletion preserves the assigned set')
-openSaved(savedDeleteFrame) -- close the still-open dropdown
-openSaved(savedDeleteFrame); clickDeleteSaved(savedDeleteFrame); clickIn(savedDeleteFrame,'Удалить')
+    'the first click only arms deletion')
+assert(findIn(savedDeleteFrame,'Удалить «Delete me»'),'the armed row names the set')
+clickDeleteSaved(savedDeleteFrame)
 assert(deleteCalled and not savedDeleteService.contextModel:Get('delete_me'),
-    'confirmed deletion passes explicit authorization and removes the set')
+    'the second click deletes the set with explicit authorization')
+local stillOpen=false
+for _,c in ipairs(controls) do
+    if not c.destroyed and inside(c,savedDeleteFrame) and c.GetScrollValues and c.Width()==372 then stillOpen=true end
+end
+assert(stillOpen,'the saved-set list stays open after deletion')
 savedDeleteFrame:Destroy()
 end
 clickIn(frame,'Новый')
@@ -353,7 +354,6 @@ do
 end
 clickIn(frame,'Под курсором')
 clickIn(frame,'Улучшить структуру под курсором')
-expandBuilders(frame)
 clickAcu(frame)
 clickIn(frame,'Overcharge')
 -- Rebuilding a grouped catalog must survive selection, filtering, and scrolling.
@@ -422,9 +422,6 @@ for _,c in ipairs(controls) do if c.parent==frame and c.GetScrollValues and not 
 local savedTile=tileIn(savedList,'First')
 savedTile:HandleEvent({Type='MouseEnter'}); savedTile:HandleEvent({Type='MouseExit'})
 assert(savedTile.HandleEvent~=nil,'saved profile row supports pointer interaction')
-expandBuilders(frame)
-collapseBuilders(frame)
-expandBuilders(frame)
 local contextTile=tileIn(frame,'ACU')
 contextTile:HandleEvent({Type='ButtonPress'})
 contextTile:HandleEvent({Type='MouseEnter'}); contextTile:HandleEvent({Type='MouseExit'})
@@ -489,7 +486,6 @@ emptyCatalog:Hide(); emptyCatalog:Show()
 -- Use the real context catalog while checking selection and action refresh.
 local stableService={contextActions=actions,contextModel=emptyModel}
 local stableFrame=env.Create(host,stableService,nil)
-expandBuilders(stableFrame)
 clickAcu(stableFrame)
 local stableSearch
 for _,c in ipairs(controls) do if not c.destroyed and c.parent==stableFrame and c.OnTextChanged and c.Width()>400 then stableSearch=c end end
@@ -504,17 +500,15 @@ stableFrame:Destroy()
 local inheritedOnly=modelEnv.Create(nil,actions)
 assert(inheritedOnly:Put({id='parent_only',name='Parent only',rows={{context='builder',action='move'}}}))
 local inheritedFrame=env.Create(host,{contextActions=actions,contextModel=inheritedOnly},nil)
-expandBuilders(inheritedFrame)
 clickAcu(inheritedFrame)
 local inheritedMode=findIn(inheritedFrame,'● Наследовать')
 assert(inheritedMode and inheritedMode.parent and inheritedMode.parent.color=='selected',
     'child mode buttons stay visible and mark the active inherited mode')
 inheritedFrame:Destroy()
 
-expandBuilders(emptyFrame)
 clickAcu(emptyFrame)
 local acuCount=0
-for _,action in ipairs(actions.List()) do if not action.hidden and actions.Supports(action.id,'acu') and action.id~='soft_stop' then acuCount=acuCount+1 end end
+for _,action in ipairs(actions.List()) do if not action.hidden and actions.Supports(action.id,'acu') and action.id~='soft_stop' and action.id~='load_transports' then acuCount=acuCount+1 end end
 assert(acuCount>9,'ACU has enough compatible actions to exercise scrolling')
 local hint,selectedTitle
 for _,c in ipairs(controls) do
@@ -573,7 +567,6 @@ clickIn(emptyFrame,'Новый')
 for _,c in ipairs(controls) do
     if c.parent==emptyFrame and c.OnTextChanged and c.Width()==330 then c.text='Created empty'; c:OnTextChanged('Created empty') end
 end
-expandBuilders(emptyFrame)
 clickAcu(emptyFrame)
 clickIn(emptyFrame,'Overcharge')
 clickIn(emptyFrame,'Сохранить')
@@ -638,9 +631,11 @@ function manyService:CommitContext(binding,removeId)
     self.contextModel=candidate
     return true,'Сохранено'
 end
-local manyFrame=env.Create(host,manyService,nil)
+local manyFrame=env.Create(host,manyService,nil,{bindingId='saved_scroll_1'})
 openSaved(manyFrame)
 assert(treeButton(manyFrame,'Строители'),'builder group remains available for child overrides')
+-- The catalog lists actions for the selected draft context, so pick one before scanning headings.
+clickAcu(manyFrame)
 local seenGroups={}
 local manyCatalog
 for _,c in ipairs(controls) do
@@ -660,9 +655,6 @@ local headingCount=0
 for _ in pairs(seenGroups) do headingCount=headingCount+1 end
 assert(headingCount>=2,'compatible actions use multiple descriptive headings throughout the scrollable catalog')
 manyCatalog:ScrollSetTop('Vert',1)
-selectSaved(manyFrame,'Saved 1')
-expandBuilders(manyFrame)
-clickAcu(manyFrame)
 assert(not findIn(manyFrame,'Своё'),'own-mode button is removed from the interface')
 for _,label in ipairs({'Отключить','Наследовать'}) do
     local mode=findIn(manyFrame,label)
@@ -700,9 +692,6 @@ assert(inheritedMode=='inherit' and retainedChildAction=='move' and parentAction
     'saving inherited mode preserves the child action and does not add a parent action')
 assert(findIn(manyFrame,'Активно: 0 · переопределено: 0'),
     'saving the reset child preserves the updated active and override counts')
- expandBuilders(manyFrame)
- collapseBuilders(manyFrame)
-expandBuilders(manyFrame)
 clickAcu(manyFrame)
 clickIn(manyFrame,'Отключить')
 assert(findIn(manyFrame,'● Отключить'),'disabled mode button marks the selected mode')
@@ -712,13 +701,16 @@ assert(findIn(manyFrame,'ОТКЛЮЧЕНО')
 clickIn(manyFrame,'Наследовать')
 assert(findIn(manyFrame,'● Наследовать') and findIn(manyFrame,'НАСЛЕДУЕТ'),
     'inherit mode button restores inheritance from the disabled mode')
-local manySaved
+local manySaved, manyScrollbar
 for _,target in ipairs(scrollbarTargets) do
-    if target.Width()==372 and target.Height()>300 and inside(target,manyFrame) then manySaved=target end
+    if target.GetScrollValues and target.Width()==372 and target.Height()>300 and inside(target,manyFrame) then manySaved=target end
 end
-assert(manySaved,'editor with ten saved entries exposes its saved-list scrollbar')
-assert(type(manySaved.IsScrollable)=='function' and manySaved:IsScrollable()==true,
-    'saved-list scrollbar reports scrollability with more than nine entries')
+for _,widget in ipairs(scrollbarWidgets) do
+    if widget.visible and inside(widget,manyFrame) then manyScrollbar=widget end
+end
+assert(manySaved and manySaved:IsScrollable()==true,
+    'saved list reports scrollability with more than nine entries')
+assert(manyScrollbar,'the saved list shows the native game scrollbar')
 local conflictModel=modelEnv.Create(nil,actions)
 local conflictService={contextActions=actions,contextModel=conflictModel}
 local conflictMessage='В хотбилде «Тяжёлые постройки» есть постройки, а в наборе задано действие для плиток «Строители» и ACU. Очистите плитку «Строители» и плитки ACU или выберите другой набор.'
@@ -773,7 +765,7 @@ assert(factoryTile.color=='selected','factory remains selectable')
 policyFrame:Destroy()
 do
 local pickerLockModel=modelEnv.Create({version=3,bindings={{id='picker_lock',name='Picker lock',rows={{context='engineer',action='reclaim'}}}}},actions)
-local pickerLockFrame=env.Create(host,{contextActions=actions,contextModel=pickerLockModel},nil)
+local pickerLockFrame=env.Create(host,{contextActions=actions,contextModel=pickerLockModel},nil,{bindingId='picker_lock'})
 clickIn(pickerLockFrame,'Ничего не выделено')
 local pickerSearch
 for _,c in ipairs(controls) do if not c.destroyed and c.parent==pickerLockFrame and c.OnTextChanged and c.Width()>400 then pickerSearch=c end end
@@ -807,7 +799,7 @@ function retainedService:CommitContext(binding,removeId)
     self.contextModel=candidate
     return true,'Сохранено'
 end
-local retainedFrame=env.Create(host,retainedService,nil)
+local retainedFrame=env.Create(host,retainedService,nil,{bindingId='absolute_ui'})
 for _,c in ipairs(controls) do
     assert(c.destroyed or not inside(c,retainedFrame) or c.text~='Абсолютный режим: выкл.', 'absolute switch is absent')
 end
@@ -831,7 +823,7 @@ function groupService:CommitContext(binding)
     self.contextModel=candidate
     return true
 end
-local groupFrame=env.Create(host,groupService,{scale=0.75})
+local groupFrame=env.Create(host,groupService,{scale=0.75},{bindingId='groups'})
 local function groupTile(label)
     return assert(treeButton(groupFrame,label),'missing context tree entry '..label)
 end
@@ -845,10 +837,24 @@ local function selectGroupTile(label)
     assert(not tile.hidden, label..' must be visible: '..tostring(tile.Width())..'x'..tostring(tile.Height())..' parent='..tostring(tile.parent and tile.parent.Width()))
     tile:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
 end
+for parent,children in pairs({
+    units={'land','air','navy'},
+    builder={'acu','sacu','engineer'},
+    missiles={'silo_tactical','silo_nuclear'},
+}) do
+    for attempt=1,3 do
+        for _,child in ipairs(children) do
+            local tile=groupTile(child)
+            assert(not tile.hidden and tile.y+tile.Height()<=tile.parent.Height(),
+                child..' stays visible inside the tree')
+        end
+        if attempt<3 then selectGroupTile(parent) end
+    end
+end
 local function assertCatalog(context)
     local expected=0
     local function obsolete(id)
-        return id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical'
+        return id=='load_transports' or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical'
             or id=='upgrade_structure'
             or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next') and context~='cursor')
             or (id=='sacu_tech' and context=='sacu') or (id=='soft_stop' and context~='factory')
@@ -911,7 +917,12 @@ selectGroupTile('Под курсором')
 for _,id in ipairs({'upgrade_structure_under_cursor','upgrade_structure_pause','upgrade_mex_select_next'}) do
     assert(actions.Supports(id,'cursor'),id..' is supported by the cursor tile')
 end
+assert(findIn(groupFrame,'Улучшение с паузой'), 'cursor upgrade uses the new localized action name')
 selectGroupTile('Ничего не выделено')
+assert(not findIn(groupFrame,'Погрузить в транспорт'),
+    'load into transports is unavailable in multifunction actions')
+assert(not findIn(groupFrame,'Улучшить добытчик и выбрать ближайший следующий'),
+    'new select-next assignments are offered only under the cursor')
 assert(not findIn(groupFrame,'Улучшить структуру под курсором'),
     'cursor-only upgrade action is absent from the empty-selection catalog')
 groupFrame:Destroy()
@@ -964,8 +975,8 @@ assert(findIn(suicidePicker,'Самоуничтожение мгновенно')
     'composite picker exposes the immediate composite-only action')
 suicidePicker:Destroy()
 local continuationCases={
-    {'select_acu','acu',false}, {'select_acu_double','acu',true}, {'goto_acu','acu',false},
-    {'select_transport_double','transport',true}, {'select_engineers_t1','engineer',true},
+    {'select_acu','acu',false}, {'select_acu_double','acu',false}, {'goto_acu','acu',false},
+    {'select_transport_double','transport',false}, {'select_engineers_t1','engineer',true},
     {'select_engineers_t2','engineer',true}, {'select_engineers_t3','engineer',true},
     {'select_engineers_all','engineer',true},
     {'select_engineer','engineer',false}, {'select_transport','transport',false},
@@ -980,7 +991,7 @@ for index,case in ipairs(continuationCases) do
     assert(fixture and fixture.rows[1].context=='empty' and fixture.rows[1].action==actionId,
         'continuation lock fixture is preserved: '..actionId)
     local svc={contextActions=actions,contextModel=m}
-    local f=env.Create(host,svc,nil)
+    local f=env.Create(host,svc,nil,{bindingId='continuation_'..index})
     local target=assert(treeButton(f,targetId),'continuation target exists: '..targetId)
     local lockHint=findIn(target,'занято цепочкой')
     local treeText={}
@@ -1001,12 +1012,12 @@ function savedConflictService:CommitContext(binding)
     self.contextModel=candidate
     return true,'Сохранено'
 end
-local savedConflictFrame=env.Create(host,savedConflictService,nil)
+local savedConflictFrame=env.Create(host,savedConflictService,nil,{bindingId='saved_conflict'})
 assert(savedConflictService.contextModel:ResolveAction('saved_conflict','acu')=='move',
     'loading a saved continuation conflict preserves the assigned child row')
 local conflictingAcu=assert(treeButton(savedConflictFrame,'acu'))
 clickIn(savedConflictFrame,'ACU')
-assert(findIn(savedConflictFrame,'занято цепочкой'),'saved conflicting context shows its lock explanation')
+assert(not findIn(savedConflictFrame,'занято цепочкой'),'retired ACU double no longer reserves the context')
 clickIn(savedConflictFrame,'Очистить')
 clickIn(savedConflictFrame,'Сохранить')
 local repairedConflict=savedConflictService.contextModel:Get('saved_conflict')
@@ -1019,13 +1030,26 @@ assert(savedConflictService.contextModel:ResolveAction('saved_conflict','acu')==
 savedConflictFrame:Destroy()
 -- A locked inherited child also blocks assigning an action to its group.
 local inheritedConflict=modelEnv.Create({version=3,bindings={{id='inherited_conflict',name='Inherited conflict',rows={{context='empty',action='select_acu_double'}}}}},actions)
-local inheritedConflictFrame=env.Create(host,{contextActions=actions,contextModel=inheritedConflict},nil)
+local inheritedConflictFrame=env.Create(host,{contextActions=actions,contextModel=inheritedConflict},nil,{bindingId='inherited_conflict'})
 clickIn(inheritedConflictFrame,'Строители')
 clickIn(inheritedConflictFrame,'Движение')
-assert(not inheritedConflict:Get('inherited_conflict').rows[2]
-    and findIn(inheritedConflictFrame,'сначала измените цепочку'),
-    'locked inherited child prevents a conflicting group assignment')
+assert(not findIn(inheritedConflictFrame,'сначала измените цепочку'),
+    'a reserved ACU child does not block the parent action')
 inheritedConflictFrame:Destroy()
+do
+    local engineerChain=modelEnv.Create({version=3,bindings={{id='engineer_parent',name='Engineer parent',
+        rows={{context='empty',action='select_engineers_t3'}}}}},actions)
+    local svc={contextActions=actions,contextModel=engineerChain,CommitContext=savedConflictService.CommitContext}
+    local frame=env.Create(host,svc,nil,{bindingId='engineer_parent'})
+    clickIn(frame,'Строители')
+    clickIn(frame,'Движение')
+    clickIn(frame,'Сохранить')
+    assert(svc.contextModel:ResolveAction('engineer_parent','acu')=='move'
+        and svc.contextModel:ResolveAction('engineer_parent','sacu')=='move'
+        and svc.contextModel:ResolveAction('engineer_parent','engineer')==nil,
+        'the chain locks the engineer without blocking a parent action')
+    frame:Destroy()
+end
 local legacyModel=modelEnv.Create({version=3,bindings={{id='legacy',name='Legacy',rows={
     {context='transport',action='attack'}, {context='factory',action='shield'},
     {context='sacu',action='sacu_tech',mode='own'}, {context='mystery',action='missing_action'},
@@ -1035,7 +1059,7 @@ local legacyService={contextActions=actions,contextModel=legacyModel}
 function legacyService:CommitContext(binding)
     local ok,err=self.contextModel:Put(binding); return ok,err or 'Сохранено'
 end
-local legacyFrame=env.Create(host,legacyService,nil)
+local legacyFrame=env.Create(host,legacyService,nil,{bindingId='legacy'})
 assert(findIn(legacyFrame,'устарело: Самоунич'),
     'saved delayed-suicide assignment is shown as obsolete')
 clickIn(legacyFrame,'Сохранить')
@@ -1058,7 +1082,7 @@ local extraLegacyService={contextActions=actions,contextModel=extraLegacyModel}
 function extraLegacyService:CommitContext(binding)
     local ok,err=self.contextModel:Put(binding); return ok,err or 'Сохранено'
 end
-local extraLegacyFrame=env.Create(host,extraLegacyService,nil)
+local extraLegacyFrame=env.Create(host,extraLegacyService,nil,{bindingId='old_extra_fields'})
 clickIn(extraLegacyFrame,'Сохранить')
 local retainedExtra=extraLegacyService.contextModel:Get('old_extra_fields')
 assert(retainedExtra.rows[1].quickRepeat=='attack' and retainedExtra.rows[1].fallback=='attack_move', 'saving retains legacy repeat and fallback')
@@ -1084,8 +1108,8 @@ local function offerScenario(rows,answer)
     local m=modelEnv.Create({version=3,bindings={{id='offer',name='Offer',rows=rows}}},actions)
     local svc={contextActions=actions,contextModel=m}
     function svc:CommitContext(binding) local ok,err=self.contextModel:Put(binding); return ok,err end
-    local f=env.Create(host,svc,nil)
-    expandBuilders(f); clickAcu(f); clickIn(f,'Overcharge')
+    local f=env.Create(host,svc,nil,{bindingId='offer'})
+    clickAcu(f); clickIn(f,'Overcharge')
     if answer then
         assert(findIn(f,'Поставить то же для SACU?'), 'offer appears when no SACU override exists')
         clickIn(f,answer)
@@ -1111,7 +1135,7 @@ local function missileOffer(existingRows,choose)
         if not ok then return false,err end
         self.contextModel=candidate; return true,'Сохранено'
     end
-    local f=env.Create(host,svc,nil)
+    local f=env.Create(host,svc,nil,{bindingId='missile_offer'})
     clickIn(f,'Ракеты')
     clickIn(f,'Запуск ракеты')
     assert(findIn(f,'Предложить запуск ракеты для ACU/SACU?'),'smart missile assignment offers ACU/SACU separately')

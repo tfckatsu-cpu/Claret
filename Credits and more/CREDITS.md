@@ -1,35 +1,39 @@
-# Благодарности и реестр заявленных авторов
+# Credits and declared authors
 
-Дата проверки: 2026-11-10. Первый проход этапа 1; полнота исследования не заявляется.
+Checked: 2026-11-10. Initial Stage 1 pass; completeness is not claimed.
 
-Имена и ссылки ниже переписаны из манифестов для атрибуции источников исследования. Код в Claret не переносился. «Не указано» или пустая ссылка требуют уточнения. Статус лицензий — в Context/license-audit.md.
+Names and links below are copied from manifests for source attribution. No code was copied into Claret. "Not specified" or an empty link needs clarification. License status is in Context/license-audit.md.
 
-| Мод | Автор из манифеста | Ссылка из манифеста | Источник |
+| Mod | Manifest author | Manifest link | Source |
 |---|---|---|---|
 | ACUEnhancements | 4z0t |  | v4; Context/sources/MainMods/ACUEnhancements/mod_info.lua |
 | AKA | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v5; Context/sources/MainMods/AKA/mod_info.lua |
 | AOE | 4z0t |  | v5; Context/sources/MainMods/AOE/mod_info.lua |
-| ASE | 4z0t, Nomander |  | v3; Context/sources/MainMods/ASE/mod_info.lua |
-| ASI Medium | macdeffy | не указано | v1; Context/sources/MainMods/ASI Medium/mod_info.lua |
+| ASE | 4z0t, Nomander |  | Installed v3, checked 2026-11-21; temporary selection-filter suspension via ASE's `GetIgnored` / `SetIgnored` interface |
+| Redux ACU Icons (installed as ASI Medium) | macdeffy | [reuse permission](https://forum.faforever.com/topic/2926/redux-strategic-icons) | v1; installed mods/ASI Medium/mod_info.lua, checked 2026-11-20; three mex DDS textures used with permission from macdeffy |
+| Gold mex upgrade arrow | Source supplied by the project owner | `Золотая стрелка улучшения.png` | PNG supplied 2026-11-20, resized for the panel and map markers in Claret UI 0.2.51 |
+| Silo and submarine missile icons | Source supplied by the project owner | `Ядерная_ракета_без_линий.png` and `Красная ракета и радиационный символ в волнах.png` | PNGs supplied 2026-11-20 and resized for notification textures in Claret UI 0.2.85 |
 | Beer | 4z0t |  | v1; Context/sources/MainMods/Beer/mod_info.lua |
-| Bi4UI.StrategicRings | Bi4ara | не указано | v20; Context/sources/MainMods/Bi4UI.StrategicRings/mod_info.lua |
+| Bi4UI.StrategicRings | Bi4ara | not specified | v20; Context/sources/MainMods/Bi4UI.StrategicRings/mod_info.lua |
 | BindStorage | Fuper |  | v1; Context/sources/MainMods/BindStorage/mod_info.lua |
 | BuilderAltSelect | HotCheese |  | v3; Context/sources/MainMods/BuilderAltSelect/mod_info.lua |
-| cinematics | Jip | не указано | v7; Context/sources/MainMods/cinematics/mod_info.lua |
-| CinematicsMod | speed2 | не указано | v1; Context/sources/MainMods/CinematicsMod/mod_info.lua |
+| cinematics | Jip | not specified | v7; Context/sources/MainMods/cinematics/mod_info.lua |
+| CinematicsMod | speed2 | not specified | v1; Context/sources/MainMods/CinematicsMod/mod_info.lua |
 | Ctrl | 4z0t |  | v2; Context/sources/MainMods/Ctrl/mod_info.lua |
-| dear-windowing | (Jip) Willem Wijnia | не указано | v9; Context/sources/MainMods/dear-windowing/mod_info.lua |
+| dear-windowing | (Jip) Willem Wijnia | not specified | v9; Context/sources/MainMods/dear-windowing/mod_info.lua |
 | DelisRedundantEcoHelp | Deli |  | v3; Context/sources/MainMods/DelisRedundantEcoHelp/mod_info.lua |
-| DynamicSelectionInfo | Nuggets HotCheese |  | v3; Context/sources/MainMods/DynamicSelectionInfo/mod_info.lua |
+| DynamicSelectionInfo | Nuggets HotCheese | Not specified | v3 / ReUI module 1.2.0; installed `../mods/DynamicSelectionInfo/mod_info.lua`, checked 2026-11-20. Selection HUD behaviour reference. |
+| Strategic Missile Construction Alerts | SonofaMitch | Not specified | v2; installed `../mods/StrategicMissileAlerts/mod_info.lua` and `modules/NukeAlerts.lua`, checked 2026-11-20. Behaviour reference for missile notifications. |
 | EconomyMiddle | 4z0t |  | v2; Context/sources/MainMods/EconomyMiddle/mod_info.lua |
-| EUT | 4z0t |  | v11; Context/sources/MainMods/EUT/mod_info.lua |
+| EUT | 4z0t |  | v11; installed mods/EUT/mod_info.lua, checked 2026-11-20; mex panel and overlay behaviour reference |
 | Extra mini map | Eternal- |  | v3; Context/sources/MainMods/Extra mini map/mod_info.lua |
 | FactoryTemplates | 4z0t |  | v2; Context/sources/MainMods/FactoryTemplates/mod_info.lua |
 | GS | 4z0t |  | v7; Context/sources/MainMods/GS/mod_info.lua |
+| Idle Engineers Light | 4z0t | Not specified | Installed v12, checked 2026-11-21; engineer marker behaviour reference. [Author's forum post](https://forum.faforever.com/topic/4014/ui-revolution-project/21) |
 | InstantAssist | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v3; Context/sources/MainMods/InstantAssist/mod_info.lua |
 | Mouse | HotCheese, LightningBulb, Eternal- |  | v3; Context/sources/MainMods/Mouse/mod_info.lua |
-| Music_PhilCrofts | Music - Phillip Crofts/ Coding - Exotic Retard | не указано | v5; Context/sources/MainMods/Music_PhilCrofts/mod_info.lua |
-| Regen Aura Range | Ske | не указано | v1; Context/sources/MainMods/Regen Aura Range/mod_info.lua |
+| Music_PhilCrofts | Music - Phillip Crofts/ Coding - Exotic Retard | not specified | v5; Context/sources/MainMods/Music_PhilCrofts/mod_info.lua |
+| Regen Aura Range | Ske | not specified | v1; Context/sources/MainMods/Regen Aura Range/mod_info.lua |
 | ReUI | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v7; Context/sources/MainMods/ReUI/mod_info.lua |
 | ReUI.ActionsPanel | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v4; Context/sources/MainMods/ReUI.ActionsPanel/mod_info.lua |
 | ReUI.Construction | 4z0t, HotCheese | https://github.com/4z0t/FAF-UI-Mods | v7; Context/sources/MainMods/ReUI.Construction/mod_info.lua |
@@ -40,16 +44,21 @@
 | ReUI.Reclaim | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v7; Context/sources/MainMods/ReUI.Reclaim/mod_info.lua |
 | ReUI.Score | 4z0t, HotCheese | https://github.com/4z0t/FAF-UI-Mods | v5; Context/sources/MainMods/ReUI.Score/mod_info.lua |
 | Reveal positions | Myxir, Eternal-, Nomander, Erador |  | v4; Context/sources/MainMods/Reveal positions/mod_info.lua |
-| RFA | 4z0t, Nomander |  | v7; Context/sources/MainMods/RFA/mod_info.lua |
+| Rings For All (RFA) | 4z0t, Nomander | https://github.com/4z0t/FAF-UI-Mods/blob/develop/Docs/Overview/RingsForAll.md | Installed v7; checked 2026-11-20 as a behavior reference for Claret UI All Rings |
 | SplitGroupScatter | 4z0t, HotCheese |  | v2; Context/sources/MainMods/SplitGroupScatter/mod_info.lua |
 | STP | 4z0t |  | v3; Context/sources/MainMods/STP/mod_info.lua |
 | TeamMouse | Lightningbulb & HotCheese / KasperAUS / Eternal- | https://github.com/Lightningbulb2/TeamMouse | v6; Context/sources/MainMods/TeamMouse/mod_info.lua |
-| TIS | 4z0t |  | v11; Context/sources/MainMods/TIS/mod_info.lua |
+| TeamInfo Share (TIS) | 4z0t | Not specified | v11; installed ../mods/TIS, checked 2026-11-20. Behavior reference for InfoShare. |
 | UMT | 4z0t |  | v13; Context/sources/MainMods/UMT/mod_info.lua |
 
-- Nunito Regular / SemiBold: The Nunito Project Authors, SIL Open Font License 1.1; TTF предоставлены пользователем, уведомления из его архива сохранены в ClaretCore/fonts/Nunito. Источник проекта: https://github.com/googlefonts/nunito. Проверено 2026-11-12.
+- Nunito Regular / SemiBold: The Nunito Project Authors, SIL Open Font License 1.1; TTFs were provided by the user; notices from their archive are kept in ClaretCore/fonts/Nunito. Project source: https://github.com/googlefonts/nunito. Checked 2026-11-12.
 
-- Логотипы Claret: PNG-файлы предоставлены пользователем 2026-11-14 (`claret`, `claret Lyrics`); сведения об авторе и лицензии не приложены.
+- Claret logos: PNG files were provided by the user on 2026-11-14 (`claret`, `claret Lyrics`); no author or license information was supplied.
+- DPG clan banner: supplied by the user on 2026-11-21 for the welcome window. The shipped PNG has a transparent background.
 
-- 2026-11-13, исследовательское восстановление установленного ReUI/ReUI.*: авторы по манифестам 4z0t; Construction/Score — 4z0t, HotCheese; MissilePanel — Nuggets. Ссылка авторов: https://github.com/4z0t/FAF-UI-Mods. Версии и SHA-256 — Context/reui-decompiled/manifest.json. Локальное MIT-уведомление 2022 4z0t сохранено в Context/reui-decompiled/LICENSE.reference.txt; принадлежность всех установленных сборок и ресурсов этой лицензии отдельно не установлена. Код в Claret не переносился.
-- unluac (только dev-инструмент): tehtmi, copyright 2011–2020; части Thomas Klaeger, 2014; MIT. Fork https://github.com/Jeong-Min-Cho/unluac, commit 744c8149d93f7739f17b7f0f506822fb93ba7193, CLI 1.2.3.569; проверено 2026-11-13. Исходники и уведомление — .tools/unluac/license.txt, описание адаптации — Context/reui-decompiled/README.md.
+- 2026-11-13, research restoration of the installed ReUI/ReUI.*: authors per manifests are 4z0t; Construction/Score — 4z0t, HotCheese; MissilePanel — Nuggets. Author link: https://github.com/4z0t/FAF-UI-Mods. Versions and SHA-256 are in Context/.local/reui-decompiled/manifest.json. The local MIT notice from 2022 by 4z0t is kept in Context/.local/reui-decompiled/LICENSE.reference.txt; whether every installed build and asset falls under that license was not separately established. No code was copied into Claret.
+- unluac (dev tool only): tehtmi, copyright 2011–2020; parts by Thomas Klaeger, 2014; MIT. Fork https://github.com/Jeong-Min-Cho/unluac, commit 744c8149d93f7739f17b7f0f506822fb93ba7193, CLI 1.2.3.569; checked 2026-11-13. Sources and notice are in .tools/unluac/license.txt; adaptation notes in Context/.local/reui-decompiled/README.md.
+
+## Claret UI reuse policy (2026-11-19)
+
+Claret UI ports the behaviour of existing FAF UI mods by copying and adapting their code. MIT-licensed sources (4z0t / FAF-UI-Mods, 2022, `Context/sources/LICENSE`; TeamMouse, 2026, `Context/sources/MainMods/TeamMouse/LICENSE`) keep their notice in every copied file. Mods with no stated licence (`Context/license-audit.md`) are reused by the project owner's decision of 2026-11-19, credited here by name, without shipping their assets (icons, logos) unless a licence allows it. Original mods must be disabled when the equivalent Claret UI feature is on.

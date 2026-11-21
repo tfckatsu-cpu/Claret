@@ -96,7 +96,7 @@ local definitions = {
     {id='set_default_target_priority', labelKey='hotbuild.action.set_default_target_priority.label', contexts={'land','air','navy'}, select='UI_LUA import("/lua/keymap/misckeyactions.lua").SetDefaultWeaponPriorities()'},
     {id='spreadattack', labelKey='hotbuild.action.spreadattack.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/hotkeys/distribute-queue.lua").DistributeOrders(true)'},
     {id='copy_orders', labelKey='hotbuild.action.copy_orders.label', contexts={'land','air','navy'}, select='UI_LUA import("/lua/ui/game/hotkeys/copy-queue.lua").CopyOrders()'},
-    {id='load_transports', labelKey='hotbuild.action.load_transports.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/hotkeys/load-in-transport.lua").LoadIntoTransports(false)'},
+    {id='load_transports', labelKey='hotbuild.action.load_transports.label', contexts={'land','air','navy','acu','sacu','engineer'}, select='UI_Lua import("/lua/ui/game/hotkeys/load-in-transport.lua").LoadIntoTransports(false)'},
     {id='split_layer', labelKey='hotbuild.action.split_layer.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/selection.lua").SplitLayer()'},
     {id='split_tech', labelKey='hotbuild.action.split_tech.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/selection.lua").SplitTech()'},
     {id='split_into_groups_1', labelKey='hotbuild.action.split_into_groups_1.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/selection.lua").SplitIntoGroups(1)'},
@@ -133,11 +133,11 @@ local definitions = {
     {id='toggle_intel', labelKey='hotbuild.action.toggle_intel.label', contexts={'other'}, toggle='RULEUTC_IntelToggle', select='UI_Lua import("/lua/keymap/misckeyactions.lua").toggleScript("Intel")', special='unit_toggle'},
     {id='toggle_jamming', labelKey='hotbuild.action.toggle_jamming.label', contexts={'other'}, toggle='RULEUTC_JammingToggle', select='UI_Lua import("/lua/keymap/misckeyactions.lua").toggleScript("Jamming")', special='unit_toggle'},
     {id='toggle_cloak', labelKey='hotbuild.action.toggle_cloak.label', contexts={'other'}, toggle='RULEUTC_CloakToggle', select='UI_Lua import("/lua/keymap/misckeyactions.lua").toggleScript("Cloak")', special='unit_toggle'},
-    {id='toggle_all', labelKey='hotbuild.action.toggle_all.label', contexts={'other'}, select='UI_Lua import("/lua/keymap/misckeyactions.lua").toggleAllScript()'},
+    {id='toggle_all', labelKey='hotbuild.action.toggle_all.label', contexts={'acu','sacu','engineer','factory','silo_tactical','silo_nuclear','transport','mex','scout','other'}, select='UI_Lua import("/lua/keymap/misckeyactions.lua").toggleAllScript()'},
     {id='cycle_mex_screen', labelKey='hotbuild.action.cycle_mex_screen.label', contexts={'empty','mex'}, special='cycle_mex_screen', legacy=true},
     {id='cycle_mex_map', labelKey='hotbuild.action.cycle_mex_map.label', contexts={'empty','mex'}, special='cycle_mex_map', legacy=true},
     {id='upgrade_structure_under_cursor', labelKey='hotbuild.action.upgrade_structure_under_cursor.label', contexts={'empty'}, special='context_upgrade'},
-    {id='upgrade_mex_select_next', labelKey='hotbuild.action.upgrade_mex_select_next.label', contexts={'empty','mex'}, special='context_upgrade', selectionPolicy='exclusive', continuation='accumulate'},
+    {id='upgrade_mex_select_next', labelKey='hotbuild.action.upgrade_mex_select_next.label', contexts={'mex'}, special='context_upgrade', selectionPolicy='exclusive', continuation='accumulate'},
     {id='upgrade_mex', labelKey='hotbuild.action.upgrade_mex.label', contexts={'mex'}, special='upgrade_mex'},
     {id='overcharge', labelKey='hotbuild.action.overcharge.label', contexts={'acu','sacu'}, order='RULEUCC_Overcharge', special='overcharge'},
     {id='acu_tech', labelKey='hotbuild.action.acu_tech.label', contexts={'acu'}, special='enhancement'},
@@ -168,9 +168,18 @@ local definitions = {
     {id='remove_queue', labelKey='hotbuild.action.remove_queue.label', contexts={}, special='remove_queue'},
 }
 
--- Keep the previous combined-level IDs executable for existing assignments.
+-- Map communication is independent of the selection and belongs in the keyboard picker.
+for _, ping in ipairs({'marker','alert','move','attack'}) do
+    local id = 'ping_' .. ping
+    table.insert(definitions, {
+        id=id, labelKey='hotbuild.action.' .. id .. '.label', contexts={}, global=true,
+        select='UI_Lua import("/lua/ui/game/ping.lua").DoPing("' .. ping .. '")',
+    })
+end
+
+-- Keep the old combined on-screen selectors executable for existing assignments.
 for _, action in ipairs(definitions) do
-    if string.find(action.id, '^select_.*_factories_') then action.hidden=true end
+    if string.find(action.id, '^select_.*_factories_screen$') then action.hidden=true end
 end
 for _, domain in ipairs({
     {id='land', category='LAND', labelKey='hotbuild.domain.land'},
@@ -199,7 +208,7 @@ end
 
 -- The parent builder action is limited to commands valid for all three child types.
 local builderActions = {reclaim=true, assist=true, move=true, attack=true, attack_move=true,
-    patrol=true, repair=true, capture=true, shield=true, stealth=true, stop=true, soft_stop=true,
+    patrol=true, repair=true, capture=true, shield=true, stealth=true, toggle_all=true, stop=true, soft_stop=true,
     spreadattack=true, copy_orders=true, abort_navigation=true, pause_unit=true}
 
 local byId = {}
@@ -208,10 +217,12 @@ for _, action in ipairs(definitions) do LocalizedFields(action) end
 for _, action in ipairs(definitions) do byId[action.id]=action end
 local unitActions = {move=true,attack=true,attack_move=true,stop=true,patrol=true,mode=true,
     set_target_priority=true,set_default_target_priority=true,spreadattack=true,copy_orders=true,
-    load_transports=true,split_layer=true,split_tech=true,split_into_groups_2=true,
+    toggle_all=true,load_transports=true,split_layer=true,split_tech=true,split_into_groups_2=true,
     split_into_groups_1=true,split_into_groups_4=true,split_into_groups_8=true,split_into_groups_16=true,split_next=true,
     cycle_unit_types_in_sel=true,suicide=true,kill_selected_units=true}
+local individualToggles={shield=true,stealth=true,toggle_production=true,toggle_intel=true,toggle_jamming=true,toggle_cloak=true}
 for _, action in ipairs(definitions) do
+    if individualToggles[action.id] then action.hidden=true end
     local removed={suicide=true,mode=true,dock=true,set_default_target_priority=true,upgrade_structure=true,cap=true,
         create_template_factory=true,
         nuke=true,tactical=true,cycle_unit_types_in_sel=true,attack_move=true,select_transport=true}
@@ -247,6 +258,20 @@ local function Contains(list, value)
     return false
 end
 
+-- Only actions that already contain a continuation reserve another context.
+function ContinuationTargets(action)
+    if not action or action.continuation=='double' then return {} end
+    local id=action.id or ''
+    if id=='cycle_idle_factories' then return {'factory'} end
+    if string.find(id,'^select_engineers_') then return {'engineer'} end
+    if action.continuation~='accumulate' then return {} end
+    local result={}
+    for _,context in ipairs(action.contexts or {}) do
+        if context~='empty' then table.insert(result,context) end
+    end
+    return result
+end
+
 function Contexts() return contexts end
 function List()
     local result={}
@@ -262,7 +287,7 @@ end
 function Supports(id, context)
     if context=='builder' then return builderActions[id] == true end
     if context=='units' then return unitActions[id] == true end
-    if context=='missiles' then return id=='stop' or id=='pause_unit' or id=='smart_missile' end
+    if context=='missiles' then return id=='stop' or id=='pause_unit' or id=='smart_missile' or id=='toggle_all' end
     if context=='cursor' then return id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next' end
     local action=byId[id]
     return action and Contains(action.contexts,context) or false
@@ -274,6 +299,7 @@ local function UnitContext(unit)
     if blueprint and blueprint.BlueprintId=='xsb2401' then return 'silo_nuclear' end
     if unit:IsInCategory('COMMAND') then return 'acu' end
     if unit:IsInCategory('SUBCOMMANDER') then return 'sacu' end
+    if unit:IsInCategory('ENGINEER') then return 'engineer' end
     local mobileFactory=(unit:IsInCategory('FACTORY') or unit:IsInCategory('EXTERNALFACTORY')) and unit:IsInCategory('MOBILE')
     if mobileFactory then
         if unit:IsInCategory('AIR') then return 'air' end
@@ -284,12 +310,11 @@ local function UnitContext(unit)
     if (unit:IsInCategory('FACTORY') or unit:IsInCategory('EXTERNALFACTORY')) and not mobileFactory then return 'factory' end
     if unit:IsInCategory('SILO') then
         if unit:IsInCategory('TACTICALMISSILEPLATFORM') then return 'silo_tactical' end
-        if unit:IsInCategory('NUKE') or unit:IsInCategory('TECH3') or (blueprint and blueprint.BlueprintId=='xsb2401') then return 'silo_nuclear' end
-        return 'silo_tactical'
+        if unit:IsInCategory('NUKE') then return 'silo_nuclear' end
+        -- SILO is also present on ordinary missile vehicles, ships and SMD.
     end
     if unit:IsInCategory('MASSEXTRACTION') then return 'mex' end
     if unit:IsInCategory('TRANSPORTATION') and not mobileFactory then return 'transport' end
-    if unit:IsInCategory('ENGINEER') then return 'engineer' end
     if unit:IsInCategory('AIR') and unit:IsInCategory('INTELLIGENCE') then return 'scout' end
     if unit:IsInCategory('MOBILE') or mobileFactory or (blueprint and blueprint.BlueprintId=='xea0002') then
         if unit:IsInCategory('AIR') then return 'air' end
@@ -302,6 +327,7 @@ end
 local function IsBuilder(unit)
     return unit:IsInCategory('COMMAND') or unit:IsInCategory('SUBCOMMANDER')
         or unit:IsInCategory('ENGINEER') or unit:IsInCategory('FACTORY')
+        or unit:IsInCategory('EXTERNALFACTORY')
 end
 
 function HasOrdinaryBuilder(selection)
@@ -326,13 +352,15 @@ function HasMobileFactory(selection)
     return false
 end
 
+function PresentContexts(selection)
+    local present={}
+    for _,unit in ipairs(selection or {}) do present[UnitContext(unit)]=true end
+    return present
+end
+
 function Classify(selection)
     if not selection or table.getn(selection)==0 then return 'empty' end
-    local present={}
-    for _,unit in ipairs(selection) do
-        local kind=UnitContext(unit)
-        present[kind]=true
-    end
+    local present=PresentContexts(selection)
     for _,kind in ipairs(priority) do
         if present[kind] then return kind end
     end
@@ -393,8 +421,35 @@ local function HasEligibleUnitCapability(action, context, capability, value)
     return false
 end
 
+local scriptToggles={
+    RULEUTC_ShieldToggle=true, RULEUTC_WeaponToggle=true, RULEUTC_JammingToggle=true,
+    RULEUTC_IntelToggle=true, RULEUTC_ProductionToggle=true, RULEUTC_StealthToggle=true,
+    RULEUTC_GenericToggle=true, RULEUTC_SpecialToggle=true, RULEUTC_CloakToggle=true,
+}
+
 function Available(action, context)
     if not action or not context or context.isReplay or context.focusArmy < 1 then return false end
+    if action.global then return true end
+    if action.id=='toggle_all' then
+        for _, unit in ipairs(context.selection or {}) do
+            local _, toggles=GetUnitCommandData({unit})
+            for _, toggle in ipairs(toggles or {}) do
+                if scriptToggles[toggle] then return true end
+            end
+        end
+        return false
+    end
+    if action.id=='load_transports' then
+        local hasTransport, hasCargo = false, false
+        for _, unit in ipairs(context.selection or {}) do
+            if unit:IsInCategory('TRANSPORTATION') then
+                hasTransport = true
+            elseif unit:IsInCategory('MOBILE') and not unit:IsInCategory('AIR') then
+                hasCargo = true
+            end
+        end
+        return hasTransport and hasCargo
+    end
     if action.id=='spreadattack' then
         local eligible=false
         for _, unit in ipairs(context.selection or {}) do
@@ -429,7 +484,7 @@ function Available(action, context)
     if context.resolvedContext=='cursor' and Supports(action.id,'cursor') then
         return import('/mods/ClaretHotbuild/modules/ContextUpgrade.lua').Available(action.id,context)
     end
-    if action.special=='context_upgrade' then
+    if action.special=='context_upgrade' or action.special=='upgrade_mex' then
         return import('/mods/ClaretHotbuild/modules/ContextUpgrade.lua').Available(action.id,context)
     end
     if action.id=='patrol' or action.id=='repair' or action.id=='capture' or action.id=='teleport' or action.id=='ferry' then
@@ -653,6 +708,32 @@ local function SelectMobileShields()
     end)
 end
 
+local transportSelectors = {
+    select_transport=true, select_transport_nearest=true, select_transport_double=true,
+    select_transports_accumulate=true, select_all_idle_transports=true,
+    select_transport_screen=true, select_transport_map=true,
+}
+
+local function WithTransportSelection(callback)
+    for _, mod in ipairs(rawget(_G, '__active_mods') or {}) do
+        if mod.uid=='advanced-selection-extension-v03' then
+            local ok, ase = pcall(import, '/mods/ASE/modules/Main.lua')
+            if ok and ase and type(ase.GetIgnored)=='function' and type(ase.SetIgnored)=='function' then
+                -- ASE may schedule another selection from its selection hook.
+                -- Suspend its filters for discovery and final selection only.
+                local previous = ase.GetIgnored()
+                ase.SetIgnored(true)
+                local called, result = pcall(callback)
+                ase.SetIgnored(previous)
+                if not called then error(result) end
+                return result
+            end
+            break
+        end
+    end
+    return callback()
+end
+
 function Execute(action, context, bindingId)
     if not Available(action,context) then return false end
     if context.resolvedContext=='cursor' and Supports(action.id,'cursor') then
@@ -660,10 +741,10 @@ function Execute(action, context, bindingId)
     end
     if action.select then
         -- Empty-selection actions can race a selection change between key dispatch and here.
-        if not context.absolute and Classify(context.selection)=='empty' and Classify(GetSelectedUnits() or {}) ~= 'empty' then return false end
+        if not action.global and not context.absolute and Classify(context.selection)=='empty' and Classify(GetSelectedUnits() or {}) ~= 'empty' then return false end
         if (action.id=='select_transport' or action.id=='select_transport_nearest'
             or action.id=='select_transport_double') and not context.isRepeat then
-            return SelectNextUnit('AIR TRANSPORTATION',true,true)
+            return WithTransportSelection(function() return SelectNextUnit('AIR TRANSPORTATION',true,true) end)
         end
         if action.id=='select_acu' then
             if context.absolute then SelectUnits({}) end
@@ -673,7 +754,12 @@ function Execute(action, context, bindingId)
             end
             return true
         end
-        ConExecute(action.selectionPolicy == 'double' and context.isRepeat and action.doubleSelect or action.select); return true
+        local command = action.selectionPolicy == 'double' and context.isRepeat and action.doubleSelect or action.select
+        if transportSelectors[action.id] then
+            return WithTransportSelection(function() ConExecute(command); return true end)
+        end
+        ConExecute(command)
+        return true
     end
     local special=action.special
     if special=='context_upgrade' then return import('/mods/ClaretHotbuild/modules/ContextUpgrade.lua').Execute(action.id,context)
@@ -704,8 +790,9 @@ function Execute(action, context, bindingId)
     elseif special=='next_engineer_t2' then return SelectNextUnit('ENGINEER TECH2')
     elseif special=='next_engineer_t3' then return SelectNextUnit('ENGINEER TECH3')
     elseif special=='next_engineer_all' then return SelectNextUnit('ENGINEER')
-    elseif special=='next_idle_transport' then return SelectNextUnit('AIR TRANSPORTATION',true)
-    elseif special=='select_all_idle_transports' then return SelectAllIdleTransports()
+    elseif special=='next_idle_transport' then
+        return WithTransportSelection(function() return SelectNextUnit('AIR TRANSPORTATION',true) end)
+    elseif special=='select_all_idle_transports' then return WithTransportSelection(SelectAllIdleTransports)
     elseif special=='build_storage_nearest' then
         return import('/mods/ClaretHotbuild/modules/StorageFabs.lua').buildStorageNearest()
     elseif special=='build_fabs_nearest' then
@@ -750,14 +837,7 @@ function Execute(action, context, bindingId)
     elseif special=='cycle_mex_screen' then return CycleMexes(true)
     elseif special=='cycle_mex_map' then return CycleMexes(false)
     elseif special=='upgrade_mex' then
-        if table.getn(context.selection) ~= 1 then return false end
-        local mex = context.selection[1]
-        if not mex or mex:IsDead() or not mex:IsInCategory('MASSEXTRACTION') then return false end
-        local blueprint = mex:GetBlueprint()
-        local upgrade = blueprint and blueprint.General and blueprint.General.UpgradesTo
-        if not upgrade then return false end
-        IssueBlueprintCommand('UNITCOMMAND_Upgrade', upgrade, 1, false)
-        return true
+        return import('/mods/ClaretHotbuild/modules/ContextUpgrade.lua').Execute(action.id,context)
     elseif special=='shield' or special=='stealth' then
         import('/lua/keymap/misckeyactions.lua').toggleScript(special=='shield' and 'Shield' or 'Stealth')
     elseif special=='stop' then import('/lua/ui/game/orders.lua').Stop(context.selection)

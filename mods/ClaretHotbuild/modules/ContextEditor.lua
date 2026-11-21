@@ -38,22 +38,8 @@ local function Fold(value)
     return value
 end
 
--- Only actions that already contain a continuation reserve another context.
-local function ContinuationTargets(action)
-    if not action then return {} end
-    local id=action.id or ''
-    if id=='cycle_idle_factories' then return {'factory'} end
-    if id=='select_transport_double' then return {'transport'} end
-    if string.find(id,'^select_engineers_') then return {'engineer'} end
-    if action.continuation~='double' and action.continuation~='accumulate' then return {} end
-    local result={}
-    for _,context in ipairs(action.contexts or {}) do
-        if context~='empty' then table.insert(result,context) end
-    end
-    return result
-end
-
 function Create(parent, service, embedded, memory)
+    local ContinuationTargets=service.contextActions.ContinuationTargets
     local Theme = import('/mods/ClaretCore/modules/Theme.lua')
     local C = Theme.Colors
     local Group = import('/lua/maui/group.lua').Group
@@ -69,11 +55,10 @@ function Create(parent, service, embedded, memory)
     local ratio = scale / pixel
     local L = ReUI.UI.FloorLayouter(scale)
     local frame = Group(parent)
-    local CloseConflictDialog, CloseDeleteDialog
+    local CloseConflictDialog
     local oldDestroy = frame.OnDestroy
     frame.OnDestroy = function(self)
         if CloseConflictDialog then CloseConflictDialog() end
-        if CloseDeleteDialog then CloseDeleteDialog() end
         Tooltip.DestroyMouseoverDisplay()
         oldDestroy(self)
     end
@@ -115,14 +100,27 @@ function Create(parent, service, embedded, memory)
         local function Button(owner, label, x, y, w, callback, primary)
             local normal = primary and C.accent or C.raised
             local selected = false
+            local hovered = false
             local h = Theme.Metrics.buttonHeight
             local b = Panel(owner, x, y, w, h, normal)
             local outline = Theme.Outline(b, L, w, h)
             local title = Text(b, label, 4, 0, Theme.Metrics.buttonText); L(title):AtCenterIn(b)
+            local function Paint()
+                if hovered then
+                    b:SetSolidColor(b.pressed and (primary and C.accentPressed or C.pressed) or (primary and C.accentHover or C.hover))
+                    outline(C.selectedBorder)
+                else
+                    b:SetSolidColor(selected and C.selected or normal)
+                    outline(selected and C.selectedBorder or C.border)
+                end
+            end
             b.HandleEvent = function(self, e)
-                if e.Type == 'MouseEnter' then self:SetSolidColor(primary and C.accentHover or C.hover); outline(C.selectedBorder)
-                elseif e.Type == 'MouseExit' then self:SetSolidColor(selected and C.selected or normal); outline(selected and C.selectedBorder or C.border)
-                elseif e.Type == 'ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then callback(); return true end
+                if e.Type == 'MouseEnter' then hovered = true; Paint()
+                elseif e.Type == 'MouseExit' then hovered = false; self.pressed = false; Paint()
+                elseif e.Type == 'ButtonRelease' then self.pressed = false; Paint()
+                elseif e.Type == 'ButtonPress' and not (e.Modifiers and e.Modifiers.Right) then
+                    self.pressed = true; Paint(); callback(); return true
+                end
                 return true
             end
             function b:SetLabel(value) title:SetText(value) end
@@ -160,13 +158,12 @@ function Create(parent, service, embedded, memory)
         local bg = Panel(frame, 0, 0, 1080, 920, C.canvas)
         bg.Depth:Set(frame.Depth); bg.HandleEvent = function() return true end
         Panel(frame, 24, 20, 4, 24, C.accent):DisableHitTest()
-        Text(frame, T('hotbuild.context_editor.s001'), 40, 16, 22)
-        Text(frame, T('hotbuild.context_editor.s002'), 24, 54, 15, C.muted)
+        Text(frame, 'hotbuild.page.contexts.title', 40, 16, Theme.Metrics.title)
+        Text(frame, 'hotbuild.context_editor.s002', 24, 54, Theme.Metrics.secondaryText, C.muted)
 
         memory = type(memory)=='table' and memory or {}
         local draft, dirty, loading = nil, false, false
         local saveButton
-        local expanded={units=false,builder=false,missiles=false}
         local selectedContext, leaveIntent, leaveDialog, leaveOverlay, leaveContinuation, leaveEscape, deleteIntent
         local conflictDialog, conflictOverlay, conflictEscape
         local catalogTop, savedTop = 1, 1
@@ -217,13 +214,13 @@ function Create(parent, service, embedded, memory)
         local function ShowConflictDialog(message)
             CloseConflictDialog()
             Status('', false)
-            conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(frame.Depth()+80)
+            conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(function() return frame.Depth()+80 end)
             conflictOverlay.HandleEvent=function() return true end
             local dialogWidth=680
             local lines=WrapMessage(message,76)
             local bodyHeight=math.max(22,table.getn(lines)*22)
             local dialogHeight=96+bodyHeight
-            conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); conflictDialog.Depth:Set(frame.Depth()+90)
+            conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); conflictDialog.Depth:Set(function() return frame.Depth()+90 end)
             Theme.AnimateCentered(conflictDialog,frame,L)
             Escape.PushEscapeHandler(function() CloseConflictDialog() end); conflictEscape=true
             local back=Panel(conflictDialog,0,0,dialogWidth,dialogHeight,C.surface); back.Depth:Set(conflictDialog.Depth)
@@ -241,10 +238,10 @@ function Create(parent, service, embedded, memory)
         end
         local function ShowLeaveDialog(intent,continuation)
             CloseLeaveDialog(); leaveIntent=intent; leaveContinuation=continuation
-            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(frame.Depth()+80)
+            leaveOverlay=Panel(frame,0,0,1080,920,C.transparent); leaveOverlay.Depth:Set(function() return frame.Depth()+80 end)
             leaveOverlay.HandleEvent=function() return true end
             local dialogWidth,dialogHeight=560,224
-            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(frame.Depth()+90)
+            leaveDialog=Group(frame); L(leaveDialog):AtCenterIn(frame):Width(dialogWidth):Height(dialogHeight); leaveDialog.Depth:Set(function() return frame.Depth()+90 end)
             Theme.AnimateCentered(leaveDialog,frame,L)
             Escape.PushEscapeHandler(function()
                 CloseLeaveDialog(); leaveIntent=nil
@@ -317,47 +314,12 @@ function Create(parent, service, embedded, memory)
         local savedPickerLabel = Text(savedPicker, '', 12, 0, 13)
         L(savedPickerLabel):AtCenterIn(savedPicker)
         local savedList, savedOverlay, savedEscape
-        local savedTop = 1
+        local savedTop, deleteIntent = 1, nil
         local function CloseSavedList()
+            deleteIntent=nil
             if savedEscape then Escape.PopEscapeHandler(); savedEscape=nil end
             if savedList then savedList:Destroy(); savedList=nil end
             if savedOverlay then savedOverlay:Destroy(); savedOverlay=nil end
-        end
-        local deleteDialog,deleteOverlay
-        local deleteEscape
-        CloseDeleteDialog=function()
-            if deleteDialog then deleteDialog:Destroy(); deleteDialog=nil end
-            if deleteOverlay then deleteOverlay:Destroy(); deleteOverlay=nil end
-            if deleteEscape then Escape.PopEscapeHandler(); deleteEscape=nil end
-        end
-        local function DeleteSaved(record)
-            if deleteDialog then return end
-            local keyboard=service.keyboardBindings
-            local keys=keyboard and keyboard.KeysFor and keyboard:KeysFor({kind='composite',id=record.id}) or {}
-            deleteOverlay=Panel(frame,0,0,1080,920,C.transparent); deleteOverlay.Depth:Set(frame.Depth()+80)
-            deleteOverlay.HandleEvent=function(self,e) if e.Type=='ButtonPress' then CloseDeleteDialog() end; return true end
-            Escape.PushEscapeHandler(function() CloseDeleteDialog() end); deleteEscape=true
-            deleteDialog=Group(frame); L(deleteDialog):AtCenterIn(frame):Width(560):Height(220); deleteDialog.Depth:Set(frame.Depth()+90)
-            local back=Panel(deleteDialog,0,0,560,220,C.surface); back.Depth:Set(deleteDialog.Depth)
-            Theme.Outline(back,L,560,220)
-            Text(deleteDialog,T('hotbuild.context_editor.s016'),24,18,18)
-            Text(deleteDialog,'«'..record.name..'»',24,54,15,C.accentText)
-            Text(deleteDialog,T('hotbuild.context_editor.s017'),24,82,14,C.warning)
-            Text(deleteDialog,table.getn(keys)>0 and (T('hotbuild.context_editor.s018')..table.concat(keys,', ')) or T('hotbuild.context_editor.s019'),24,108,13,C.muted)
-            Button(deleteDialog,T('hotbuild.context_editor.s020'),300,158,112,function() CloseDeleteDialog() end)
-            Button(deleteDialog,T('hotbuild.context_editor.s021'),432,158,104,function()
-                CloseDeleteDialog()
-                local function CommitDelete(accepted)
-                    if not accepted then return end
-                    local success,message=service:CommitContext(nil,record.id,true)
-                    if success then
-                        if draft and draft.id==record.id then Load(nil) end
-                        CloseSavedList(); RefreshSaved(); RefreshRows()
-                    end
-                    Status(success and T('hotbuild.context_editor.s022') or message,not success)
-                end
-                if MayLeave('delete:'..record.id,CommitDelete) then CommitDelete(true) end
-            end,true)
         end
         local function OpenSavedList()
             CloseSavedList()
@@ -371,38 +333,92 @@ function Create(parent, service, embedded, memory)
             savedList.Depth:Set(function() return frame.Depth()+90 end)
             local back=Panel(savedList,0,0,372,listHeight,C.canvas); back.Depth:Set(savedList.Depth)
             Theme.Outline(back,L,372,listHeight)
+            local savedScrollbar
             local slots={}
+            local function MaxTop() return math.max(1,table.getn(list)-visibleRows+1) end
+            local function PaintDelete(slot)
+                local armed=slot.record and deleteIntent==slot.record.id
+                slot.delete:SetSolidColor(armed and C.selected or C.danger)
+                slot.deleteOutline(armed and C.accentText or C.border)
+                slot.deleteLabel:SetColor(armed and C.accentText or C.text)
+            end
+            local function PaintSelect(slot,hovered)
+                local selected=slot.record and draft and draft.id==slot.record.id
+                if hovered then slot.button:SetSolidColor(C.hover); slot.outline(C.selectedBorder)
+                else
+                    slot.button:SetSolidColor(selected and C.selected or C.raised)
+                    slot.outline(selected and C.selectedBorder or C.border)
+                end
+            end
             local function RenderSaved()
-                savedTop=math.max(1,math.min(savedTop,math.max(1,table.getn(list)-visibleRows+1)))
+                savedTop=math.max(1,math.min(savedTop,MaxTop()))
                 for i,slot in ipairs(slots) do
                     local item=list[savedTop+i-1]; slot.record=item
                     if item then
-                        slot.button:Show(); slot.button:SetSolidColor(draft and draft.id==item.id and C.selected or C.raised)
-                        slot.label:SetText(Short(item.name,52))
-                        slot.delete:Show()
-                    else slot.button:Hide(); slot.delete:Hide() end
+                        slot.button:Show(); slot.label:SetText(Short(item.name,52))
+                        slot.delete:Show(); PaintSelect(slot,false); PaintDelete(slot)
+                    else
+                        slot.button:Hide(); slot.delete:Hide()
+                    end
                 end
             end
-            back.HandleEvent=function(self,e) if e.Type=='WheelRotation' then savedTop=math.max(1,savedTop+(e.WheelRotation>0 and -1 or 1)); RenderSaved() end; return true end
-            function back:GetScrollValues() return 1,math.max(visibleRows,table.getn(list)),savedTop,math.max(savedTop,math.min(table.getn(list),savedTop+visibleRows-1)) end
-            function back:IsScrollable() return table.getn(list)>visibleRows end
-            function back:ScrollSetTop(axis,value) savedTop=math.max(1,math.floor(value)); RenderSaved() end
-            function back:ScrollLines(axis,delta) self:ScrollSetTop(axis,savedTop+delta) end
-            function back:ScrollPages(axis,delta) self:ScrollLines(axis,delta*2) end
-            if table.getn(list)>visibleRows then UI.CreateVertScrollbarFor(back) end
+            local function MoveTop(delta)
+                savedTop=math.max(1,math.min(MaxTop(),savedTop+delta))
+                RenderSaved()
+            end
+            back.HandleEvent=function(self,e) if e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1) end; return true end
+            function savedList:GetScrollValues() return 1,math.max(visibleRows,table.getn(list)),savedTop,math.max(savedTop,math.min(table.getn(list),savedTop+visibleRows-1)) end
+            function savedList:IsScrollable() return table.getn(list)>visibleRows end
+            function savedList:ScrollSetTop(axis,value) savedTop=math.max(1,math.min(MaxTop(),math.floor(value))); RenderSaved() end
+            function savedList:ScrollLines(axis,delta) self:ScrollSetTop(axis,savedTop+delta) end
+            function savedList:ScrollPages(axis,delta) self:ScrollSetTop(axis,savedTop+delta*visibleRows) end
+            local function SyncScrollbar()
+                if table.getn(list)>visibleRows then
+                    if not savedScrollbar then
+                        savedScrollbar=UI.CreateVertScrollbarFor(savedList,-20)
+                        if savedScrollbar.Depth then savedScrollbar.Depth:Set(function() return savedList.Depth()+4 end) end
+                    end
+                    if savedScrollbar.Show then savedScrollbar:Show() end
+                elseif savedScrollbar and savedScrollbar.Hide then
+                    savedScrollbar:Hide()
+                end
+            end
             for i=1,visibleRows do
                 local slot={}; local n=i
-                slot.button=Panel(savedList,8,6+(i-1)*38,316,34,C.raised)
-                local outline=Theme.Outline(slot.button,L,316,34)
-                slot.label=Text(slot.button,'',10,0,13); L(slot.label):AtCenterIn(slot.button)
-                slot.delete=Panel(savedList,330,6+(i-1)*38,34,34,C.danger)
-                local deleteOutline=Theme.Outline(slot.delete,L,34,34)
-                local deleteLabel=Text(slot.delete,'×',0,0,19); L(deleteLabel):AtCenterIn(slot.delete)
+                slot.button=Panel(savedList,8,6+(i-1)*38,300,34,C.raised)
+                slot.outline=Theme.Outline(slot.button,L,300,34)
+                slot.label=Text(slot.button,'',10,0,Theme.Metrics.secondaryText); L(slot.label):AtCenterIn(slot.button)
+                slot.delete=Panel(savedList,314,6+(i-1)*38,34,34,C.danger)
+                slot.deleteOutline=Theme.Outline(slot.delete,L,34,34)
+                slot.deleteLabel=Text(slot.delete,'×',0,0,19); L(slot.deleteLabel):AtCenterIn(slot.delete)
                 slot.delete:Hide()
                 slot.delete.HandleEvent=function(self,e)
-                    if e.Type=='MouseEnter' then self:SetSolidColor(C.danger); deleteOutline(C.selectedBorder)
-                    elseif e.Type=='MouseExit' then self:SetSolidColor(C.raised); deleteOutline(C.border)
-                    elseif e.Type=='ButtonPress' and slot.record then DeleteSaved(slot.record); return true end
+                    local record=slot.record
+                    if not record then return true end
+                    if e.Type=='MouseEnter' then
+                        self:SetSolidColor(deleteIntent==record.id and C.selected or C.hover)
+                        slot.deleteOutline(C.selectedBorder)
+                    elseif e.Type=='MouseExit' then
+                        PaintDelete(slot)
+                    elseif e.Type=='ButtonPress' or e.Type=='DoubleClick' then
+                        if dirty then Status(T('hotbuild.editor.status.save_or_confirm'),true); return true end
+                        local recordId=record.id
+                        if deleteIntent~=recordId then
+                            deleteIntent=recordId
+                            RenderSaved()
+                            Status(T('hotbuild.context_editor.s023')..record.name..'»',true)
+                            return true
+                        end
+                        local success,message=service:CommitContext(nil,recordId,true)
+                        deleteIntent=nil
+                        if success then
+                            if draft and draft.id==recordId then Load(nil) end
+                            RefreshSaved(); RefreshRows()
+                        else
+                            RenderSaved()
+                        end
+                        Status(success and T('hotbuild.context_editor.s022') or message,not success)
+                    end
                     return true
                 end
                 Tooltip.AddAutoUpdatedControlTooltip(slot.delete,function() return slot.record and (T('hotbuild.context_editor.s023')..slot.record.name..'»') or T('hotbuild.context_editor.s024') end,function()
@@ -411,12 +427,9 @@ function Create(parent, service, embedded, memory)
                     return table.getn(keys)>0 and (T('hotbuild.context_editor.s025')..table.concat(keys,', ')) or T('hotbuild.context_editor.s026')
                 end)
                 slot.button.HandleEvent=function(self,e)
-                    if e.Type=='MouseEnter' then self:SetSolidColor(C.hover); outline(C.selectedBorder)
-                    elseif e.Type=='MouseExit' then
-                        local selected=slot.record and draft and draft.id==slot.record.id
-                        self:SetSolidColor(selected and C.selected or C.raised)
-                        outline(selected and C.selectedBorder or C.border)
-                    elseif e.Type=='WheelRotation' then savedTop=math.max(1,savedTop+(e.WheelRotation>0 and -1 or 1)); RenderSaved()
+                    if e.Type=='MouseEnter' then PaintSelect(slot,true)
+                    elseif e.Type=='MouseExit' then PaintSelect(slot,false)
+                    elseif e.Type=='WheelRotation' then MoveTop(e.WheelRotation>0 and -1 or 1)
                     elseif e.Type=='ButtonPress' and slot.record then
                         local record=slot.record
                         local function SelectSaved(accepted)
@@ -432,6 +445,7 @@ function Create(parent, service, embedded, memory)
             end
             Escape.PushEscapeHandler(function() CloseSavedList() end); savedEscape=true
             RenderSaved()
+            SyncScrollbar()
         end
         savedPicker.HandleEvent=function(self,e)
             if e.Type=='KeyDown' and e.RawKeyCode==27 and savedList then CloseSavedList(); return true end
@@ -489,7 +503,7 @@ function Create(parent, service, embedded, memory)
         Text(frame,T('hotbuild.context_editor.s038'),24,220,18)
         Text(frame,T('hotbuild.context_editor.s039'),24,246,12,C.muted)
         local usageText=Text(frame,T('hotbuild.context_editor.s040'),24,266,12,C.muted)
-        local contextPanel=Panel(frame,24,282,480,580,C.canvas)
+        local contextPanel=Panel(frame,24,282,480,614,C.canvas)
         local contextButtons={}
         local function ApplyContextTileStyle(item)
             local color
@@ -531,7 +545,7 @@ function Create(parent, service, embedded, memory)
             return id
         end
         local function Obsolete(context, id)
-            return id and ((id=='suicide') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical' or id=='upgrade_structure' or (id=='sacu_tech' and context=='sacu')
+            return id and ((id=='load_transports') or (id=='suicide') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical' or id=='upgrade_structure' or (id=='sacu_tech' and context=='sacu')
                 or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next') and context~='cursor')
                 or (id=='soft_stop' and context~='factory')
                 or (id=='attack' and context=='transport')
@@ -562,17 +576,30 @@ function Create(parent, service, embedded, memory)
         local childParents={land='units',air='units',navy='units',acu='builder',sacu='builder',engineer='builder',silo_tactical='missiles',silo_nuclear='missiles'}
         local function TileLock(id)
             for _,row in ipairs(draft and draft.rows or {}) do
-                if row.context~=id and row.action and row.mode~='inherit' and row.mode~='disabled' then
-                    local action=service.contextActions.Get(row.action)
+                local action=row.action and service.contextActions.Get(row.action)
+                if id=='engineer' and row.context=='empty' and action
+                    and action.continuation=='accumulate' and action.special
+                    and string.find(action.special,'^next_engineer_') then
+                    return T('hotbuild.context_editor.s041')..ActionLabel(action)
+                end
+                if row.context~='cursor' and row.context~=id and row.action and row.mode~='inherit' and row.mode~='disabled' then
                     for _,target in ipairs(ContinuationTargets(action)) do
                         if target==id then return T('hotbuild.context_editor.s041')..ActionLabel(action) end
                     end
                 end
             end
         end
+        local function HasReservedAssignment(target)
+            if childParents[target] then
+                local row=CurrentRow(target)
+                return row and row.action and row.mode~='inherit' and row.mode~='disabled'
+            end
+            return service.contextModel:ResolveRow(draft,target)~=nil
+        end
         local function ActionLock(action)
+            if selectedContext=='cursor' then return nil end
             for _,target in ipairs(ContinuationTargets(action)) do
-                if target~=selectedContext and service.contextModel:ResolveRow(draft,target) then
+                if target~=selectedContext and HasReservedAssignment(target) then
                     return T('hotbuild.context_editor.s042')..ContextLabel(target)..T('hotbuild.context_editor.s043')
                 end
             end
@@ -593,7 +620,6 @@ function Create(parent, service, embedded, memory)
             local treeY=4
             for i,item in ipairs(contextButtons) do
                 local showContext=not (draft and draft.absolute and item.context~='empty')
-                if item.child then showContext=showContext and expanded[childParents[item.context]] end
                 if showContext then
                     if item.displayY~=treeY then
                         L(item.button):AtLeftTopIn(contextPanel,item.treeX,treeY)
@@ -610,7 +636,7 @@ function Create(parent, service, embedded, memory)
                     local parent=CurrentRow(childParents[item.context])
                     effective=mode=='own' and row.action or (mode=='inherit' and parent and parent.action or nil)
                     item.mode:SetText(mode=='inherit' and T('hotbuild.context_editor.s047') or (mode=='disabled' and T('hotbuild.context_editor.s048') or T('hotbuild.context_editor.s049')))
-                    item.mode:SetColor(mode=='inherit' and C.disabled or C.accentText)
+                    item.mode:SetColor(mode=='inherit' and C.disabledText or C.accentText)
                 else effective=row and row.action end
                 if isChild then
                     effective=draft and service.contextModel:ResolveAction(draft,item.context) or nil
@@ -628,7 +654,7 @@ function Create(parent, service, embedded, memory)
                 if not isChild then item.action:SetColor(C.muted) end
                 if isChild and (not row or row.mode=='inherit') and action then
                     item.action:SetText(T('hotbuild.context_editor.s050'))
-                    item.action:SetColor(C.disabled)
+                    item.action:SetColor(C.disabledText)
                 elseif isChild then item.action:SetColor(C.muted) end
                 if item.isBuilder then
                     local overrides=0
@@ -707,13 +733,15 @@ function Create(parent, service, embedded, memory)
         end)
         disableChildButton:Hide(); resetChildButton:Hide(); clearContextButton:Hide()
         local function CreateContextTile(index, contextId, child, x, y, w, h)
-            local button=Panel(contextPanel,nil,nil,w,h,C.surface)
+            -- Always give a position: a size-only Maui control has a circular
+            -- Left/Top chain until one anchor exists.
+            local button=Panel(contextPanel,x,y,w,h,C.surface)
             local border=Theme.Outline(button,L,w,h)
             local mark=Text(button,'○',8,5,14,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),28,0,14)
             local mode=child and Text(button,'',188,0,11,C.muted) or nil
             local action=Text(button,'',child and 276 or 188,0,12,C.muted)
-            local item={context=contextId,child=child,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y}
+            local item={context=contextId,child=child,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y,displayY=y}
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
                 elseif e.Type=='MouseExit' then SetContextTileHover(item,false)
@@ -738,12 +766,12 @@ function Create(parent, service, embedded, memory)
             contextButtons[index]=item
         end
         local function CreatePriorityTile(contextId, rank, x, y, w)
-            local button=Panel(contextPanel,nil,nil,w,30,C.surface)
+            local button=Panel(contextPanel,x,y,w,30,C.surface)
             local border=Theme.Outline(button,L,w,30)
             local mark=Text(button,tostring(rank or '—'),8,2,13,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),30,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
-            local item={context=contextId,button=button,mark=mark,name=title,action=action,outline=border,priority=true,treeX=x,treeY=y}
+            local item={context=contextId,button=button,mark=mark,name=title,action=action,outline=border,priority=true,treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -761,11 +789,11 @@ function Create(parent, service, embedded, memory)
             end)
         end
         local function CreateOtherTile(contextId,x,y,w)
-            local button=Panel(contextPanel,nil,nil,w,30,C.surface)
+            local button=Panel(contextPanel,x,y,w,30,C.surface)
             local border=Theme.Outline(button,L,w,30)
             local title=Text(button,Short(ContextLabel(contextId),20),8,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
-            local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,rank=priorityRank[contextId],treeX=x,treeY=y}
+            local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,rank=priorityRank[contextId],treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -785,24 +813,20 @@ function Create(parent, service, embedded, memory)
         CreatePriorityTile('cursor',nil,8,8,456)
         CreatePriorityTile('empty',nil,8,42,456)
         local function CreateGroup(id,children,x,y,width,childHeight,step)
-            local header=Panel(contextPanel,nil,nil,width,30,C.raised)
-            local mark=Text(header,'▸',8,0,14,C.accentText)
-            local label=Text(header,ContextLabel(id),30,0,15)
+            local header=Panel(contextPanel,x,y,width,30,C.raised)
+            local label=Text(header,ContextLabel(id),8,0,15)
             local action=Text(header,'',math.floor(width*0.5),0,11,C.muted)
-            local item={context=id,button=header,mark=mark,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y}
+            local item={context=id,button=header,mark=label,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             for i,childId in ipairs(children) do
                 local index=table.getn(contextButtons)+1
                 CreateContextTile(index,childId,true,x+22,y+30+(i-1)*step,width-22,childHeight)
-                contextButtons[index].button:Hide()
             end
             header.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
                 elseif e.Type=='MouseExit' then SetContextTileHover(item,false)
                 elseif e.Type=='ButtonPress' then
                     if draft and draft.absolute then return true end
-                    expanded[id]=not expanded[id]
-                    mark:SetText(expanded[id] and '▾' or '▸')
                     SelectContext(id); return true
                 end
                 return false
@@ -839,12 +863,12 @@ function Create(parent, service, embedded, memory)
             if context=='__obsolete' then
                 local result={}
                 for _,row in ipairs(draft and draft.rows or {}) do
-                    for _,field in ipairs({'action','quickRepeat','fallback'}) do
+                    for _,field in ipairs({'action','fallback'}) do
                         local id=row[field]
                         if Obsolete(row.context,id) then
                             local action=service.contextActions.Get(id)
                             local fieldLabel=field=='action' and T('hotbuild.context_editor.s076')
-                                or (field=='quickRepeat' and T('hotbuild.context_editor.s077') or 'fallback')
+                                or 'fallback'
                             table.insert(result,{id=id,label=T('hotbuild.context_editor.s078')..fieldLabel..' · '..ContextLabel(row.context)..' · '..(action and ActionLabel(action) or id),obsoleteContext=row.context,obsoleteField=field})
                         end
                     end
@@ -854,7 +878,7 @@ function Create(parent, service, embedded, memory)
             local groups={{items={}},{items={}},{items={}},{items={}},{items={}},{items={}},{items={}}}
             for _,action in ipairs(actions) do
                 local cursorOnly=action.id=='upgrade_structure_under_cursor' or action.id=='upgrade_structure_pause' or action.id=='upgrade_mex_select_next'
-                if (not action.hidden or action.compositeOnly) and service.contextActions.Supports(action.id,context)
+                if action.id~='load_transports' and (not action.hidden or action.compositeOnly) and service.contextActions.Supports(action.id,context)
                     and (context=='cursor' or not cursorOnly) and not Obsolete(context,action.id) then
                     local group=CatalogGroup(action,context)
                     table.insert(groups[group].items,action)
@@ -925,8 +949,7 @@ function Create(parent, service, embedded, memory)
             local available=selectedContext and not locked and RowsFor(selectedContext) or {}
             if selectedContext then
                 local current=CurrentRow(selectedContext)
-                local staleField=editTarget=='quickRepeat' and current and Obsolete(selectedContext,current.quickRepeat)
-                    or (editTarget=='fallback' and current and Obsolete(selectedContext,current.fallback))
+                local staleField=editTarget=='fallback' and current and Obsolete(selectedContext,current.fallback)
                 catalogHint:SetText((locked and (locked..T('hotbuild.context_editor.s086')))
                     or (staleField and (T('hotbuild.context_editor.s087')..tostring(editTarget)..T('hotbuild.context_editor.s088')))
                     or (current and Obsolete(selectedContext,current.action) and (T('hotbuild.context_editor.s089')..current.action..T('hotbuild.context_editor.s090')))
@@ -935,11 +958,6 @@ function Create(parent, service, embedded, memory)
             else
                 catalogHint:SetText(T('hotbuild.context_editor.s095'))
                 selectedContextTitle:SetText('')
-            end
-            if selectedContext and editTarget=='quickRepeat' then
-                local row=CurrentRow(selectedContext)
-                catalogHint:SetText(row and T('hotbuild.context_editor.s096') or T('hotbuild.context_editor.s097'))
-                if not row or row.mode=='inherit' or row.mode=='disabled' then available={} end
             end
             if selectedContext and editTarget=='fallback' then
                 local row=CurrentRow(selectedContext)
@@ -995,13 +1013,6 @@ function Create(parent, service, embedded, memory)
         end
         AddAction=function(action)
             if not draft then Status(T('hotbuild.context_editor.s103'),true); return end
-            if editTarget=='quickRepeat' then
-                local row=CurrentRow(selectedContext)
-                if not row or row.mode=='inherit' or row.mode=='disabled' then Status(T('hotbuild.context_editor.s104'),true); return end
-                if not service.contextActions.Supports(action.id,selectedContext) then Status(T('hotbuild.context_editor.s105'),true); return end
-                row.quickRepeat=action.id; editTarget='action'; Change(); RefreshRows(); RefreshCatalog()
-                Status(T('hotbuild.context_editor.s106')..ActionLabel(action)); return
-            end
             if editTarget=='fallback' then
                 local row=CurrentRow(selectedContext)
                 if not row or row.mode=='inherit' or row.mode=='disabled' or not row.action
@@ -1016,21 +1027,10 @@ function Create(parent, service, embedded, memory)
             end
             if TileLock(selectedContext) then Status(TileLock(selectedContext),true); return end
             if draft.absolute and selectedContext~='empty' then Status(T('hotbuild.context_editor.s110'),true); return end
-            for child,parent in pairs(childParents) do
-                local childRow=CurrentRow(child)
-                if parent==selectedContext and TileLock(child) and (not childRow or childRow.mode=='inherit') then
-                    Status(TileLock(child)..T('hotbuild.context_editor.s111')..ContextLabel(child)..'».',true)
-                    return
-                end
-            end
             local old=CurrentRow(selectedContext)
             if old and old.action==action.id and (not childParents[selectedContext] or old.mode==nil or old.mode=='own') then return end
-            for _,target in ipairs(ContinuationTargets(action)) do
-                if target~=selectedContext and service.contextModel:ResolveRow(draft,target) then
-                    Status(T('hotbuild.context_editor.s112')..ActionLabel(action)..T('hotbuild.context_editor.s113')..ContextLabel(target)..T('hotbuild.context_editor.s114'),true)
-                    return
-                end
-            end
+            local actionLock=ActionLock(action)
+            if actionLock then Status(actionLock,true); return end
             local policy=selectedContext=='empty' and action.selectionPolicy or EmptySelectionPolicy()
             if selectedContext~='empty' and ConflictsWithEmpty(selectedContext,policy) then
                 Status(T('hotbuild.context_editor.s115')..ActionLabel(action)..T('hotbuild.context_editor.s116')..ContextLabel(selectedContext)..T('hotbuild.context_editor.s117'),true)
@@ -1058,9 +1058,9 @@ function Create(parent, service, embedded, memory)
                 Status(T('hotbuild.context_editor.s125')..ActionLabel(action))
             if selectedContext=='missiles' and action.id=='smart_missile' then
                 CloseConflictDialog()
-                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(frame.Depth()+80)
+                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(function() return frame.Depth()+80 end)
                 conflictOverlay.HandleEvent=function() return true end
-                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(270); conflictDialog.Depth:Set(frame.Depth()+90)
+                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(270); conflictDialog.Depth:Set(function() return frame.Depth()+90 end)
                 Theme.AnimateCentered(conflictDialog,frame,L)
                 Escape.PushEscapeHandler(function() CloseConflictDialog() end); conflictEscape=true
                 local back=Panel(conflictDialog,0,0,560,270,C.surface); back.Depth:Set(conflictDialog.Depth)
@@ -1104,9 +1104,9 @@ function Create(parent, service, embedded, memory)
             local sacu=CurrentRow('sacu')
             if selectedContext=='acu' and action.id=='overcharge' and (not sacu or sacu.mode=='inherit') then
                 CloseConflictDialog()
-                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(frame.Depth()+80)
+                conflictOverlay=Panel(frame,0,0,1080,920,C.transparent); conflictOverlay.Depth:Set(function() return frame.Depth()+80 end)
                 conflictOverlay.HandleEvent=function() return true end
-                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(176); conflictDialog.Depth:Set(frame.Depth()+90)
+                conflictDialog=Group(frame); L(conflictDialog):AtCenterIn(frame):Width(560):Height(176); conflictDialog.Depth:Set(function() return frame.Depth()+90 end)
                 Theme.AnimateCentered(conflictDialog,frame,L)
                 Escape.PushEscapeHandler(function() CloseConflictDialog() end); conflictEscape=true
                 local back=Panel(conflictDialog,0,0,560,176,C.surface); back.Depth:Set(conflictDialog.Depth)
@@ -1155,8 +1155,10 @@ function Create(parent, service, embedded, memory)
             first={id='context_'..i,name=T('hotbuild.context_editor.s140'),rows={}}
         end
         Load(first); RefreshRows(); RefreshSaved(); RefreshCatalog()
-        local warnings=service.contextModel:GetLoadWarnings()
-        if table.getn(warnings)>0 then Status(warnings[1]..T('hotbuild.context_editor.s139'),true) end
+        local problems=service.contextModel:GetQuarantine()
+        if table.getn(problems)>0 then
+            Status(T('hotbuild.problems.summary',table.getn(problems),problems[1].reason),true)
+        end
     end)
     if not ok then frame:Destroy(); error(err) end
     return frame

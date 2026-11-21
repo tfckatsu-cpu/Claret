@@ -1,5 +1,5 @@
-Version = '0.10.13'
-local BuildStamp = '20261117-45'
+Version = '0.10.41'
+local BuildStamp = '20261121-73'
 LOG('[Claret][build] core='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
@@ -42,6 +42,22 @@ function Main(isReplay)
     end
     options.language.OnChanged:Add(languageChanged)
     local strategicRings = import('/mods/ClaretCore/modules/StrategicRings.lua').Create()
+    local minimap = import('/mods/ClaretCore/modules/Minimap.lua').Create(options.minimapAutoHide, options.minimapBorderless)
+    ReUI.Core.Hook('/lua/ui/game/minimap.lua', 'ToggleMinimap', function(original)
+        return function()
+            if import('/lua/ui/game/gamemain.lua').gameUIHidden then return original() end
+            local result = original()
+            minimap:ManualToggle()
+            return result
+        end
+    end)
+    ReUI.Core.Hook('/lua/ui/game/minimap.lua', 'SetLayout', function(original)
+        return function(layout)
+            local result = original(layout)
+            minimap:LayoutChanged()
+            return result
+        end
+    end)
     ReUI.Core.Hook('/lua/ui/game/painting/PaintingBrush.lua', 'PaintingBrush', function(previousBrush)
         return Class(previousBrush) {
             DeletePaintingAtBrush = function(self, coordinates, radius)
@@ -59,9 +75,8 @@ function Main(isReplay)
     local menuKey = import('/mods/ClaretCore/modules/MenuKey.lua').Create(function()
         if uiReady then menu:Toggle() end
     end)
-    menu = import('/mods/ClaretCore/modules/Menu.lua').Create(menuKey)
+    menu = import('/mods/ClaretCore/modules/Menu.lua').Create(menuKey, options.menuScale)
     local coreToggles = {
-        {labelKey = 'core.setting.selection', option = options.selectionEnabled, centerLabel = true},
         {labelKey = 'core.setting.welcome', option = options.welcomeDismissed, centerLabel = true},
     }
     if rawget(_G, 'REUI_DEV_MODE') then
@@ -84,6 +99,15 @@ function Main(isReplay)
                 if language ~= 'en' and language ~= 'ru' then language = Localization.GetLanguage() end
                 return Localization.Text(language == 'ru' and 'core.language.russian' or 'core.language.english')
             end,
+        }, {
+            labelKey = 'core.menu.scale', option = options.menuScale,
+            values = {
+                {id = 100, shortLabel = '100%'},
+                {id = 125, shortLabel = '125%'},
+                {id = 150, shortLabel = '150%'},
+            },
+            segmented = true,
+            savedKey = 'core.menu.scale_saved',
         }},
     }
     ReUI.Core.OnPreCreateUI(function()
@@ -94,12 +118,27 @@ function Main(isReplay)
         }
     end)
     local Registry = import('/mods/ClaretCore/modules/Registry.lua')
-    local SelectionSummary = import('/mods/ClaretCore/modules/SelectionSummary.lua')
     local selectionChanged = ReUI.Core.Events.Event('ClaretSelection')
     local registry
     local pending = {}
-    local registered = { probe = true, selectionSummary = true }
+    local registered = { probe = true }
     local disposed = false
+    local currentSelection
+    local selectionHudActive = false
+
+    local function GetSelection()
+        return currentSelection or GetSelectedUnits() or {}
+    end
+
+    local function UseSelectionHud(scope, refresh)
+        assert(registry and not disposed and not selectionHudActive, 'Selection HUD is unavailable')
+        scope:Defer(function()
+            selectionHudActive = false
+        end)
+        selectionHudActive = true
+        scope:Bind(selectionChanged, function(_, selection) refresh(selection) end)
+        refresh(GetSelection())
+    end
 
     local function RegisterFeature(id, start, option)
         if disposed then return false, 'Claret session is disposed' end
@@ -117,20 +156,6 @@ function Main(isReplay)
         return true
     end
 
-    ReUI.Core.Hook('/lua/ui/game/gamemain.lua', 'OnSelectionChanged', function(original, module)
-        local isIgnored = rawget(module, 'IsIgnoredSelection')
-        return function(oldSelection, newSelection, added, removed)
-            local ignored = isIgnored and isIgnored()
-            local result = original(oldSelection, newSelection, added, removed)
-            -- GetSelectedUnits can still describe the previous selection here.
-            if not ignored then
-                transportCargo:Reset()
-                if registry then selectionChanged:Invoke(nil, newSelection or {}) end
-            end
-            return result
-        end
-    end)
-
     ReUI.Core.OnPostCreateUI(function()
         local Group = import('/lua/maui/group.lua').Group
         local parent = GetFrame(0)
@@ -144,13 +169,25 @@ function Main(isReplay)
             LOG(logPrefix .. message)
         end)
 
+        -- FAF publishes this event only for visible selections. The accessor may
+        -- still report the previous selection while the observer is running.
+        local observeSelection = import('/lua/ui/game/gamemain.lua').ObserveSelection
+        observeSelection:AddObserver(function(info)
+            currentSelection = info.newSelection or {}
+            transportCargo:Reset()
+            selectionChanged:Invoke(nil, currentSelection)
+        end, 'ClaretCore')
         local onDestroy = owner.OnDestroy
+        local stopMinimap = minimap:Start(owner)
         owner.OnDestroy = function(self)
             disposed = true
             uiReady = false
+            observeSelection:AddObserver(nil, 'ClaretCore')
+            currentSelection = nil
             menuKey:Destroy()
             menu:Destroy()
             transportCargo:Destroy()
+            stopMinimap()
             if strategicRings then strategicRings:Destroy(); strategicRings = nil end
             if registry then
                 registry:Destroy()
@@ -162,10 +199,6 @@ function Main(isReplay)
             onDestroy(self)
         end
 
-        registry:Register('selectionSummary', function(scope)
-            SelectionSummary.Start(owner, scope, selectionChanged)
-        end)
-        registry:BindOption('selectionSummary', options.selectionEnabled)
         for _, feature in ipairs(pending) do
             registry:Register(feature.id, feature.start)
             registry:BindOption(feature.id, feature.option)
@@ -189,6 +222,7 @@ function Main(isReplay)
             return registry:GetState(id)
         end,
         RegisterFeature = RegisterFeature,
+        UseSelectionHud = UseSelectionHud,
         RegisterSettingsSection = function(definition) return menu:Register(definition) end,
         Localization = Localization,
         IsMenuOpen = function() return menu:IsOpen() end,

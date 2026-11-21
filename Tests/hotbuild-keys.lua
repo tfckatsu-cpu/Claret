@@ -38,7 +38,7 @@ local idX='ClaretHotbuild_78'
 local idY='ClaretHotbuild_795F776974685F756E64657273636F7265'
 assert(registered[idX] and registered[idY],'each saved binding registers a FAF user action')
 assert(registered[idX].category=='Claret Hotbuild')
-assert(registered[idX].action=='UI_Lua import("/mods/ClaretHotbuild/modules/Runtime.lua").Execute("x")')
+assert(registered[idX].action=='UI_Lua import("/mods/ClaretHotbuild/modules/Runtime.lua").Execute("x", IsKeyDown(16))')
 assert(descriptions[idX]=='Example' and descriptions[idY]=='Second')
 profile.UserKeyMap['W']=idX
 module.IsKeyDown=function(key) if key=='W' then error('Invalid enum value W') end return false end

@@ -35,7 +35,10 @@ assert(saved:Get('b1').grid.buildings[1].UEF==id)
 local selected,active,mode={},nil,nil
 local function unit(buildable,factory)
     return {buildable=buildable,IsDead=function() return false end,
-        IsInCategory=function(self,category) return factory and category=='FACTORY' end}
+        IsInCategory=function(self,category)
+            if factory then return category=='FACTORY' end
+            return category=='ENGINEER'
+        end}
 end
 local env={
     GetSelectedUnits=function() return selected end,GetFocusArmy=function() return 1 end,

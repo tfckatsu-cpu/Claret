@@ -144,7 +144,7 @@ local binding = service.model:Get('b1'); binding.key = 'Ctrl-Alt-E'
 assert(service:Commit(binding))
 assert(saveCount == 1 and saved.bindings[1].key == 'Ctrl-Alt-E')
 assert(userKeyActions[actionId('b1')].category == 'Claret Hotbuild')
-assert(userKeyActions[actionId('b1')].action:find('Execute("b1")',1,true))
+assert(userKeyActions[actionId('b1')].action:find('Execute("b1", IsKeyDown(16))',1,true))
 assert(next(userKeyMap)==nil and next(userDebugKeyMap)==nil,'actions are registered without assigning profile keys')
 selected = {{ IsDead = function() return false end, IsInCategory = function(self, kind) return kind == 'FACTORY' end }}
 assert(Runtime.Execute('b1'))
@@ -240,7 +240,7 @@ end, RegisterSettingsSection = function(definition) settingsById[definition.id]=
 local standaloneOptions = environment.import('/mods/ClaretHotbuild/Options.lua')
 standaloneOptions.Main()
 local standalone = environment.import('/mods/ClaretHotbuild/Main.lua').Main(false)
-assert(registration.id == 'hotbuild' and registration.enabled.value == true, 'Hotbuild is always enabled')
+assert(registration.id == 'hotbuild' and registration.enabled.Get() == true, 'Hotbuild is always enabled')
 assert(#posts == 1 and hooks.CloseUI and next(menus)==nil)
 assert(settingsById.hotbuild.id=='hotbuild' and settingsById.hotbuild.toggles==nil)
 assert(settingsById.hotbuild_context==nil, 'composite constructors are a Hotbuild subpage')

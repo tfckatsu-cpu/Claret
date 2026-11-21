@@ -66,11 +66,11 @@ function Create(parent, keyBinding, dismissedOption, languageOption)
     local Escape = import('/lua/ui/dialogs/eschandler.lua')
     local C = Theme.Colors
     local metrics = Theme.Metrics
-    local showFontBlock = ShouldShowFontBlock()
-    local width = 960
-    local height = showFontBlock and 836 or 604
+    local width, height = 928, 584
+    local padding, gap = metrics.padding, metrics.panelGap
+    local contentWidth = width - padding * 2
     local pixel = LayoutHelpers.GetPixelScaleFactor()
-    local scale = math.min(pixel, (parent.Width() - 32) / width, (parent.Height() - 32) / height)
+    local scale = math.min(pixel, (parent.Width() - 48) / width, (parent.Height() - 48) / height)
     local ratio = scale / pixel
     local L = ReUI.UI.FloorLayouter(scale)
     local root = Group(parent)
@@ -122,15 +122,15 @@ function Create(parent, keyBinding, dismissedOption, languageOption)
     end
 
     local panel = Bitmap(root)
-    panel:SetSolidColor(C.canvas)
     L(panel):AtCenterIn(root):Width(width):Height(height)
     panel.Depth:Set(root.Depth() + 2)
-    Theme.Outline(panel, L, width, height, C.border)
+    Theme.RoundedPanel(panel, L, width, height, C.canvas, C.border, true)
     panel.HandleEvent = function() return true end
 
     local function Label(owner, value, font, size, color)
         local label = UI.CreateText(owner, value, size * ratio, font)
         label:SetColor(color)
+        label.Depth:Set(function() return owner.Depth() + 3 end)
         label:DisableHitTest()
         return label
     end
@@ -141,142 +141,183 @@ function Create(parent, keyBinding, dismissedOption, languageOption)
         return label
     end
 
-    local function Paragraph(value, x, y, paragraphHeight, color, size)
-        local paragraph = MultiLineText(panel, Theme.Fonts.body, (size or metrics.text) * ratio, color or C.text)
-        L(paragraph):AtLeftTopIn(panel, x, y):Width(width - 64):Height(paragraphHeight)
+    local function Paragraph(owner, x, y, w, h, color, size)
+        local paragraph = MultiLineText(owner, Theme.Fonts.body, size * ratio, color)
+        L(paragraph):AtLeftTopIn(owner, x, y):Width(w):Height(h)
         paragraph:DisableHitTest()
-        -- An empty value makes MultiLineText remove its initial text line.
-        if value ~= '' then paragraph:SetText(value) end
         return paragraph
     end
 
-    local logo = Bitmap(panel)
+    local function Surface(owner, x, y, w, h, color)
+        local surface = Bitmap(owner)
+        surface:SetSolidColor(color)
+        surface:DisableHitTest()
+        surface.Depth:Set(function() return owner.Depth() + 1 end)
+        L(surface):AtLeftTopIn(owner, x, y):Width(w):Height(h)
+        return surface
+    end
+
+    local function Card(x, y, w, h)
+        local card = Group(panel)
+        L(card):AtLeftTopIn(panel, x, y):Width(w):Height(h)
+        card.Depth:Set(function() return panel.Depth() + 3 end)
+        Surface(card, 0, 0, w, h, C.surface)
+        Theme.Outline(card, L, w, h, C.border)
+        local content = Group(card)
+        L(content):Fill(card)
+        content.Depth:Set(function() return card.Depth() + 2 end)
+        return content
+    end
+
+    local function Button(owner, x, y, w, h, key, onPress, primary, onRightPress)
+        local control = Group(owner)
+        control:EnableHitTest()
+        control.Depth:Set(function() return owner.Depth() + 2 end)
+        L(control):AtLeftTopIn(owner, x, y):Width(w):Height(h)
+        local fill = Surface(control, 1, 1, w - 2, h - 2, C.surface)
+        local border = Theme.Outline(control, L, w, h, C.border)
+        local label = BindLabel(control, key, primary and Theme.Fonts.heading or Theme.Fonts.body,
+            metrics.buttonText, C.text)
+        L(label):AtCenterIn(control)
+        local selected, hovered, pressed = false, false, false
+        local function Paint()
+            local normal = primary and C.accent or selected and C.selected or C.raised
+            local hover = primary and C.accentHover or C.hover
+            local down = primary and C.accentPressed or C.pressed
+            fill:SetSolidColor(pressed and down or hovered and hover or normal)
+            border(selected and C.selectedBorder or hovered and C.muted or C.border)
+            label:SetColor(selected and C.accentText or C.text)
+        end
+        control.HandleEvent = function(_, event)
+            if event.Type == 'MouseEnter' then
+                hovered = true
+            elseif event.Type == 'MouseExit' then
+                hovered, pressed = false, false
+            elseif event.Type == 'ButtonRelease' then
+                pressed = false
+            elseif event.Type == 'ButtonPress' then
+                if event.Modifiers and event.Modifiers.Right then
+                    if not onRightPress then return false end
+                    onRightPress()
+                    return true
+                end
+                pressed = true
+                Paint()
+                onPress()
+                return true
+            else
+                return false
+            end
+            Paint()
+            return true
+        end
+        Paint()
+        return function(active)
+            selected = active
+            Paint()
+        end
+    end
+
+    local logo = Surface(panel, padding, 20, 192, 103, C.transparent)
     logo:SetTexture(Theme.Logos.wordmark)
-    logo:DisableHitTest()
-    L(logo):AtLeftTopIn(panel, (width - 280) / 2, 16):Width(280):Height(150)
+    logo.Depth:Set(function() return panel.Depth() + 3 end)
+    local title = BindLabel(panel, 'core.welcome.title', Theme.Fonts.heading, metrics.title + 6, C.text)
+    L(title):AtLeftTopIn(panel, padding, 124)
+    local intro = BindLabel(panel, 'core.welcome.intro', Theme.Fonts.body, metrics.text, C.muted)
+    L(intro):AtLeftTopIn(panel, padding, 164)
 
-    local titleBox = Group(panel)
-    L(titleBox):AtLeftTopIn(panel, 32, 176):Width(width - 64):Height(36)
-    titleBox:DisableHitTest()
-    local title = BindLabel(titleBox, 'core.welcome.title', Theme.Fonts.heading, 24, C.text)
-    L(title):AtCenterIn(titleBox)
+    local communityWidth = 304
+    local community = Card(width - padding - communityWidth, padding, communityWidth, 168)
+    local clanBanner = Surface(community, 16, 17, 88, 35, C.transparent)
+    clanBanner:SetTexture('/mods/ClaretCore/textures/branding/dpg-wordmark.png')
+    clanBanner.Depth:Set(function() return community.Depth() + 2 end)
+    local credit = BindLabel(community, 'core.welcome.clan_credit', Theme.Fonts.body, metrics.secondaryText, C.muted)
+    L(credit):AtLeftTopIn(community, 116, 14)
+    local clanName = BindLabel(community, 'core.welcome.clan_name', Theme.Fonts.heading, metrics.heading, C.text)
+    L(clanName):AtLeftTopIn(community, 116, 33)
+    local linkStatus = 'core.welcome.link_copy_hint'
+    local linkHint = Label(community, '', Theme.Fonts.body, metrics.caption, C.muted)
+    L(linkHint):AtLeftTopIn(community, 16, 151)
+    local function UpdateLinkHint() linkHint:SetText(T(linkStatus)) end
+    table.insert(localized, UpdateLinkHint)
+    UpdateLinkHint()
+    local function AddLink(key, address, y)
+        Button(community, 16, y, communityWidth - 32, metrics.buttonHeight, key, function()
+            -- FAF's own GitHub and Discord buttons use HTTP for the engine opener.
+            OpenURL('http://' .. address, root)
+        end, false, function()
+            linkStatus = CopyToClipboard('https://' .. address) and 'core.welcome.link_copied'
+                or 'core.welcome.link_copy_failed'
+            UpdateLinkHint()
+        end)
+    end
+    AddLink('core.welcome.project_link', 'github.com/tfckatsu-cpu/Claret', 66)
+    AddLink('core.welcome.discord_link', 'discord.gg/JupcdJbu7U', 108)
 
-    local intro = Paragraph('',32,225,48)
-    BindText(intro,'core.welcome.intro')
-
-    local languageLabel = BindLabel(panel, 'core.menu.language', Theme.Fonts.body, 16, C.text)
-    L(languageLabel):AtLeftTopIn(panel, 32, 290)
+    local settings = Card(padding, 208, contentWidth, 64)
+    local shortcut = Paragraph(settings, 16, 18, 420, 42, C.accentText, metrics.text)
+    local function UpdateShortcut() shortcut:SetText(GetMenuBindingText(keyBinding, T)) end
+    table.insert(localized, UpdateShortcut)
+    UpdateShortcut()
+    Surface(settings, 446, 12, 1, 40, C.border)
+    local languageLabel = BindLabel(settings, 'core.menu.language', Theme.Fonts.body, metrics.text, C.text)
+    L(languageLabel):AtLeftTopIn(settings, 464, 21)
     local languageButtons = {}
     local function UpdateLanguageButtons()
         local selected = languageOption and languageOption:Get() or Localization.GetLanguage()
         if selected ~= 'en' and selected ~= 'ru' then selected = Localization.GetLanguage() end
-        for _, choice in ipairs(languageButtons) do
-            local active = choice.id == selected
-            choice.fill:SetSolidColor(active and C.selected or C.surface)
-            choice.setBorder(active and C.selectedBorder or C.border)
-            choice.text:SetColor(active and C.accentText or C.text)
-        end
+        for id, paint in pairs(languageButtons) do paint(id == selected) end
     end
     local function AddLanguageButton(x, id, labelKey)
-        local button = Group(panel)
-        L(button):AtLeftTopIn(panel, x, 278):Width(108):Height(36)
-        local fill = Bitmap(button)
-        fill:SetSolidColor(C.surface)
-        fill:DisableHitTest()
-        L(fill):AtLeftTopIn(button, 1, 1):Width(106):Height(34)
-        local setBorder = Theme.Outline(button, L, 108, 36, C.border)
-        local text = BindLabel(button, labelKey, Theme.Fonts.body, 16, C.text)
-        L(text):AtCenterIn(button)
-        button.HandleEvent = function(self, event)
-            if event.Type == 'MouseEnter' then
-                if not languageOption or languageOption:Get() ~= id then fill:SetSolidColor(C.hover) end
-            elseif event.Type == 'MouseExit' then
-                UpdateLanguageButtons()
-            elseif event.Type == 'ButtonPress' then
-                if not SetWelcomeLanguage(languageOption, id, Localization, SavePreferences) then
-                    WARN('[Claret] Could not save interface language')
-                end
-                UpdateLanguageButtons()
+        languageButtons[id] = Button(settings, x, 14, 100, metrics.buttonHeight, labelKey, function()
+            if not SetWelcomeLanguage(languageOption, id, Localization, SavePreferences) then
+                WARN('[Claret] Could not save interface language')
             end
-            return true
-        end
-        table.insert(languageButtons, {id = id, fill = fill, setBorder = setBorder, text = text})
+            UpdateLanguageButtons()
+        end)
     end
-    AddLanguageButton(width - 256, 'en', 'core.language.english')
-    AddLanguageButton(width - 136, 'ru', 'core.language.russian')
+    AddLanguageButton(contentWidth - 224, 'en', 'core.language.english')
+    AddLanguageButton(contentWidth - 116, 'ru', 'core.language.russian')
     table.insert(localized, UpdateLanguageButtons)
     UpdateLanguageButtons()
 
-    local keyText = Label(panel, '', Theme.Fonts.heading, 18, C.accentText)
-    local function UpdateKeyText() keyText:SetText(GetMenuBindingText(keyBinding,T)) end
-    table.insert(localized,UpdateKeyText); UpdateKeyText()
-    L(keyText):AtLeftTopIn(panel, 32, 330)
-
-    local prefsTop = 496
-    if showFontBlock then
-        local fontTitle = BindLabel(panel, 'core.welcome.nunito_title', Theme.Fonts.heading, 18, C.text)
-        L(fontTitle):AtLeftTopIn(panel, 32, 370)
-        local fontDescription = Paragraph('',32,400,52)
-        BindText(fontDescription,'core.welcome.nunito_description')
-        local fontPath = Paragraph('',32,456,28,C.muted,18)
-        BindText(fontPath,'core.welcome.nunito_path')
+    local cardWidth, cardHeight, cardTop = (contentWidth - gap) / 2, 208, 288
+    local function InstructionCard(x, titleKey, descriptionKey, pathKey, warningKey)
+        local card = Card(x, cardTop, cardWidth, cardHeight)
+        local heading = BindLabel(card, titleKey, Theme.Fonts.heading, metrics.heading, C.text)
+        L(heading):AtLeftTopIn(card, 16, 16)
+        BindText(Paragraph(card, 16, 48, cardWidth - 32, 48, C.text, metrics.secondaryText), descriptionKey)
+        local pathPlate = Surface(card, 16, 100, cardWidth - 32, 44, C.raised)
+        BindText(Paragraph(pathPlate, 10, 5, cardWidth - 52, 36, C.muted, metrics.label), pathKey)
+        if warningKey then
+            BindText(Paragraph(card, 16, 154, cardWidth - 32, 46, C.warning, metrics.secondaryText), warningKey)
+        end
     end
-
-    local prefsTitle = BindLabel(panel, 'core.welcome.prefs_title', Theme.Fonts.heading, 18, C.text)
-    L(prefsTitle):AtLeftTopIn(panel, 32, prefsTop)
-    local prefsDescription = Paragraph('',32,prefsTop+30,72)
-    BindText(prefsDescription,'core.welcome.prefs_description')
-    local prefsPath = Paragraph('',32,prefsTop+106,42,C.muted,18)
-    BindText(prefsPath,'core.welcome.prefs_path')
-    local prefsWarning = Paragraph('',32,prefsTop+152,72,C.warning)
-    BindText(prefsWarning,'core.welcome.prefs_warning')
-
-    local checkbox = Group(panel)
-    L(checkbox):AtLeftTopIn(panel, 32, height - 64):Width(360):Height(48)
-    local box = Bitmap(checkbox)
-    L(box):AtLeftTopIn(checkbox, 0, 12):Width(24):Height(24)
-    local setBoxBorder = Theme.Outline(box, L, 24, 24, C.border)
-    local checkboxText = BindLabel(checkbox, 'core.welcome.dismiss', Theme.Fonts.body, 18, C.text)
-    L(checkboxText):AtLeftTopIn(checkbox, 36, 11)
-    local function UpdateCheckbox()
-        local checked = dismissedOption and dismissedOption:Get() == true
-        box:SetSolidColor(checked and C.accent or C.surface)
-        setBoxBorder(checked and C.accentText or C.border)
+    if ShouldShowFontBlock() then
+        InstructionCard(padding, 'core.welcome.nunito_title', 'core.welcome.nunito_description', 'core.welcome.nunito_path')
     end
-    UpdateCheckbox()
-    checkbox.HandleEvent = function(self, event)
-        if event.Type == 'ButtonPress' and dismissedOption then
+    InstructionCard(padding + cardWidth + gap, 'core.welcome.prefs_title', 'core.welcome.prefs_description',
+        'core.welcome.prefs_path', 'core.welcome.prefs_warning')
+
+    local footerTop = height - padding - metrics.rowHeight
+    local divider = Surface(panel, padding, footerTop - 12, contentWidth, 1, C.border)
+    divider.Depth:Set(function() return panel.Depth() + 3 end)
+    local dismissal = Card(padding, footerTop, 328, metrics.rowHeight)
+    dismissal:EnableHitTest()
+    local dismissalLabel = BindLabel(dismissal, 'core.welcome.dismiss', Theme.Fonts.body, metrics.text, C.text)
+    L(dismissalLabel):AtLeftTopIn(dismissal, 16, 9)
+    local PaintDismissal = Theme.SettingsSwitch(dismissal, L, 328, metrics.rowHeight, ratio, true)
+    PaintDismissal(dismissedOption and dismissedOption:Get() == true)
+    dismissal.HandleEvent = function(_, event)
+        if event.Type == 'ButtonPress' and not (event.Modifiers and event.Modifiers.Right) and dismissedOption then
             if not ToggleWelcomeDismissal(dismissedOption, SavePreferences) then
                 WARN('[Claret] Could not save welcome visibility')
             end
-            UpdateCheckbox()
+            PaintDismissal(dismissedOption:Get() == true)
         end
         return true
     end
-
-    local buttonWidth, buttonHeight = 168, 48
-    local button = Group(panel)
-    L(button):AtLeftTopIn(panel, (width - buttonWidth) / 2, height - 64):Width(buttonWidth):Height(buttonHeight)
-    local fill = Bitmap(button)
-    fill:SetSolidColor(C.accent)
-    fill:DisableHitTest()
-    L(fill):AtLeftTopIn(button, 2, 2):Width(buttonWidth - 4):Height(buttonHeight - 4)
-    local setBorder = Theme.Outline(button, L, buttonWidth, buttonHeight, C.border)
-    local buttonText = BindLabel(button, 'core.welcome.close', Theme.Fonts.body, 20, C.text)
-    L(buttonText):AtCenterIn(button)
-    button.HandleEvent = function(self, event)
-        if event.Type == 'MouseEnter' then
-            fill:SetSolidColor(C.accentHover)
-            setBorder(C.accentText)
-        elseif event.Type == 'MouseExit' then
-            fill:SetSolidColor(C.accent)
-            setBorder(C.border)
-        elseif event.Type == 'ButtonPress' then
-            fill:SetSolidColor(C.pressed)
-            Close()
-        end
-        return true
-    end
+    Button(panel, width - padding - 152, footerTop, 152, metrics.rowHeight, 'core.welcome.close', Close, true)
 
     Escape.PushEscapeHandler(Close)
     state.escapeBound = true

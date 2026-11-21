@@ -150,6 +150,12 @@ function Available(action, context)
     local selection = context.selection or {}
     if action == 'upgrade_structure_under_cursor' or action == 'upgrade_structure_pause' then
         return CanUpgradeUnderCursor(context)
+    elseif action == 'upgrade_mex' then
+        if not CurrentSelectionIs(selection) then return false end
+        for _, unit in ipairs(selection) do
+            if LiveOwned(unit, context.focusArmy) and UpgradeableMex(unit) then return true end
+        end
+        return false
     elseif action == 'upgrade_mex_select_next' then
         if context.resolvedContext == 'cursor' then
             if not CanUpgradeUnderCursor(context) then return false end
@@ -197,6 +203,18 @@ function Execute(action, context)
         return UpgradeRollover(context, false)
     elseif action == 'upgrade_structure_pause' then
         return UpgradeRollover(context, true)
+    elseif action == 'upgrade_mex' then
+        local issued = false
+        for _, unit in ipairs(context.selection) do
+            if LiveOwned(unit, context.focusArmy) then
+                local upgrade = UpgradeableMex(unit)
+                if upgrade then
+                    IssueBlueprintCommandToUnit(unit, 'UNITCOMMAND_Upgrade', upgrade, 1, false)
+                    issued = true
+                end
+            end
+        end
+        return issued
     elseif action == 'upgrade_mex_select_next' then
         if context.resolvedContext ~= 'cursor' then
             local selection = context.absolute and {} or (context.selection or {})

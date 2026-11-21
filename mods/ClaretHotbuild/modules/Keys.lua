@@ -63,8 +63,11 @@ function Create()
         -- FAF owns the active key map and its lifecycle.
     end
 
-    function keys:Apply(bindings)
+    function keys:Apply(bindings, preserved)
         local wanted = {}
+        for presetId in pairs(preserved or {}) do
+            wanted[ActionId(presetId)] = true
+        end
         for _, binding in ipairs(bindings) do
             local id = ActionId(binding.id)
             wanted[id] = true

@@ -10,7 +10,7 @@ record('ueb1301','UEF','T3','STRUCTURE');record('uab1301','AEON','T3','STRUCTURE
 record('uel0201','UEF','T1','LAND');record('url0107','CYBRAN','T1','LAND')
 record('uel9999','UEF','T1','LAND')
 record('uel0401','UEF','EXPERIMENTAL','LAND');record('url0402','CYBRAN','EXPERIMENTAL','LAND')
-local catalog={Get=function(self,id) return records[id] end}
+local catalog={Get=function(self,id) return records[id] end,List=function(self) local result={} for _,item in pairs(records) do result[#result+1]=item end return result end}
 local equivalents=module.Create(catalog,{
     Power_Generator={'ueb1101','uab1101','ueb1301','uab1301','missing1234'},
     T1_Tank={'uel0201'},T1_Assault_Bot={'url0107'},

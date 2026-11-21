@@ -21,10 +21,18 @@ binding.entries[2].id = 'changed'
 assert(m:Get('scout').entries[2].id == 'uea0101')
 local got = m:Get('scout'); got.name = 'mutated'
 assert(m:Get('scout').name == 'Scout')
-assert(not m:Put({ id = 'other', name = 'Other', key = 'E', entries = {} }))
-assert(m:Put({ id = 'other', name = 'Other', key = '', entries = {} }))
+assert(m:Put({ id = 'other', name = 'Other', key = 'E', entries = {} }),'duplicate legacy keys are metadata and do not block saving')
+assert(m:Get('other').key == 'E' and m:Get('scout').key == 'E')
 assert(not m:Put({ id = 'invalid', name = 'Bad', key = 'Q', entries = {{kind='command',id='script'}} }))
 assert(not m:Put({ id = 'sparse', name = 'Sparse', key = 'Q', entries = {[2]={kind='action',id='a'}} }))
+local duplicates = module.Create({version = 1, bindings = {
+    { id = 'dup_a', name = 'A', key = 'Ctrl-X', entries = {} },
+    { id = 'dup_b', name = 'B', key = 'Ctrl-X', entries = {} },
+} })
+assert(duplicates:Get('dup_a') and duplicates:Get('dup_b'),'duplicate legacy keys load without quarantine')
+assert(#duplicates:GetLoadWarnings() == 0,'duplicate legacy keys are not profile damage')
+assert(duplicates:Put({ id = 'dup_c', name = 'C', key = 'Ctrl-X', entries = {} }),'a new preset may reuse a legacy key')
+
 local executions = {}
 local context = { buildable = true, selected = true }
 local adapter = {
@@ -65,8 +73,8 @@ local corrupt = module.Create({version=1,bindings={
     {id='b',name='Conflicting',key='Q',entries={}},
     {id='c',name='Valid',key='R',entries={}},
 }})
-assert(#corrupt:List() == 2 and #corrupt:GetLoadWarnings() == 2)
-assert(corrupt:Get('a').name == 'First' and corrupt:Get('c').key == 'R')
+assert(#corrupt:List() == 3 and #corrupt:GetLoadWarnings() == 1)
+assert(corrupt:Get('a').name == 'First' and corrupt:Get('b').key == 'Q' and corrupt:Get('c').key == 'R')
 
 -- Errors stop processing; never fall through to another action unexpectedly.
 local bad = module.Create()

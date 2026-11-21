@@ -7,6 +7,7 @@ end
 
 -- Continuations belong to a particular hotkey and the selection it produced.
 -- No background timer: state is checked only when a key is pressed.
+local DOUBLE_WINDOW=0.5
 function Create(actions)
     local pending
     local quick
@@ -39,11 +40,16 @@ function Create(actions)
     -- The caller supplies selection changes and either release events or
     -- mapped key actions known to fire once per physical press.
     function self:RememberQuick(bindingId, action, context, keyEventsAreEdges)
+        local window=tonumber(keyEventsAreEdges)
+        if keyEventsAreEdges~=true and (not window or window~=window or window<=0 or window==1/0) then
+            quick=nil; return
+        end
         local selected=Snapshot(GetSelectedUnits() or {})
         if not action or not selected then quick=nil; return end
         quick={bindingId=bindingId,action=action,army=context.focusArmy,selected=selected,
             absolute=context.absolute==true,resolvedContext=context.resolvedContext,
-            legacyUnits=context.legacyUnits,released=keyEventsAreEdges==true}
+            legacyUnits=context.legacyUnits,released=keyEventsAreEdges==true,
+            window=window or 1.5,at=GetSystemTimeSeconds()}
     end
 
     function self:ReleaseQuick(bindingId)
@@ -62,6 +68,7 @@ function Create(actions)
             quick=nil; return false
         end
         if not state.released then return true,false,T('hotbuild.context_repeat.s001') end
+        if GetSystemTimeSeconds()-(state.at or 0) > (state.window or 1.5) then quick=nil; return false end
         quick=nil
         pending=nil
         local oldAbsolute,oldResolved,oldLegacy=context.absolute,context.resolvedContext,context.legacyUnits
@@ -70,7 +77,6 @@ function Create(actions)
         context.legacyUnits=state.legacyUnits
         local called,result=pcall(actions.Execute,state.action,context,bindingId)
         if called and result and state.action.continuation then self:Remember(continuationId or bindingId,state.action,context) end
-        if called and result then self:RememberQuick(bindingId,state.action,context,true) end
         context.absolute=oldAbsolute
         context.resolvedContext=oldResolved
         context.legacyUnits=oldLegacy
@@ -83,7 +89,8 @@ function Create(actions)
         local selected=GetSelectedUnits() or {}
         if table.getn(selected)==0 then pending=nil; return end
         pending={bindingId=bindingId,action=action,army=context.focusArmy,
-            selected=Snapshot(selected),absolute=context.absolute==true}
+            selected=Snapshot(selected),absolute=context.absolute==true,
+            at=GetSystemTimeSeconds()}
     end
 
     function self:Continue(bindingId, context)
@@ -91,12 +98,14 @@ function Create(actions)
         pending=nil
         if not state or state.bindingId~=bindingId or context.isReplay or state.army~=context.focusArmy
             or not SameSelection(state.selected,context.selection) then return false end
+        if state.action.continuation=='double'
+            and GetSystemTimeSeconds()-(state.at or 0) > DOUBLE_WINDOW then return false end
         context.isRepeat=true
         context.absolute=state.absolute or nil
         local called,result=pcall(actions.Execute,state.action,context,bindingId)
         context.isRepeat=nil
         if not called then return true,nil,'Context action failed: '..tostring(result) end
-        if result then self:Remember(bindingId,state.action,context) end
+        if result and state.action.continuation~='double' then self:Remember(bindingId,state.action,context) end
         return true,result,result and state.action.id or T('hotbuild.context_repeat.s003')
     end
     return self

@@ -56,6 +56,10 @@ function IssueBlueprintCommand(name, blueprint, count, clear)
     table.insert(issued, {name=name, blueprint=blueprint, count=count, clear=clear, unit=selected[1]})
 end
 
+function IssueBlueprintCommandToUnit(unit, name, blueprint, count, clear)
+    table.insert(issued, {unit=unit, name=name, blueprint=blueprint, count=count, clear=clear})
+end
+
 local commandModule = {
     GetCommandMode = function() return {command.mode, command.data} end,
     CacheAndClearCommandMode = function() cached = {command.mode, command.data}; command.mode=false; command.data=false end,
@@ -130,7 +134,23 @@ assert(env.CanUpgradeUnderCursor(context),
     'an unrelated production focus does not block an otherwise valid upgrade')
 target.focus=nil
 
--- The mex action upgrades the rollover extractor and selects the next eligible one.
+-- The selected-extractor action upgrades all eligible members in place.
+local batch = {mexA, mexB, mexC, target, enemy}
+selected = batch
+local batchContext = {selection=batch, focusArmy=1}
+local before = #issued
+assert(env.Execute('upgrade_mex', batchContext))
+assert(#issued==before+2 and issued[before+1].unit==mexA and issued[before+1].blueprint=='ueb1203'
+    and issued[before+2].unit==mexB and issued[before+2].blueprint=='ueb1204' and selected==batch,
+    'the bind upgrades each eligible extractor to its own next tier and preserves selection')
+mexA.focus=focusedOn('ueb1203')
+selected={mexA,mexC}; batchContext.selection=selected
+assert(not env.Execute('upgrade_mex', batchContext) and #issued==before+2,
+    'extractors at max tier or already upgrading receive no command')
+mexA.focus=nil
+
+-- The cursor action upgrades the rollover extractor and selects the next eligible one.
+selected={}
 local mexAction = 'upgrade_mex_select_next'
 local occupied = unit('ueb1106', 1, { STRUCTURE=true, MASSEXTRACTION=true }, 'ueb1206', {10,0,10})
 occupied.focus=focusedOn('ueb1206'); table.insert(allUnits,occupied)

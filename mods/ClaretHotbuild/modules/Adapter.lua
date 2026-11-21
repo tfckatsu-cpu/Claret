@@ -47,6 +47,87 @@ local function SingleTierAssignment(record, context, catalog)
     return counts[key]==1
 end
 
+local function BuildSources(context)
+    if context.sources then return context.sources end
+    -- Read each unit's capability list once per press, not once per priority entry.
+    local sources={}
+    for _,unit in ipairs(context.selection) do
+        local _,_,category=GetUnitCommandData({unit})
+        local buildable={}
+        if category then
+            for _,buildId in ipairs(EntityCategoryGetUnitList(category) or {}) do buildable[buildId]=true end
+        end
+        table.insert(sources,{unit=unit,buildable=buildable})
+    end
+    context.sources=sources
+    return sources
+end
+
+local function HasMixedFactories(context)
+    if context.mixedFactories ~= nil then return context.mixedFactories end
+    local signature
+    for _, unit in ipairs(context.selection) do
+        if unit:IsInCategory('FACTORY') or unit:IsInCategory('EXTERNALFACTORY') then
+            local domain = unit:IsInCategory('LAND') and 'land' or unit:IsInCategory('AIR') and 'air'
+                or unit:IsInCategory('NAVAL') and 'naval' or 'other'
+            local blueprint = type(unit.GetBlueprint)=='function' and unit:GetBlueprint()
+            local general = blueprint and blueprint.General
+            local faction = general and general.FactionName or ''
+            local kind = domain .. ':' .. string.lower(faction)
+            if signature and signature ~= kind then
+                context.mixedFactories = true
+                return true
+            end
+            signature = kind
+        end
+    end
+    context.mixedFactories = false
+    return false
+end
+
+-- A queue template may start with a factory upgrade; later entries become
+-- buildable only after that upgrade, so the whole queue is checked in order.
+local function Queueable(record,buildable)
+    local entries=record.queueData or {}
+    for index=1,table.getn(entries) do
+        local entry=entries[index]
+        if not buildable[entry[1]] then
+            local upgraded=false
+            for earlier=1,index-1 do
+                if entries[earlier][3] then upgraded=true; break end
+            end
+            if not upgraded then return false end
+        end
+    end
+    return true
+end
+
+-- FAF's subset helper does not restore after an exception. Keep this UI
+-- selection transaction explicit, with restoration on both paths.
+local function WithFactorySelection(factories,context,issue)
+    local same=table.getn(factories)==table.getn(context.selection)
+    local selectedSet={}
+    for _,unit in ipairs(context.selection) do selectedSet[unit]=true end
+    for _,unit in ipairs(factories) do if not selectedSet[unit] then same=false end end
+    if same then issue(); return end
+    local Commands=import('/lua/ui/game/commandmode.lua')
+    local GameMain=import('/lua/ui/game/gamemain.lua')
+    local originalSelection=GetSelectedUnits()
+    Commands.CacheAndClearCommandMode()
+    local ok,err=pcall(function()
+        GameMain.SetIgnoreSelection(true)
+        SelectUnits(factories)
+        issue()
+    end)
+    local restored,restoreError=pcall(SelectUnits,originalSelection)
+    local ignored,ignoreError=pcall(GameMain.SetIgnoreSelection,false)
+    local mode,modeError=pcall(Commands.RestoreCommandMode,true)
+    if not ok then error(err) end
+    if not restored then error(restoreError) end
+    if not ignored then error(ignoreError) end
+    if not mode then error(modeError) end
+end
+
 ---@param catalog table
 ---@return table
 function Create(catalog)
@@ -74,10 +155,43 @@ function Create(catalog)
         return context
     end
 
+    -- A factory queue template needs one capable factory for the whole queue.
+    function adapter:TemplatePlan(record, context)
+        if HasMixedFactories(context) then return nil end
+        local factories={}
+        local seen={}
+        for _,item in ipairs(BuildSources(context)) do
+            local unit=item.unit
+            if unit:IsInCategory('FACTORY') or unit:IsInCategory('EXTERNALFACTORY') then
+                local source=unit
+                if unit:IsInCategory('EXTERNALFACTORY') then
+                    local complete=type(unit.GetFractionComplete)~='function'
+                        or unit:GetFractionComplete()==1
+                    source=complete and unit:GetCreator() or nil
+                    if source and not source:IsInCategory('FACTORY') then source=nil end
+                end
+                if source and not source:IsDead() and not seen[source]
+                    and Queueable(record,item.buildable) then
+                    seen[source]=true
+                    table.insert(factories,source)
+                end
+            end
+        end
+        if table.getn(factories)==0 then return nil end
+        return {factories=factories,unitTemplate=record}
+    end
+
     function adapter:CanBuild(id, context)
         if context.isReplay or context.focusArmy < 1 then return false end
         local record=catalog:Get(id)
         if not record then return false end
+        if record.unitTemplate then
+            if context.plans[id] ~= nil then return context.plans[id] ~= false end
+            local plan=self:TemplatePlan(record,context)
+            context.plans[id]=plan or false
+            return plan ~= nil
+        end
+        if record.kind~='STRUCTURE' and not record.templateData and HasMixedFactories(context) then return false end
         local recordTechTab=techTabs[record.tech]
         if context.factorySelection and record.kind~='STRUCTURE' and recordTechTab
             and recordTechTab~=context.factoryTechTab then
@@ -103,22 +217,11 @@ function Create(catalog)
             context.plans[id]=capable and {placement=true,template=record} or false
             return capable
         end
-        -- Read each unit's capability list once per press, not once per priority entry.
-        if not context.sources then
-            context.sources = {}
-            for _, unit in ipairs(context.selection) do
-                local _, _, category = GetUnitCommandData({ unit })
-                local buildable = {}
-                if category then
-                    for _, buildId in ipairs(EntityCategoryGetUnitList(category) or {}) do buildable[buildId] = true end
-                end
-                table.insert(context.sources, { unit = unit, buildable = buildable })
-            end
-        end
+        local sources = BuildSources(context)
         local factories = {}
         local seen = {}
         local place = false
-        for _, item in ipairs(context.sources) do
+        for _, item in ipairs(sources) do
             local unit = item.unit
             if item.buildable[id] then
                 if unit:IsInCategory('FACTORY') or unit:IsInCategory('EXTERNALFACTORY') then
@@ -126,7 +229,15 @@ function Create(catalog)
                     -- capability list happens to include the blueprint.
                     if record.kind ~= 'STRUCTURE' then
                         local source = unit
-                        if unit:IsInCategory('EXTERNALFACTORY') then source = unit:GetCreator() end
+                        if unit:IsInCategory('EXTERNALFACTORY') then
+                            -- Attached factories (carriers, air staging) order through the unit
+                            -- that created them, as FAF's TranslateExFacUnits does. Only a
+                            -- finished attachment owned by a real factory may queue units.
+                            local complete = type(unit.GetFractionComplete) ~= 'function'
+                                or unit:GetFractionComplete() == 1
+                            source = complete and unit:GetCreator() or nil
+                            if source and not source:IsInCategory('FACTORY') then source = nil end
+                        end
                         if source and not source:IsDead() and not seen[source] then
                             seen[source] = true
                             table.insert(factories, source)
@@ -160,47 +271,34 @@ function Create(catalog)
             SetActiveBuildTemplate(data)
             return true
         end
-        if plan.factories then
-            -- Re-read Shift in the factory-order context immediately before dispatch.
-            -- The key action may have crossed several context handlers first.
-            local factoryShift=context.shiftHeld==true
-            local shiftOk,shiftDown=pcall(IsKeyDown,16)
-            factoryShift=factoryShift or (shiftOk and shiftDown==true)
-            local buildCount=factoryShift and 5 or 1
+        if plan.unitTemplate then
+            local record=plan.unitTemplate
             if context.trace then
-                LOG('[Claret][keys] factory_order blueprint='..tostring(id)
-                    ..' shift='..tostring(context.shiftHeld==true)
-                    ..' factory_shift='..tostring(factoryShift)
-                    ..' count='..tostring(buildCount)
+                LOG('[Claret][keys] factory_template='..tostring(record.id)
+                    ..' entries='..tostring(table.getn(record.queueData))
+                    ..' unit_count='..tostring(record.unitCount)
                     ..' factories='..tostring(table.getn(plan.factories))
                     ..' selection='..tostring(table.getn(context.selection)))
             end
-            local same = table.getn(plan.factories) == table.getn(context.selection)
-            local selectedSet = {}
-            for _, unit in ipairs(context.selection) do selectedSet[unit] = true end
-            for _, unit in ipairs(plan.factories) do if not selectedSet[unit] then same = false end end
-            if same then
-                IssueBlueprintCommand('UNITCOMMAND_BuildFactory', id, buildCount)
-            else
-                -- FAF's subset helper does not restore after an exception. Keep this
-                -- UI selection transaction explicit, with restoration on both paths.
-                local Commands = import('/lua/ui/game/commandmode.lua')
-                local GameMain = import('/lua/ui/game/gamemain.lua')
-                local originalSelection = GetSelectedUnits()
-                Commands.CacheAndClearCommandMode()
-                local ok, err = pcall(function()
-                    GameMain.SetIgnoreSelection(true)
-                    SelectUnits(plan.factories)
-                    IssueBlueprintCommand('UNITCOMMAND_BuildFactory', id, buildCount)
-                end)
-                local restored, restoreError = pcall(SelectUnits, originalSelection)
-                local ignored, ignoreError = pcall(GameMain.SetIgnoreSelection, false)
-                local mode, modeError = pcall(Commands.RestoreCommandMode, true)
-                if not ok then error(err) end
-                if not restored then error(restoreError) end
-                if not ignored then error(ignoreError) end
-                if not mode then error(modeError) end
+            WithFactorySelection(plan.factories,context,function()
+                for _,entry in ipairs(record.queueData) do
+                    IssueBlueprintCommand('UNITCOMMAND_BuildFactory',entry[1],entry[2])
+                end
+            end)
+            import('/lua/ui/game/construction.lua').RefreshUI()
+            return true
+        end
+        if plan.factories then
+            -- One press queues one unit: Shift keeps its native FAF meaning.
+            if context.trace then
+                LOG('[Claret][keys] factory_order blueprint='..tostring(id)
+                    ..' shift='..tostring(context.shiftHeld==true)
+                    ..' factories='..tostring(table.getn(plan.factories))
+                    ..' selection='..tostring(table.getn(context.selection)))
             end
+            WithFactorySelection(plan.factories,context,function()
+                IssueBlueprintCommand('UNITCOMMAND_BuildFactory', id, 1)
+            end)
             import('/lua/ui/game/construction.lua').RefreshUI()
         else
             ClearBuildTemplates()

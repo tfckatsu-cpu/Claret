@@ -56,7 +56,11 @@ local function page(id)
 end
 local requestedHeight
 local root=navigatorModule.Create(parent,{scale=1,setHeight=function(value) requestedHeight=value end},{page('keyboard'),page('hotbuild'),page('contexts')})
-assert(root and #opens==1 and opens[1].id=='keyboard','first page opens by default')
+assert(root and #opens==0,'the remembered page is built only when the host is on screen')
+root.AfterParentShow()
+assert(#opens==1 and opens[1].id=='keyboard','first page opens once the host is shown')
+root.AfterParentShow()
+assert(#opens==1,'later visibility changes keep the current page')
 local content=opens[1].host
 assert(root.Width()==1080 and root.Height()==984,'wrapper remains within inline host bounds')
 assert(content.y==56 and content.Height()<=920 and content.x>=0 and content.x+content.Width()<=1080,

@@ -1,10 +1,10 @@
-Version = '0.10.36'
+Version = '0.10.61'
 -- Bump for every Hotbuild code change so the loaded build is identifiable.
-local BuildStamp = '20261117-143'
+local BuildStamp = '20261121-171'
 LOG('[Claret][build] hotbuild='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
-    'ClaretCore >= 0.10.5',
+    'ClaretCore >= 0.10.15',
     'ReUI.Core >= 1.7.0',
     'ReUI.UI >= 1.0.0',
     'ReUI.Options >= 1.2.0',
@@ -19,7 +19,12 @@ function Main(isReplay)
     if not localizationOk then error(localizationError) end
     local Runtime = import('/mods/ClaretHotbuild/modules/Runtime.lua')
     local BuildKeyLabels = import('/mods/ClaretHotbuild/modules/BuildKeyLabels.lua')
-    local options = ReUI.Options.Mods['ClaretHotbuild']
+    -- Hotbuild is always active: a private constant-true option keeps Core's
+    -- feature binding API while ignoring any saved disable value.
+    local alwaysOn = {
+        Get = function() return true end,
+        OnChanged = { Add = function() end, Remove = function() end },
+    }
     local service
     local navigatorMemory = { pageId = 'keyboard', hotbuild = {}, contexts = {} }
     local function Ensure()
@@ -44,6 +49,7 @@ function Main(isReplay)
             end
             local okLabels, claretRelations = pcall(BuildKeyLabels.Build, service.model, assignments)
             if not okLabels or type(claretRelations) ~= 'table' then
+                WARN('[ClaretHotbuild] build key labels failed: ' .. tostring(claretRelations))
                 return idRelations, upgradeKey, orderKeys
             end
             local okMerge, merged = pcall(BuildKeyLabels.Merge, idRelations, claretRelations)
@@ -70,7 +76,7 @@ function Main(isReplay)
 
     local ok, message = ReUI.ClaretCore.RegisterFeature('hotbuild', function(scope)
         Ensure():Start(scope)
-    end, options.enabled)
+    end, alwaysOn)
     if not ok then error(message) end
 
     local settingsOk, settingsError = ReUI.ClaretCore.RegisterSettingsSection {

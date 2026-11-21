@@ -1,24 +1,39 @@
-# Производительность: кандидаты и методика
+# Performance: Candidates and Method
 
-Дата: 2026-11-10. Это приоритет проверки по структуре кода, а не рейтинг измеренного вреда.
+Date: 2026-11-10. This is a code-structure review priority, not a ranking of measured impact.
 
-| Приоритет | Кандидат и версия | Подтверждённое наблюдение / источник | Гипотеза для измерения |
+| Priority | Candidate and version | Confirmed observation / source | Measurement hypothesis |
 |---|---|---|---|
-| 1 | DelisRedundantEcoHelp v3 | modules/markers.lua:350–368: таймер инженеров 0.5 с, экстракторов 1 с; UpdatePositions каждый кадр; IsAlive использует pcall | Стоимость растёт с числом меток; сравнить проекцию и Refresh раздельно |
-| 1 | Mouse v3, TeamMouse v6 | modules/Mouse.lua:777 и modules/teammouse.lua:4065: frameDriver.OnFrame; описан проход интерполяции и размещения | Нагрузка растёт с числом участников/визуальных объектов; проверить одновременное включение обоих |
-| 2 | EUT v11 | modules/mexoverlay.lua:50,105 — OnFrame; modules/mexmanager.lua:145,162 — GetUnits для мексов/инженеров | Разделить цену общего кеша UMT и собственного overlay |
-| 2 | TIS v11 | modules/exp.lua:180,206 и modules/nuke.lua:208,234 — OnFrame overlays | Проверить число одновременно активных overlays, отправку сообщений и cleanup |
-| 2 | Reveal positions v4 | hook/lua/ui/game/gamemain.lua:5,7 — ожидание 5 с и цикл с 0.1 с; :123 OnFrame маркера | Проверить, когда цикл прекращается, что меняется в каждом проходе |
-| 3 | ReUI.MissilePanel v3 | Main.lua:819 — OnFrame, RefreshPanel по накопленному delta раз в секунду | Сам OnFrame не значит полный пересчёт каждый кадр; измерять RefreshPanel отдельно |
-| Не оценено | ReUI v7, ReUI.Score v5 и другие бинарные компоненты | compiled-lua.txt: закрытые для обычного чтения реализации | Измерять установленную версию; новую исходную версию нельзя считать её точным эквивалентом |
+| 1 | DelisRedundantEcoHelp v3 | modules/markers.lua:350–368: engineer timer 0.5 s, extractor timer 1 s; UpdatePositions every frame; IsAlive uses pcall | Cost may grow with marker count; measure projection and Refresh separately |
+| 1 | Mouse v3, TeamMouse v6 | modules/Mouse.lua:777 and modules/teammouse.lua:4065: frameDriver.OnFrame; an interpolation and positioning pass is described | Load may grow with participant/visual-object count; check both enabled together |
+| 2 | EUT v11 | modules/mexoverlay.lua:50,105 — OnFrame; modules/mexmanager.lua:145,162 — GetUnits for extractors/engineers | Separate the cost of UMT's shared cache from its own overlay |
+| 2 | TIS v11 | modules/exp.lua:180,206 and modules/nuke.lua:208,234 — OnFrame overlays | Check simultaneously active overlay count, message sending, and cleanup |
+| 2 | Reveal positions v4 | hook/lua/ui/game/gamemain.lua:5,7 — 5 s wait and 0.1 s loop; :123 marker OnFrame | Check when the loop stops and what changes in each pass |
+| 3 | ReUI.MissilePanel v3 | Main.lua:819 — OnFrame; RefreshPanel runs once per second based on accumulated delta | OnFrame alone does not mean a full recalculation every frame; measure RefreshPanel separately |
+| Not assessed | ReUI v7, ReUI.Score v5, and other binary components | Installed implementations are partly bytecode | Measure the installed version; a newer source version is not its proven equivalent |
 
-## Воспроизводимая проверка пользователем
-1. FAF 3840, реплей 28072660. Сначала проверить, что он воспроизводится этой версией. Зафиксировать карту, камеру, разрешение, масштаб UI, графику и скорость 1x, VSync выключить.
-2. Выбрать один отрезок, например 05:00–10:00 игрового времени, если реплей его содержит. Одинаково прогреть каждый запуск до начала отрезка. Записать фактически выбранный интервал.
-3. База A — целевая функция выключена, необходимые библиотеки остаются. Вариант B — только целевая функция включена. Дополнительно чистый UI как отдельная база, если нужно оценить стоимость библиотек. Список модов и UID сохранить.
-4. Выполнить по три прогона A и B с перезапуском, чередуя A/B. Закрепить одинаковую камеру; движение и zoom существенно меняют стоимость overlays.
-5. Сохранить сырые времена кадров одним и тем же инструментом захвата. Средний FPS = число кадров / длительность; 1% low определить как 1000 / среднее время самых медленных 1% кадров (мс); отдельно среднее время кадра. Не смешивать определения разных программ.
-6. Память процесса снять в начале и конце отрезка, отдельно отметить working set/private bytes и единицы. Это не равно памяти только Lua и не доказывает утечку без более долгого наблюдения.
-7. Сохранить game.log каждого запуска; посчитать warning/error, сгруппировать повторяющиеся стеки. Одно сообщение стека не считать несколькими независимыми ошибками. Сравнить медианы трёх прогонов и разброс; небольшой эффект внутри разброса считать неопределённым.
+## Reproducible User Check
+1. Choose a replay that opens on the FAF build under test. Fix the map, camera, resolution, UI scale, graphics, and speed at 1x; turn VSync off.
+2. Choose one interval, e.g. 05:00–10:00 game time, if present in the replay. Warm up each run the same way before the interval. Record the actual interval used.
+3. Baseline A: target feature off, required libraries remain enabled. Variant B: only the target feature is on. Add clean UI as a separate baseline if library cost also needs assessment. Save the mod list and UIDs.
+4. Run A and B three times each with restarts, alternating A/B. Keep the camera fixed; movement and zoom materially change overlay cost.
+5. Save raw frame times using the same capture tool. Average FPS = frame count / duration; define 1% low as 1000 / average time of the slowest 1% of frames (ms); record average frame time separately. Do not mix definitions from different tools.
+6. Record process memory at the start and end of the interval, noting working set/private bytes and units separately. This is not Lua-only memory and does not prove a leak without longer observation.
+7. Save each run's game.log; count warnings/errors and group repeated stacks. Do not count repeated lines from one stack as independent errors. Compare the median and spread of three runs; treat small effects within the spread as inconclusive.
 
-Пока замеров нет. Числа FPS и процентов из friend-notes относятся к другому моду и другому эксперименту, их нельзя приписывать Claret или ReUI.
+No measurements have been made yet. Performance reports for other mods cannot establish Claret or ReUI performance.
+
+## Claret candidates (not measured)
+
+Engineer Indicators in Claret UI 0.2.108 (FAF3840, 2026-11-21): the user observed reduced FPS around 600 engineers with early builds, including the build that limited markers to 128 while still projecting every engineer every frame. With Optimize display enabled, shown markers update every frame and other engineers are scanned in batches. The local 600-engineer model verifies at most 188 position queries in stable frames and 212 when markers are reassigned. Fully faded markers at far zoom require no unit-position queries. Idle engineers only skips positions for busy engineers after their markers fade. The user confirmed 0.2.108 overall. Quantitative FPS improvement and individual scenarios were not reported.
+
+| Candidate | Observation | Hypothesis |
+|---|---|---|
+| KeyboardBindings:Refresh | Clears and rebuilds the whole engine key map on every change; OwnIds scans models and maps | Cost grows with bindings and foreign keys; measure with probeEnabled |
+| GetAssignments snapshot | Builds rows for all maps on each call; labels cached per snapshot only | Called by the keyboard editor on refresh and hover updates |
+| BuildKeyLabels hook | Runs inside hotkeylabels.getKeyTables; resolves every preset via model:Get (cached per call) | Called on construction panel refresh, not per frame |
+| TemplateCatalog:RefreshTemplates | Rebuilds template rows from the profile | Large template sets on every catalog refresh |
+| Menu content render | Re-renders the content group on each scroll notch | Visible only with long lists; virtualized rows limit it |
+| OpenPerf | Instrumentation itself allocates and logs when probeEnabled is on | Keep disabled for normal play; use for measurements |
+
+No Claret measurements have been made. Use the method above with the same replay, camera and mod list; report median of three runs.

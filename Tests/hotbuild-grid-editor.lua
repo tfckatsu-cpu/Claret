@@ -56,8 +56,8 @@ local modules = {
     end},
     ['/lua/ui/uiutil.lua']={bodyFont='Arial', SetupEditStd=function(field)
         assert(field.Width()>0 and field.Height()>0,'editor field geometry must be assigned before SetupEditStd')
-        assert(field.Height()==36 and (field.Width()==300 or field.Width()==684),
-            'editor field uses its requested geometry before SetupEditStd')
+        assert(field.Height()==36 and (field.Width()==656 or field.Width()==300),
+            'editor field uses its requested geometry before SetupEditStd: '..field.Width()..'x'..field.Height())
         configuredEditSizes[#configuredEditSizes+1]={width=field.Width(),height=field.Height()}
     end, CreateText=control,
         UIFile=function(path) return path end,
@@ -86,9 +86,12 @@ for i=1,45 do records[i]={id='unit'..i,name='Unit '..i,faction='UEF',tech='T1',k
 records[46]={id='claret_template_test',name='Template saved',faction='UEF',tech='T2',kind='STRUCTURE',blueprint={},icon='templateIcon',templateData={2,2,{'unit1',0,0,0}}}
 local catalog={Get=function(self,id) for _,r in ipairs(records) do if r.id==id then return r end end end,
     List=function(self,filters)
-        if filters.faction~='ALL' and filters.faction~='UEF' then return {} end
+        filters=filters or {}
+        local faction=filters.faction or 'ALL'
+        local search=filters.search or ''
+        if faction~='ALL' and faction~='UEF' then return {} end
         local result={}
-        for _,r in ipairs(records) do if filters.search=='' or r.name:find(filters.search,1,true) then result[#result+1]=r end end
+        for _,r in ipairs(records) do if search=='' or r.name:find(search,1,true) then result[#result+1]=r end end
         return result
     end}
 local modelModule=setmetatable({},{__index=_G})
@@ -125,7 +128,7 @@ function service:CommitContext(binding)
 end
 assert(loadfile('../mods/ClaretHotbuild/modules/Editor.lua','t',env))()
 
-local frame=env.Create(control(),service)
+local frame=env.Create(control(),service,nil,{bindingId='b1'})
 local hint=false
 for _,c in ipairs(objects) do if c.text=='используется на клавишах: F2, Ctrl-K' then hint=true end end
 assert(hint,'preset shows assigned keys as a read-only hint')
@@ -144,9 +147,12 @@ for _,c in ipairs(objects) do
  if c.parent==viewport and c.x==0 and c.y==274 and c.Width()==985 and c.Height()==45 then peekMask=true end
 end
 assert(peekMask,'the mask leaves only the edge of the fifth row visible')
+local moveUp,moveDown=false,false
 for _,c in ipairs(objects) do
- assert(c.text~='↑' and c.text~='↓','build row move controls must not be present')
+ if c.text=='↑' then moveUp=true end
+ if c.text=='↓' then moveDown=true end
 end
+assert(moveUp and moveDown,'build rows expose move controls')
 local function globalX(c)
  local x=c.x or 0; local p=c.parent
  while p do x=x+(p.x or 0); p=p.parent end
@@ -170,10 +176,29 @@ local function click(label,right)
  end
  error('missing: '..label)
 end
+-- The picker is rebuilt on every cell click: its 656-wide search field is the
+-- newest live Edit, while edits[1] is the persistent binding name field.
+local function pickerSearch()
+ for i=#edits,1,-1 do
+  local field=edits[i]; local node=field; local alive=true
+  while node do if node.destroyed then alive=false; break end; node=node.parent end
+  if alive and field.Width()==656 then return field end
+ end
+ error('missing picker search field')
+end
 click('+')
-assert(#configuredEditSizes==2 and configuredEditSizes[2].width==684,
-    'catalog search field is configured only after its layout is assigned')
-edits[table.getn(edits)]:SetText('Template saved'); click('Template saved'); click('Сохранить')
+local _sizes=''; for i,s in ipairs(configuredEditSizes) do _sizes=_sizes..i..':'..s.width..'x'..s.height..' ' end
+assert(#configuredEditSizes==2 and configuredEditSizes[2].width==656,
+    'catalog search field is configured only after its layout is assigned: '..#configuredEditSizes..' ['.._sizes..']')
+assert(#edits==2,'picker adds exactly one search field per open: '..#edits)
+pickerSearch():SetText('Template saved')
+local templateRow,hiddenRow
+for _,c in ipairs(objects) do
+ if c.parent and c.parent.Width()==662 and c.text=='Template saved' then templateRow=c.parent end
+ if c.parent and c.parent.Width()==662 and c.parent.visible and c.text=='Unit 1' then hiddenRow=c.parent end
+end
+assert(templateRow and templateRow.visible and not hiddenRow,'the picker search narrows the catalog to the template row')
+click('Template saved'); click('Сохранить')
 assert(model:Get('b1').grid.buildings[1].UEF=='claret_template_test')
 local compactBadge
 for _,c in ipairs(objects) do if c.text=='ШАБЛОН' and c.parent and c.parent.Width()==70 then compactBadge=c.parent end end
@@ -195,7 +220,7 @@ probeEnabled=true
 secondRowTile:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
 assert(diagnostics[#diagnostics] and diagnostics[#diagnostics]:find('event=open row=2',1,true),
     'opening a building cell logs its row index')
-edits[table.getn(edits)]:SetText('Unit 2')
+pickerSearch():SetText('Unit 2')
 click('Unit 2')
 assert(diagnostics[#diagnostics] and diagnostics[#diagnostics]:find('event=chosen row=2',1,true)
     and diagnostics[#diagnostics]:find('id=unit2',1,true)
@@ -221,7 +246,7 @@ local function chooseVisibleRow(y,id)
  end
  assert(tile,'missing visible build cell at y='..y)
  tile:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
- edits[table.getn(edits)]:SetText(id)
+ pickerSearch():SetText(id)
  click(id)
 end
 chooseVisibleRow(130,'Unit 3')
@@ -283,7 +308,7 @@ assert(overlay.destroyed, 'outside click did not close list')
 click('Second draft')
 local remove
 for _,c in ipairs(objects) do
- if c.text=='×' and c.parent and c.parent.x==236 and c.parent.y==2 then remove=c.parent; break end
+ if c.text=='×' and c.parent and c.parent.x==314 and c.parent.y==6 then remove=c.parent; break end
 end
 assert(remove, 'missing row delete button')
 remove:HandleEvent({Type='ButtonPress',Modifiers={Left=true}}); assert(model:Get('b1'))

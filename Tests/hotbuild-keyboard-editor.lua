@@ -17,6 +17,7 @@ local function control(parent,text)
     function c:SetColor(v) self.textColor=v end
     function c:SetNeedsFrameUpdate(v) self.needsFrameUpdate=v end
     function c:SetSolidColor(v) self.color=v end
+    function c:SetTexture(v) self.texture=v end
     function c:DisableHitTest() self.hitTestDisabled=true end
     function c:Show()
         self.visible=true
@@ -42,6 +43,7 @@ end
 local modules={
     ['/lua/maui/group.lua']={Group=control},
     ['/lua/maui/bitmap.lua']={Bitmap=control},
+    ['/lua/maui/edit.lua']={Edit=function(parent) local c=control(parent); function c:GetText() return self.text or '' end; return c end},
     ['/lua/maui/layouthelpers.lua']={GetPixelScaleFactor=function() return 1 end},
     ['/lua/ui/game/tooltip.lua']={
         AddAutoUpdatedControlTooltip=function(c,title,detail) tooltips[c]={title=title,detail=detail} end,
@@ -51,7 +53,7 @@ local modules={
         PushEscapeHandler=function(fn) escapeHandlers[#escapeHandlers+1]=fn end,
         PopEscapeHandler=function() table.remove(escapeHandlers) end,
     },
-    ['/lua/ui/uiutil.lua']={bodyFont='Arial',CreateText=control,
+    ['/lua/ui/uiutil.lua']={bodyFont='Arial',CreateText=control,SetupEditStd=function() end,
         CreateVertScrollbarFor=function(panel)
             assert(panel.GetScrollValues and panel.ScrollSetTop and panel.ScrollLines and panel.ScrollPages)
             panel:GetScrollValues(); return control(panel)
@@ -93,6 +95,9 @@ function service:SetDoubleForKey(key,mods,first,second) self.double={first=first
 function service:ClearDoubleForKey() self.double=nil; return true end
 function service:Validate(ref,key,mods)
     calls.validates[#calls.validates+1]={ref=ref,key=key,mods=mods}
+    if self.shiftConflict and key=='Q' and (mods.shift or self.baseConflict) then
+        return false,'Чужое сочетание занято.',{kind='conflict',id=mods.shift and 'faf-shift-q' or 'faf-q'}
+    end
     if ref.id=='blocked' then return false,'Чужое сочетание занято.',{kind='conflict',id='foreign'} end
     if ref.id=='link' then return false,'Связать назначения?',{kind='link',id='composite-occupant'} end
     return true
@@ -238,7 +243,8 @@ held(17,true)
 assert(findText('Нет назначения') and not findText('Foreign binding'),
     'tooltip updates while the pointer stays over the key')
 held(16,true)
-assert(findText('Стройка: Preset Existing') and findText('Engineer, ACU') and not findText('Foreign binding'),
+-- Contexts now render through hotbuild.keyboard.contexts ('Доступно для: %s').
+assert(findText('Стройка: Preset Existing') and findText('Доступно для: Engineer, ACU') and not findText('Foreign binding'),
     'tooltip shows only the selected Ctrl+Shift binding')
 held(16,false)
 held(17,false)
@@ -339,6 +345,26 @@ assert(key.color==theme.Colors.accent, 'closing modal restores the selected comb
 
 -- Escape closes the modal; destroying the editor also tears down an open modal and tooltip state.
 clickText('Ctrl'); clickText('Shift'); clickText('Alt')
+for _,baseConflict in ipairs({false,true}) do
+    service.shiftConflict=true
+    service.baseConflict=baseConflict
+    calls.sets={}
+    pressKey('Q'); clickText('Бинды'); clickText('+ Shift')
+    assert(#calls.sets==0 and #escapeHandlers==2,'+ Shift checks conflicts before saving either chord')
+    clickText('Переназначить')
+    if baseConflict then
+        assert(#calls.sets==0 and #escapeHandlers==2,'each occupied chord requires its own confirmation')
+        clickText('Переназначить')
+    end
+    assert(#calls.sets==2 and #escapeHandlers==0,'confirming + Shift saves both chords and closes the chooser')
+    local base,shifted=calls.sets[1],calls.sets[2]
+    assert(base.key=='Q' and not base.mods.shift and base.confirmed==(baseConflict and 'faf-q' or nil),
+        'base shortcut receives only its own confirmation')
+    assert(shifted.key=='Q' and shifted.mods.shift and shifted.confirmed=='faf-shift-q',
+        'Shift+Q receives the confirmed FAF occupant')
+end
+service.shiftConflict=nil
+service.baseConflict=nil
 pressKey('C'); clickText('Бинды'); clickText('Select Engineer')
 assert(findText('Двойное нажатие') and findText('Все такие юниты') and #escapeHandlers==2,
     'eligible action immediately offers the allowed second press')
@@ -390,11 +416,13 @@ local visited={}
 local function checkUpvalues(fn)
     if type(fn)~='function' or visited[fn] then return end
     visited[fn]=true
-    local count=0
+    local count,index=0,0
     while true do
-        local name,value=debug.getupvalue(fn,count+1)
+        local name,value=debug.getupvalue(fn,index+1)
         if not name then break end
-        count=count+1
+        index=index+1
+        -- Fengari (Lua 5.3) lists _ENV as an upvalue; LuaPlus 5.1 resolves globals without one.
+        if name~='_ENV' then count=count+1 end
         if type(value)=='function' then checkUpvalues(value) end
     end
     assert(count<=32,'keyboard editor closure exceeds 32 captured values: '..count..' at '..tostring(debug.getinfo(fn).linedefined))
