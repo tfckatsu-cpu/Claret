@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.61
+# Claret Hotbuild — prototype 0.10.70
 
 The build-cycle preview shows the available buildings while placing through Hotbuild. T1–T3 labels sit at the bottom center of each icon. The row fades in and out over 150 ms.
 
@@ -8,7 +8,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.61, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.23, and Claret Hotbuild 0.10.70, then start a new match. Hotbuild requires Core >= 0.10.23 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 

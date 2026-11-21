@@ -1,5 +1,35 @@
 # История изменений
 
+## Сборка 20261121-181 — 2026-11-21
+- Prepare Vault release 92 with a fresh UID.
+
+## Сборка 20261121-180 — 2026-11-21
+- Remove Ctrl+right-click building copying from Hotbuild.
+
+## Сборка 20261121-179 — 2026-11-21
+- Enable Ctrl-Move and Ctrl+right-click building placement by default, with scoped Move resets.
+
+## Сборка 20261121-178 — 2026-11-21
+- Identify explicit Move cursor replacement for local Ctrl v2 compatibility.
+
+## Сборка 20261121-177 — 2026-11-21
+- Replace an active targeted order when selection override switches to another group with its own targeted order.
+
+## Сборка 20261121-176 — 2026-11-21
+- Make the multifunction selection override run a preset’s selector before the cursor or current context, while retaining a matching selection.
+
+## Сборка 20261121-175 — 2026-11-21
+- Add a per-preset option to deselect units after a multifunction order.
+
+## Сборка 20261121-174 — 2026-11-21
+- Add fighter, bomber, gunship, transport and scout rows under Air in the multifunction editor.
+
+## Сборка 20261121-173 — 2026-11-21
+- Make instant self-destruct available in all populated selection contexts.
+
+## Сборка 20261121-172 — 2026-11-21
+- Use per-unit pause capabilities for standalone keyboard actions.
+
 ## Сборка 20261121-171 — 2026-11-21
 - Offer map-wide selectors for all T1–T3 land, air, and naval factories in the keyboard and composite action pickers.
 

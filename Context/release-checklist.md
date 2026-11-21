@@ -19,6 +19,12 @@ Use for every task that changes shipped mod files. Docs-only changes skip the ga
 - Core and Hotbuild versions are independent; Hotbuild requires `ClaretCore >= <current Core>`.
 - The runner fails if these disagree (step 3).
 
+### FAF Mod Vault updates
+
+- For a new version of an already published mod, keep the published `name` exactly and set `version` to an integer above the latest published version. Assign a fresh `uid` in the working `mod_info.lua` as part of the version bump so the build can be uploaded directly. For Claret Hotbuild, use `claret-hotbuild-<version>` with at least three digits, for example `claret-hotbuild-087` for version 87. Use a fresh UID if that value is already taken.
+- Check references to the outgoing UID, including UID-based dependencies and load-order declarations. Keep profile keys and bind IDs stable. Report the upload folder and new UID to the user.
+- [FAF mod manifest documentation](https://github.com/FAForever/fa/blob/develop/lua/MODS.LUA)
+
 ## 3. Local checks
 
 - Focused: `node Tests/check-core.cjs --only <pattern>`.

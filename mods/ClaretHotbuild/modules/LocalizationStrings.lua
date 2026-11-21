@@ -5,6 +5,9 @@ Strings = {
         ["hotbuild.context.units"] = "Units",
         ["hotbuild.context.land"] = "Land",
         ["hotbuild.context.air"] = "Air",
+        ["hotbuild.context.fighter"] = "Fighters",
+        ["hotbuild.context.bomber"] = "Bombers",
+        ["hotbuild.context.gunship"] = "Gunships",
         ["hotbuild.context.navy"] = "Naval",
         ["hotbuild.context.builder"] = "Builders",
         ["hotbuild.context.empty"] = "No selection",
@@ -170,6 +173,9 @@ Strings = {
         ["hotbuild.context.units"] = "Войска",
         ["hotbuild.context.land"] = "Наземные",
         ["hotbuild.context.air"] = "Авиация",
+        ["hotbuild.context.fighter"] = "Истребители",
+        ["hotbuild.context.bomber"] = "Бомбардировщики",
+        ["hotbuild.context.gunship"] = "Штурмовики",
         ["hotbuild.context.navy"] = "Флот",
         ["hotbuild.context.builder"] = "Строители",
         ["hotbuild.context.empty"] = "Ничего не выделено",
@@ -519,6 +525,12 @@ Strings.en['hotbuild.context_editor.s030'] = 'No saved sets'; Strings.ru['hotbui
 Strings.en['hotbuild.context_editor.s031'] = 'Select a saved set'; Strings.ru['hotbuild.context_editor.s031'] = 'Выберите сохранённый набор'
 Strings.en['hotbuild.context_editor.s032'] = 'No saved sets yet.'; Strings.ru['hotbuild.context_editor.s032'] = 'Пока нет сохранённых наборов.'
 Strings.en['hotbuild.context_editor.s033'] = 'New'; Strings.ru['hotbuild.context_editor.s033'] = 'Новый'
+Strings.en['hotbuild.context_editor.selection_override'] = 'Override selection'
+Strings.ru['hotbuild.context_editor.selection_override'] = 'Сбрасывать выделение'
+Strings.en['hotbuild.context_editor.selection_override_hint'] = 'Run the selector assigned to No selection if other units are selected. Keep a matching selection and use its assigned context.'
+Strings.ru['hotbuild.context_editor.selection_override_hint'] = 'Запускает выбор юнитов из строки «Ничего не выделено», если выделены юниты другого типа. Если нужные юниты уже выделены, используется их контекст.'
+Strings.en['hotbuild.context_model.selection_override_type'] = 'The selection override setting must be a boolean.'
+Strings.ru['hotbuild.context_model.selection_override_type'] = 'Некорректное значение настройки сброса выделения.'
 Strings.en['hotbuild.context_editor.s140'] = 'New Set'; Strings.ru['hotbuild.context_editor.s140'] = 'New Set'
 Strings.en['hotbuild.context_editor.s034'] = 'Create a set first.'; Strings.ru['hotbuild.context_editor.s034'] = 'Сначала создайте набор.'
 Strings.en['hotbuild.context_editor.s035'] = 'There are no changes to save.'; Strings.ru['hotbuild.context_editor.s035'] = 'Изменений для сохранения нет.'

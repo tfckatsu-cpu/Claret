@@ -459,6 +459,7 @@ local addonEnv=setmetatable({
             end}
         end
         if path=='/mods/ClaretHotbuild/modules/BuildKeyLabels.lua' then return {} end
+        if path=='/mods/ClaretHotbuild/modules/CtrlInput.lua' then return {Install=function() end} end
         if path=='/mods/ClaretHotbuild/modules/OpenPerf.lua' then return {Start=function() return nil end} end
         assert(path=='/mods/ClaretHotbuild/modules/Navigator.lua')
         return {Create=function(parent,layout,pages) navPages=pages; return {parent=parent,scale=layout.scale,pages=pages} end}

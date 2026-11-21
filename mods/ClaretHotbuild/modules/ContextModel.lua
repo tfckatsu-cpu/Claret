@@ -11,7 +11,11 @@ end
 local MAX_BINDINGS = 64
 local MAX_ROWS = 64
 local MAX_ID_LENGTH = 96
-local childContexts = {acu='builder', sacu='builder', engineer='builder', land='units', air='units', navy='units', silo_tactical='missiles', silo_nuclear='missiles'}
+local childContexts = {
+    acu='builder', sacu='builder', engineer='builder', land='units', air='units', navy='units',
+    fighter='air', bomber='air', gunship='air', transport='air', scout='air',
+    silo_tactical='missiles', silo_nuclear='missiles',
+}
 local function Identifier(value)
     return type(value) == 'string' and string.len(value) > 0
         and string.len(value) <= MAX_ID_LENGTH
@@ -30,7 +34,7 @@ local function IsList(value)
 end
 
 local function Copy(binding)
-    local result = {id=binding.id, name=binding.name, absolute=binding.absolute == true, rows={}}
+    local result = {id=binding.id, name=binding.name, absolute=binding.absolute == true, selectionOverride=binding.selectionOverride, rows={}}
     for i, row in ipairs(binding.rows) do
         result.rows[i] = {context=row.context, action=row.action, mode=row.mode, quickRepeat=row.quickRepeat, fallback=row.fallback}
     end
@@ -50,9 +54,14 @@ local function Fields(value, allowed)
 end
 local function Validate(binding, actions, loading, previous)
     if type(binding) ~= 'table' or not Identifier(binding.id) then return nil, T('hotbuild.context_model.s001') end
-    if not Fields(binding, {id=true,name=true,absolute=true,rows=true}) then return nil, T('hotbuild.context_model.s002') end
+    if not Fields(binding, {id=true,name=true,absolute=true,selectionOverride=true,deselectAfterOrder=true,rows=true}) then return nil, T('hotbuild.context_model.s002') end
     if type(binding.name) ~= 'string' then return nil, T('hotbuild.context_model.s003') end
     if binding.absolute ~= nil and type(binding.absolute) ~= 'boolean' then return nil, T('hotbuild.context_model.s004') end
+    local selectionOverride=binding.selectionOverride
+    if selectionOverride==nil then selectionOverride=binding.deselectAfterOrder end
+    if selectionOverride ~= nil and type(selectionOverride) ~= 'boolean' then
+        return nil, T('hotbuild.context_model.selection_override_type')
+    end
     local name = string.gsub(string.gsub(binding.name, '^%s+', ''), '%s+$', '')
     if name == '' or string.len(name) > 128 then return nil, T('hotbuild.context_model.s005') end
     if not IsList(binding.rows) then return nil, T('hotbuild.context_model.s006') end
@@ -126,7 +135,7 @@ local function Validate(binding, actions, loading, previous)
         end
         seen[row.context] = true
     end
-    return {id=binding.id, name=loading and binding.name or name, absolute=binding.absolute == true, rows=rows}
+    return {id=binding.id, name=loading and binding.name or name, absolute=binding.absolute == true, selectionOverride=selectionOverride or nil, rows=rows}
 end
 
 local function BuildActions(actions)
@@ -167,6 +176,8 @@ function Create(saved, actions)
         return Copy(byId[id])
     end
 
+    function model:ParentContext(context) return childContexts[context] end
+
     function model:ResolveAction(bindingOrId, childContext)
         if not childContexts[childContext] then return nil end
         local row=self:ResolveRow(bindingOrId,childContext)
@@ -192,6 +203,12 @@ function Create(saved, actions)
                         if target==childContext then return nil end
                     end
                 end
+            end
+            -- Generic Forces assignments historically excluded transport and scouts.
+            if childContext=='transport' or childContext=='scout' then
+                if not parent or (parent.mode or 'own')~='own' then return nil end
+            elseif childContexts[childContexts[childContext]] then
+                parent=self:ResolveRow(binding,childContexts[childContext])
             end
             row=parent
         else
@@ -309,8 +326,8 @@ function Create(saved, actions)
                     local valid
                     local source=binding
                     if saved.version==1 and type(binding)=='table' and IsList(binding.rows) then
-                        source={id=binding.id,name=binding.name,absolute=binding.absolute,rows={}}
-                        if not Fields(binding, {id=true,name=true,absolute=true,rows=true}) then source=binding end
+                        source={id=binding.id,name=binding.name,absolute=binding.absolute,selectionOverride=binding.selectionOverride,deselectAfterOrder=binding.deselectAfterOrder,rows={}}
+                        if not Fields(binding, {id=true,name=true,absolute=true,selectionOverride=true,deselectAfterOrder=true,rows=true}) then source=binding end
                         for _, row in ipairs(binding.rows) do
                             if source==binding then break end
                             if type(row)=='table' and Fields(row,{context=true,action=true,mode=true,quickRepeat=true,fallback=true}) then

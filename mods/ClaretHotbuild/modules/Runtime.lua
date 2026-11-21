@@ -160,11 +160,10 @@ function Create(isReplay)
         end
     end
 
-    local selectionContexts = {'land','air','navy','acu','sacu','engineer','factory',
-        'silo_tactical','silo_nuclear','transport','mex','scout','other'}
-    local armyContexts = {land=true,air=true,navy=true}
+
     local contextGroup = {
-        land='units',air='units',navy='units',acu='builder',sacu='builder',engineer='builder',
+        land='units',air='units',navy='units',fighter='units',bomber='units',gunship='units',
+        acu='builder',sacu='builder',engineer='builder',
         silo_tactical='missiles',silo_nuclear='missiles',
     }
     local function ResolveContext(binding, selection, unitsOnly)
@@ -178,10 +177,10 @@ function Create(isReplay)
         local actionId, winningKind
         local allArmy, conflict = true, false
         local present=ContextActions.PresentContexts(selection)
-        for _,kind in ipairs(selectionContexts) do
+        for _,kind in ipairs(ContextActions.Priority()) do
             if present[kind] then
                 count=count+1
-                allArmy=allArmy and armyContexts[kind]==true
+                allArmy=allArmy and ContextActions.IsArmyContext(kind)
                 local row=service.contextModel:ResolveRow(binding,kind)
                 local id=row and row.action
                 if id and id~='load_transports' then
@@ -221,10 +220,11 @@ function Create(isReplay)
         return fallbackResult or result
     end
 
-    local function RunResolved(binding,context,id,unitsOnly)
+    local function RunResolved(binding,context,id,unitsOnly,targetOrderOnly)
         local matched,actionId,kind,legacyUnits=ResolveContext(binding,context.selection,unitsOnly)
         if not matched then return false end
         local action=actionId and ContextActions.Get(actionId)
+        if targetOrderOnly and not ContextActions.StartsTargetOrder(action) then return false end
         context.legacyUnits=legacyUnits
         context.resolvedContext=kind
         if not action or not CompositeSupports(actionId,kind) or not ContextActions.Available(action,context) then
@@ -262,6 +262,81 @@ function Create(isReplay)
             end
         end
         return true,result,result and action.id or T('hotbuild.runtime.s005')
+    end
+
+    local function RunSelectionOverride(binding,context,id,chord,presetId)
+        if not binding or not binding.selectionOverride then return false end
+        local row=service.contextModel:ResolveRow(binding,'empty')
+        local action=row and ContextActions.Get(row.action)
+        if not action or not ContextActions.IsSelection(action.id) or not CompositeSupports(action.id,'empty') then
+            return false
+        end
+        if ContextActions.SelectionMatches(action,context.selection) then
+            local matched,result,message=continuation:Continue(id,context)
+            if matched then return true,result,message end
+            if not binding.absolute then
+                matched,result,message=RunResolved(binding,context,id,false)
+                if matched then return true,result,message end
+            end
+            return true,true,action.id
+        end
+
+        context.absolute=true
+        if not ContextActions.Available(action,context) then return true,false,T('hotbuild.runtime.s001') end
+        local original=context.selection or {}
+        local commands=import('/lua/ui/game/commandmode.lua')
+        local mode=commands.GetCommandMode()
+        local replacingTargetOrder=table.getn(original)>0 and mode[1]=='order'
+        local priorOrderData=mode[2]
+        local replacingMove=replacingTargetOrder and priorOrderData and priorOrderData.name=='RULEUCC_Move'
+            and IsKeyDown('Control')
+        local priorCancel=replacingMove and priorOrderData.isCancel
+        if replacingMove then
+            -- End the old cursor before changing selection so Ctrl can distinguish
+            -- a Hotbuild replacement from a move the player actually issued.
+            local previousMarker=priorOrderData.claretHotbuildReplacingMove
+            priorOrderData.claretHotbuildReplacingMove=true
+            local ended,endError=pcall(commands.EndCommandMode,true)
+            priorOrderData.claretHotbuildReplacingMove=previousMarker
+            if not ended then return true,false,tostring(endError) end
+        end
+        if table.getn(original)>0 then SelectUnits({}) end
+        context.selection={}
+        context.resolvedContext='empty'
+        continuation:Clear()
+        local matched,result,message=RunEngineerStart(binding,context,id,chord,presetId)
+        if not matched then
+            local called,executed=pcall(ExecuteRow,binding,'empty',action,context,id)
+            if called then
+                result=executed
+                message=result and action.id or T('hotbuild.runtime.s002')
+                if result then RememberComposite(id,action,context) end
+            else
+                result=false
+                message=tostring(executed)
+            end
+        end
+        local selected=GetSelectedUnits() or {}
+        if table.getn(selected)==0 then
+            if table.getn(original)>0 then SelectUnits(original) end
+            if replacingMove and not commands.GetCommandMode()[1] then
+                priorOrderData.isCancel=priorCancel
+                commands.StartCommandMode('order',priorOrderData)
+            end
+            if not row.fallback and result then return true,false,T('hotbuild.runtime.s002') end
+        elseif result and replacingTargetOrder and ContextActions.SelectionMatches(action,selected) then
+            -- Selection changes can end command mode before the new order is ready.
+            local currentMode=commands.GetCommandMode()
+            if currentMode[1]=='order' and currentMode[2]==priorOrderData then commands.EndCommandMode(true) end
+            if not binding.absolute then
+                local contextOk,fresh=pcall(adapter.Context,adapter,service.isReplay)
+                if contextOk then
+                    local orderMatched,ordered,orderMessage=RunResolved(binding,fresh,id,false,true)
+                    if orderMatched and ordered then return true,ordered,orderMessage end
+                end
+            end
+        end
+        return true,result,message
     end
 
     local function RunCursor(binding,context,id)
@@ -334,6 +409,8 @@ function Create(isReplay)
         local activeChord=chord or quickChord
         local dispatchId=activeChord and ('keyboard:pair:'..activeChord) or id
         local composite=activeContext and self.contextModel:Get(activeContext)
+        local selectionMatched,selectionResult,selectionMessage=RunSelectionOverride(composite,context,dispatchId,activeChord,id)
+        if selectionMatched then return selectionResult,selectionMessage end
         local cursorMatched,cursorResult,cursorMessage=RunCursor(composite,context,dispatchId)
         if cursorMatched then return cursorResult,cursorMessage end
         local engineerMatched,engineerResult,engineerMessage=RunEngineerStart(composite,context,dispatchId,activeChord,id)
@@ -451,6 +528,8 @@ function Create(isReplay)
             return adapter:Context(self.isReplay)
         end)
         if not contextOk then return false, tostring(context) end
+        local selectionMatched,selectionResult,selectionMessage=RunSelectionOverride(composite,context,continuationId,activeChord)
+        if selectionMatched then return selectionResult,selectionMessage end
         context.absolute=true
         local actual=context
         if action.continuation=='accumulate' and action.special and string.find(action.special,'^next_engineer_') then
@@ -518,6 +597,7 @@ function Create(isReplay)
             return adapter:Context(self.isReplay)
         end)
         if not good then return false,tostring(context) end
+        context.keyboardAction=true
         local double=chord and keyboardBindings:GetDouble(chord)
         local second=double and double.first==actionId and ContextActions.Get(double.second)
         if second and second.id=='load_transports' then
@@ -559,6 +639,8 @@ function Create(isReplay)
         if not good then return false,tostring(context) end
         local activeChord=chord or quickChord
         local continuationId=activeChord and ('keyboard:pair:'..activeChord) or ('keyboard:composite:'..compositeId)
+        local selectionMatched,selectionResult,selectionMessage=RunSelectionOverride(composite,context,continuationId,activeChord)
+        if selectionMatched then return selectionResult,selectionMessage end
         local cursorMatched,cursorResult,cursorMessage=RunCursor(composite,context,continuationId)
         if cursorMatched then return cursorResult,cursorMessage end
         local engineerMatched,engineerResult,engineerMessage=RunEngineerStart(composite,context,continuationId,activeChord)
@@ -606,8 +688,9 @@ function Create(isReplay)
                 return adapter:Context(self.isReplay)
             end)
             if not good then return false,tostring(context) end
+            context.keyboardAction=true
             local selectedTarget=false
-            if second.id=='load_transports' then
+            if second.id=='load_transports' or second.id=='pause_unit' or second.id=='pause' then
                 selectedTarget=ContextActions.Available(second,context)
             else
                 for _,kind in ipairs(second.contexts or {}) do

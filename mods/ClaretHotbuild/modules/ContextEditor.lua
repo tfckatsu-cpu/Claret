@@ -283,9 +283,30 @@ function Create(parent, service, embedded, memory)
         local actions = service.contextActions.List()
         local keyHint=Text(frame,'',344,154,12,C.muted)
         draftStatus=Text(frame,'',344,174,12,C.muted)
+        local function CreateSelectionOverrideOption()
+            local row=Panel(frame,24,176,300,36,C.raised)
+            Text(row,T('hotbuild.context_editor.selection_override'),8,9,12)
+            local paint=Theme.SettingsSwitch(row,L,300,36,ratio,true)
+            row.HandleEvent=function(self,event)
+                if event.Type~='ButtonPress' or not (event.Modifiers and event.Modifiers.Left) or not draft then return false end
+                draft.selectionOverride=not draft.selectionOverride or nil
+                paint(draft.selectionOverride)
+                Change()
+                return true
+            end
+            Tooltip.AddAutoUpdatedControlTooltip(row,function()
+                return T('hotbuild.context_editor.selection_override')
+            end,function() return T('hotbuild.context_editor.selection_override_hint') end)
+            return function(binding)
+                if binding then row:Show(); paint(binding.selectionOverride)
+                else row:Hide() end
+            end
+        end
+        local RefreshSelectionOverride=CreateSelectionOverrideOption()
         Load=function(binding)
             loading = true
             draft = binding
+            RefreshSelectionOverride(binding)
             memory.bindingId = binding and binding.id or nil
             dirty = false; leaveIntent = nil; deleteIntent = nil; selectedContext = nil
             if draftStatus then draftStatus:SetText('') end
@@ -565,7 +586,8 @@ function Create(parent, service, embedded, memory)
             if string.find(id,'air_experimentals') then return 4 end
             if context=='units' or context=='land' or context=='navy'
                 or string.find(id,'land_army') or string.find(id,'naval_army') or string.find(id,'experimentals') then return 3 end
-            if context=='air' or context=='scout' or string.find(id,'scout') or string.find(id,'bomber')
+            if context=='air' or context=='fighter' or context=='bomber' or context=='gunship'
+                or context=='scout' or string.find(id,'scout') or string.find(id,'bomber')
                 or string.find(id,'fighter') or string.find(id,'gunship') or string.find(id,'air_experimentals') then return 4 end
             if context=='transport' or string.find(id,'transport') then return 5 end
             if context=='factory' or context=='mex' or context=='missiles' or context=='silo_tactical'
@@ -573,7 +595,7 @@ function Create(parent, service, embedded, memory)
                 or string.find(id,'silo') or string.find(id,'structure') or string.find(id,'mex') then return 6 end
             return 7
         end
-        local childParents={land='units',air='units',navy='units',acu='builder',sacu='builder',engineer='builder',silo_tactical='missiles',silo_nuclear='missiles'}
+        local function ParentContext(id) return service.contextModel:ParentContext(id) end
         local function TileLock(id)
             for _,row in ipairs(draft and draft.rows or {}) do
                 local action=row.action and service.contextActions.Get(row.action)
@@ -590,7 +612,7 @@ function Create(parent, service, embedded, memory)
             end
         end
         local function HasReservedAssignment(target)
-            if childParents[target] then
+            if ParentContext(target) then
                 local row=CurrentRow(target)
                 return row and row.action and row.mode~='inherit' and row.mode~='disabled'
             end
@@ -611,11 +633,13 @@ function Create(parent, service, embedded, memory)
             if policy == 'double' then return T('hotbuild.context_editor.s044') end
             if policy == 'accumulate' then return T('hotbuild.context_editor.s045') end
         end
-        local priorityRank={cursor=1,empty=2,units=3,builder=4,factory=5,missiles=6,transport=7,mex=8,scout=9,other=10}
+        local priorityRank={cursor=1,empty=2,units=3,builder=4,factory=5,missiles=6,mex=7,other=8}
         local selectedContextTitle=Text(frame,'',552,282,14,C.accentText)
         local catalogHint=Text(frame,T('hotbuild.context_editor.s046'),552,306,12,C.muted)
         local editTarget='action'
         local disableChildButton,resetChildButton,clearContextButton
+        local treeRowStep=29
+        local treeRowHeight=27
         RefreshRows=function()
             local treeY=4
             for i,item in ipairs(contextButtons) do
@@ -625,7 +649,7 @@ function Create(parent, service, embedded, memory)
                         L(item.button):AtLeftTopIn(contextPanel,item.treeX,treeY)
                         item.displayY=treeY
                     end
-                    treeY=treeY+34
+                    treeY=treeY+treeRowStep
                     item.button:Show()
                 else item.button:Hide() end
                 local row=CurrentRow(item.context)
@@ -633,14 +657,10 @@ function Create(parent, service, embedded, memory)
                 local effective
                 if isChild then
                     local mode=row and (row.mode or 'own') or 'inherit'
-                    local parent=CurrentRow(childParents[item.context])
-                    effective=mode=='own' and row.action or (mode=='inherit' and parent and parent.action or nil)
+                    effective=draft and service.contextModel:ResolveAction(draft,item.context) or nil
                     item.mode:SetText(mode=='inherit' and T('hotbuild.context_editor.s047') or (mode=='disabled' and T('hotbuild.context_editor.s048') or T('hotbuild.context_editor.s049')))
                     item.mode:SetColor(mode=='inherit' and C.disabledText or C.accentText)
                 else effective=row and row.action end
-                if isChild then
-                    effective=draft and service.contextModel:ResolveAction(draft,item.context) or nil
-                end
                 local locked=TileLock(item.context)
                 local blocked=locked~=nil
                 item.blocked=blocked
@@ -669,7 +689,7 @@ function Create(parent, service, embedded, memory)
                 if isChild and (not row or row.mode=='inherit') and action then display=T('hotbuild.context_editor.s051') end
                 if staleId and Obsolete(item.context,staleId) then display=T('hotbuild.context_editor.s052')..((service.contextActions.Get(staleId) or {}).label or staleId) end
                 if locked then display=locked; item.action:SetColor(C.warning) end
-                Fit(item.action,display,isChild and 150 or (item.isBuilder and 220 or 260))
+                Fit(item.action,display,isChild and (item.width-284) or (item.isBuilder and 220 or 260))
                 if blocked then item.mark:SetColor(C.muted) end
                 item.outline(selectedContext==item.context and C.selectedBorder or (blocked and C.warningBorder or C.border))
             end
@@ -682,7 +702,7 @@ function Create(parent, service, embedded, memory)
                 end
             end
             usageText:SetText(Short(T('hotbuild.context_editor.s053')..effectiveTotal..T('hotbuild.context_editor.s054')..stats.overrides,44))
-            local selectedChild=childParents[selectedContext]~=nil
+            local selectedChild=ParentContext(selectedContext)~=nil
             local selectedRow=selectedContext and CurrentRow(selectedContext)
             if draft and selectedChild then
                 local mode=selectedRow and (selectedRow.mode or 'own') or 'inherit'
@@ -714,12 +734,12 @@ function Create(parent, service, embedded, memory)
             Change(); RefreshRows(); RefreshCatalog()
         end
         disableChildButton=Button(frame,T('hotbuild.context_editor.s059'),552,832,108,function()
-            if childParents[selectedContext] then
+            if ParentContext(selectedContext) then
                 SetChildMode(selectedContext,'disabled')
             end
         end)
         resetChildButton=Button(frame,T('hotbuild.context_editor.s060'),664,832,108,function()
-            if childParents[selectedContext] then
+            if ParentContext(selectedContext) then
                 SetChildMode(selectedContext,'inherit')
             end
         end)
@@ -732,16 +752,18 @@ function Create(parent, service, embedded, memory)
             end
         end)
         disableChildButton:Hide(); resetChildButton:Hide(); clearContextButton:Hide()
-        local function CreateContextTile(index, contextId, child, x, y, w, h)
+        local function CreateContextTile(contextId, x, w)
+            local index=table.getn(contextButtons)+1
+            local y=4+(index-1)*treeRowStep
             -- Always give a position: a size-only Maui control has a circular
             -- Left/Top chain until one anchor exists.
-            local button=Panel(contextPanel,x,y,w,h,C.surface)
-            local border=Theme.Outline(button,L,w,h)
+            local button=Panel(contextPanel,x,y,w,treeRowHeight,C.surface)
+            local border=Theme.Outline(button,L,w,treeRowHeight)
             local mark=Text(button,'○',8,5,14,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),28,0,14)
-            local mode=child and Text(button,'',188,0,11,C.muted) or nil
-            local action=Text(button,'',child and 276 or 188,0,12,C.muted)
-            local item={context=contextId,child=child,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y,displayY=y}
+            local mode=Text(button,'',188,0,11,C.muted)
+            local action=Text(button,'',276,0,12,C.muted)
+            local item={context=contextId,child=true,width=w,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y,displayY=y}
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
                 elseif e.Type=='MouseExit' then SetContextTileHover(item,false)
@@ -752,22 +774,19 @@ function Create(parent, service, embedded, memory)
                 local lock=TileLock(contextId)
                 if lock then return lock..T('hotbuild.context_editor.s063') end
                 local row=CurrentRow(contextId)
-                local parent=child and CurrentRow(childParents[contextId])
-                local actionId
-                if child then
-                    if row and row.mode=='disabled' then actionId=nil
-                    elseif row and (row.mode=='own' or row.mode==nil) then actionId=row.action
-                    else actionId=parent and parent.action end
-                else actionId=row and row.action end
+                local actionId=draft and service.contextModel:ResolveAction(draft,contextId)
                 local action=actionId and service.contextActions.Get(actionId)
-                local detail=child and (row and row.mode=='disabled' and T('hotbuild.context_editor.s064') or (row and (row.mode=='own' or row.mode==nil) and T('hotbuild.context_editor.s065') or (T('hotbuild.context_editor.s066')..ContextLabel(childParents[contextId])..'»'))) or T('hotbuild.context_editor.s067')
+                local detail=row and row.mode=='disabled' and T('hotbuild.context_editor.s064')
+                    or (row and (row.mode=='own' or row.mode==nil) and T('hotbuild.context_editor.s065'))
+                    or (T('hotbuild.context_editor.s066')..ContextLabel(ParentContext(contextId))..'»')
                 return action and (detail..': '..ActionLabel(action)..(item.context=='empty' and PolicyDescription(action.selectionPolicy) and (' · '..PolicyDescription(action.selectionPolicy)) or '')) or detail
             end)
             contextButtons[index]=item
         end
-        local function CreatePriorityTile(contextId, rank, x, y, w)
-            local button=Panel(contextPanel,x,y,w,30,C.surface)
-            local border=Theme.Outline(button,L,w,30)
+        local function CreatePriorityTile(contextId, rank, x, w)
+            local y=4+table.getn(contextButtons)*treeRowStep
+            local button=Panel(contextPanel,x,y,w,treeRowHeight,C.surface)
+            local border=Theme.Outline(button,L,w,treeRowHeight)
             local mark=Text(button,tostring(rank or '—'),8,2,13,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),30,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
@@ -788,9 +807,10 @@ function Create(parent, service, embedded, memory)
                 return action and (detail..': '..ActionLabel(action)) or detail
             end)
         end
-        local function CreateOtherTile(contextId,x,y,w)
-            local button=Panel(contextPanel,x,y,w,30,C.surface)
-            local border=Theme.Outline(button,L,w,30)
+        local function CreateOtherTile(contextId,x,w)
+            local y=4+table.getn(contextButtons)*treeRowStep
+            local button=Panel(contextPanel,x,y,w,treeRowHeight,C.surface)
+            local border=Theme.Outline(button,L,w,treeRowHeight)
             local title=Text(button,Short(ContextLabel(contextId),20),8,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
             local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,rank=priorityRank[contextId],treeX=x,treeY=y,displayY=y}
@@ -810,17 +830,22 @@ function Create(parent, service, embedded, memory)
             end)
         end
         -- Selection hierarchy is presented as a single vertical tree.
-        CreatePriorityTile('cursor',nil,8,8,456)
-        CreatePriorityTile('empty',nil,8,42,456)
-        local function CreateGroup(id,children,x,y,width,childHeight,step)
-            local header=Panel(contextPanel,x,y,width,30,C.raised)
+        CreatePriorityTile('cursor',nil,8,456)
+        CreatePriorityTile('empty',nil,8,456)
+        local function CreateGroup(id,children,x,width)
+            local y=4+table.getn(contextButtons)*treeRowStep
+            local header=Panel(contextPanel,x,y,width,treeRowHeight,C.raised)
             local label=Text(header,ContextLabel(id),8,0,15)
             local action=Text(header,'',math.floor(width*0.5),0,11,C.muted)
             local item={context=id,button=header,mark=label,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
-            for i,childId in ipairs(children) do
-                local index=table.getn(contextButtons)+1
-                CreateContextTile(index,childId,true,x+22,y+30+(i-1)*step,width-22,childHeight)
+            for _,childId in ipairs(children) do
+                CreateContextTile(childId,x+22,width-22)
+                if childId=='air' then
+                    for _,aircraft in ipairs({'fighter','bomber','gunship','transport','scout'}) do
+                        CreateContextTile(aircraft,x+44,width-44)
+                    end
+                end
             end
             header.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -837,12 +862,12 @@ function Create(parent, service, embedded, memory)
                 return action and (T('hotbuild.context_editor.s074')..ActionLabel(action)) or T('hotbuild.context_editor.s075')
             end)
         end
-        CreateGroup('units',{'land','air','navy'},8,76,456,30,30)
-        CreateGroup('builder',{'acu','sacu','engineer'},8,200,456,30,30)
-        CreateOtherTile('factory',8,324,456)
-        CreateGroup('missiles',{'silo_tactical','silo_nuclear'},8,358,456,30,30)
-        local otherIds={'transport','mex','scout','other'}
-        for i,id in ipairs(otherIds) do CreateOtherTile(id,8,448+(i-1)*32,456) end
+        CreateGroup('units',{'land','air','navy'},8,456)
+        CreateGroup('builder',{'acu','sacu','engineer'},8,456)
+        CreateOtherTile('factory',8,456)
+        CreateGroup('missiles',{'silo_tactical','silo_nuclear'},8,456)
+        CreateOtherTile('mex',8,456)
+        CreateOtherTile('other',8,456)
         local catalogPanel=Panel(frame,536,364,520,498,C.canvas)
         local catalogScrollbar
         local actionSlots={}
@@ -1028,7 +1053,7 @@ function Create(parent, service, embedded, memory)
             if TileLock(selectedContext) then Status(TileLock(selectedContext),true); return end
             if draft.absolute and selectedContext~='empty' then Status(T('hotbuild.context_editor.s110'),true); return end
             local old=CurrentRow(selectedContext)
-            if old and old.action==action.id and (not childParents[selectedContext] or old.mode==nil or old.mode=='own') then return end
+            if old and old.action==action.id and (not ParentContext(selectedContext) or old.mode==nil or old.mode=='own') then return end
             local actionLock=ActionLock(action)
             if actionLock then Status(actionLock,true); return end
             local policy=selectedContext=='empty' and action.selectionPolicy or EmptySelectionPolicy()
@@ -1050,10 +1075,10 @@ function Create(parent, service, embedded, memory)
                 row.action=action.id
             else
                 row={context=selectedContext,action=action.id}
-                if childParents[selectedContext] then row.mode='own' end
+                if ParentContext(selectedContext) then row.mode='own' end
                 table.insert(draft.rows,row)
             end
-            if childParents[selectedContext] then row.mode='own' end
+            if ParentContext(selectedContext) then row.mode='own' end
             Change(); RefreshRows(); RefreshCatalog()
                 Status(T('hotbuild.context_editor.s125')..ActionLabel(action))
             if selectedContext=='missiles' and action.id=='smart_missile' then
