@@ -62,8 +62,13 @@ local prefs = {
 local commandMode = {'normal'}
 local commandModule = {
     GetCommandMode=function() return commandMode end,
+
     StartCommandMode=function(kind, data) commandCalls[#commandCalls+1]={kind,data}; commandMode={kind,data} end,
 }
+function commandModule.EndCommandMode()
+    if commandModule.onEnd then commandModule.onEnd(commandMode[2]) end
+    commandMode={false,false}
+end
 local mapperCalls={}
 local engineKeyMap, failEngineAdd = {}, false
 local applyCalls, diagnosticLines = {}, {}
@@ -109,7 +114,11 @@ runtimeEnvironment=setmetatable({
         Categories={'UEF','STRUCTURE','TECH1','BUILTBYTIER1FACTORY'}}},
     LOC=function(value) return value end,
     GetSelectedUnits=function() return selected end,
-    SelectUnits=function(units) selected=units end,
+    IsKeyDown=function(key) return key=='Control' and commandModule.controlDown end,
+    SelectUnits=function(units)
+        selected=units
+        if #units==0 and commandModule.endOnDeselect then commandModule.EndCommandMode() end
+    end,
     UISelectionByCategory=function(category)
         if category=='ENGINEER TECH1' or category=='MOBILE ENGINEER TECH1' then selected=engineerCandidates end
     end,
@@ -127,10 +136,20 @@ runtimeEnvironment=setmetatable({
     GetMouseWorldPos=function() return {0,0,0} end,
     ClearBuildTemplates=function() end,
     GetFocusArmy=function() return 1 end,
+    GetIsPaused=function(units)
+        assert(#units==1 and units[1].canPause)
+        return commandModule.pauseState
+    end,
+    SetPaused=function(units, state) commandModule.pauseTargets, commandModule.pauseState=units,state end,
     GetUnitCommandData=function(units)
         local category='EMPTY'
         if units and #units==1 and units[1].canBuild then category='BUILDABLE' end
-        return {'RULEUCC_Move','RULEUCC_Reclaim'}, {}, category
+        local orders={'RULEUCC_Move','RULEUCC_Reclaim'}
+        if units and #units==1 and units[1]:IsInCategory('BOMBER') then
+            orders[#orders+1]='RULEUCC_Attack'
+        end
+        if units and #units==1 and units[1].canPause then orders[#orders+1]='RULEUCC_Pause' end
+        return orders, {}, category
     end,
     EntityCategoryGetUnitList=function(category) return category=='BUILDABLE' and {'ueb1101'} or {} end,
     IssueBlueprintCommand=function(...) buildCalls[#buildCalls+1]={...} end,
@@ -160,6 +179,13 @@ runtimeEnvironment=setmetatable({
         if path=='/lua/keymap/keymapper.lua' then return mapper end
         if path=='/lua/keymap/keydescriptions.lua' then return {keyDescriptions=descriptions} end
         if path=='/lua/keymap/unitkeygroups.lua' then return {unitkeygroups={}} end
+        if path=='/lua/keymap/smartselection.lua' then
+            return {smartSelect=function(category)
+                assert(category=='AIR HIGHALTAIR ANTIAIR -BOMBER -EXPERIMENTAL' and #selected==0)
+                selectCalls[#selectCalls+1]=category
+                if commandModule.fighterSelection then selected={commandModule.fighterSelection} end
+            end}
+        end
         if path=='/lua/ui/game/commandmode.lua' then return commandModule end
         if path=='/lua/ui/game/orders.lua' then
             return {Stop=function(units) table.insert(commandCalls,{'stop',units}) end}
@@ -338,6 +364,24 @@ assert(not removed and removeError:find('Подтвердите',1,true),'direct
 assert(service.contextModel:Get('ctxAcu'),'rejected delete leaves binding intact')
 
 service:Start({Defer=function() end})
+assert((function()
+    local factory, scout=makeUnit('FACTORY'),makeUnit('SCOUT','LAND','MOBILE')
+    local previousSelection=selected
+    factory.canPause=true
+    selected={scout,factory}
+    local ok, reason=Runtime.ExecuteKeyboardAction('pause_unit')
+    assert(ok, reason)
+    assert(commandModule.pauseState)
+    assert(#commandModule.pauseTargets==1 and commandModule.pauseTargets[1]==factory and selected[1]==scout)
+    assert(Runtime.ExecuteKeyboardAction('pause_unit') and not commandModule.pauseState)
+    scout.canPause=true
+    selected={scout}
+    assert(Runtime.ExecuteKeyboardAction('pause') and commandModule.pauseState and commandModule.pauseTargets[1]==scout)
+    scout.canPause=false
+    assert(not Runtime.ExecuteKeyboardAction('pause_unit') and commandModule.pauseState)
+    selected=previousSelection
+    return true
+end)())
 probeEnabled=true; diagnosticLines={}
 assert(Runtime.ExecuteKeyboardAction('select_acu'),'direct context action is handled through key entry point')
 Runtime.Execute('legacy')
@@ -806,6 +850,119 @@ assert(service:ExecuteKeyboardAction('select_acu_double') and selected[1]==simul
 testNow=61.3
 assert(service:ExecuteKeyboardAction('select_acu_double') and selectCalls[#selectCalls]=='UI_SelectByCategory +nearest +goto COMMAND',
     'standalone action preserves double-press continuation after selection changes')
+do
+    local fighter=makeUnit('MOBILE','AIR','HIGHALTAIR','ANTIAIR')
+    local bomber=makeUnit('MOBILE','AIR','HIGHALTAIR','ANTIAIR','BOMBER','GROUNDATTACK')
+    local gunship=makeUnit('MOBILE','AIR','GROUNDATTACK')
+    local transport=makeUnit('MOBILE','AIR','TRANSPORTATION','GROUNDATTACK')
+    local scout=makeUnit('MOBILE','AIR','INTELLIGENCE')
+    for kind,aircraft in pairs({fighter=fighter,bomber=bomber,gunship=gunship,transport=transport,scout=scout}) do
+        assert(service.contextActions.Classify({aircraft})==kind)
+    end
+
+    assert(service.contextModel:Put({id='air_inheritance',name='Air inheritance',rows={
+        {context='units',action='move'}, {context='air',mode='own',action='move'},
+        {context='bomber',mode='own',action='stop'},
+        {context='transport',action='stop'}, {context='scout',mode='disabled'},
+    }}))
+    selected={fighter,gunship}
+    local before=#commandCalls
+    assert(service:ExecuteKeyboardComposite('air_inheritance') and #commandCalls==before+1
+        and commandCalls[#commandCalls][2].name=='RULEUCC_Move')
+    selected={bomber,transport}
+    assert(service:ExecuteKeyboardComposite('air_inheritance') and #commandCalls==before+2
+        and commandCalls[#commandCalls][1]=='stop')
+    selected={fighter,scout}
+    assert(not service:ExecuteKeyboardComposite('air_inheritance') and #commandCalls==before+2)
+
+    assert(service.contextModel:Put({id='air_generic',name='Generic Air',rows={{context='air',action='move'}}}))
+    selected={fighter,bomber,gunship,transport,scout}
+    assert(service:ExecuteKeyboardComposite('air_generic') and #commandCalls==before+3
+        and commandCalls[#commandCalls][2].name=='RULEUCC_Move')
+
+    assert(service.contextModel:Put({id='air_legacy_units',name='Legacy Units',rows={{context='units',action='move'}}}))
+    selected={bomber}
+    assert(service:ExecuteKeyboardComposite('air_legacy_units') and #commandCalls==before+4)
+    selected={transport,scout}
+    assert(not service:ExecuteKeyboardComposite('air_legacy_units') and #commandCalls==before+4)
+end
+do
+    local fighter=makeUnit('MOBILE','AIR','HIGHALTAIR','ANTIAIR')
+    local bomber=makeUnit('MOBILE','AIR','BOMBER')
+    assert(service.contextModel:Put({id='select_override',name='Fighters',selectionOverride=true,rows={
+        {context='empty',action='select_fighters'}, {context='cursor',action='upgrade_structure_under_cursor'},
+        {context='fighter',action='stop'},
+    }}))
+    assert(service.contextModel:Put({id='legacy_override',name='Legacy override',deselectAfterOrder=true,
+        rows={{context='empty',action='select_bombers'}}}))
+    local legacy=service.contextModel:Get('legacy_override')
+    assert(legacy.selectionOverride and legacy.deselectAfterOrder==nil,'old checkbox migrates to selection override')
+
+    commandModule.fighterSelection=fighter
+    fallbackSelection=bomber
+    cursorEligible=true
+    local beforeCursor,beforeCommands=cursorCalls,#commandCalls
+    selected={bomber}
+    assert(service:ExecuteKeyboardComposite('select_override') and selected[1]==fighter
+        and cursorCalls==beforeCursor and #commandCalls==beforeCommands)
+    local beforeSelect=#selectCalls
+    assert(service:ExecuteKeyboardComposite('select_override') and selected[1]==fighter
+        and #selectCalls==beforeSelect and #commandCalls==beforeCommands+1
+        and commandCalls[#commandCalls][1]=='stop' and cursorCalls==beforeCursor,
+        'matching fighters use their own context without rerunning the selector or cursor action')
+    assert(service:ExecuteKeyboardComposite('legacy_override') and selected[1]==bomber)
+    assert(service:Execute('acu','select_override') and selected[1]==fighter and cursorCalls==beforeCursor,
+        'a composite linked to a build preset also runs selection override before cursor and construction')
+    selected={bomber}
+    commandModule.fighterSelection=nil
+    assert(not service:ExecuteKeyboardComposite('select_override') and selected[1]==bomber,
+        'a selector with no targets restores the original selection')
+    local previousMode=commandMode
+    commandMode={false,false}
+    commandModule.fighterSelection=fighter
+    assert(service.contextModel:Put({id='fighter_order',name='Fighter move',selectionOverride=true,rows={
+        {context='empty',action='select_fighters'}, {context='fighter',action='move'},
+    }}))
+    assert(service.contextModel:Put({id='bomber_order',name='Bomber attack',selectionOverride=true,rows={
+        {context='empty',action='select_bombers'}, {context='bomber',action='attack'},
+    }}))
+    assert(service:ExecuteKeyboardComposite('fighter_order') and selected[1]==fighter and not commandMode[1],
+        'without an active order the first press only selects fighters')
+    assert(service:ExecuteKeyboardComposite('fighter_order') and commandMode[2].name=='RULEUCC_Move')
+    local outgoingMove=commandMode[2]
+    local markedMove
+    commandModule.controlDown=true
+    commandModule.onEnd=function(data)
+        if data and data.name=='RULEUCC_Move' then markedMove=data.claretHotbuildReplacingMove end
+    end
+    assert(service:ExecuteKeyboardComposite('bomber_order') and selected[1]==bomber
+        and commandMode[2].name=='RULEUCC_Attack'
+        and markedMove and outgoingMove.claretHotbuildReplacingMove==nil,
+        'Ctrl receives the marker only during explicit replacement of Move')
+    assert(service:ExecuteKeyboardComposite('fighter_order') and selected[1]==fighter)
+    local retainedMove=commandMode[2]
+    fallbackSelection=nil
+    assert(not service:ExecuteKeyboardComposite('bomber_order') and selected[1]==fighter
+        and commandMode[2]==retainedMove and retainedMove.claretHotbuildReplacingMove==nil,
+        'a failed group switch restores the Move cursor and removes the marker')
+    fallbackSelection=bomber
+    commandModule.controlDown=false
+    commandModule.onEnd=nil
+    commandModule.endOnDeselect=true
+    assert(service:ExecuteKeyboardComposite('bomber_order') and selected[1]==bomber
+        and commandMode[2].name=='RULEUCC_Attack',
+        'switching replaces Move with Attack ground even if selection clears the old mode')
+    commandModule.endOnDeselect=false
+    assert(service:ExecuteKeyboardComposite('fighter_order') and selected[1]==fighter
+        and commandMode[2].name=='RULEUCC_Move',
+        'switching back replaces Attack ground with Move')
+    assert(service:ExecuteKeyboardComposite('legacy_override') and selected[1]==bomber and not commandMode[1],
+        'switching to a selector without a targeted order closes the previous order')
+    commandMode=previousMode
+    commandModule.fighterSelection=nil
+    fallbackSelection=nil
+    cursorEligible=false
+end
 -- Mixed-context arbitration runs before either command or preset dispatch.
 assert(service.contextModel:Put({id='phase1',name='Phase 1',rows={
     {context='units',action='move'}, {context='air',mode='own',action='stop'},

@@ -93,6 +93,7 @@ environment.import = function(path)
     if path == '/lua/keymap/keydescriptions.lua' then return { keyDescriptions = keyDescriptions } end
     if path == '/lua/keymap/unitkeygroups.lua' then return { unitkeygroups = {} } end
     if path == '/lua/ui/game/commandmode.lua' then return {
+        AddEndBehavior = function() end,
         GetCommandMode = function() return {'normal'} end,
         StartCommandMode = function() end,
     } end

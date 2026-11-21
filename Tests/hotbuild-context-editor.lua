@@ -53,6 +53,7 @@ local Theme={Fonts={body='Nunito',heading='Nunito SemiBold'},Metrics={buttonHeig
     Outline=function(control)
         return function(color) control.outline=color end
     end,
+    SettingsSwitch=function(row) return function(on) row.settingEnabled=on==true end end,
     AnimateCentered=function(control) control:SetNeedsFrameUpdate(true) end,
     AnimateAnchored=function(control) control:SetNeedsFrameUpdate(true) end}
 local imports={
@@ -175,14 +176,15 @@ local function inside(c,root)
 end
 local contextText={
     ['Под курсором']='cursor',['Ничего не выделено']='empty',['Войска']='units',['Строители']='builder',['Завод']='factory',
+    ['Истребители']='fighter',['Бомбардировщики']='bomber',['Штурмовики']='gunship',
     ['Ракеты']='missiles',['Транспорт']='transport',['Добытчики']='mex',['Разведчики']='scout',
     ['Остальные']='other',['Наземные']='land',['Авиация']='air',['Флот']='navy',
     ['ACU']='acu',['SACU']='sacu',['Инженер']='engineer',['ТМЛ']='silo_tactical',['Ядерка']='silo_nuclear',
 }
 local contextDisplay={cursor='Под курсором',empty='Ничего не выделено',units='Войска',builder='Строители',factory='Завод',missiles='Ракеты',
-    transport='Транспорт',mex='Добытчики',scout='Разведчики',other='Остальные',land='Наземные',air='Авиация',navy='Флот',
+    fighter='Истребители',bomber='Бомбардировщики',gunship='Штурмовики',transport='Транспорт',mex='Добытчики',scout='Разведчики',other='Остальные',land='Наземные',air='Авиация',navy='Флот',
     acu='ACU',sacu='SACU',engineer='Инженер',silo_tactical='ТМЛ',silo_nuclear='Ядерка'}
-local contextRank={cursor=1,empty=2,units=3,builder=4,factory=5,missiles=6,transport=7,mex=8,scout=9,other=10}
+local contextRank={cursor=1,empty=2,units=3,builder=4,factory=5,missiles=6,mex=7,other=8}
 local function contextNeedle(value) return contextText[value] or value end
 local function treeButton(root,id)
     id=contextNeedle(id)
@@ -828,9 +830,16 @@ local function groupTile(label)
     return assert(treeButton(groupFrame,label),'missing context tree entry '..label)
 end
 do
-local cursor,empty,units,builders,factory,missiles,transport=groupTile('Под курсором'),groupTile('Ничего не выделено'),groupTile('Войска'),groupTile('Строители'),groupTile('Завод'),groupTile('Ракеты'),groupTile('Транспорт')
-assert(cursor.y<empty.y and empty.y<units.y and units.y<builders.y and builders.y<factory.y and factory.y<missiles.y and missiles.y<transport.y,
+local cursor,empty,units,builders,factory,missiles,mex=groupTile('Под курсором'),groupTile('Ничего не выделено'),groupTile('Войска'),groupTile('Строители'),groupTile('Завод'),groupTile('Ракеты'),groupTile('Добытчики')
+assert(cursor.y<empty.y and empty.y<units.y and units.y<builders.y and builders.y<factory.y and factory.y<missiles.y and missiles.y<mex.y,
     'groups and other contexts follow priority order in the layout')
+local air,navy=groupTile('air'),groupTile('navy')
+local previous=air
+for _,kind in ipairs({'fighter','bomber','gunship','transport','scout'}) do
+    local tile=groupTile(kind)
+    assert(tile.y>previous.y and tile.y<navy.y and tile.x>air.x, kind..' is nested under Air in order')
+    previous=tile
+end
 end
 local function selectGroupTile(label)
     local tile=groupTile(label)
@@ -839,6 +848,7 @@ local function selectGroupTile(label)
 end
 for parent,children in pairs({
     units={'land','air','navy'},
+    air={'fighter','bomber','gunship','transport','scout'},
     builder={'acu','sacu','engineer'},
     missiles={'silo_tactical','silo_nuclear'},
 }) do
@@ -888,7 +898,10 @@ end
 selectGroupTile('Войска'); assertCatalog('units')
 assert(not findIn(groupFrame,'Переключить сушу / флот / авиацию в выделении'),
     'retired cycle-unit-types command is absent from the context action catalog')
-for _,entry in ipairs({{'Наземные','land'},{'Авиация','air'},{'Флот','navy'}}) do selectGroupTile(entry[1]); assertCatalog(entry[2]) end
+for _,entry in ipairs({{'Наземные','land'},{'Авиация','air'},{'Флот','navy'},
+    {'Истребители','fighter'},{'Бомбардировщики','bomber'},{'Штурмовики','gunship'}}) do
+    selectGroupTile(entry[1]); assertCatalog(entry[2])
+end
 selectGroupTile('Наземные'); clickIn(groupFrame,'Атака по площади'); clickIn(groupFrame,'Сохранить')
 assert(groupService.contextModel:ResolveAction('groups','land')=='attack' and groupService.contextModel:ResolveAction('groups','air')=='move',
     'land override leaves air inheriting units: land='..tostring(groupService.contextModel:ResolveAction('groups','land'))..' air='..tostring(groupService.contextModel:ResolveAction('groups','air')))
@@ -925,6 +938,14 @@ assert(not findIn(groupFrame,'Улучшить добытчик и выбрат�
     'new select-next assignments are offered only under the cursor')
 assert(not findIn(groupFrame,'Улучшить структуру под курсором'),
     'cursor-only upgrade action is absent from the empty-selection catalog')
+local selectionOverrideOption=assert(findIn(groupFrame,'Сбрасывать выделение')).parent
+assert(not selectionOverrideOption.settingEnabled)
+selectionOverrideOption:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
+clickIn(groupFrame,'Сохранить')
+assert(selectionOverrideOption.settingEnabled and groupService.contextModel:Get('groups').selectionOverride==true)
+selectionOverrideOption:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
+clickIn(groupFrame,'Сохранить')
+assert(not selectionOverrideOption.settingEnabled and not groupService.contextModel:Get('groups').selectionOverride)
 groupFrame:Destroy()
 local lockModel=modelEnv.Create({version=3,bindings={{id='lockctx',name='Locked',rows={}}}},actions)
 local lockPreset={id='lockpreset',name='Building preset',key='K',grid={context='lockctx'},entries={{kind='blueprint',id='structure'}}}

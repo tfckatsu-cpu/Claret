@@ -54,6 +54,7 @@ local env = {
     import = function(path)
         if path == '/mods/ClaretHotbuild/modules/Runtime.lua' then return runtimeModule end
         if path == '/mods/ClaretHotbuild/modules/BuildKeyLabels.lua' then return buildLabels end
+        if path == '/mods/ClaretHotbuild/modules/CtrlInput.lua' then return { Install = function() end } end
         if path == '/mods/ClaretHotbuild/modules/LocalizationStrings.lua' then return { Strings = { en = {}, ru = {} } } end
         if path == '/lua/maui/group.lua' then
             return { Group = function(parent)

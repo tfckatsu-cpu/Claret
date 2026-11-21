@@ -184,8 +184,20 @@ assert(delayed.hidden and delayed.obsolete, 'historic delayed destruction is not
 assert(instant.select:find('ConfirmUnitDestruction(true)',1,true)
     and delayed.select:find('ConfirmUnitDestruction(false)',1,true),
     'instant and historic delayed destruction retain separate commands')
-assert(ContextActions.Execute(instant,{selection={other},focusArmy=1,isReplay=false},'test'))
-assert(calls.conexecute==instant.select,'instant destruction dispatches the native FAF command')
+for _,kind in ipairs({'units','builder','missiles'}) do
+    assert(ContextActions.Supports(instant.id,kind), 'instant destruction is offered for '..kind)
+end
+for _,selection in ipairs({
+    {other}, {acu}, {sacu}, {engineer}, {factory}, {tacticalSilo}, {nuclearSilo},
+    {transport}, {mex}, {scout}, {satelliteLauncher}, {factory,engineer,mex},
+}) do
+    local context={selection=selection,focusArmy=1,isReplay=false}
+    assert(ContextActions.Supports(instant.id,ContextActions.Classify(selection)))
+    calls.conexecute=nil
+    assert(ContextActions.Execute(instant,context,'test'))
+    assert(calls.conexecute==instant.select,'instant destruction dispatches the native FAF command')
+end
+assert(not ContextActions.Available(instant,{selection={},focusArmy=1,isReplay=false}))
 assert(ContextActions.Execute(delayed,{selection={other},focusArmy=1,isReplay=false},'test'))
 assert(calls.conexecute==delayed.select,'saved delayed destruction still dispatches its original command')
 local factoryCycle=assert(ContextActions.Get('cycle_idle_factories'))

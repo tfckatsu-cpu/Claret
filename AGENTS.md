@@ -67,7 +67,8 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 - FAF Lua dialect: `table.getn` instead of `#`, `import` instead of `require`, `math.mod`. **`#` breaks module loading in LuaPlus** (a real crash: the module table stays empty) and the runner rejects it; `continue` and `goto` are banned as well. Mind strict globals/module tables, `rawget`, the upvalue limit (32) and the cost of frequent `pcall`. A standard Lua compiler does not prove FAF compatibility.
 - Verified snapshot FAF3840: `C:/ProgramData/FAForever/gamedata/lua.nx2` (not Beta3839 `lua.nx4`). Check ReUI APIs against installed versions: Main 1.3.2, Core 1.7.0, Options 1.2.0; reference sources may be newer.
 - Prefer event-driven updates over background polling.
-- Preserve UIDs, profile keys, bind IDs, command order and user data; format changes must not silently lose or reinterpret assignments. Malformed saved records are quarantined, never deleted.
+- For new versions of already published FAF Mod Vault mods, prepare the working manifest for upload as part of the version bump. Keep the published name exactly, increase the integer version and assign a fresh release UID. Follow Context/release-checklist.md for dependency checks.
+- Preserve UIDs outside Mod Vault version bumps. Preserve profile keys, bind IDs, command order and user data; format changes must not silently lose or reinterpret assignments. Malformed saved records are quarantined, never deleted.
 - Mod folder names have no spaces.
 
 ## Architecture

@@ -9,6 +9,7 @@ The shared foundation for Claret mods. Provides the Claret settings menu, interf
 Общая основа модов Claret. Предоставляет меню настроек Claret, оформление интерфейса, локализацию и общие инструменты для модулей.
 ]]
 author = "Katsu- [FAFMeme]"
+icon = "/mods/ClaretCore/icon.png"
 url = ""
 selectable = true
 enabled = true

@@ -10,3 +10,6 @@ Claret is a set of client-side UI mods for Supreme Commander: Forged Alliance on
 | [Credits](Credits%20and%20more/CREDITS.md) | Contributors, artwork, and references |
 
 The mod files in this repository are release mirrors. The knowledge base labels version-specific findings separately from project conventions. A local test result does not establish that a feature works in FAF.
+
+Original source code owned by Claret's author is available under the [MIT License](LICENSE).
+See the [credits](Credits%20and%20more/CREDITS.md) for third-party code, assets, and their license status.

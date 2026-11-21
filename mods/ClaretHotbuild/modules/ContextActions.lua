@@ -24,6 +24,9 @@ local contexts = {
     {id='units', labelKey='hotbuild.context.units'},
     {id='land', labelKey='hotbuild.context.land'},
     {id='air', labelKey='hotbuild.context.air'},
+    {id='fighter', labelKey='hotbuild.context.fighter'},
+    {id='bomber', labelKey='hotbuild.context.bomber'},
+    {id='gunship', labelKey='hotbuild.context.gunship'},
     {id='navy', labelKey='hotbuild.context.navy'},
     {id='builder', labelKey='hotbuild.context.builder'},
     {id='empty', labelKey='hotbuild.context.empty'},
@@ -39,8 +42,13 @@ local contexts = {
     {id='scout', labelKey='hotbuild.context.scout'},
     {id='other', labelKey='hotbuild.context.other'},
 }
-local priority = {'empty','land','air','navy','acu','sacu','engineer','factory','silo_tactical','silo_nuclear','transport','mex','scout','other'}
+local priority = {'empty','land','air','fighter','bomber','gunship','navy','acu','sacu','engineer','factory','silo_tactical','silo_nuclear','transport','mex','scout','other'}
 function Priority() return priority end
+
+local combatAirContexts = {air=true, fighter=true, bomber=true, gunship=true}
+function IsArmyContext(kind)
+    return kind=='land' or kind=='navy' or combatAirContexts[kind]==true
+end
 
 local definitions = {
     {id='select_acu', labelKey='hotbuild.action.select_acu.label', contexts={'empty'}, select='UI_SelectByCategory +nearest +goto COMMAND', selectionPolicy='exclusive'},
@@ -107,7 +115,8 @@ local definitions = {
     {id='split_next', labelKey='hotbuild.action.split_next.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/selection.lua").SplitNext()'},
     {id='cycle_unit_types_in_sel', labelKey='hotbuild.action.cycle_unit_types_in_sel.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/keymap/misckeyactions.lua").CycleUnitTypesInSel()'},
     {id='suicide', labelKey='hotbuild.action.suicide.label', contexts={'land','air','navy','other'}, select='UI_Lua import("/lua/ui/game/confirmunitdestroy.lua").ConfirmUnitDestruction(false)'},
-    {id='kill_selected_units', labelKey='hotbuild.action.kill_selected_units.label', contexts={'land','air','navy','other'}, select='UI_Lua import("/lua/ui/game/confirmunitdestroy.lua").ConfirmUnitDestruction(true)', hidden=true, compositeOnly=true},
+    {id='kill_selected_units', labelKey='hotbuild.action.kill_selected_units.label', contexts={'land','air','navy','acu','sacu','engineer','factory','silo_tactical','silo_nuclear','transport','mex','scout','other'},
+        select='UI_Lua import("/lua/ui/game/confirmunitdestroy.lua").ConfirmUnitDestruction(true)'},
     {id='discharge', labelKey='hotbuild.action.discharge.label', contexts={'land'}, toggle='RULEUTC_ShieldToggle', select='UI_Lua import("/lua/keymap/misckeyactions.lua").DischargeShields()'},
     {id='dock', labelKey='hotbuild.action.dock.label', contexts={'air','transport','scout'}, select='UI_Lua import("/lua/ui/game/orders.lua").Dock(true)'},
     {id='ferry', labelKey='hotbuild.action.ferry.label', contexts={'transport'}, order='RULEUCC_Ferry'},
@@ -209,7 +218,7 @@ end
 -- The parent builder action is limited to commands valid for all three child types.
 local builderActions = {reclaim=true, assist=true, move=true, attack=true, attack_move=true,
     patrol=true, repair=true, capture=true, shield=true, stealth=true, toggle_all=true, stop=true, soft_stop=true,
-    spreadattack=true, copy_orders=true, abort_navigation=true, pause_unit=true}
+    spreadattack=true, copy_orders=true, abort_navigation=true, pause_unit=true, kill_selected_units=true}
 
 local byId = {}
 for _, context in ipairs(contexts) do LocalizedFields(context) end
@@ -229,7 +238,6 @@ for _, action in ipairs(definitions) do
     local cursorOnly={upgrade_structure_under_cursor=true,upgrade_structure_pause=true,upgrade_mex_select_next=true}
     if removed[action.id] then action.hidden=true; action.obsolete=true end
     if cursorOnly[action.id] then action.hidden=true; action.compositeOnly=true end
-    if action.id=='kill_selected_units' then action.hidden=false; action.compositeOnly=nil end
     if action.id=='patrol' or action.id=='spreadattack' or action.id=='copy_orders' then
         for _, kind in ipairs({'acu','sacu','engineer'}) do table.insert(action.contexts,kind) end
     end
@@ -284,13 +292,23 @@ function IsSelection(id)
     return action and (action.id=='cycle_idle_factories' or (action.select and string.find(action.select, '^UI_SelectByCategory ') ~= nil) or (action.special and
         (string.find(action.special,'^select_') or string.find(action.special,'^next_engineer_') or action.special=='next_idle_transport' or action.special=='smart_fighters'))) and true or false
 end
+function StartsTargetOrder(action)
+    return action and (action.order~=nil or action.special=='smart_missile'
+        or action.special=='attack_move' or action.special=='overcharge')
+end
+
 function Supports(id, context)
     if context=='builder' then return builderActions[id] == true end
     if context=='units' then return unitActions[id] == true end
-    if context=='missiles' then return id=='stop' or id=='pause_unit' or id=='smart_missile' or id=='toggle_all' end
+    if context=='missiles' then return id=='stop' or id=='pause_unit' or id=='smart_missile' or id=='toggle_all' or id=='kill_selected_units' end
     if context=='cursor' then return id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next' end
     local action=byId[id]
-    return action and Contains(action.contexts,context) or false
+    if not action then return false end
+    if Contains(action.contexts,context) then return true end
+    if combatAirContexts[context] or context=='transport' or context=='scout' then
+        return Contains(action.contexts,'air')
+    end
+    return false
 end
 
 local function UnitContext(unit)
@@ -317,7 +335,12 @@ local function UnitContext(unit)
     if unit:IsInCategory('TRANSPORTATION') and not mobileFactory then return 'transport' end
     if unit:IsInCategory('AIR') and unit:IsInCategory('INTELLIGENCE') then return 'scout' end
     if unit:IsInCategory('MOBILE') or mobileFactory or (blueprint and blueprint.BlueprintId=='xea0002') then
-        if unit:IsInCategory('AIR') then return 'air' end
+        if unit:IsInCategory('AIR') then
+            if unit:IsInCategory('BOMBER') then return 'bomber' end
+            if unit:IsInCategory('GROUNDATTACK') then return 'gunship' end
+            if unit:IsInCategory('ANTIAIR') and unit:IsInCategory('HIGHALTAIR') then return 'fighter' end
+            return 'air'
+        end
         if unit:IsInCategory('NAVAL') then return 'navy' end
         if unit:IsInCategory('LAND') then return 'land' end
     end
@@ -371,7 +394,7 @@ function HasContext(selection, wanted)
     if not selection then return false end
     for _,unit in ipairs(selection) do
         local kind=UnitContext(unit)
-        if kind==wanted then return true end
+        if kind==wanted or (wanted=='air' and combatAirContexts[kind]) then return true end
     end
     return false
 end
@@ -384,9 +407,12 @@ function MatchesContext(selection, wanted)
     return HasContext(selection,wanted)
 end
 
-local function SelectionGroupAllows(groupKind, unitKind)
-    if groupKind=='units' or groupKind=='land' or groupKind=='air' or groupKind=='navy' then
-        return unitKind=='land' or unitKind=='air' or unitKind=='navy'
+local function SelectionGroupAllows(groupKind, unitKind, resolved)
+    if groupKind=='units' or IsArmyContext(groupKind) then
+        return IsArmyContext(unitKind) or (resolved and (unitKind=='transport' or unitKind=='scout'))
+    end
+    if resolved and (groupKind=='transport' or groupKind=='scout') then
+        return combatAirContexts[unitKind] or unitKind=='transport' or unitKind=='scout'
     end
     if groupKind=='builder' or groupKind=='acu' or groupKind=='sacu' or groupKind=='engineer' then
         return unitKind=='acu' or unitKind=='sacu' or unitKind=='engineer'
@@ -410,10 +436,12 @@ local function HasEligibleUnitCapability(action, context, capability, value)
         end
     end
     if not groupKind then return false end
+    local resolved=context.resolvedContext~=nil
     for _, unit in ipairs(selection) do
         local kind=UnitContext(unit)
-        if SelectionGroupAllows(groupKind,kind)
-            and (Contains(action.contexts,kind) or (legacyUnitsFallback and groupKind=='units')) then
+        if SelectionGroupAllows(groupKind,kind,resolved)
+            and (Contains(action.contexts,kind) or (combatAirContexts[kind] and Contains(action.contexts,'air'))
+                or (resolved and Supports(action.id,kind)) or legacyUnitsFallback) then
             local orders, toggles = GetUnitCommandData({unit})
             if Contains(capability == 'order' and orders or toggles, value) then return true end
         end
@@ -427,8 +455,25 @@ local scriptToggles={
     RULEUTC_GenericToggle=true, RULEUTC_SpecialToggle=true, RULEUTC_CloakToggle=true,
 }
 
+local function KeyboardPauseSelection(selection)
+    local eligible = {}
+    for _, unit in ipairs(selection or {}) do
+        if not unit:IsDead() and Contains(GetUnitCommandData({unit}), 'RULEUCC_Pause') then
+            table.insert(eligible, unit)
+        end
+    end
+    return eligible
+end
+
+local function IsKeyboardPause(action, context)
+    return context.keyboardAction and (action.id == 'pause_unit' or action.id == 'pause')
+end
+
 function Available(action, context)
     if not action or not context or context.isReplay or context.focusArmy < 1 then return false end
+    if IsKeyboardPause(action, context) then
+        return table.getn(KeyboardPauseSelection(context.selection)) > 0
+    end
     if action.global then return true end
     if action.id=='toggle_all' then
         for _, unit in ipairs(context.selection or {}) do
@@ -463,7 +508,10 @@ function Available(action, context)
     local supported=false
     -- This action targets the rollover unit and preserves the current selection,
     -- so its availability is independent of the selected unit context.
-    if context.resolvedContext=='cursor' and Supports(action.id,'cursor') then supported=true end
+    local resolved=context.resolvedContext
+    if resolved=='cursor' and Supports(action.id,'cursor') then supported=true end
+    if (resolved=='transport' or resolved=='scout') and Supports(action.id,resolved)
+        and HasContext(context.selection,resolved) then supported=true end
     if action.id == 'upgrade_structure_under_cursor' then supported=true end
     if context.absolute and Contains(action.contexts,'empty') then supported=true end
     if context.isRepeat and action.id=='cycle_idle_factories' and MatchesContext(context.selection,'factory') then supported=true end
@@ -735,6 +783,23 @@ local function WithTransportSelection(callback)
 end
 
 function Execute(action, context, bindingId)
+    if action and context and not context.isReplay and context.focusArmy >= 1
+        and IsKeyboardPause(action, context) then
+        local selection = KeyboardPauseSelection(context.selection)
+        if table.getn(selection) == 0 then return false end
+        local paused = not GetIsPaused(selection)
+        SetPaused(selection, paused)
+        for _, unit in ipairs(selection) do
+            if (unit:IsInCategory('EXTERNALFACTORY') or unit:IsInCategory('EXTERNALFACTORYUNIT'))
+                and unit:GetFractionComplete() == 1 then
+                local creator = unit:GetCreator()
+                if creator and not creator:IsDead() then
+                    creator:ProcessInfo('SetPaused', tostring(paused))
+                end
+            end
+        end
+        return true
+    end
     if not Available(action,context) then return false end
     if context.resolvedContext=='cursor' and Supports(action.id,'cursor') then
         return import('/mods/ClaretHotbuild/modules/ContextUpgrade.lua').Execute(action.id,context)
@@ -896,6 +961,14 @@ local function TargetMatches(action, unit)
         start=comma+1
     end
     return false
+end
+
+function SelectionMatches(action, selection)
+    if table.getn(selection or {})==0 then return false end
+    for _,unit in ipairs(selection) do
+        if not TargetMatches(action,unit) then return false end
+    end
+    return true
 end
 
 function ExecuteWithOutcome(action, context, bindingId)

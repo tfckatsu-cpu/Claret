@@ -26,6 +26,15 @@
 - Hotbuild localization (user check in FAF, 2026-11-15, build `20261115-48`): for English building and unit names, pass the full blueprint to `Catalog:DisplayName`, not the category table; `LOC` depends on game language, so when Claret is set to English, use the blueprint's English fallback fields. Also check separately with Russian game locale. Sources: `../mods/ClaretHotbuild/modules/Catalog.lua`, `Tests/hotbuild-catalog.lua`.
 - For action labels, use the localization service through `ReUI.ClaretCore.Localization`, as existing modules do; do not rely on `rawget(_G, 'ReUI')`. After switching to direct access, the user confirmed that labels in the order list were fixed; the failure mechanism involving `rawget` was not separately measured in that scenario. Check available orders in FAF and run local tests with ReUI in the module environment. Sources: `KeyboardBindings.lua`, `KeyboardEditor.lua`, `ContextActions.lua`, `Tests/hotbuild-context-labels.lua`.
 
+- Standalone keyboard Pause and Pause production use FAF's per-unit `RULEUCC_Pause` capability. In a mixed selection, the supported units determine and receive the new pause state. Completed external factories and their platforms also forward the state to their living creator. Composite rows retain their existing context rules.
+- In the multifunction selection tree, Air is a child of Units and a parent of Fighters, Bombers, Gunships, Transport and Scouts. Combat aircraft inherit through Air to Units. Transport and Scouts inherit an explicit Air action, preserving their historical exclusion from the generic Units action. Existing transport and scout assignments take priority over Air. Bomber takes priority over ground attack and high-altitude air-to-air roles.
+
+- A multifunction preset can override the current selection with its selector from the No selection row. It runs before cursor and current selection actions when the selected units do not match the selector. If all selected units already match, the assigned selection context or an active continuation runs without a reset. When the selector changes groups while a targeted order is active, the old order is closed and the new group’s targeted action opens immediately if it is available. Hotbuild marks an outgoing Move cursor during an explicit replacement to skip its built-in rearm. A selector that finds no targets restores the previous selection and the Move cursor if Hotbuild explicitly closed it. The previous checkbox value is retained when upgrading.
+
+- Ctrl-Move is active in Hotbuild by default. It rearms only after an issued Move, while Ctrl is still held, the selection is unchanged, and no other command mode has started. Hotbuild cancels rearming when it replaces the Move cursor. Active standalone Ctrl takes precedence to avoid duplicate input handling.
+
+- Instant self-destruct is available for every non-empty selection context and invokes FAF on the current selection. Composite bindings require every selected context to resolve to the same action.
+
 ## Current data model (verified 0.10.38, 2026-11-18)
 
 - ClaretHotbuildKeyboard pairs are the single source of truth: `chord -> preset / composite / action` plus an optional double action. Dispatch, the keyboard editor and compatibility checks read pairs; FAF key maps are rebuilt from them.
@@ -35,7 +44,7 @@
 - Double-press actions are consumed after one execution and limited by a 0.5 s window. Quick repeat is one-shot, limited by a 1.5 s window and never re-arms. Invalid windows (NaN, infinity, <=0) are rejected.
 - The quick-repeat window, its setting and the gear were removed in 0.10.38. The per-row `quickRepeat` field is preserved as legacy saved data and is ignored by composite dispatch. Built-in double actions execute only their first step in a composite. Keyboard pairs and sequential selectors retain their behavior.
 - Sequential engineer selection requires a mobile engineer (ENGINEER + MOBILE); command units are excluded.
-- Version identity: `Version` in Main.lua = `ReUI` in mod_info.lua = README heading; `BuildStamp` = newest CHANGELOG build; Hotbuild requires Core >= 0.10.15.
+- Version identity: `Version` in Main.lua = `ReUI` in mod_info.lua = README heading; `BuildStamp` = newest CHANGELOG build; Hotbuild requires Core >= 0.10.23.
 ## Order dispatch rules (verified 2026-11-19, build 0.10.40)
 
 Single choke point: Adapter:CanBuild (ClaretHotbuild/modules/Adapter.lua). Preset entries, context entries and keyboard pairs all dispatch through Model:Execute -> Adapter:Build, so a new caller must not issue build/factory orders directly.

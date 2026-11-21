@@ -1,6 +1,6 @@
 name = 'Claret Hotbuild'
-uid = 'claret-hotbuild-001'
-version = 86
+uid = 'claret-hotbuild-092'
+version = 92
 description = [[
 [EN] Requires Claret Core and ReUI.
 Set up hotkeys for construction presets, build templates, and in-game actions. Bindings can run different actions depending on the selected units.
@@ -9,9 +9,10 @@ Set up hotkeys for construction presets, build templates, and in-game actions. B
 Настраивайте горячие клавиши для наборов построек, шаблонов и игровых действий. Действие клавиши может зависеть от выбранных юнитов.
 ]]
 author = 'Katsu- [FAFMeme]'
+icon = '/mods/ClaretHotbuild/icon.png'
 url = ''
 selectable = true
 enabled = true
 exclusive = false
 ui_only = true
-ReUI = 'ClaretHotbuild=0.10.61'
+ReUI = 'ClaretHotbuild=0.10.70'

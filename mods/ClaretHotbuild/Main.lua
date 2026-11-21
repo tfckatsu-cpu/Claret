@@ -1,10 +1,10 @@
-Version = '0.10.61'
+Version = '0.10.70'
 -- Bump for every Hotbuild code change so the loaded build is identifiable.
-local BuildStamp = '20261121-171'
+local BuildStamp = '20261121-181'
 LOG('[Claret][build] hotbuild='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
-    'ClaretCore >= 0.10.15',
+    'ClaretCore >= 0.10.23',
     'ReUI.Core >= 1.7.0',
     'ReUI.UI >= 1.0.0',
     'ReUI.Options >= 1.2.0',
@@ -30,6 +30,16 @@ function Main(isReplay)
     local function Ensure()
         if not service then service = Runtime.Create(isReplay) end
         return service
+    end
+
+    local separateCtrl=false
+    for _,mod in ipairs(rawget(_G,'__active_mods') or {}) do
+        if mod.uid=='ctrl-v02' or mod.name=='Ctrl' then separateCtrl=true; break end
+    end
+    if not isReplay and not separateCtrl then
+        import('/mods/ClaretHotbuild/modules/CtrlInput.lua').Install(ReUI,function()
+            return service and service.active and not ReUI.ClaretCore.IsKeyCaptureActive()
+        end)
     end
 
     ReUI.Core.Hook('/lua/keymap/hotkeylabels.lua', 'getKeyTables', function(original)
