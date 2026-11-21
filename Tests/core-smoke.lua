@@ -338,7 +338,10 @@ changeSelection(nil, {hudUnit(generator, 100, 0, 0, {energyProduced = 5, massPro
 assert(hudText(panel, 'Energy/s') and hudText(panel, '+0.0') and hudText(panel, 'Mass/s'))
 local armed = {Weapon = {{Damage = 5}}}
 changeSelection(nil, {hudUnit(armed, 100, 0, 0)})
-assert(hudText(panel, 'Destroyed') and not hudText(panel, 'Reclaimed'))
+assert(not hudText(panel, 'Destroyed') and not hudText(panel, 'Reclaimed'), 'dynamic results hide zero totals')
+uiOptions.selectionDynamic:Set(false)
+assert(hudText(panel, 'Destroyed') and hudText(panel, 'Reclaimed'), 'static results show enabled zero totals')
+uiOptions.selectionDynamic:Set(true)
 
 changeSelection(nil, {firstTank, secondTank, hudUnit(acu, 999, 0, 0, nil, 1, true)})
 assert(hudText(panel, '2'))
@@ -417,7 +420,7 @@ for _, item in ipairs(controls) do
     if item.parent == panel and not item.hidden and item.color == colors.hudShield then shieldZero = item.text end
 end
 assert(shieldZero == '0')
-assert(hudText(panel, 'Reclaimed'), 'a commander can reclaim even with a zero total')
+assert(not hudText(panel, 'Reclaimed'), 'dynamic results hide zero reclaim even on a commander')
 local title = assert(hudText(panel, 'Combat'))
 local titleWrites = title.textWrites
 uiOptions.selectionHud:Set(false)

@@ -1,4 +1,4 @@
-# Claret Core — test build 0.10.37
+# Claret Core — test build 0.10.41
 
 **Settings size** offers 100%, 125%, and 150% in the Core section. The default 125% keeps the original size. The saved size applies when the settings menu next opens and is capped to fit the screen.
 
@@ -33,7 +33,7 @@ A separate mod declares a `ReUI.Require` dependency on `ClaretCore >= 0.10.0` an
 
 ## Hotbuild is a separate mod
 
-The editor, catalog, bindings, their profile, keyboard hooks, and actions are in the separate `ClaretHotbuild` mod. To use them, enable **ReUI**, **Claret Core (Test)**, and **Claret Hotbuild (Test)**, then start a new match. Hotbuild is always active; there is no menu toggle. Its editor is integrated into the main menu at F10 → Claret → Hotbuild. Documentation and test scenarios are in the ClaretHotbuild README.
+The editor, catalog, bindings, their profile, keyboard hooks, and actions are in the separate `ClaretHotbuild` mod. To use them, enable **ReUI**, **Claret Core**, and **Claret Hotbuild**, then start a new match. Hotbuild is always active; there is no menu toggle. Its editor is integrated into the main menu at F10 → Claret → Hotbuild. Documentation and test scenarios are in the ClaretHotbuild README.
 
 ## Separate menu — 0.6.0
 

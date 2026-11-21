@@ -2,7 +2,7 @@
 
 Reference for writing FAF client-side UI mods (`ui_only`) in LuaPlus on ReUI. Written for AI agents and for humans who paste this folder into a project: dense rules, identifiers and numbers, no narrative.
 
-Snapshot: **2026-11-21** · installed game **FAF 3841** (`lua.nx2`) · Claret Core 0.10.37 · Claret UI 0.2.123 · Claret Hotbuild 0.10.61 · ReUI Main 1.3.2 / Core 1.7.0 / Options 1.2.0.
+Snapshot: **2026-11-21** · installed game **FAF 3841** (`lua.nx2`) · Claret Core 0.10.41 · Claret UI 0.2.125 · Claret Hotbuild 0.10.61 · ReUI Main 1.3.2 / Core 1.7.0 / Options 1.2.0.
 
 ## Answer path
 

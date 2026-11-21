@@ -227,8 +227,7 @@ function module:Start(scope, isReplay, options)
         return value / pixel
     end
 
-    -- Theme has no shield token; the cool blue reads as shielding over the fill.
-    local SHIELD_COLOR = C.keyCombo1
+    local SHIELD_COLOR = 'ff245a91'
 
     local box = {
         scale = DEFAULT_SCALE,
@@ -373,7 +372,7 @@ function module:Start(scope, isReplay, options)
         Layout(panel):Width(BASE_WIDTH * factor):Height(BASE_HEIGHT * factor)
         Layout(track):FillFixedBorder(panel, inset)
         Layout(fill):AtLeftTopIn(track, 0, 0):FillVertically(track)
-        Layout(shield):AtLeftTopIn(track, 0, 0):Height(SHIELD_HEIGHT * factor)
+        Layout(shield):AtLeftBottomIn(track, 0, 0):Height(SHIELD_HEIGHT * factor)
         local width, height = BASE_WIDTH * factor, BASE_HEIGHT * factor
         local length, thickness = 12 * factor, 3 * factor
         for index = 1, 4 do

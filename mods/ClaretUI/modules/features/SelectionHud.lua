@@ -47,18 +47,6 @@ local function ReadSelection(units)
                     or (economy.MaintenanceConsumptionPerSecondMass or 0) ~= 0
                 available.energyRate = available.energyRate or (economy.ProductionPerSecondEnergy or 0) ~= 0
                     or (economy.MaintenanceConsumptionPerSecondEnergy or 0) ~= 0
-                local commands = bp.General and bp.General.CommandCaps
-                available.massReclaimed = available.massReclaimed or categories.ENGINEER or categories.COMMAND
-                    or categories.SUBCOMMANDER or (commands and commands.RULEUCC_Reclaim)
-                if not available.massKilled and totals.massKilled == 0 and bp.Weapon then
-                    for _, weapon in ipairs(bp.Weapon) do
-                        if (weapon.Damage or 0) > 0 and not weapon.DummyWeapon and weapon.WeaponCategory ~= 'Death'
-                            and weapon.Label ~= 'DeathWeapon' and weapon.DamageType ~= 'DeathExplosion' then
-                            available.massKilled = true
-                            break
-                        end
-                    end
-                end
                 if not categories.COMMAND then
                     totals.massCost = totals.massCost + (economy.BuildCostMass or 0)
                     totals.energyCost = totals.energyCost + (economy.BuildCostEnergy or 0)

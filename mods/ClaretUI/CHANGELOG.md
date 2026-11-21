@@ -1,5 +1,11 @@
 # История изменений
 
+## Сборка 20261121-128 — 2026-11-21
+- Hide zero Destroyed and Reclaimed totals in dynamic Selection Info.
+
+## Сборка 20261121-127 — 2026-11-21
+- Darken the ACU shield strip and move it to the bottom edge of the health bar.
+
 ## Сборка 20261121-126 — 2026-11-21
 - Show optional installed upgrade icons below the ACU Health panel, suppressing prerequisites of installed upgrades.
 

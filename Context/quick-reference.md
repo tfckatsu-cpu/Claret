@@ -2,7 +2,7 @@
 
 Snapshot of decisions and versions. The map of the knowledge base is `README.md`.
 
-Local versions as of 2026-11-21: Claret Core 0.10.37 (mod 56, build 20261121-69), Claret UI 0.2.123 (mod 125, build 20261121-126), and Claret Hotbuild 0.10.61 (mod 86, build 20261121-171). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. The installed game is FAF 3841 (`f643861f`). See the local stage notes when available for in-game confirmation.
+Local versions as of 2026-11-21: Claret Core 0.10.41 (mod 60, build 20261121-73), Claret UI 0.2.125 (mod 127, build 20261121-128), and Claret Hotbuild 0.10.61 (mod 86, build 20261121-171). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. The installed game is FAF 3841 (`f643861f`). See the local stage notes when available for in-game confirmation.
 
 ## Product shape
 

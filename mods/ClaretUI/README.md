@@ -1,6 +1,8 @@
-# Claret UI — test build 0.2.123
+# Claret UI — test build 0.2.125
 
 **Show installed ACU upgrades** adds icons below the left edge of the ACU Health panel. An installed upgrade replaces the icons for its prerequisites. The icons disappear on commander death.
+
+The ACU shield is shown as a dark blue strip along the bottom edge of the health bar.
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
@@ -85,7 +87,7 @@ Each marker appears after its starting location first resolves to a screen posit
 
 Enable **F10 → Claret → UI → Selection Info → Show selection HUD**. The panel is off by default. Individual stat switches are under **Advanced**, which starts collapsed. Values are grouped into resources, costs, results and combat, with an optional unit count. The panel collapses empty groups and columns. **Show labels and headings** switches to a numbers-only display. Stat captions use the shared 14-unit text size. The HUD displays Destroyed, Reclaimed, and HP in English and Уничтожено, Собрано, and ХП in Russian. The value colors use the shared theme's bright HUD palette. Health is green, mass is light green, energy is yellow, shields are cyan, and mass destroyed is red.
 
-**Dynamic display** is enabled by default. A field appears when it applies to at least one selected unit. Applicable fields can display zero, such as an empty shield, a builder's reclaim total, or resource flows that cancel out. With dynamic display disabled, the HUD displays all individually enabled fields, including zeros.
+**Dynamic display** is enabled by default. Destroyed and Reclaimed appear when the selection's corresponding total is nonzero. Other applicable fields can display zero, such as an empty shield or resource flows that cancel out. With dynamic display disabled, the HUD displays all individually enabled fields, including zeros.
 
 Drag with the left mouse button to save the HUD position. **Lock panel position** disables dragging and makes the HUD click-through. **Panel size** scales both the HUD and its text from 50% to 200% and saves the chosen size. The saved position is independent of the HUD size. **Panel background transparency** adjusts the fill alone from 0% to 100%.
 

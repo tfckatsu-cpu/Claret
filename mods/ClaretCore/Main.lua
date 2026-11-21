@@ -1,5 +1,5 @@
-Version = '0.10.37'
-local BuildStamp = '20261121-69'
+Version = '0.10.41'
+local BuildStamp = '20261121-73'
 LOG('[Claret][build] core='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {
