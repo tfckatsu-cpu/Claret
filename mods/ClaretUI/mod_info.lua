@@ -9,6 +9,7 @@ Optional interface features: ACU health and upgrade icons, selection stats, engi
 Дополнения к интерфейсу: здоровье и улучшения БМК, статистика выделения, метки инженеров и мексов, зоны дальности, уведомления и обмен информацией с союзниками.
 ]]
 author = 'Katsu- [FAFMeme]'
+icon = '/mods/ClaretUI/icon.png'
 url = ''
 selectable = true
 enabled = true
