@@ -19,6 +19,36 @@ assert(model:Put(binding('parent_repeat','Parent repeat',{{context='builder',act
 assert(model:Put(binding('child_inherit','Child inheritance',{{context='builder',action='move',quickRepeat='reclaim'},
     {context='acu',mode='inherit'}})))
 assert(model:ResolveRow('child_inherit','acu').quickRepeat=='reclaim', 'inherited child receives the whole parent row')
+assert(model:Put(binding('engineer_chain','Engineer chain',{
+    {context='builder',action='stop'},
+    {context='empty',action='select_engineers_t3'},
+})))
+assert(model:ResolveRow('engineer_chain','engineer')==nil,
+    'an empty-context engineer sequence reserves the inherited engineer child')
+assert(model:ResolveRow('engineer_chain','acu').action=='stop'
+    and model:ResolveRow('engineer_chain','sacu').action=='stop',
+    'engineer reservation preserves sibling builder inheritance')
+assert(model:Put(binding('engineer_chain_own','Engineer own',{
+    {context='builder',action='stop'},
+    {context='empty',action='select_engineers_t3'},
+    {context='engineer',mode='own',action='reclaim'},
+})))
+assert(model:ResolveRow('engineer_chain_own','engineer').action=='reclaim',
+    'an old explicit engineer row still resolves after continuation ends')
+assert(model:ResolveRow('child_inherit','acu').action=='move',
+    'reservations stay local to their own binding')
+local oldLoad=modelModule.Create({version=3,bindings={binding('legacy_load','Legacy load',{
+    {context='land',action='load_transports'}, {context='acu',action='move'},
+})}},actions)
+local loadDraft=oldLoad:Get('legacy_load')
+assert(loadDraft.rows[1].action=='load_transports' and loadDraft.rows[2].action=='move')
+loadDraft.name='Renamed'
+assert(oldLoad:Put(loadDraft), 'editing an old binding preserves its retired row')
+assert(not model:Put(binding('new_load','New load',{{context='land',action='load_transports'}})))
+local offeredTransport=false
+for _,action in ipairs(actions.List()) do if action.id=='load_transports' then offeredTransport=true end end
+assert(offeredTransport and actions.Get('load_transports'),
+    'transport loading remains registered so old keyboard assignments stay discoverable')
 local badRepeat=binding('bad_repeat','Bad repeat',{{context='empty',action='select_bombers',quickRepeat='move'}})
 local repeatOk,repeatErr=model:Put(badRepeat)
 assert(not repeatOk and repeatErr:find('Быстрый повтор',1,true),'inapplicable quick repeat is rejected')
@@ -340,4 +370,25 @@ local ambiguous=modelModule.Create({version=3,bindings={binding('cursor_conflict
 })}},actions)
 assert(#ambiguous:Get('cursor_conflict').rows==2 and #ambiguous:GetDiagnostics()>0,
     'ambiguous migration preserves both rows and reports the conflict')
+local oldAbsolute=binding('mex_absolute','Old absolute',{
+    {context='empty',action='upgrade_mex_select_next'},
+})
+oldAbsolute.absolute=true
+local emptyMigration=modelModule.Create({version=3,bindings={
+    binding('mex_empty','Old empty',{{context='empty',action='upgrade_mex_select_next'}}),
+    binding('mex_occupied','Occupied cursor',{
+        {context='empty',action='upgrade_mex_select_next'},
+        {context='cursor',action='upgrade_structure_pause'},
+    }),
+    binding('mex_auxiliary','Old auxiliary',{
+        {context='empty',action='select_acu',quickRepeat='upgrade_mex_select_next',fallback='upgrade_mex_select_next'},
+    }),
+    oldAbsolute,
+}},actions)
+assert(emptyMigration:Get('mex_empty').rows[1].context=='cursor')
+assert(#emptyMigration:Get('mex_occupied').rows==1
+    and emptyMigration:Get('mex_occupied').rows[1].action=='upgrade_structure_pause')
+assert(#emptyMigration:Get('mex_absolute').rows==0)
+local remaining=emptyMigration:Get('mex_auxiliary').rows[1]
+assert(remaining.action=='select_acu' and not remaining.quickRepeat and not remaining.fallback)
 print('PASS: context uniqueness, compatibility, copy isolation, restore, corrupt-profile save guard and limits')

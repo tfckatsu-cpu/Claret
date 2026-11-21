@@ -1,7 +1,7 @@
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Low')]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('ClaretCore', 'ClaretHotbuild')]
+    [ValidateSet('ClaretCore', 'ClaretHotbuild', 'ClaretUI')]
     [string]$Mod,
 
     [Parameter(Mandatory = $true)]

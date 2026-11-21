@@ -105,7 +105,7 @@ function Create(actions)
         local called,result=pcall(actions.Execute,state.action,context,bindingId)
         context.isRepeat=nil
         if not called then return true,nil,'Context action failed: '..tostring(result) end
-        if result and state.action.continuation=='accumulate' then self:Remember(bindingId,state.action,context) end
+        if result and state.action.continuation~='double' then self:Remember(bindingId,state.action,context) end
         return true,result,result and state.action.id or T('hotbuild.context_repeat.s003')
     end
     return self

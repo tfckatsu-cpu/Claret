@@ -12,12 +12,26 @@ local function option(value)
     return obj
 end
 local function prop(value)
-    return setmetatable({Set=function(self, v) self.value=v end, value=value or 0}, {__call=function(self) if type(self.value)=='function' then return self.value() end; return self.value end})
+    return setmetatable({Set=function(self, v) self.value=v end, value=value or 0}, {
+        __call=function(self)
+            local value=self.value
+            if type(value)=='function' or type(value)=='table' then return value() end
+            return value
+        end,
+    })
 end
 local function control(parent)
-    local c = {parent=parent, Left=prop(), Right=prop(), Top=prop(), Bottom=prop(), Width=prop(150), Height=prop(25), Depth=prop()}
+    local c = {parent=parent, Left=prop(), Right=prop(), Top=prop(), Bottom=prop(), Width=prop(), Height=prop(), Depth=prop()}
+    c.Left:Set(function() return c.Right()-c.Width() end)
+    c.Top:Set(function() return c.Bottom()-c.Height() end)
+    c.Right:Set(function() return c.Left()+c.Width() end)
+    c.Bottom:Set(function() return c.Top()+c.Height() end)
+    c.Width:Set(function() return c.Right()-c.Left() end)
+    c.Height:Set(function() return c.Bottom()-c.Top() end)
     function c:EnableHitTest() end
     function c:DisableHitTest() end
+    function c:Hide() self.hidden=true end
+    function c:Show() self.hidden=false end
     function c:SetNeedsFrameUpdate(v) self.updating=v end
     function c:SetSolidColor(value) self.color=value end
     function c:SetAlpha(value) self.alpha=value end
@@ -28,12 +42,19 @@ local function control(parent)
     table.insert(created,c); return c
 end
 local layout = setmetatable({}, {__call=function(self, control) self.current=control; return self end,
-    __index=function(_, key) return function(self, target)
-        if key=='Fill' then self.current.fillTarget=target end
-        return self
-    end end})
+    __index={
+        AtLeftTopIn=function(self, parent, x, y)
+            self.current.Left:Set(function() return parent.Left()+x end)
+            self.current.Top:Set(function() return parent.Top()+y end)
+            return self
+        end,
+        Width=function(self, value) self.current.Width:Set(value); return self end,
+        Height=function(self, value) self.current.Height:Set(value); return self end,
+    }})
 local view = control()
-function view:Project() return {x=20,y=30} end
+view.Left:Set(100); view.Top:Set(200); view.Width:Set(800); view.Height:Set(600)
+local projected
+function view:Project() return projected end
 local world = {viewLeft=view}
 local scenario = {save='map', Options={TeamSpawn='random'}}
 local markers = {ARMY_1={position={1,2,3}}, ARMY_2={position={4,5,6}}, ARMY_3={position={7,8,9}}, EXTRA={position={0,0,0}}}
@@ -46,7 +67,7 @@ local env = setmetatable({
         if path == '/lua/ui/game/worldview.lua' then return world end
         if path == '/lua/maui/layouthelpers.lua' then return {GetPixelScaleFactor=function() return 1 end} end
         if path == '/mods/ClaretCore/modules/Theme.lua' then return {Fonts={body='font'}, Colors={canvas='dark'}, FactionIcons={AEON='aeon'}} end
-        if path == '/lua/ui/uiutil.lua' then return {CreateText=function(parent, text, size, font) requestedFont=font; table.insert(labels,text); table.insert(fonts,size); local c=control(parent); c.markerText=true; c.Height:Set(12); c.Bottom:Set(function() return c.Top()+c.Height() end); return c end} end
+        if path == '/lua/ui/uiutil.lua' then return {CreateText=function(parent, text, size, font) requestedFont=font; table.insert(labels,text); table.insert(fonts,size); local c=control(parent); c.markerText=true; c.Width:Set(150); c.Height:Set(12); return c end} end
         error(path)
     end,
     SessionGetScenarioInfo=function() return scenario end, GetFocusArmy=function() return 1 end,
@@ -59,6 +80,7 @@ local env = setmetatable({
 assert(loadfile('../mods/ClaretUI/modules/features/RevealPositions.lua','t',env))()
 local function start(spawn)
     now=5; scenario.Options.TeamSpawn=spawn
+    projected={x=20,y=30}
     labels={}; fonts={}; textures={}; created={}; destroyed=0
     local cleanup, bindings = nil, {}
     local scope={Own=function(_,c) return c end, Defer=function(_,f) cleanup=f end,
@@ -94,6 +116,18 @@ for _, c in ipairs(created) do
     if c.texture then icon=c end
 end
 assert(background and label and icon)
+for _, c in ipairs(created) do
+    assert(type(c.Left())=='number' and type(c.Right())=='number' and type(c.Top())=='number' and type(c.Bottom())=='number',
+        'MAUI must be able to read geometry before OnFrame')
+end
+local firstMarker=label.parent
+assert(firstMarker.hidden, 'wait for the first valid projection before showing the marker')
+projected=nil
+updater.OnFrame()
+assert(firstMarker.hidden)
+projected={x=20,y=30}
+updater.OnFrame()
+assert(not firstMarker.hidden and firstMarker.Left()==32 and firstMarker.Top()==217, 'show the marker at its projected position')
 assert(background.alpha==0 and background.Left.value==label.Left and background.Right.value==background.parent.Right, 'background begins at the label and excludes the icon')
 assert(icon.Width()==22 and icon.Height()==22 and icon.alpha==1, 'faction icon is larger and fully opaque')
 opts.revealPositionsFillTransparency:Set(50)
@@ -136,4 +170,4 @@ opts.revealPositionsScale:Set(100)
 assert(not updater.updating, 'scaling does not restore dismissed markers')
 finish()
 opts,updater,finish=start('random_reveal'); assert(#labels==0); finish()
-print('PASS: marker privacy, scaling, faction texture, durations and teardown')
+print('PASS: marker geometry before projection, privacy, scaling, faction texture, durations and teardown')

@@ -4,6 +4,11 @@ table.getn = function(t) return #t end
 table.getsize = function(t) local n=0; for _ in pairs(t) do n=n+1 end; return n end
 
 local calls, paused, queue, mode, toggles = {}, false, {}, {}, {}
+local aseActive, aseIgnored, aseTransitions = false, false, {}
+local ase = {
+    GetIgnored=function() return aseIgnored end,
+    SetIgnored=function(value) aseIgnored=value; table.insert(aseTransitions, value) end,
+}
 local units, selectedForCommand = {}, {}
 local function unit(categories, repeatQueue, creator)
     local u = {categories=categories, repeatQueue=repeatQueue, creator=creator, info={}}
@@ -28,11 +33,11 @@ local external=unit(categories('EXTERNALFACTORY'),true)
 local creator=unit(categories('FACTORY'),true)
 external.creator=creator
 local transport=unit(categories('TRANSPORTATION'))
-local tacticalSilo=unit(categories('SILO','TECH2'))
-local nuclearSilo=unit(categories('SILO','TECH3'))
+local tacticalSilo=unit(categories('STRUCTURE','SILO','TACTICALMISSILEPLATFORM','TECH2'))
+local nuclearSilo=unit(categories('STRUCTURE','SILO','NUKE','TECH3'))
 local xsbSilo=unit(categories('TECH2'))
 function tacticalSilo:GetBlueprint() return {BlueprintId='ues0302'} end
-function nuclearSilo:GetBlueprint() return {BlueprintId='ueb4302'} end
+function nuclearSilo:GetBlueprint() return {BlueprintId='ueb2305'} end
 function xsbSilo:GetBlueprint() return {BlueprintId='xsb2401'} end
 local mex=unit(categories('MASSEXTRACTION'))
 local scout=unit(categories('AIR','INTELLIGENCE'))
@@ -88,9 +93,16 @@ modules['/lua/ui/game/construction.lua'].DecreaseBuildCountInQueue=function(coun
  if failQueueDecrease then error('simulated queue update failure') end
 end
 modules['/lua/ui/game/construction.lua'].RefreshUI=function() refreshCount=refreshCount+1 end
+modules['/mods/ASE/modules/Main.lua']=ase
 local environment=setmetatable({
  import=function(path) return assert(modules[path],path) end,
- ConExecute=function(command) calls.conexecute=command end,
+ ConExecute=function(command)
+  if aseActive and command:find('AIR TRANSPORTATION',1,true) then
+   assert(aseIgnored, 'ASE filters are suspended while the transport selection is dispatched')
+   if calls.failTransportSelection then error('simulated selection failure') end
+  end
+  calls.conexecute=command
+ end,
  GetUnitCommandData=function(selection)
   if selection and #selection==1 then
    local selected=selection[1]
@@ -119,6 +131,11 @@ local environment=setmetatable({
      table.insert(selectedForCommand,candidate)
     end
    end
+   return
+  end
+  if category=='AIR TRANSPORTATION' and aseActive then
+   assert(aseIgnored, 'ASE stays suspended while transport candidates are discovered')
+   selectedForCommand={transport}
    return
   end
   if category=='LAND MOBILE' then selectedForCommand={mobileLand,megalith,engineerLand}; return end
@@ -228,8 +245,19 @@ local mobileMissile=unit(categories('MOBILE','LAND','SILO','TECH2'))
 local landScout=unit(categories('MOBILE','LAND','INTELLIGENCE'))
 local drone=unit(categories('MOBILE','AIR','DRONE'))
 assert(ContextActions.Classify({mobileFactory})=='land','mobile factories are Units')
-assert(ContextActions.Classify({mobileMissile})=='silo_tactical','mobile missile unit is a missile')
-assert(ContextActions.Classify({mobileMissile,mobileLand})=='land','army precedes mobile missile unit')
+assert(ContextActions.Classify({mobileMissile})=='land', 'T2 MML belongs to land forces')
+assert(ContextActions.Classify({unit(categories('MOBILE','LAND','SILO','TECH3'))})=='land',
+    'T3 MML is land forces, not a strategic launcher')
+assert(ContextActions.Classify({unit(categories('MOBILE','NAVAL','SILO','ANTIMISSILE','TECH2'))})=='navy',
+    'missile cruisers belong to naval forces')
+assert(ContextActions.Classify({unit(categories('MOBILE','NAVAL','EXTERNALFACTORY','SILO','ANTIMISSILE','TECH3'))})=='navy',
+    'the Seraphim carrier retains its naval context')
+assert(ContextActions.Classify({unit(categories('MOBILE','NAVAL','SILO','NUKE','TECH3'))})=='silo_nuclear',
+    'strategic missile submarines stay in the nuclear context')
+assert(ContextActions.Classify({unit(categories('STRUCTURE','SILO','ANTIMISSILE','TECH3'))})=='other',
+    'strategic missile defense is not an offensive launcher')
+assert(ContextActions.Classify({mobileMissile,mobileLand})=='land',
+    'MML and tanks share one context')
 assert(ContextActions.Classify({landScout})=='land','land scout is Units')
 assert(ContextActions.Classify({drone})=='other','drones are Other')
 assert(ContextActions.Supports('move','units') and ContextActions.Supports('stop','missiles')
@@ -309,6 +337,51 @@ end
 assert(ContextActions.Get('select_transport_nearest').selectionPolicy=='accumulate'
     and ContextActions.Supports('select_transport_nearest','empty'),
     'nearest free transport accumulates into the selection')
+local loadTransports=ContextActions.Get('load_transports')
+for _, kind in ipairs({'engineer','acu','sacu'}) do
+    assert(ContextActions.Supports('load_transports',kind))
+    local tags={engineer='ENGINEER',acu='COMMAND',sacu='SUBCOMMANDER'}
+    local cargo=unit(categories(tags[kind],'MOBILE','LAND'))
+    selectedForCommand={cargo,transport}
+    assert(ContextActions.Execute(loadTransports,{selection=selectedForCommand,focusArmy=1})
+        and calls.conexecute==loadTransports.select, kind..' reaches the native load action with a transport')
+    assert(not ContextActions.Available(loadTransports,{selection={cargo},focusArmy=1}),
+        'cargo alone does not trigger the second action')
+end
+for _, ping in ipairs({'marker','alert','move','attack'}) do
+    local action=ContextActions.Get('ping_'..ping)
+    assert(ContextActions.Execute(action,{selection=selectedForCommand,focusArmy=1})
+        and calls.conexecute:find('DoPing("'..ping..'")',1,true),
+        'ping is dispatched with a selection')
+    assert(ContextActions.Execute(action,{selection={},focusArmy=1}), 'ping is independent of the selection')
+end
+
+aseActive=true
+environment.__active_mods={{uid='advanced-selection-extension-v03'}}
+function mobileLand:GetEntityId() return 998 end
+function transport:GetEntityId() return 999 end
+function transport:GetCommandQueue() return {} end
+function transport:GetPosition() return {0,0,0} end
+selectedForCommand={mobileLand}
+local nearestTransport=ContextActions.Get('select_transport_nearest')
+assert(ContextActions.Execute(nearestTransport,{selection=selectedForCommand,focusArmy=1,absolute=true})
+    and selectedForCommand[1]==mobileLand and selectedForCommand[2]==transport and not aseIgnored,
+    'nearest transport is added while preserving the existing land selection')
+aseTransitions={}
+local mapTransport=ContextActions.Get('select_transport_map')
+local selectContext={selection=selectedForCommand,focusArmy=1,absolute=true}
+assert(ContextActions.Execute(mapTransport,selectContext)
+    and aseTransitions[1]==true and aseTransitions[2]==false and not aseIgnored,
+    'the ASE filter state is restored after dispatch')
+aseIgnored=true
+calls.failTransportSelection=true
+assert(not pcall(ContextActions.Execute,mapTransport,selectContext) and aseIgnored,
+    'a previously suspended ASE filter stays suspended if dispatch fails')
+aseIgnored=false
+calls.failTransportSelection=nil
+aseActive=false
+environment.__active_mods=nil
+
 assert(ContextActions.Get('select_experimentals').special=='select_mobile_land_experimentals',
     'default experimental selection is mobile land, excluding Scathis and satellite')
 assert(ContextActions.Get('select_land_army_screen').special=='select_land_army_screen'
@@ -372,8 +445,9 @@ local upgradeContext={selection={},focusArmy=1,isReplay=false,orders={}}
 assert(ContextActions.Execute(ContextActions.Get('upgrade_structure_under_cursor'),upgradeContext)
     and upgradeDispatch.available=='upgrade_structure_under_cursor'
     and upgradeDispatch.execute=='upgrade_structure_under_cursor','hover upgrade is routed through the upgrade module')
-assert(ContextActions.Execute(ContextActions.Get('upgrade_mex_select_next'),upgradeContext)
-    and upgradeDispatch.execute=='upgrade_mex_select_next','mex upgrade is routed from empty context')
+assert(not ContextActions.Supports('upgrade_mex_select_next','empty')
+    and not ContextActions.Execute(ContextActions.Get('upgrade_mex_select_next'),upgradeContext),
+    'the select-next upgrade cannot run from empty selection')
 upgradeContext.selection={mex}
 assert(ContextActions.Execute(ContextActions.Get('upgrade_mex_select_next'),upgradeContext),
     'mex upgrade continuation is supported with a mex selected')
@@ -658,6 +732,19 @@ assert(ContextActions.Available(otherToggle,context) and ContextActions.Execute(
  'one capable selected Other unit enables and dispatches the exact native production toggle')
 assert(selectedForCommand==otherToggleSelection and visibleSelections==otherToggleVisibleSelections,
  'Other toggle preserves the complete selection without hidden reselection')
+
+local allToggles=ContextActions.Get('toggle_all')
+for _,kind in ipairs({'units','builder','missiles','land','air','navy','factory','transport','mex','scout','other'}) do
+    assert(ContextActions.Supports(allToggles.id,kind), 'all toggles are offered for '..kind)
+end
+local toggleContext={selection={mobileLand,drone},focusArmy=1}
+mobileLand.toggles={}
+drone.toggles={}
+assert(not ContextActions.Available(allToggles,toggleContext), 'there must be a native toggle to change')
+drone.toggles={'RULEUTC_GenericToggle'}
+assert(ContextActions.Execute(allToggles,toggleContext)
+    and calls.conexecute=='UI_Lua import("/lua/keymap/misckeyactions.lua").toggleAllScript()',
+    'an eligible unit enables one native all-toggle command for the whole selection')
 
 -- When the Units row is empty, its legacy fallback displays Other actions for
 -- a mobile army selection; capability is still read from each live unit.

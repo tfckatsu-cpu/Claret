@@ -65,9 +65,10 @@ local function CreateMarker(owner, row, view)
     local iconInset = iconSize + iconGap
     local lineGap = math.floor(2 * scale + 0.5)
     local box = Group(view)
+    L(box):AtLeftTopIn(view, 0, 0):Width(0):Height(25)
+    box:Hide()
     box:EnableHitTest()
     box.Depth:Set(function() return view.Depth() + 2 end)
-    L(box):Height(25)
     local faction = factions[row.faction]
     local name = row.anonymous and ReUI.ClaretCore.Localization.Text('claretui.positions.unknown') or (row.name or '')
     local text = UI.CreateText(box, name, 12 * scale / pixel, Theme.Fonts.body)
@@ -137,6 +138,7 @@ function Start(self, scope, isReplay, options)
     if not root then return end
     local owner = { rows = {}, controls = {}, dismissed = {}, enabled = false, ready = false, options = options }
     owner.updater = scope:Own(Group(root))
+    ReUI.UI.FloorLayouter(1)(owner.updater):AtLeftTopIn(root, 0, 0):Width(0):Height(0)
     owner.updater:DisableHitTest()
     owner.updater.OnFrame = function()
         if Expired(owner) then Clear(owner); return end
@@ -146,6 +148,10 @@ function Start(self, scope, isReplay, options)
             if point then
                 entry.control.Left:Set(math.floor(owner.view.Left() + point.x - entry.control.Width() / 2))
                 entry.control.Top:Set(math.floor(owner.view.Top() + point.y - entry.control.Height() / 2))
+                if not entry.positioned then
+                    entry.positioned = true
+                    entry.control:Show()
+                end
             end
         end
     end

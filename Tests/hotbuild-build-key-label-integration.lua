@@ -108,14 +108,14 @@ assert(originalCalls == 2 and serviceCalls.assignments == 1,
     'active hook calls original once and takes one keyboard assignment snapshot')
 assert(labels ~= originalRelations and labels.uel0002,
     'Claret-only blueprint receives its badge through the returned BPID map')
-assert(labels.ual0001 and labels.ual0001.key == 'W+' and originalRelations.ual0001 == nativeLabel,
+assert(labels.ual0001 and labels.ual0001.key == 'W' and originalRelations.ual0001 == nativeLabel,
     'Claret key takes precedence while the native map stays untouched')
 assert(upgrade == nativeUpgrade and orderKeys == nativeOrder,
     'upgrade and order relations pass through unchanged')
-assert(labels.uel0002.ambiguous and labels.uel0002.key == 'W+'
+assert(labels.uel0002.ambiguous and labels.uel0002.key == 'W'
     and labels.uel0002.chordCount == 2
     and labels.uel0002.chords[1] == 'W' and labels.uel0002.chords[2] == 'X',
-    'multiple Claret keys show the first stable key plus marker with complete chord metadata')
+    'multiple Claret keys show the first stable key and retain complete chord metadata')
 
 failAssignments = true
 local fallback, fallbackUpgrade, fallbackOrder = getKeyTables()

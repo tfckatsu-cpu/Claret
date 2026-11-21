@@ -107,7 +107,7 @@ Strings = {
         ["hotbuild.action.build_templates.label"] = "FAF: Build template",
         ["hotbuild.action.build_templates.description"] = "Calls the native FAF Templates action for the selected builder.",
         ["hotbuild.action.upgrade_structure.label"] = "FAF: Upgrade structure under cursor",
-        ["hotbuild.action.upgrade_structure_pause.label"] = "Pause",
+        ["hotbuild.action.upgrade_structure_pause.label"] = "Upgrade with pause",
         ["hotbuild.action.create_template_factory.label"] = "Create queue template from this factory",
         ["hotbuild.action.fire_beetle_detonate.label"] = "Detonate Fire Beetle",
         ["hotbuild.action.pause_unit_all.label"] = "Pause entire selection",
@@ -116,12 +116,12 @@ Strings = {
         ["hotbuild.action.toggle_intel.label"] = "Toggle intel",
         ["hotbuild.action.toggle_jamming.label"] = "Toggle jamming",
         ["hotbuild.action.toggle_cloak.label"] = "Toggle cloak",
-        ["hotbuild.action.toggle_all.label"] = "Toggle all abilities",
+        ["hotbuild.action.toggle_all.label"] = "Toggle all unit abilities",
         ["hotbuild.action.cycle_mex_screen.label"] = "Next extractor on screen",
         ["hotbuild.action.cycle_mex_map.label"] = "Next extractor on map",
         ["hotbuild.action.upgrade_structure_under_cursor.label"] = "Upgrade structure under cursor",
         ["hotbuild.action.upgrade_mex_select_next.label"] = "Upgrade extractor and select the next nearest one",
-        ["hotbuild.action.upgrade_mex.label"] = "Upgrade selected extractor",
+        ["hotbuild.action.upgrade_mex.label"] = "Upgrade selected extractors",
         ["hotbuild.action.overcharge.label"] = "Overcharge",
         ["hotbuild.action.acu_tech.label"] = "ACU: Engineering",
         ["hotbuild.action.acu_ras.label"] = "ACU: Resource production",
@@ -272,7 +272,7 @@ Strings = {
         ["hotbuild.action.build_templates.label"] = "FAF: строительные шаблоны",
         ["hotbuild.action.build_templates.description"] = "Вызывает штатное действие FAF Templates для выбранного строителя.",
         ["hotbuild.action.upgrade_structure.label"] = "FAF: улучшить структуру под курсором",
-        ["hotbuild.action.upgrade_structure_pause.label"] = "Пауза",
+        ["hotbuild.action.upgrade_structure_pause.label"] = "Улучшение с паузой",
         ["hotbuild.action.create_template_factory.label"] = "Шаблон очереди с этого завода",
         ["hotbuild.action.fire_beetle_detonate.label"] = "Взорвать Fire Beetle",
         ["hotbuild.action.pause_unit_all.label"] = "Пауза всего выделения",
@@ -281,12 +281,12 @@ Strings = {
         ["hotbuild.action.toggle_intel.label"] = "Переключить разведку",
         ["hotbuild.action.toggle_jamming.label"] = "Переключить глушение",
         ["hotbuild.action.toggle_cloak.label"] = "Переключить маскировку",
-        ["hotbuild.action.toggle_all.label"] = "Переключить все возможности",
+        ["hotbuild.action.toggle_all.label"] = "Переключить все функции",
         ["hotbuild.action.cycle_mex_screen.label"] = "Следующий добытчик на экране",
         ["hotbuild.action.cycle_mex_map.label"] = "Следующий добытчик на карте",
         ["hotbuild.action.upgrade_structure_under_cursor.label"] = "Улучшить структуру под курсором",
         ["hotbuild.action.upgrade_mex_select_next.label"] = "Улучшить добытчик и выбрать ближайший следующий",
-        ["hotbuild.action.upgrade_mex.label"] = "Улучшить выбранный добытчик",
+        ["hotbuild.action.upgrade_mex.label"] = "Улучшить выбранные добытчики",
         ["hotbuild.action.overcharge.label"] = "Overcharge",
         ["hotbuild.action.acu_tech.label"] = "ACU: улучшить инженерию",
         ["hotbuild.action.acu_ras.label"] = "ACU: улучшить производство ресурсов",
@@ -424,7 +424,6 @@ Strings.en['hotbuild.domain_header.air'] = 'Air'; Strings.ru['hotbuild.domain_he
 Strings.en['hotbuild.domain_header.naval'] = 'Naval'; Strings.ru['hotbuild.domain_header.naval'] = 'Флот'
 Strings.en['hotbuild.domain_header.gate'] = 'Gates'; Strings.ru['hotbuild.domain_header.gate'] = 'Врата'
 
-Strings.en['hotbuild.keyboard.title'] = 'Claret / Hotbuild Keyboard'; Strings.ru['hotbuild.keyboard.title'] = 'Claret / Клавиатура Hotbuild'
 Strings.en['hotbuild.keyboard.instructions'] = 'Left-click to assign, right-click to clear. Ctrl, Shift, and Alt show combinations.'; Strings.ru['hotbuild.keyboard.instructions'] = 'ЛКМ — назначить, ПКМ — снять назначение. Ctrl, Shift и Alt показывают сочетания.'
 Strings.en['hotbuild.keyboard.group.selection'] = 'Unit selection'; Strings.ru['hotbuild.keyboard.group.selection'] = 'Выбор юнитов'
 Strings.en['hotbuild.keyboard.group.split'] = 'Split selection'; Strings.ru['hotbuild.keyboard.group.split'] = 'Разделение выделения'
@@ -433,6 +432,16 @@ Strings.en['hotbuild.keyboard.group.transport'] = 'Transport'; Strings.ru['hotbu
 Strings.en['hotbuild.keyboard.group.build'] = 'Building and production'; Strings.ru['hotbuild.keyboard.group.build'] = 'Строительство и производство'
 Strings.en['hotbuild.keyboard.group.toggle'] = 'Modes and toggles'; Strings.ru['hotbuild.keyboard.group.toggle'] = 'Режимы и переключатели'
 Strings.en['hotbuild.keyboard.group.orders'] = 'Orders and other'; Strings.ru['hotbuild.keyboard.group.orders'] = 'Приказы и прочее'
+Strings.en['hotbuild.keyboard.group.communication'] = 'Communication'
+Strings.ru['hotbuild.keyboard.group.communication'] = 'Коммуникация'
+Strings.en['hotbuild.action.ping_marker.label'] = 'Text marker'
+Strings.ru['hotbuild.action.ping_marker.label'] = 'Текстовая метка'
+Strings.en['hotbuild.action.ping_alert.label'] = 'Alert ping'
+Strings.ru['hotbuild.action.ping_alert.label'] = 'Пинг тревоги'
+Strings.en['hotbuild.action.ping_move.label'] = 'Move ping'
+Strings.ru['hotbuild.action.ping_move.label'] = 'Пинг движения'
+Strings.en['hotbuild.action.ping_attack.label'] = 'Attack ping'
+Strings.ru['hotbuild.action.ping_attack.label'] = 'Пинг атаки'
 Strings.en['hotbuild.keyboard.group.air'] = 'Air'; Strings.ru['hotbuild.keyboard.group.air'] = 'Авиация'
 Strings.en['hotbuild.keyboard.legacy'] = ' · obsolete assignment'; Strings.ru['hotbuild.keyboard.legacy'] = ' · старое назначение'
 Strings.en['hotbuild.keyboard.building'] = 'Building: %s'; Strings.ru['hotbuild.keyboard.building'] = 'Стройка: %s'
@@ -478,7 +487,6 @@ Strings.en['hotbuild.keyboard.numpad_closed'] = '▸ NumPad'; Strings.ru['hotbui
 Strings.en['hotbuild.keyboard.numpad_open'] = '▾ NumPad'; Strings.ru['hotbuild.keyboard.numpad_open'] = '▾ NumPad'
 
 
-Strings.en['hotbuild.context_editor.s001'] = 'Claret / Multifunction'; Strings.ru['hotbuild.context_editor.s001'] = 'Claret / Мультифункциональные'
 Strings.en['hotbuild.context_editor.s002'] = 'Select a context on the left, then choose an action for it on the right.'; Strings.ru['hotbuild.context_editor.s002'] = 'Выберите контекст слева, затем задайте для него действие справа.'
 Strings.en['hotbuild.context_editor.s003'] = 'There are unsaved changes.'; Strings.ru['hotbuild.context_editor.s003'] = 'Есть несохранённые изменения.'
 Strings.en['hotbuild.context_editor.s004'] = '● unsaved'; Strings.ru['hotbuild.context_editor.s004'] = '● не сохранено'
@@ -553,7 +561,7 @@ Strings.en['hotbuild.context_editor.s071'] = 'Empty selection'; Strings.ru['hotb
 Strings.en['hotbuild.context_editor.s072'] = '. You can clear the saved assignment; to change it, replace the chain action first.'; Strings.ru['hotbuild.context_editor.s072'] = '. Сохранённое назначение можно очистить; для изменения сначала замените действие цепочки.'
 Strings.en['hotbuild.context_editor.s073'] = 'Assign action'; Strings.ru['hotbuild.context_editor.s073'] = 'Назначить действие'
 Strings.en['hotbuild.context_editor.s074'] = 'Shared action: '; Strings.ru['hotbuild.context_editor.s074'] = 'Общее действие: '
-Strings.en['hotbuild.context_editor.s075'] = 'Click to expand child contexts.'; Strings.ru['hotbuild.context_editor.s075'] = 'Нажмите, чтобы раскрыть дочерние контексты.'
+Strings.en['hotbuild.context_editor.s075'] = 'Click to select this context.'; Strings.ru['hotbuild.context_editor.s075'] = 'Нажмите, чтобы выбрать этот контекст.'
 Strings.en['hotbuild.context_editor.s076'] = 'action'; Strings.ru['hotbuild.context_editor.s076'] = 'действие'
 Strings.en['hotbuild.context_editor.s077'] = 'quick repeat'; Strings.ru['hotbuild.context_editor.s077'] = 'быстрый повтор'
 Strings.en['hotbuild.context_editor.s078'] = 'obsolete · '; Strings.ru['hotbuild.context_editor.s078'] = 'устарело · '

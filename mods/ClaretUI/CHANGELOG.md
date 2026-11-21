@@ -1,5 +1,42 @@
 # История изменений
 
+## Сборка 20261121-123 — 2026-11-21
+- Defer background engineer and mex selection scans until 15 seconds of game time. Mex scans also wait for active commands and input capture to finish.
+
+## Сборка 20261121-122 — 2026-11-21
+- Use Engineer Indicators tier badges for mex map markers. Digits are white when idle and red during active or paused upgrades. The progress fill runs beneath the badge.
+
+## Сборка 20261121-121 — 2026-11-21
+- Initialize Reveal Positions marker geometry before MAUI can evaluate it and show markers after their first valid map projection.
+
+## Сборка 20261121-120 — 2026-11-21
+- Fade engineer indicators in when idle-only mode shows a newly idle engineer.
+
+## Сборка 20261121-119 — 2026-11-21
+- Shorten the gun upgrade label in Notifications and InfoShare in English and Russian.
+
+## Сборка 20261121-118 — 2026-11-21
+- Rename eight Claret UI settings sections in the Russian locale.
+
+## Сборка 20261121-117 — 2026-11-21
+- Update the Reveal Positions faction icon colors.
+- Enlarge Selection Info captions and shorten the destroyed mass, reclaimed mass, and health labels.
+
+## Сборка 20261121-116 — 2026-11-21
+- Move the reclaim overlay to the project's experimental archive and remove its menu, runtime registration, and game hook.
+
+## Сборка 20261121-115 — 2026-11-21
+- Anchor overview reclaim cells using elevations from synced props.
+
+## Сборка 20261121-114 — 2026-11-21
+- Log reclaim index completion, exclusion counts and the first settled viewport search.
+
+## Сборка 20261121-113 — 2026-11-21
+- Validate reclaim sync numbers in FAF LuaPlus and initialize MAUI geometry before drawing labels.
+
+## Сборка 20261121-112 — 2026-11-21
+- Add the first Claret reclaim overlay with minimum-mass and label-size settings.
+
 ## Сборка 20261121-111 — 2026-11-21
 - Update the Russian engineer indicator description.
 

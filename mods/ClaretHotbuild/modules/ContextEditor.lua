@@ -38,22 +38,8 @@ local function Fold(value)
     return value
 end
 
--- Only actions that already contain a continuation reserve another context.
-local function ContinuationTargets(action)
-    if not action then return {} end
-    local id=action.id or ''
-    if id=='cycle_idle_factories' then return {'factory'} end
-    if id=='select_transport_double' then return {'transport'} end
-    if string.find(id,'^select_engineers_') then return {'engineer'} end
-    if action.continuation~='double' and action.continuation~='accumulate' then return {} end
-    local result={}
-    for _,context in ipairs(action.contexts or {}) do
-        if context~='empty' then table.insert(result,context) end
-    end
-    return result
-end
-
 function Create(parent, service, embedded, memory)
+    local ContinuationTargets=service.contextActions.ContinuationTargets
     local Theme = import('/mods/ClaretCore/modules/Theme.lua')
     local C = Theme.Colors
     local Group = import('/lua/maui/group.lua').Group
@@ -172,13 +158,12 @@ function Create(parent, service, embedded, memory)
         local bg = Panel(frame, 0, 0, 1080, 920, C.canvas)
         bg.Depth:Set(frame.Depth); bg.HandleEvent = function() return true end
         Panel(frame, 24, 20, 4, 24, C.accent):DisableHitTest()
-        Text(frame, T('hotbuild.context_editor.s001'), 40, 16, 22)
-        Text(frame, T('hotbuild.context_editor.s002'), 24, 54, 15, C.muted)
+        Text(frame, 'hotbuild.page.contexts.title', 40, 16, Theme.Metrics.title)
+        Text(frame, 'hotbuild.context_editor.s002', 24, 54, Theme.Metrics.secondaryText, C.muted)
 
         memory = type(memory)=='table' and memory or {}
         local draft, dirty, loading = nil, false, false
         local saveButton
-        local expanded={units=false,builder=false,missiles=false}
         local selectedContext, leaveIntent, leaveDialog, leaveOverlay, leaveContinuation, leaveEscape, deleteIntent
         local conflictDialog, conflictOverlay, conflictEscape
         local catalogTop, savedTop = 1, 1
@@ -518,7 +503,7 @@ function Create(parent, service, embedded, memory)
         Text(frame,T('hotbuild.context_editor.s038'),24,220,18)
         Text(frame,T('hotbuild.context_editor.s039'),24,246,12,C.muted)
         local usageText=Text(frame,T('hotbuild.context_editor.s040'),24,266,12,C.muted)
-        local contextPanel=Panel(frame,24,282,480,580,C.canvas)
+        local contextPanel=Panel(frame,24,282,480,614,C.canvas)
         local contextButtons={}
         local function ApplyContextTileStyle(item)
             local color
@@ -560,7 +545,7 @@ function Create(parent, service, embedded, memory)
             return id
         end
         local function Obsolete(context, id)
-            return id and ((id=='suicide') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical' or id=='upgrade_structure' or (id=='sacu_tech' and context=='sacu')
+            return id and ((id=='load_transports') or (id=='suicide') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical' or id=='upgrade_structure' or (id=='sacu_tech' and context=='sacu')
                 or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next') and context~='cursor')
                 or (id=='soft_stop' and context~='factory')
                 or (id=='attack' and context=='transport')
@@ -591,17 +576,30 @@ function Create(parent, service, embedded, memory)
         local childParents={land='units',air='units',navy='units',acu='builder',sacu='builder',engineer='builder',silo_tactical='missiles',silo_nuclear='missiles'}
         local function TileLock(id)
             for _,row in ipairs(draft and draft.rows or {}) do
-                if row.context~=id and row.action and row.mode~='inherit' and row.mode~='disabled' then
-                    local action=service.contextActions.Get(row.action)
+                local action=row.action and service.contextActions.Get(row.action)
+                if id=='engineer' and row.context=='empty' and action
+                    and action.continuation=='accumulate' and action.special
+                    and string.find(action.special,'^next_engineer_') then
+                    return T('hotbuild.context_editor.s041')..ActionLabel(action)
+                end
+                if row.context~='cursor' and row.context~=id and row.action and row.mode~='inherit' and row.mode~='disabled' then
                     for _,target in ipairs(ContinuationTargets(action)) do
                         if target==id then return T('hotbuild.context_editor.s041')..ActionLabel(action) end
                     end
                 end
             end
         end
+        local function HasReservedAssignment(target)
+            if childParents[target] then
+                local row=CurrentRow(target)
+                return row and row.action and row.mode~='inherit' and row.mode~='disabled'
+            end
+            return service.contextModel:ResolveRow(draft,target)~=nil
+        end
         local function ActionLock(action)
+            if selectedContext=='cursor' then return nil end
             for _,target in ipairs(ContinuationTargets(action)) do
-                if target~=selectedContext and service.contextModel:ResolveRow(draft,target) then
+                if target~=selectedContext and HasReservedAssignment(target) then
                     return T('hotbuild.context_editor.s042')..ContextLabel(target)..T('hotbuild.context_editor.s043')
                 end
             end
@@ -622,7 +620,6 @@ function Create(parent, service, embedded, memory)
             local treeY=4
             for i,item in ipairs(contextButtons) do
                 local showContext=not (draft and draft.absolute and item.context~='empty')
-                if item.child then showContext=showContext and expanded[childParents[item.context]] end
                 if showContext then
                     if item.displayY~=treeY then
                         L(item.button):AtLeftTopIn(contextPanel,item.treeX,treeY)
@@ -817,23 +814,19 @@ function Create(parent, service, embedded, memory)
         CreatePriorityTile('empty',nil,8,42,456)
         local function CreateGroup(id,children,x,y,width,childHeight,step)
             local header=Panel(contextPanel,x,y,width,30,C.raised)
-            local mark=Text(header,'▸',8,0,14,C.accentText)
-            local label=Text(header,ContextLabel(id),30,0,15)
+            local label=Text(header,ContextLabel(id),8,0,15)
             local action=Text(header,'',math.floor(width*0.5),0,11,C.muted)
-            local item={context=id,button=header,mark=mark,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y,displayY=y}
+            local item={context=id,button=header,mark=label,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             for i,childId in ipairs(children) do
                 local index=table.getn(contextButtons)+1
                 CreateContextTile(index,childId,true,x+22,y+30+(i-1)*step,width-22,childHeight)
-                contextButtons[index].button:Hide()
             end
             header.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
                 elseif e.Type=='MouseExit' then SetContextTileHover(item,false)
                 elseif e.Type=='ButtonPress' then
                     if draft and draft.absolute then return true end
-                    expanded[id]=not expanded[id]
-                    mark:SetText(expanded[id] and '▾' or '▸')
                     SelectContext(id); return true
                 end
                 return false
@@ -870,12 +863,12 @@ function Create(parent, service, embedded, memory)
             if context=='__obsolete' then
                 local result={}
                 for _,row in ipairs(draft and draft.rows or {}) do
-                    for _,field in ipairs({'action','quickRepeat','fallback'}) do
+                    for _,field in ipairs({'action','fallback'}) do
                         local id=row[field]
                         if Obsolete(row.context,id) then
                             local action=service.contextActions.Get(id)
                             local fieldLabel=field=='action' and T('hotbuild.context_editor.s076')
-                                or (field=='quickRepeat' and T('hotbuild.context_editor.s077') or 'fallback')
+                                or 'fallback'
                             table.insert(result,{id=id,label=T('hotbuild.context_editor.s078')..fieldLabel..' · '..ContextLabel(row.context)..' · '..(action and ActionLabel(action) or id),obsoleteContext=row.context,obsoleteField=field})
                         end
                     end
@@ -885,7 +878,7 @@ function Create(parent, service, embedded, memory)
             local groups={{items={}},{items={}},{items={}},{items={}},{items={}},{items={}},{items={}}}
             for _,action in ipairs(actions) do
                 local cursorOnly=action.id=='upgrade_structure_under_cursor' or action.id=='upgrade_structure_pause' or action.id=='upgrade_mex_select_next'
-                if (not action.hidden or action.compositeOnly) and service.contextActions.Supports(action.id,context)
+                if action.id~='load_transports' and (not action.hidden or action.compositeOnly) and service.contextActions.Supports(action.id,context)
                     and (context=='cursor' or not cursorOnly) and not Obsolete(context,action.id) then
                     local group=CatalogGroup(action,context)
                     table.insert(groups[group].items,action)
@@ -956,8 +949,7 @@ function Create(parent, service, embedded, memory)
             local available=selectedContext and not locked and RowsFor(selectedContext) or {}
             if selectedContext then
                 local current=CurrentRow(selectedContext)
-                local staleField=editTarget=='quickRepeat' and current and Obsolete(selectedContext,current.quickRepeat)
-                    or (editTarget=='fallback' and current and Obsolete(selectedContext,current.fallback))
+                local staleField=editTarget=='fallback' and current and Obsolete(selectedContext,current.fallback)
                 catalogHint:SetText((locked and (locked..T('hotbuild.context_editor.s086')))
                     or (staleField and (T('hotbuild.context_editor.s087')..tostring(editTarget)..T('hotbuild.context_editor.s088')))
                     or (current and Obsolete(selectedContext,current.action) and (T('hotbuild.context_editor.s089')..current.action..T('hotbuild.context_editor.s090')))
@@ -966,11 +958,6 @@ function Create(parent, service, embedded, memory)
             else
                 catalogHint:SetText(T('hotbuild.context_editor.s095'))
                 selectedContextTitle:SetText('')
-            end
-            if selectedContext and editTarget=='quickRepeat' then
-                local row=CurrentRow(selectedContext)
-                catalogHint:SetText(row and T('hotbuild.context_editor.s096') or T('hotbuild.context_editor.s097'))
-                if not row or row.mode=='inherit' or row.mode=='disabled' then available={} end
             end
             if selectedContext and editTarget=='fallback' then
                 local row=CurrentRow(selectedContext)
@@ -1026,13 +1013,6 @@ function Create(parent, service, embedded, memory)
         end
         AddAction=function(action)
             if not draft then Status(T('hotbuild.context_editor.s103'),true); return end
-            if editTarget=='quickRepeat' then
-                local row=CurrentRow(selectedContext)
-                if not row or row.mode=='inherit' or row.mode=='disabled' then Status(T('hotbuild.context_editor.s104'),true); return end
-                if not service.contextActions.Supports(action.id,selectedContext) then Status(T('hotbuild.context_editor.s105'),true); return end
-                row.quickRepeat=action.id; editTarget='action'; Change(); RefreshRows(); RefreshCatalog()
-                Status(T('hotbuild.context_editor.s106')..ActionLabel(action)); return
-            end
             if editTarget=='fallback' then
                 local row=CurrentRow(selectedContext)
                 if not row or row.mode=='inherit' or row.mode=='disabled' or not row.action
@@ -1047,21 +1027,10 @@ function Create(parent, service, embedded, memory)
             end
             if TileLock(selectedContext) then Status(TileLock(selectedContext),true); return end
             if draft.absolute and selectedContext~='empty' then Status(T('hotbuild.context_editor.s110'),true); return end
-            for child,parent in pairs(childParents) do
-                local childRow=CurrentRow(child)
-                if parent==selectedContext and TileLock(child) and (not childRow or childRow.mode=='inherit') then
-                    Status(TileLock(child)..T('hotbuild.context_editor.s111')..ContextLabel(child)..'».',true)
-                    return
-                end
-            end
             local old=CurrentRow(selectedContext)
             if old and old.action==action.id and (not childParents[selectedContext] or old.mode==nil or old.mode=='own') then return end
-            for _,target in ipairs(ContinuationTargets(action)) do
-                if target~=selectedContext and service.contextModel:ResolveRow(draft,target) then
-                    Status(T('hotbuild.context_editor.s112')..ActionLabel(action)..T('hotbuild.context_editor.s113')..ContextLabel(target)..T('hotbuild.context_editor.s114'),true)
-                    return
-                end
-            end
+            local actionLock=ActionLock(action)
+            if actionLock then Status(actionLock,true); return end
             local policy=selectedContext=='empty' and action.selectionPolicy or EmptySelectionPolicy()
             if selectedContext~='empty' and ConflictsWithEmpty(selectedContext,policy) then
                 Status(T('hotbuild.context_editor.s115')..ActionLabel(action)..T('hotbuild.context_editor.s116')..ContextLabel(selectedContext)..T('hotbuild.context_editor.s117'),true)

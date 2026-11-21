@@ -78,6 +78,7 @@ local function ActionSection(id)
         or id=='filter_highest_engineer_and_assist' then return 5 end
     if string.find(id,'^toggle_') or id=='shield' or id=='stealth' or id=='discharge'
         or string.find(id,'pause') then return 6 end
+    if string.find(id,'^ping_') then return 9 end
     return 7
 end
 
@@ -90,8 +91,9 @@ end
 
 local function OrganizeChoices(choices)
     local names={'hotbuild.keyboard.group.selection','hotbuild.keyboard.group.split','hotbuild.keyboard.group.acu','hotbuild.keyboard.group.transport',
-        'hotbuild.keyboard.group.build','hotbuild.keyboard.group.toggle','hotbuild.keyboard.group.orders','hotbuild.keyboard.group.air'}
-    local sections={{},{},{},{},{},{},{},{}}
+        'hotbuild.keyboard.group.build','hotbuild.keyboard.group.toggle','hotbuild.keyboard.group.orders','hotbuild.keyboard.group.air',
+        'hotbuild.keyboard.group.communication'}
+    local sections={{},{},{},{},{},{},{},{},{}}
     for _,choice in ipairs(choices) do
         local ref=choice.ref or choice
         table.insert(sections[ActionSection(ref.id or '')],choice)
@@ -222,8 +224,9 @@ function Create(parent, service, embedded, perf)
             if type(message)=='string' and string.sub(message,1,9)=='hotbuild.' then message=T(message,arg1,arg2,arg3) end
             status:SetText(Short(message,140)); status:SetColor(isError and C.danger or C.muted)
         end
-        Text(frame,'hotbuild.keyboard.title',24,16,22)
-        Text(frame,'hotbuild.keyboard.instructions',24,54,15,C.muted)
+        Panel(frame, 24, 20, 4, 24, C.accent):DisableHitTest()
+        Text(frame, 'hotbuild.page.keyboard.title', 40, 16, Theme.Metrics.title)
+        Text(frame, 'hotbuild.keyboard.instructions', 24, 54, Theme.Metrics.secondaryText, C.muted)
         local modifier={ctrl=false,shift=false,alt=false}
         local manual={ctrl=false,shift=false,alt=false}
         local held={ctrl=false,shift=false,alt=false}
@@ -521,16 +524,16 @@ function Create(parent, service, embedded, perf)
                 if addShift and stage==2 then targetModifier.shift=true end
                 if addShift and stage==1 then
                     local valid,message,details=service:Validate(ref,key,targetModifier)
-                    if not valid then
-                        if details and details.kind=='conflict' and details.id~=confirmed then
+                    if not valid and not (details and details.kind=='conflict' and details.id==confirmed) then
+                        if details and details.kind=='conflict' then
                             ConfirmChoiceConflict(message,function() SaveChoice(ref,details.id,true,1,shiftConfirmed) end)
                         else DialogStatus(message or ReUI.ClaretCore.Localization.Text('hotbuild.keyboard_editor.s026'),true) end
                         return
                     end
                     local shiftedModifier=CloneModifiers(targetModifier); shiftedModifier.shift=true
                     valid,message,details=service:Validate(ref,key,shiftedModifier)
-                    if not valid then
-                        if details and details.kind=='conflict' and details.id~=shiftConfirmed then
+                    if not valid and not (details and details.kind=='conflict' and details.id==shiftConfirmed) then
+                        if details and details.kind=='conflict' then
                             ConfirmChoiceConflict(message,function() SaveChoice(ref,confirmed,true,1,details.id) end)
                         else DialogStatus(message or ReUI.ClaretCore.Localization.Text('hotbuild.keyboard_editor.s026'),true) end
                         return

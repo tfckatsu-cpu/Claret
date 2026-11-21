@@ -1,5 +1,43 @@
 # История изменений
 
+## Сборка 20261121-170 — 2026-11-21
+- Show a single physical key on construction tiles, using its color for modifiers even when multiple bindings are available.
+
+## Сборка 20261121-169 — 2026-11-21
+- Enlarge the build-cycle preview, center tier labels below each icon, and fade the preview in and out.
+
+## Сборка 20261121-168 — 2026-11-21
+- Align the three Hotbuild page headings and use their localized tab names.
+
+## Сборка 20261121-167 — 2026-11-21
+- Apply confirmed shortcut replacements when assigning with + Shift in the keyboard editor.
+
+## Сборка 20261121-166 — 2026-11-21
+- Keep parent groups expanded in the multifunction editor. Clicking a group selects its context.
+
+## Сборка 20261121-165 — 2026-11-21
+- Offer one native action for all nine unit ability toggles in the keyboard and composite editors. Keep existing individual assignments executable.
+
+## Сборка 20261121-164 — 2026-11-21
+- Classify mobile missile launchers as land forces and missile cruisers as naval forces. Recognize offensive tactical and nuclear launchers by their explicit categories, including strategic submarines.
+
+## Сборка 20261121-163 — 2026-11-21
+- Retire legacy second actions in composites, including absolute composites and built-in ACU and transport double actions. Keep keyboard pairs and sequential selection.
+
+## Сборка 20261121-162 — 2026-11-21
+- Require command agreement across mixed selection contexts. Block partially assigned or conflicting selections before dispatch.
+- Reserve the engineer child for sequential selection while preserving the parent assignment for commanders. Continue sequential actions against the selection produced by the same binding.
+- Retire transport loading in composite bindings while keeping it assignable from the keyboard page.
+
+## Сборка 20261121-161 — 2026-11-21
+- Remove the select-next extractor action from the empty-selection context, including legacy assignments. Existing unambiguous assignments can migrate to the cursor context.
+
+## Сборка 20261121-160 — 2026-11-21
+- Transport loading recognizes engineers, ACUs and SACUs in the selection. The select-then-load pair checks the current selection on every press. FAF 3841's loader processes T1–T3 cargo, leaving stock ACUs outside automatic loading.
+- Transport selectors suspend ASE v3 filters while changing selection and restore the previous filter state.
+- Unit presets and queue templates require factories of the same domain and faction. The extractor upgrade bind handles multiple selected extractors.
+- Added the text marker and three pings to the keyboard picker. Renamed the cursor action to “Upgrade with pause”.
+
 ## Сборка 20261119-159 — 2026-11-19
 - Превью строительных шаблонов повторяет геометрию движка и ReUI (`lua/ui/templateUtils.lua`, `BuildTemplatePreview`): один масштаб на весь шаблон, каждое здание центрируется по якорю и растягивается по skirt-размеру чертежа (`Physics.SkirtSizeX/Z` и `SkirtOffsetX/Z`), поэтому 2×2 и 3×3 здания рисуются пропорционально крупнее и стоят вплотную к соседям.
 - Под зданием рисуется плитка слоя (земля/вода/воздух — `land_up`, `sea_up`, `air_up`), как в construction.templates; силуэт здания остаётся виден.

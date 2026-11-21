@@ -63,6 +63,28 @@ local function BuildSources(context)
     return sources
 end
 
+local function HasMixedFactories(context)
+    if context.mixedFactories ~= nil then return context.mixedFactories end
+    local signature
+    for _, unit in ipairs(context.selection) do
+        if unit:IsInCategory('FACTORY') or unit:IsInCategory('EXTERNALFACTORY') then
+            local domain = unit:IsInCategory('LAND') and 'land' or unit:IsInCategory('AIR') and 'air'
+                or unit:IsInCategory('NAVAL') and 'naval' or 'other'
+            local blueprint = type(unit.GetBlueprint)=='function' and unit:GetBlueprint()
+            local general = blueprint and blueprint.General
+            local faction = general and general.FactionName or ''
+            local kind = domain .. ':' .. string.lower(faction)
+            if signature and signature ~= kind then
+                context.mixedFactories = true
+                return true
+            end
+            signature = kind
+        end
+    end
+    context.mixedFactories = false
+    return false
+end
+
 -- A queue template may start with a factory upgrade; later entries become
 -- buildable only after that upgrade, so the whole queue is checked in order.
 local function Queueable(record,buildable)
@@ -135,6 +157,7 @@ function Create(catalog)
 
     -- A factory queue template needs one capable factory for the whole queue.
     function adapter:TemplatePlan(record, context)
+        if HasMixedFactories(context) then return nil end
         local factories={}
         local seen={}
         for _,item in ipairs(BuildSources(context)) do
@@ -168,6 +191,7 @@ function Create(catalog)
             context.plans[id]=plan or false
             return plan ~= nil
         end
+        if record.kind~='STRUCTURE' and not record.templateData and HasMixedFactories(context) then return false end
         local recordTechTab=techTabs[record.tech]
         if context.factorySelection and record.kind~='STRUCTURE' and recordTechTab
             and recordTechTab~=context.factoryTechTab then

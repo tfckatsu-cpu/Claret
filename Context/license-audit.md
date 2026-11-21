@@ -46,3 +46,21 @@ Fact: `sources/LICENSE` contains MIT, copyright 2022 4z0t; `sources/MainMods/Tea
 | TeamMouse | 6 | Lightningbulb & HotCheese / KasperAUS / Eternal- | https://github.com/Lightningbulb2/TeamMouse | Separate LICENSE found (TeamMouse: MIT, 2026 Lightningbulb2) | sources/MainMods/TeamMouse/mod_info.lua; copyright: Licensed under the FAF Vault License. Free to use and modify. |
 | TIS | 11 | 4z0t |  | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/TIS/mod_info.lua; copyright:  |
 | UMT | 13 | 4z0t |  | No separate LICENSE found; scope of the shared MIT notice and asset rights are undetermined | sources/MainMods/UMT/mod_info.lua; copyright:  |
+
+## Recheck 2026-11-19 (Claret UI scope)
+
+Checked for the mods Claret UI plans to absorb. "Not stated" means no licence field, no LICENSE file and no licence on the project page.
+
+| Mod | Author | Result | Evidence |
+|---|---|---|---|
+| ACU HP Monitor | NITROFIX | Not stated | `mods/ACUHealth/mod_info.lua`; no public page found |
+| Strategic Missile Construction Alerts | SonofaMitch | Not stated | `mods/StrategicMissileAlerts/mod_info.lua` |
+| DynamicSelectionInfo | Nuggets HotCheese | Not stated | https://github.com/hotcheese4444/DynamicSelectionInfo — GitHub detects no licence |
+| Reveal Positions (legal) | Myxir, Eternal-, Nomander, Erador | Not stated | `mods/Reveal positions/mod_info.lua`, copyright "Myxir" only |
+| Extra mini map | Eternal- | Not stated | `mods/Extra mini map/mod_info.lua`, copyright "Eternal-" only |
+| Idle Engineers Light | 4z0t | Installed v12; no license found in the mod folder on 2026-11-21 | `../mods/IEL/mod_info.lua`; behaviour reference only for the independent Claret implementation |
+| ZeP_MiniMapZoom | unverified | Installed version 2; no license found in the mod folder on 2026-11-20 | named in https://forum.faforever.com/topic/7346 |
+
+Vault-wide: the Vault Rules require "Content must use the FAF vault license or a more permissive license" (https://wiki.faforever.com/en/Development/Vault/Rules, checked 2026-11-19) and the backend applies a default licence id when none is supplied (`default-license-id` in https://github.com/FAForever/faf-java-api). The text and the rights granted by the FAF vault licence are **not published** on any page we could reach; `api.faforever.com` answers 401 anonymously and `faforever.com/mods` is Cloudflare-blocked. The phrase "free to use and modify" appears only in TeamMouse's `mod_info.lua`, not in an official document.
+
+Consequence (ADR-014): the project owner accepted reuse of these old mods despite the missing licence line (2026-11-19). Claret UI copies and adapts their code with the original author credited in `Credits and more/CREDITS.md`; MIT sources (4z0t / FAF-UI-Mods, TeamMouse) additionally keep their notice. The original mod must be disabled while the Claret UI equivalent is on.

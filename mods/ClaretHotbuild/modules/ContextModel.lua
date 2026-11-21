@@ -143,7 +143,7 @@ local function BuildActions(actions)
         if type(item) == 'table' and Identifier(item.id) then definitions[item.id] = true end
     end
     return {Contexts=contexts, IsSelection=function(id) return actions.IsSelection and actions.IsSelection(id) or false end, Get=function(id) if definitions[id] then return actions.Get(id) end end,
-        Supports=function(id, context) return definitions[id] and actions.Supports(id, context) or false end}
+        Supports=function(id, context) return id~='load_transports' and definitions[id] and actions.Supports(id, context) or false end}
 end
 
 function Create(saved, actions)
@@ -168,19 +168,9 @@ function Create(saved, actions)
     end
 
     function model:ResolveAction(bindingOrId, childContext)
-        local binding = type(bindingOrId)=='table' and bindingOrId or byId[bindingOrId]
-        if not binding or not childContexts[childContext] then return nil end
-        local child, parent
-        for _, row in ipairs(binding.rows) do
-            if row.context == childContext then child=row
-            elseif row.context == childContexts[childContext] then parent=row end
-        end
-        if child then
-            local mode=child.mode or 'own'
-            if mode=='disabled' then return nil end
-            if mode=='own' then return child.action end
-        end
-        return parent and parent.action or nil
+        if not childContexts[childContext] then return nil end
+        local row=self:ResolveRow(bindingOrId,childContext)
+        return row and row.action
     end
 
     function model:ResolveRow(bindingOrId, childContext)
@@ -195,6 +185,14 @@ function Create(saved, actions)
             end
             if row and row.mode=='disabled' then return nil end
             if row and (row.mode or 'own')=='own' then return {context=childContext,action=row.action,quickRepeat=row.quickRepeat,fallback=row.fallback} end
+            for _, candidate in ipairs(binding.rows) do
+                if candidate.context~=childContext and candidate.context~='cursor'
+                    and candidate.action and candidate.mode~='disabled' and candidate.mode~='inherit' then
+                    for _, target in ipairs(actions.ContinuationTargets(actions.Get(candidate.action))) do
+                        if target==childContext then return nil end
+                    end
+                end
+            end
             row=parent
         else
             for _, candidate in ipairs(binding.rows) do if candidate.context==childContext then row=candidate; break end end
@@ -346,6 +344,19 @@ function Create(saved, actions)
                             end
                         elseif not valid.absolute and not cursorRow and ambiguous then
                             table.insert(diagnostics,T('hotbuild.context_model.s033')..valid.id..T('hotbuild.context_model.s034'))
+                        end
+                        -- Cursor migration above can keep the action when its target is free.
+                        -- Any surviving empty-selection assignment must be retired.
+                        for i=table.getn(valid.rows),1,-1 do
+                            local row=valid.rows[i]
+                            if row.context=='empty' then
+                                if row.action=='upgrade_mex_select_next' then
+                                    table.remove(valid.rows,i)
+                                else
+                                    if row.quickRepeat=='upgrade_mex_select_next' then row.quickRepeat=nil end
+                                    if row.fallback=='upgrade_mex_select_next' then row.fallback=nil end
+                                end
+                            end
                         end
                         table.insert(bindings, valid)
                         byId[valid.id] = valid

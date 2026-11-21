@@ -9,7 +9,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | ACUEnhancements | 4z0t |  | v4; Context/sources/MainMods/ACUEnhancements/mod_info.lua |
 | AKA | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v5; Context/sources/MainMods/AKA/mod_info.lua |
 | AOE | 4z0t |  | v5; Context/sources/MainMods/AOE/mod_info.lua |
-| ASE | 4z0t, Nomander |  | v3; Context/sources/MainMods/ASE/mod_info.lua |
+| ASE | 4z0t, Nomander |  | Installed v3, checked 2026-11-21; temporary selection-filter suspension via ASE's `GetIgnored` / `SetIgnored` interface |
 | Redux ACU Icons (installed as ASI Medium) | macdeffy | [reuse permission](https://forum.faforever.com/topic/2926/redux-strategic-icons) | v1; installed mods/ASI Medium/mod_info.lua, checked 2026-11-20; three mex DDS textures used with permission from macdeffy |
 | Gold mex upgrade arrow | Source supplied by the project owner | `Золотая стрелка улучшения.png` | PNG supplied 2026-11-20, resized for the panel and map markers in Claret UI 0.2.51 |
 | Silo and submarine missile icons | Source supplied by the project owner | `Ядерная_ракета_без_линий.png` and `Красная ракета и радиационный символ в волнах.png` | PNGs supplied 2026-11-20 and resized for notification textures in Claret UI 0.2.85 |
@@ -44,7 +44,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | ReUI.Reclaim | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v7; Context/sources/MainMods/ReUI.Reclaim/mod_info.lua |
 | ReUI.Score | 4z0t, HotCheese | https://github.com/4z0t/FAF-UI-Mods | v5; Context/sources/MainMods/ReUI.Score/mod_info.lua |
 | Reveal positions | Myxir, Eternal-, Nomander, Erador |  | v4; Context/sources/MainMods/Reveal positions/mod_info.lua |
-| RFA | 4z0t, Nomander |  | v7; Context/sources/MainMods/RFA/mod_info.lua |
+| Rings For All (RFA) | 4z0t, Nomander | https://github.com/4z0t/FAF-UI-Mods/blob/develop/Docs/Overview/RingsForAll.md | Installed v7; checked 2026-11-20 as a behavior reference for Claret UI All Rings |
 | SplitGroupScatter | 4z0t, HotCheese |  | v2; Context/sources/MainMods/SplitGroupScatter/mod_info.lua |
 | STP | 4z0t |  | v3; Context/sources/MainMods/STP/mod_info.lua |
 | TeamMouse | Lightningbulb & HotCheese / KasperAUS / Eternal- | https://github.com/Lightningbulb2/TeamMouse | v6; Context/sources/MainMods/TeamMouse/mod_info.lua |
@@ -57,3 +57,7 @@ Names and links below are copied from manifests for source attribution. No code 
 
 - 2026-11-13, research restoration of the installed ReUI/ReUI.*: authors per manifests are 4z0t; Construction/Score — 4z0t, HotCheese; MissilePanel — Nuggets. Author link: https://github.com/4z0t/FAF-UI-Mods. Versions and SHA-256 are in Context/reui-decompiled/manifest.json. The local MIT notice from 2022 by 4z0t is kept in Context/reui-decompiled/LICENSE.reference.txt; whether every installed build and asset falls under that license was not separately established. No code was copied into Claret.
 - unluac (dev tool only): tehtmi, copyright 2011–2020; parts by Thomas Klaeger, 2014; MIT. Fork https://github.com/Jeong-Min-Cho/unluac, commit 744c8149d93f7739f17b7f0f506822fb93ba7193, CLI 1.2.3.569; checked 2026-11-13. Sources and notice are in .tools/unluac/license.txt; adaptation notes in Context/reui-decompiled/README.md.
+
+## Claret UI reuse policy (2026-11-19)
+
+Claret UI ports the behaviour of existing FAF UI mods by copying and adapting their code. MIT-licensed sources (4z0t / FAF-UI-Mods, 2022, `Context/sources/LICENSE`; TeamMouse, 2026, `Context/sources/MainMods/TeamMouse/LICENSE`) keep their notice in every copied file. Mods with no stated licence (`Context/license-audit.md`) are reused by the project owner's decision of 2026-11-19, credited here by name, without shipping their assets (icons, logos) unless a licence allows it. Original mods must be disabled when the equivalent Claret UI feature is on.

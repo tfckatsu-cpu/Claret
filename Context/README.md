@@ -67,6 +67,8 @@ Rules that used to live in several files now live in one owner and are linked fr
 
 ## Sources
 
+- `../KnowledgeBase/` — derived, self-contained AI-facing copy: entry router, cheat sheet, topic files and the native key-action list. It has no authority of its own: change the owner document here first, then regenerate the copy.
+
 - `sources/` — read-only copies of other mods (git-ignored); start from `sources/SOURCES.md`.
 - `reui-decompiled/` — decompiled ReUI reference; check the installed version before relying on an API.
 - `claret-ui-reference.png` — visual reference.

@@ -50,10 +50,10 @@ local assignments = {
 
 local relations = module.Build(model, assignments)
 assert(relations.ual0001 and relations.ual0001.ambiguous,
-    'blueprints shared by multiple preset chords get an explicit ambiguity marker')
-assert(relations.ual0001.key == 'Q+' and relations.ual0001.colour == 'ffffffff'
+    'multiple physical keys are recorded in metadata')
+assert(relations.ual0001.key == 'Q' and relations.ual0001.colour == 'ffffffff'
     and relations.ual0001.chordCount == 3,
-    'plain assignment wins the display (white) while different keys keep the plus marker')
+    'plain assignment wins the display without a suffix')
 assert(table.getn(relations.ual0001.chords) == 3
     and relations.ual0001.chords[1] == 'Ctrl+F'
     and relations.ual0001.chords[2] == 'Q'
@@ -92,7 +92,7 @@ assert(merged ~= native and native.ual0001.key == 'N' and merged.ual0001 == rela
     'native mapping is copied and the Claret key takes precedence')
 assert(merged.uel0002 == relations.uel0002 and table.getn(collisions) == 1
     and collisions[1].id == 'ual0001' and collisions[1].native.key == 'N'
-    and collisions[1].claret.key == 'Q+',
+    and collisions[1].claret.key == 'Q',
     'native label collisions are reported in sorted metadata')
 
 print('PASS: build key labels map preset blueprints, preserve modifiers, and report multi-key ambiguity')

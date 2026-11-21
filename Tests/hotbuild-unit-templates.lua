@@ -102,7 +102,7 @@ local env={
     IssueBlueprintCommand=function(kind,unitId,count) table.insert(transaction,'issue'); table.insert(commands,{kind,unitId,count}) end,
     ClearBuildTemplates=function() end,
     import=function(path)
-        if path=='/lua/ui/game/construction.lua' then return {RefreshUI=function() refreshes=refreshes+1 end} end
+        if path=='/lua/ui/game/construction.lua' then return {RefreshUI=function() refreshes=refreshes+1 end, GetCurrentTechTab=function() return 1 end} end
         if path=='/lua/ui/game/commandmode.lua' then return {
             StartCommandMode=function(kind,data) table.insert(modes,{kind=kind,name=data.name}) end,
             CacheAndClearCommandMode=function() table.insert(transaction,'cache') end,
@@ -149,6 +149,26 @@ assert(adapter:Build(templateId,mixed))
 assert(#commands==2 and selected==original and ignoreSelection==false)
 assert(table.concat(transaction,',')=='cache,ignoreOn,select,issue,issue,select,ignoreOff,restoreMode',
     'every restoration step runs for queue templates')
+
+local function domainFactory(domain, faction, buildable)
+    local result=factory(nil,buildable)
+    function result:IsInCategory(category) return category=='FACTORY' or category==domain end
+    function result:GetBlueprint() return {General={FactionName=faction}} end
+    return result
+end
+local landFactory=domainFactory('LAND','UEF',{'uel0101','uel0102'})
+commands={}
+for _, mismatch in ipairs({domainFactory('AIR','UEF',{}),domainFactory('LAND','Aeon',{})}) do
+    selected={landFactory,mismatch}
+    local selection = adapter:Context(false)
+    assert(not adapter:Build(templateId,selection) and not adapter:Build('uel0101',selection)
+        and #commands==0, 'mixed factory domains and factions block unit orders')
+end
+selected={landFactory,domainFactory('LAND','UEF',{'uel0101','uel0102'})}
+assert(adapter:Build(templateId,adapter:Context(false)) and #commands==2,
+    'same-domain, same-faction factories still accept queue templates')
+assert(adapter:Build('uel0101',adapter:Context(false)) and #commands==3,
+    'same-domain, same-faction factories still accept unit presets')
 
 -- A queue that starts with a factory upgrade is valid for the earlier factory.
 selected={factory(nil,{'ueb0201'})}

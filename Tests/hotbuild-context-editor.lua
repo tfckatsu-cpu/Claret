@@ -197,7 +197,7 @@ local function treeButton(root,id)
         if not c.destroyed and inside(c,root) and type(c.text)=='string'
             and isTitle
             and button and button.HandleEvent and panel and panel.parent==root
-            and panel.Width()==480 and panel.Height()==580 then return button
+            and panel.Width()==480 and panel.Height()==614 then return button
         end
     end
 end
@@ -279,15 +279,8 @@ local function findIn(root,text)
             (type(c.text)=='string' and (string.find(c.text,text,1,true) or (display and string.find(c.text,display,1,true))))) then return c end
     end
 end
-local function expandBuilders(root)
-    clickIn(root,'Строители')
-end
-local function collapseBuilders(root)
-    clickIn(root,'Строители')
-end
 local function clickAcu(root)
     local target=assert(treeButton(root,'ACU'),'ACU context exists')
-    if target.hidden then expandBuilders(root); target=assert(treeButton(root,'ACU'),'expanding builders reveals ACU') end
     assert(not target.hidden,'ACU context is visible before selection')
     target:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
 end
@@ -361,7 +354,6 @@ do
 end
 clickIn(frame,'Под курсором')
 clickIn(frame,'Улучшить структуру под курсором')
-expandBuilders(frame)
 clickAcu(frame)
 clickIn(frame,'Overcharge')
 -- Rebuilding a grouped catalog must survive selection, filtering, and scrolling.
@@ -430,9 +422,6 @@ for _,c in ipairs(controls) do if c.parent==frame and c.GetScrollValues and not 
 local savedTile=tileIn(savedList,'First')
 savedTile:HandleEvent({Type='MouseEnter'}); savedTile:HandleEvent({Type='MouseExit'})
 assert(savedTile.HandleEvent~=nil,'saved profile row supports pointer interaction')
-expandBuilders(frame)
-collapseBuilders(frame)
-expandBuilders(frame)
 local contextTile=tileIn(frame,'ACU')
 contextTile:HandleEvent({Type='ButtonPress'})
 contextTile:HandleEvent({Type='MouseEnter'}); contextTile:HandleEvent({Type='MouseExit'})
@@ -497,7 +486,6 @@ emptyCatalog:Hide(); emptyCatalog:Show()
 -- Use the real context catalog while checking selection and action refresh.
 local stableService={contextActions=actions,contextModel=emptyModel}
 local stableFrame=env.Create(host,stableService,nil)
-expandBuilders(stableFrame)
 clickAcu(stableFrame)
 local stableSearch
 for _,c in ipairs(controls) do if not c.destroyed and c.parent==stableFrame and c.OnTextChanged and c.Width()>400 then stableSearch=c end end
@@ -512,17 +500,15 @@ stableFrame:Destroy()
 local inheritedOnly=modelEnv.Create(nil,actions)
 assert(inheritedOnly:Put({id='parent_only',name='Parent only',rows={{context='builder',action='move'}}}))
 local inheritedFrame=env.Create(host,{contextActions=actions,contextModel=inheritedOnly},nil)
-expandBuilders(inheritedFrame)
 clickAcu(inheritedFrame)
 local inheritedMode=findIn(inheritedFrame,'● Наследовать')
 assert(inheritedMode and inheritedMode.parent and inheritedMode.parent.color=='selected',
     'child mode buttons stay visible and mark the active inherited mode')
 inheritedFrame:Destroy()
 
-expandBuilders(emptyFrame)
 clickAcu(emptyFrame)
 local acuCount=0
-for _,action in ipairs(actions.List()) do if not action.hidden and actions.Supports(action.id,'acu') and action.id~='soft_stop' then acuCount=acuCount+1 end end
+for _,action in ipairs(actions.List()) do if not action.hidden and actions.Supports(action.id,'acu') and action.id~='soft_stop' and action.id~='load_transports' then acuCount=acuCount+1 end end
 assert(acuCount>9,'ACU has enough compatible actions to exercise scrolling')
 local hint,selectedTitle
 for _,c in ipairs(controls) do
@@ -581,7 +567,6 @@ clickIn(emptyFrame,'Новый')
 for _,c in ipairs(controls) do
     if c.parent==emptyFrame and c.OnTextChanged and c.Width()==330 then c.text='Created empty'; c:OnTextChanged('Created empty') end
 end
-expandBuilders(emptyFrame)
 clickAcu(emptyFrame)
 clickIn(emptyFrame,'Overcharge')
 clickIn(emptyFrame,'Сохранить')
@@ -650,7 +635,6 @@ local manyFrame=env.Create(host,manyService,nil,{bindingId='saved_scroll_1'})
 openSaved(manyFrame)
 assert(treeButton(manyFrame,'Строители'),'builder group remains available for child overrides')
 -- The catalog lists actions for the selected draft context, so pick one before scanning headings.
-expandBuilders(manyFrame)
 clickAcu(manyFrame)
 local seenGroups={}
 local manyCatalog
@@ -708,9 +692,6 @@ assert(inheritedMode=='inherit' and retainedChildAction=='move' and parentAction
     'saving inherited mode preserves the child action and does not add a parent action')
 assert(findIn(manyFrame,'Активно: 0 · переопределено: 0'),
     'saving the reset child preserves the updated active and override counts')
- expandBuilders(manyFrame)
- collapseBuilders(manyFrame)
-expandBuilders(manyFrame)
 clickAcu(manyFrame)
 clickIn(manyFrame,'Отключить')
 assert(findIn(manyFrame,'● Отключить'),'disabled mode button marks the selected mode')
@@ -856,10 +837,24 @@ local function selectGroupTile(label)
     assert(not tile.hidden, label..' must be visible: '..tostring(tile.Width())..'x'..tostring(tile.Height())..' parent='..tostring(tile.parent and tile.parent.Width()))
     tile:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
 end
+for parent,children in pairs({
+    units={'land','air','navy'},
+    builder={'acu','sacu','engineer'},
+    missiles={'silo_tactical','silo_nuclear'},
+}) do
+    for attempt=1,3 do
+        for _,child in ipairs(children) do
+            local tile=groupTile(child)
+            assert(not tile.hidden and tile.y+tile.Height()<=tile.parent.Height(),
+                child..' stays visible inside the tree')
+        end
+        if attempt<3 then selectGroupTile(parent) end
+    end
+end
 local function assertCatalog(context)
     local expected=0
     local function obsolete(id)
-        return id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical'
+        return id=='load_transports' or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical'
             or id=='upgrade_structure'
             or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next') and context~='cursor')
             or (id=='sacu_tech' and context=='sacu') or (id=='soft_stop' and context~='factory')
@@ -922,7 +917,12 @@ selectGroupTile('Под курсором')
 for _,id in ipairs({'upgrade_structure_under_cursor','upgrade_structure_pause','upgrade_mex_select_next'}) do
     assert(actions.Supports(id,'cursor'),id..' is supported by the cursor tile')
 end
+assert(findIn(groupFrame,'Улучшение с паузой'), 'cursor upgrade uses the new localized action name')
 selectGroupTile('Ничего не выделено')
+assert(not findIn(groupFrame,'Погрузить в транспорт'),
+    'load into transports is unavailable in multifunction actions')
+assert(not findIn(groupFrame,'Улучшить добытчик и выбрать ближайший следующий'),
+    'new select-next assignments are offered only under the cursor')
 assert(not findIn(groupFrame,'Улучшить структуру под курсором'),
     'cursor-only upgrade action is absent from the empty-selection catalog')
 groupFrame:Destroy()
@@ -975,8 +975,8 @@ assert(findIn(suicidePicker,'Самоуничтожение мгновенно')
     'composite picker exposes the immediate composite-only action')
 suicidePicker:Destroy()
 local continuationCases={
-    {'select_acu','acu',false}, {'select_acu_double','acu',true}, {'goto_acu','acu',false},
-    {'select_transport_double','transport',true}, {'select_engineers_t1','engineer',true},
+    {'select_acu','acu',false}, {'select_acu_double','acu',false}, {'goto_acu','acu',false},
+    {'select_transport_double','transport',false}, {'select_engineers_t1','engineer',true},
     {'select_engineers_t2','engineer',true}, {'select_engineers_t3','engineer',true},
     {'select_engineers_all','engineer',true},
     {'select_engineer','engineer',false}, {'select_transport','transport',false},
@@ -1017,7 +1017,7 @@ assert(savedConflictService.contextModel:ResolveAction('saved_conflict','acu')==
     'loading a saved continuation conflict preserves the assigned child row')
 local conflictingAcu=assert(treeButton(savedConflictFrame,'acu'))
 clickIn(savedConflictFrame,'ACU')
-assert(findIn(savedConflictFrame,'занято цепочкой'),'saved conflicting context shows its lock explanation')
+assert(not findIn(savedConflictFrame,'занято цепочкой'),'retired ACU double no longer reserves the context')
 clickIn(savedConflictFrame,'Очистить')
 clickIn(savedConflictFrame,'Сохранить')
 local repairedConflict=savedConflictService.contextModel:Get('saved_conflict')
@@ -1033,10 +1033,23 @@ local inheritedConflict=modelEnv.Create({version=3,bindings={{id='inherited_conf
 local inheritedConflictFrame=env.Create(host,{contextActions=actions,contextModel=inheritedConflict},nil,{bindingId='inherited_conflict'})
 clickIn(inheritedConflictFrame,'Строители')
 clickIn(inheritedConflictFrame,'Движение')
-assert(not inheritedConflict:Get('inherited_conflict').rows[2]
-    and findIn(inheritedConflictFrame,'сначала измените цепочку'),
-    'locked inherited child prevents a conflicting group assignment')
+assert(not findIn(inheritedConflictFrame,'сначала измените цепочку'),
+    'a reserved ACU child does not block the parent action')
 inheritedConflictFrame:Destroy()
+do
+    local engineerChain=modelEnv.Create({version=3,bindings={{id='engineer_parent',name='Engineer parent',
+        rows={{context='empty',action='select_engineers_t3'}}}}},actions)
+    local svc={contextActions=actions,contextModel=engineerChain,CommitContext=savedConflictService.CommitContext}
+    local frame=env.Create(host,svc,nil,{bindingId='engineer_parent'})
+    clickIn(frame,'Строители')
+    clickIn(frame,'Движение')
+    clickIn(frame,'Сохранить')
+    assert(svc.contextModel:ResolveAction('engineer_parent','acu')=='move'
+        and svc.contextModel:ResolveAction('engineer_parent','sacu')=='move'
+        and svc.contextModel:ResolveAction('engineer_parent','engineer')==nil,
+        'the chain locks the engineer without blocking a parent action')
+    frame:Destroy()
+end
 local legacyModel=modelEnv.Create({version=3,bindings={{id='legacy',name='Legacy',rows={
     {context='transport',action='attack'}, {context='factory',action='shield'},
     {context='sacu',action='sacu_tech',mode='own'}, {context='mystery',action='missing_action'},
@@ -1096,7 +1109,7 @@ local function offerScenario(rows,answer)
     local svc={contextActions=actions,contextModel=m}
     function svc:CommitContext(binding) local ok,err=self.contextModel:Put(binding); return ok,err end
     local f=env.Create(host,svc,nil,{bindingId='offer'})
-    expandBuilders(f); clickAcu(f); clickIn(f,'Overcharge')
+    clickAcu(f); clickIn(f,'Overcharge')
     if answer then
         assert(findIn(f,'Поставить то же для SACU?'), 'offer appears when no SACU override exists')
         clickIn(f,answer)

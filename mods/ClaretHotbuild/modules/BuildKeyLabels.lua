@@ -117,6 +117,8 @@ function Build(model, assignments)
             if not byKey[chord.key] then
                 byKey[chord.key] = chord
                 table.insert(keys, chord.key)
+            elseif chord.plain then
+                byKey[chord.key] = chord
             end
         end
         table.sort(keys)
@@ -136,12 +138,11 @@ function Build(model, assignments)
                 ambiguous = false,
             }
         else
-            -- ReUI/FA accept one HotKeyData per BPID. Different keys keep a
-            -- plus marker; retain every full chord in metadata.
+            -- ReUI/FA accept one label per blueprint. Retain all chords in metadata.
             relations[blueprintId] = {
-                key = displayKey .. '+',
+                key = displayKey,
                 colour = byKey[displayKey].colour,
-                textsize = TextSize(string.len(displayKey .. '+')),
+                textsize = TextSize(string.len(displayKey)),
                 chords = chords,
                 chordCount = table.getn(chords),
                 ambiguous = true,

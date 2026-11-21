@@ -332,11 +332,11 @@ assert(not panel.hidden and summary.destroyed and selectionOption:Get())
 assert(core.GetFeatureState('selectionSummary') == 'disabled')
 assert(not hudText(panel, 'Tank') and hudText(panel, 'Units') and not hudText(panel, 'Types') and hudText(panel, '1'))
 assert(hudText(panel, '52') and hudText(panel, '270') and hudText(panel, '41') and hudText(panel, '205'))
-assert(not hudText(panel, 'Build power') and not hudText(panel, 'Mass reclaimed') and not hudText(panel, 'Shield'))
+assert(not hudText(panel, 'Build power') and not hudText(panel, 'Reclaimed') and not hudText(panel, 'Shield'))
 assert(uiOptions.selectionDynamic:Get() and not hudText(panel, 'Resources'))
 local staticReads = samples
 uiOptions.selectionDynamic:Set(false)
-assert(hudText(panel, 'Build power') and hudText(panel, 'Shield') and hudText(panel, 'Mass reclaimed'))
+assert(hudText(panel, 'Build power') and hudText(panel, 'Shield') and hudText(panel, 'Reclaimed'))
 uiOptions.selection_shield:Set(false)
 assert(not hudText(panel, 'Shield'), 'static display respects individual field switches')
 uiOptions.selection_shield:Set(true)
@@ -347,13 +347,13 @@ local generator = {Economy = {ProductionPerSecondEnergy = 5}}
 local consumer = {Economy = {MaintenanceConsumptionPerSecondEnergy = 5}}
 changeSelection(nil, {hudUnit(generator, 100, 0, 0)})
 assert(hudText(panel, 'Energy/s') and hudText(panel, '+0.0') and not hudText(panel, 'Mass/s'))
-assert(not hudText(panel, 'Mass destroyed') and not hudText(panel, 'Cost'))
+assert(not hudText(panel, 'Destroyed') and not hudText(panel, 'Cost'))
 changeSelection(nil, {hudUnit(generator, 100, 0, 0, {energyProduced = 5, massProduced = 3}),
     hudUnit(consumer, 100, 0, 0, {energyRequested = 5, massRequested = 3})})
 assert(hudText(panel, 'Energy/s') and hudText(panel, '+0.0') and hudText(panel, 'Mass/s'))
 local armed = {Weapon = {{Damage = 5}}}
 changeSelection(nil, {hudUnit(armed, 100, 0, 0)})
-assert(hudText(panel, 'Mass destroyed') and not hudText(panel, 'Mass reclaimed'))
+assert(hudText(panel, 'Destroyed') and not hudText(panel, 'Reclaimed'))
 
 changeSelection(nil, {firstTank, secondTank, hudUnit(acu, 999, 0, 0, nil, 1, true)})
 assert(hudText(panel, '2'))
@@ -366,8 +366,12 @@ assert(not hudText(panel, 'Tank') and hudText(panel, '3'))
 for _, text in ipairs({'-3.5', '+1.2', '17', '592', '4530', '41', '14', '1274', '500'}) do
     assert(hudText(panel, text), 'missing mixed selection value: ' .. text)
 end
-assert(hudText(panel, 'Shield') and hudText(panel, 'Mass reclaimed'))
-assert(hudText(panel, '500').fontSize > 2 * hudText(panel, 'Shield').fontSize)
+assert(hudText(panel, 'Shield') and hudText(panel, 'Reclaimed'))
+local captionSize = game.import('/mods/ClaretCore/modules/Theme.lua').Metrics.secondaryText
+for _, caption in ipairs({'Destroyed', 'Reclaimed', 'HP', 'Shield'}) do
+    assert(hudText(panel, caption).fontSize == captionSize)
+end
+assert(hudText(panel, '500').fontSize > captionSize)
 local colors = game.import('/mods/ClaretCore/modules/Theme.lua').Colors
 assert(hudText(panel, '500').color == colors.hudShield and hudText(panel, '1274').color == colors.hudHealth)
 assert(hudText(panel, '592').color == colors.hudMass and hudText(panel, '4530').color == colors.hudEnergy)
@@ -405,9 +409,10 @@ for _, percent in ipairs({50, 200, 150}) do
     assert(panel.Left() == 125 and panel.Top() == 145 and samples == readCount)
 end
 core.Localization.SetLanguage('ru')
-assert(core.Localization.Text('claretui.selection.title') == 'Selection Info')
+assert(core.Localization.Text('claretui.selection.title') == 'Информация выделения')
 assert(hudText(panel, 'Юниты') and hudText(panel, 'Масса/с') and hudText(panel, 'Энергия/с')
     and hudText(panel, 'БП') and samples == readCount)
+assert(hudText(panel, 'Уничтожено') and hudText(panel, 'Собрано') and hudText(panel, 'ХП'))
 core.Localization.SetLanguage('en')
 uiOptions.selection_massRate:Set(false)
 assert(not hudText(panel, 'Mass/s') and not hudText(panel, '-3.5') and hudText(panel, 'Energy/s'))
@@ -427,7 +432,7 @@ for _, item in ipairs(controls) do
     if item.parent == panel and not item.hidden and item.color == colors.hudShield then shieldZero = item.text end
 end
 assert(shieldZero == '0')
-assert(hudText(panel, 'Mass reclaimed'), 'a commander can reclaim even with a zero total')
+assert(hudText(panel, 'Reclaimed'), 'a commander can reclaim even with a zero total')
 selectionOption:Set(false); selectionOption:Set(true)
 assert(core.GetFeatureState('selectionSummary') == 'disabled', 'Core option cannot show a second panel')
 local title = assert(hudText(panel, 'Combat'))

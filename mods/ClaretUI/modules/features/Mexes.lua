@@ -82,7 +82,7 @@ local function Inspect(units, army, retainTarget)
                 local id = unit:GetEntityId()
                 local upgrade = bp.General and bp.General.UpgradesTo
                 local focus = tech < 3 and unit:GetFocus()
-                local state, progress, capped = 'idle', 0, nil
+                local state, progress = 'idle', 0
                 local hasTarget = Owned(focus, army) and focus ~= unit
                     and focus:IsInCategory('MASSEXTRACTION') and focus:IsInCategory('STRUCTURE')
                 if hasTarget then
@@ -93,16 +93,10 @@ local function Inspect(units, army, retainTarget)
                 if hasTarget then
                     progress = math.max(0, math.min(1, unit:GetWorkProgress() or 0))
                     state = GetIsPaused({ unit }) and 'paused' or 'active'
-                elseif complete and tech > 1 then
-                    local base = bp.Economy and bp.Economy.ProductionPerSecondMass
-                    local econ = unit:GetEconData()
-                    if base and base > 0 and econ and type(econ.massProduced) == 'number' then
-                        capped = econ.massProduced >= base * 1.5
-                    end
                 end
                 if complete or state ~= 'idle' then
                     table.insert(ordered, { unit = unit, id = id, tech = tech, state = state,
-                        progress = progress, capped = capped, upgrade = upgrade })
+                        progress = progress, upgrade = upgrade })
                 end
             end
         end
@@ -537,25 +531,25 @@ end
 
 local function MakeMarker(view, scale, numbered)
     local plate = Bitmap(view)
-    plate:SetSolidColor(numbered and C.canvas or C.transparent)
+    plate.Left:Set(view.Left)
+    plate.Top:Set(view.Top)
     plate:DisableHitTest()
     plate:Hide()
-    local size = numbered and M.text or M.glyph
+    local size = numbered and 18 or M.glyph
     plate.Width:Set(math.floor(size * scale))
     plate.Height:Set(math.floor(size * scale))
     plate.Depth:Set(function() return view.Depth() + 2 end)
-    local layout = ReUI.UI.FloorLayouter(scale)
     local marker = { plate = plate, size = size }
     if numbered then
         local bar = Fill(plate, C.health)
-        bar:SetAlpha(0.35)
         bar.Left:Set(plate.Left)
-        bar.Right:Set(plate.Right)
-        bar.Bottom:Set(plate.Bottom)
-        bar.Height:Set(0)
+        bar.Top:Set(plate.Bottom)
+        bar.Width:Set(0)
+        bar.Height:Set(math.max(1, math.floor(2 * scale)))
+        bar:Hide()
         marker.bar = bar
-        marker.label = Text(plate, '', M.caption, scale)
-        layout(marker.label):AtCenterIn(plate)
+    else
+        plate:SetSolidColor(C.transparent)
     end
     return marker
 end
@@ -607,21 +601,25 @@ local function UpdateMarkers(owner)
                 marker.arrow:Destroy()
                 marker.arrow = nil
             end
-            if plate:IsHidden() then plate:Show() end
             if numbered then
-                local key = tostring(row.tech) .. (row.capped == false and '·' or '')
-                local color = row.capped == false and C.danger or C.text
-                if key ~= marker.key or color ~= marker.color then
-                    marker.key, marker.color = key, color
-                    marker.label:SetText(key)
-                    marker.label:SetColor(color)
+                if row.tech ~= marker.tech then
+                    marker.tech = row.tech
+                    plate:SetTexture('/mods/ClaretUI/textures/engineers/tier-' .. tostring(row.tech) .. '.png', 0)
+                    marker.color = nil
                 end
-                local height = math.floor(row.progress * plate.Height())
-                if marker.progressHeight ~= height then
-                    marker.progressHeight = height
-                    marker.bar.Height:Set(height)
+                local color = row.state == 'idle' and C.hudValue or C.hudDamage
+                if color ~= marker.color then
+                    marker.color = color
+                    plate:SetColorMask(color)
+                end
+                local width = math.floor(row.progress * plate.Width())
+                if width ~= marker.progressWidth then
+                    marker.progressWidth = width
+                    marker.bar.Width:Set(width)
+                    marker.bar:SetHidden(width == 0)
                 end
             end
+            if plate:IsHidden() then plate:Show() end
         elseif marker then
             marker.plate:Hide()
         end
@@ -688,7 +686,9 @@ function Start(self, scope, isReplay, options)
         if army ~= self.army then
             self.army, self.units, self.nextDiscovery = army, {}, 0
         end
-        if now >= self.nextDiscovery then
+        -- Background discovery briefly changes the engine's selection.
+        if now >= self.nextDiscovery and GetGameTimeSeconds() >= 15
+            and not Commands.GetCommandMode()[1] and not GetInputCapture() then
             fresh = Discover(false)
             self.nextDiscovery = now + 1
         end

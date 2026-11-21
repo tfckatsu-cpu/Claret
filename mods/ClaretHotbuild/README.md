@@ -1,4 +1,6 @@
-# Claret Hotbuild — prototype 0.10.49
+# Claret Hotbuild — prototype 0.10.60
+
+The build-cycle preview shows the available buildings while placing through Hotbuild. T1–T3 labels sit at the bottom center of each icon. The row fades in and out over 150 ms.
 
 Build 20261113-30: double-tap actions for compatible standalone actions can be configured on the **Keyboard** tab. When an action and a building preset share an assignment, the preset takes priority if the current builder can use it; otherwise, the action runs. Existing saved assignments and additional fields are preserved. In-game verification is pending.
 
@@ -6,7 +8,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.49, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.15, and Claret Hotbuild 0.10.60, then start a new match. Hotbuild requires Core >= 0.10.15 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 
@@ -50,7 +52,7 @@ Building cycle menu: when a builder presses a binding, a panel shows available b
 
 Open **F10 → Claret → Hotbuild → Keyboard**. Press a key on the layout, then choose one of three assignment types: a saved Hotbuild preset, a saved multifunction binding, or a standalone action from the context catalog. A multifunction binding runs directly: a normal binding keeps its behavior based on the selection context, while an absolute binding uses only the empty-selection action regardless of the current selection. Actions from the empty-selection context work regardless of the current selection. For eligible standalone actions, the editor offers a double-tap action for the same unit type.
 
-The **Ctrl**, **Shift**, and **Alt** toggles set the modifiers for the next assignment. The key displays assignments for all modifier combinations at once. The page legend maps colors to combinations: no modifiers, Ctrl, Shift, Ctrl+Shift, Alt, Ctrl+Alt, Shift+Alt, and Ctrl+Shift+Alt. A single assignment colors the key for its combination; multiple assignments appear as colored indicators. The key tooltip lists combinations and actions, including assignments from other mods and old assignments.
+The **Ctrl**, **Shift**, and **Alt** toggles set the modifiers for the next assignment. The **+ Shift** button assigns both the chosen chord and its Shift variant. Confirm each occupied chord before either assignment is saved. The key displays assignments for all modifier combinations at once. The page legend maps colors to combinations: no modifiers, Ctrl, Shift, Ctrl+Shift, Alt, Ctrl+Alt, Shift+Alt, and Ctrl+Shift+Alt. A single assignment colors the key for its combination; multiple assignments appear as colored indicators. The key tooltip lists combinations and actions, including assignments from other mods and old assignments.
 
 The keyboard catalogue offers **Create strategic rings** and **Create vision ring**. They draw the radii of the object under the cursor; a second press expands a shield or blast radius into a sphere and then a sector. Rings are removed with FAF stock drawing eraser: hold Alt and drag RMB along the outline. Radii of one object are removed together.
 
@@ -59,6 +61,8 @@ Every variant in the assignment dialog has a **+ Shift** button. It assigns the 
 Right-click a key to remove the displayed Claret, FAF, and other-mod assignments for the current modifier combination; hold Ctrl, Shift, or Alt to use that combination. Saved sets and other combinations remain. Assignments are saved immediately in the FAF profile key map. If a combination is occupied, the editor shows its current assignment and asks whether to reassign it; cancelling preserves the existing assignment. Reserved Hotbuild modifiers cannot be reassigned. Other combinations are unchanged.
 
 Hotbuild also has **Hotbuild** and **Multifunction** pages. The navigator handles page switching and closing the shared window. The local page test passes; appearance and assignments in FAF still need to be checked in a new match.
+
+The **Communication** group offers FAF's text marker and alert, move, and attack pings. They work with any unit selection.
 
 ## Build templates — Hotbuild 0.8.0
 
@@ -96,7 +100,7 @@ A unit template is listed in the row of its faction and unit type, shows a burgu
 
 The identifier `claret_unit_template_<hash>` is computed from the member units, their order and their counts; the name and list index are not part of it. Renaming or reordering a source template therefore keeps the binding. A changed or deleted source makes the old binding unavailable and is never replaced by a neighboring template with the same index. Nothing is copied into the ClaretHotbuild profile and the `entries/grid` format does not change.
 
-Pressing a bound key with a factory selected queues every member in saved order with its saved count. Shift never repeats an order: a press queues the composition once, and a single-unit preset queues one unit. A template is offered only when the selected factory can queue every member: the blueprint must be in the engine list `GetUnitCommandData` → `EntityCategoryGetUnitList`, and one exception follows FAF's own rule — an entry may be queued when an earlier entry of the same template is a factory upgrade that unlocks it, so a T2 queue captured on a T2 factory works from a T1 factory that builds the upgrade first. Replays, observers and non-factory selections receive no order. With a mixed selection only the factories are used, and the UI selection is restored afterwards.
+Pressing a bound key with a factory selected queues every member in saved order with its saved count. Shift never repeats an order: a press queues the composition once, and a single-unit preset queues one unit. A template is offered only when the selected factory can queue every member: the blueprint must be in the engine list `GetUnitCommandData` → `EntityCategoryGetUnitList`, and one exception follows FAF's own rule — an entry may be queued when an earlier entry of the same template is a factory upgrade that unlocks it, so a T2 queue captured on a T2 factory works from a T1 factory that builds the upgrade first. Replays, observers and non-factory selections receive no order. Only the factories take part in a selection that also contains other units, and Claret restores the UI selection afterwards. Both queue templates and unit presets require all selected factories to share a domain and faction.
 
 A queue template is faction-bound: no cross-faction variants are created, and selecting it fills only the cell of its own faction. Create one template per faction if the same composition is needed there.
 
@@ -108,19 +112,23 @@ Local checks: `Tests/hotbuild-unit-templates.lua` (identity, malformed data, upg
 
 ## Selection-context multifunction bindings — Hotbuild 0.10.1
 
-A multifunction binding assigns one action to each selected context type. Create one under **F10 → Claret → Hotbuild → Multifunction**: click **New set**, enter a name, then choose context tiles and compatible actions. Names may contain Cyrillic. To clear a regular tile, select it and click **Clear**; child tiles under the **Builders** group also support inheritance and disabling. **Save** stores the set. When switching sets, pages, or closing with an unsaved draft, the editor offers to save, discard, or cancel the transition.
+A multifunction binding assigns one action to each selected context type. Create one under **F10 → Claret → Hotbuild → Multifunction**: click **New set**, enter a name, then choose context tiles and compatible actions. Parent groups stay expanded, and clicking a parent selects its context. Names may contain Cyrillic. To clear a regular tile, select it and click **Clear**; child tiles under the **Builders** group also support inheritance and disabling. **Save** stores the set. When switching sets, pages, or closing with an unsaved draft, the editor offers to save, discard, or cancel the transition.
 
 Assign a preset and a multifunction binding in separate slots for the desired key on the **Keyboard** tab. Editors show keys as read-only; historical references in the data are preserved.
 
 The catalog offers selection actions, orders, and toggles compatible with the chosen context. The **Under cursor** context contains three upgrade actions. When migration is unambiguous, the previous row moves there; ambiguous rows and additional fields are preserved for manual correction. An embedded chain blocks its resulting context, and a chain-occupied context prevents assigning a new chain. Saved conflicts remain. **Stop firing** is offered for factories; old assignments in other contexts remain marked obsolete. **Add next unit to cargo** marks an already loaded unit for later selective unloading but does not unload it. Order availability depends on selected units and game state.
 
-For an assigned **Under cursor** context, Claret first checks for a suitable owned structure under the pointer. Otherwise, with a mixed selection, it checks assigned army actions first, followed by builders, factories, missiles, transports, extractors, scouts, and other units. Empty and disabled child rows do not block the other rows; different assigned actions within one group consume the key press. If the army row is empty, army units continue to the **Other** row. The selected action receives the whole selection; its availability is checked before execution.
+For an assigned **Under cursor** context, Claret first checks for a suitable owned structure under the pointer. Ordinary mixed selections execute one composite command only when every represented context resolves to that command. Different assignments or a combination of assigned and unassigned contexts consume the press. An entirely army selection with no army assignments can still use the legacy **Other** fallback. Mobile missile launchers belong to land forces, and missile cruisers belong to naval forces. The launcher contexts use the tactical platform and nuclear launcher categories. The selected action receives the whole selection; its availability is checked before execution. Composite profiles still read legacy repeat data for compatibility, but only keyboard action assignments can trigger a second action. Sequential selectors continue normally. Toggle all unit abilities is offered for every selected-unit context and in the keyboard picker. It uses the nine native FAF script toggles. Legacy individual toggle assignments still execute.
 
 An assigned army action takes priority over building Hotbuild. A building preset blocks assignments in the **Builders** group, and factory production blocks **Factory**. ACU upgrades include engineering, resources, weapons, defense, teleportation, and special upgrades; the old engineering upgrade for SACU remains available to existing bindings but is no longer offered. Upgrade actions check selection, blueprint, and queue. In-game results, including cargo selection and later unloading, require verification.
 
 In the set list, the × button opens a confirmation showing assigned keys; after confirmation, the set is deleted and unassigned from those keys while other slots are preserved. Historical preset references remain in the data. Corrupt or unknown profile formats block writes.
 
 **Launch missile** selects a tactical or nuclear order based on the selected units' capabilities; mixed types do not launch. For ACU/SACU, the action depends on the available order after upgrades. When assigned to **Missiles**, the editor separately offers to fill free ACU and SACU rows. Old delayed self-destruct, refuel, fire mode, target-priority reset, and separate missile-launch actions remain in saved assignments marked **Obsolete**, but are not offered for new assignments. Immediate self-destruct is available for new assignments.
+
+**Upgrade selected extractors** issues each eligible owned extractor's next upgrade in place. **Upgrade with pause** and **Upgrade extractor and select the next nearest one** are offered in **Under cursor**. Legacy empty-selection assignments move to the cursor when migration is unambiguous. Any remaining assignments of select-next in the empty-selection context are retired.
+
+**Load into transports** dispatches FAF's load hotkey when the selection contains a transport and mobile non-air cargo, including engineers and commanders. FAF 3841 groups cargo by T1–T3, which leaves stock ACUs outside automatic loading. Claret transport selectors temporarily suspend ASE v3 filters for their selection changes, restoring the prior filter state afterwards.
 
 ### Check in a new match
 

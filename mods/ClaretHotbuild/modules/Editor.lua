@@ -544,7 +544,8 @@ function Create(parent, service, embedded, memory)
             if legacyIssue then Status(T(legacyIssue)..' '..T('hotbuild.editor.status.create_binding'),true); return false end
             return true
         end
-        Panel(frame,24,18,4,22,C.accent):DisableHitTest(); Text(frame,'Hotbuild',40,14,22)
+        Panel(frame, 24, 20, 4, 24, C.accent):DisableHitTest()
+        Text(frame, 'hotbuild.page.hotbuild.title', 40, 16, Theme.Metrics.title)
         Text(frame,T('hotbuild.editor.binding'),24,67,14,C.muted); Text(frame,T('hotbuild.editor.name'),315,67,14,C.muted)
         local selectorButton=Button(frame,'',24,88,270,function() end)
         local selectorLabel=Text(selectorButton,'',12,7,Theme.Metrics.buttonText)

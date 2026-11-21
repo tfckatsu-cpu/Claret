@@ -10,7 +10,7 @@ Review date: 2026-11-10. Local mod versions are in `mod-inventory.md`. Official 
 - Upvalue limit per function: **32** (enforced by the KeyboardEditor test; Fengari adds `_ENV`, which does not exist in LuaPlus).
 - Module tables are strict: reading a missing field raises `access to nonexistent global variable <name>`. Export every public function explicitly.
 - `math.huge` may be absent (the menu test stub documents this) — use large literals or `1/0`.
-- `import` returns the module environment; lazily load heavy modules, but keep `Runtime` imports at file scope where the hooks need them.
+- `import` returns the module environment; lazily load heavy modules, but keep `Runtime` imports at file scope where the hooks need them. A file-level `return { ... }` is therefore ignored (verified 2026-11-19: Claret UI `UiSection.lua`/`AcuHealth.lua` shipped with `local` + `return` and loaded as empty tables; the caller failed with `nonexistent global variable Create/Start`). Export through module globals: `function Create(...)`. `local function X` + `X = X` does nothing, because the assignment binds to the local.
 
 ## Confirmed
 

@@ -75,6 +75,7 @@ Claret is an ecosystem of separate client-side FAF UI mods with a shared core an
 - New Claret game UI elements and overlays live in Claret Core; there is no separate Claret UI mod. Respect other UI mods.
 - Feature registration: `ReUI.ClaretCore.RegisterFeature`; Hotbuild actions: `ReUI.ClaretHotbuild.RegisterAction`.
 - Use shared Theme tokens instead of separate palettes.
+- Use `Theme.SettingsSwitch` for binary settings. `Context/ui-style.md` defines the shared switch style.
 - Always respect UI scale when computing, saving and restoring sizes and positions. Check the coordinate system so layouts do not shift after matches and scale is not applied twice.
 
 ## Checks

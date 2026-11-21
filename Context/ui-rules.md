@@ -6,6 +6,7 @@ Checklist distilled from real Claret bugs. Read together with `ui-style.md` (vis
 
 - Take sizes from `Theme.Metrics`; do not invent numbers. Current shell: launcher 248 wide, standard panel 1128×1110, compact Core panel 552×408, panel drag header `width-72` × 72, name field 656×36, picker search 300×36, navigation row 40.
 - Position everything through `FloorLayouter(scale)`; pass text size as `scale / GetPixelScaleFactor()`.
+- An explicitly scaled ReUI layouter exposes `Scale` as a callable `LazyVar`. Use the layouter's sizing methods or `ScaleNumber` for numeric geometry. Claret UI 0.2.50 failed to start the mex panel when it multiplied by `layout.Scale` directly (FAF3840 log, 2026-11-20).
 - Apply UI scale exactly once. If a value is already multiplied by the group scale, never multiply it by UI scale again.
 - Never persist screen coordinates. Store logical values or nothing; recompute on open.
 - Verify at 0.75–1.5 UI scale and at 1920×1080 / 2560×1440. A layout that only works at one scale is a bug.
@@ -26,6 +27,7 @@ Checklist distilled from real Claret bugs. Read together with `ui-style.md` (vis
 - Remove subscriptions (`OnChanged:Remove`, `Localization.Unsubscribe`) and stop `SetNeedsFrameUpdate(true)` when the control closes or hides.
 - `DestroyMouseoverDisplay` / tooltip cleanup on close; a tooltip holding a destroyed control crashes on hover.
 - Overlays that only dim or catch clicks: `DisableHitTest()` unless they must intercept; otherwise the map loses clicks.
+- Hit areas must stay inside the visible window. When a panel shrinks (collapsed section, inline editor), resize the scroll viewport with it: a container taller than the panel keeps its rect, bubbles the press to the panel and swallows clicks in the empty band below the window.
 - Do not assume clipping. Child controls can draw outside a smaller parent; verify or clip manually.
 
 ## Input and focus
@@ -68,6 +70,9 @@ Checklist distilled from real Claret bugs. Read together with `ui-style.md` (vis
 - No `#` (LuaPlus treats it as a comment marker; a module with `#` fails to load), no `continue`, no `goto`, no integer division.
 - Use `table.getn`, `import`, `math.mod`; keep nested functions under 32 upvalues.
 - Module tables are strict: reading a missing field raises `access to nonexistent global variable`. Export every public function explicitly.
+- `import` returns the module environment, not the chunk's `return` value. Declare the API as a module global (`function Create(...)`, `Start = function(...) end`); a module that only declares `local` helpers and ends with `return { ... }` loads as an empty table and the caller raises `access to nonexistent global variable <name>`. `local function X` followed by `X = X` is not an export: the assignment hits the local. The runner rejects both forms.
+- Maui classes (`Bitmap`, `Group`, classes from `ClassUI`) are callable tables with `__call`, not functions; guards like `type(x) ~= 'function'` reject them. Check `x == nil` or accept `table`.
+- Varargs in expression position (`f(x, ...)`, `return ...`) abort the module load in LuaPlus: the module table stays empty and the caller reports a nonexistent global. Declare fixed parameters instead; the runner rejects any varargs in Claret UI by AST.
 
 ## Before you call it done
 

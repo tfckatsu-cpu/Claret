@@ -6,8 +6,8 @@ Fields = {
     { key = 'count', group = 'units', color = 'hudValue' },
     { key = 'massCost', group = 'cost', color = 'hudMass' },
     { key = 'energyCost', group = 'cost', color = 'hudEnergy' },
-    { key = 'massKilled', group = 'results', color = 'hudDamage' },
-    { key = 'massReclaimed', group = 'results', color = 'hudMass' },
-    { key = 'health', group = 'combat', color = 'hudHealth' },
+    { key = 'massKilled', caption = 'destroyed', group = 'results', color = 'hudDamage' },
+    { key = 'massReclaimed', caption = 'reclaimed', group = 'results', color = 'hudMass' },
+    { key = 'health', caption = 'hp', group = 'combat', color = 'hudHealth' },
     { key = 'shield', group = 'combat', color = 'hudShield' },
 }

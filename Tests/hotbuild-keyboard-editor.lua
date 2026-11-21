@@ -95,6 +95,9 @@ function service:SetDoubleForKey(key,mods,first,second) self.double={first=first
 function service:ClearDoubleForKey() self.double=nil; return true end
 function service:Validate(ref,key,mods)
     calls.validates[#calls.validates+1]={ref=ref,key=key,mods=mods}
+    if self.shiftConflict and key=='Q' and (mods.shift or self.baseConflict) then
+        return false,'Чужое сочетание занято.',{kind='conflict',id=mods.shift and 'faf-shift-q' or 'faf-q'}
+    end
     if ref.id=='blocked' then return false,'Чужое сочетание занято.',{kind='conflict',id='foreign'} end
     if ref.id=='link' then return false,'Связать назначения?',{kind='link',id='composite-occupant'} end
     return true
@@ -342,6 +345,26 @@ assert(key.color==theme.Colors.accent, 'closing modal restores the selected comb
 
 -- Escape closes the modal; destroying the editor also tears down an open modal and tooltip state.
 clickText('Ctrl'); clickText('Shift'); clickText('Alt')
+for _,baseConflict in ipairs({false,true}) do
+    service.shiftConflict=true
+    service.baseConflict=baseConflict
+    calls.sets={}
+    pressKey('Q'); clickText('Бинды'); clickText('+ Shift')
+    assert(#calls.sets==0 and #escapeHandlers==2,'+ Shift checks conflicts before saving either chord')
+    clickText('Переназначить')
+    if baseConflict then
+        assert(#calls.sets==0 and #escapeHandlers==2,'each occupied chord requires its own confirmation')
+        clickText('Переназначить')
+    end
+    assert(#calls.sets==2 and #escapeHandlers==0,'confirming + Shift saves both chords and closes the chooser')
+    local base,shifted=calls.sets[1],calls.sets[2]
+    assert(base.key=='Q' and not base.mods.shift and base.confirmed==(baseConflict and 'faf-q' or nil),
+        'base shortcut receives only its own confirmation')
+    assert(shifted.key=='Q' and shifted.mods.shift and shifted.confirmed=='faf-shift-q',
+        'Shift+Q receives the confirmed FAF occupant')
+end
+service.shiftConflict=nil
+service.baseConflict=nil
 pressKey('C'); clickText('Бинды'); clickText('Select Engineer')
 assert(findText('Двойное нажатие') and findText('Все такие юниты') and #escapeHandlers==2,
     'eligible action immediately offers the allowed second press')

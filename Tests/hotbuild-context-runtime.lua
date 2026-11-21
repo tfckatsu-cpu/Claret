@@ -28,6 +28,7 @@ local preferences = {
             {context='engineer',mode='inherit'},
         }},
         {id='ctxMobile',name='Mobile factory action',rows={{context='acu',action='move'}}},
+        {id='ctxLegacyLoad',name='Historic load',rows={{context='land',action='load_transports'},{context='acu',action='move'}}},
     }},
 }
 local saveCount, failSave, failSaveOnCall = 0, false, nil
@@ -160,6 +161,9 @@ runtimeEnvironment=setmetatable({
         if path=='/lua/keymap/keydescriptions.lua' then return {keyDescriptions=descriptions} end
         if path=='/lua/keymap/unitkeygroups.lua' then return {unitkeygroups={}} end
         if path=='/lua/ui/game/commandmode.lua' then return commandModule end
+        if path=='/lua/ui/game/orders.lua' then
+            return {Stop=function(units) table.insert(commandCalls,{'stop',units}) end}
+        end
         if path=='/lua/ui/game/gamemain.lua' then return {SetIgnoreSelection=function() end} end
         if path=='/mods/ClaretHotbuild/modules/CycleMenu.lua' then
             return {Create=function() return {Show=function() end,Hide=function() end,Destroy=function() end} end}
@@ -537,9 +541,8 @@ assert(#selectCalls==beforeActions+1 and selectCalls[#selectCalls]=='NativeShift
 selected={makeUnit('ENGINEER','CANNOT_BUILD'),makeUnit('LAND')}
 local beforeEngineerOther=#commandCalls
 executed=service:Execute('mixed','ctxMixed')
-assert(executed and #commandCalls==beforeEngineerOther+1
-    and commandCalls[#commandCalls][2].name=='RULEUCC_Reclaim',
-    'engineer context wins over other units in mixed selection')
+assert(not executed and #commandCalls==beforeEngineerOther,
+    'an engineer action conflicts with an unassigned land context')
 
 selected={makeUnit('COMMAND','CANNOT_BUILD')}
 beforeMixed=#commandCalls
@@ -563,8 +566,8 @@ assert(not disabledResult and #commandCalls==beforeMixed and #buildCalls==before
 selected={makeUnit('EXTERNALFACTORY','MOBILE'),makeUnit('COMMAND','CANNOT_BUILD')}
 local beforeMobileActions=#commandCalls
 executed=service:Execute('mobile','ctxMobile')
-assert(executed and #commandCalls==beforeMobileActions+1 and #buildCalls==beforeMixedBuilds,
-    'mobile-only factory multibind has priority when the ordinary builder cannot build')
+assert(not executed and #commandCalls==beforeMobileActions and #buildCalls==beforeMixedBuilds,
+    'the ACU action conflicts with the unassigned mobile factory context')
 
 selected={makeUnit('COMMAND')}
 local beforeMissing=#commandCalls
@@ -600,8 +603,8 @@ assert(#selectCalls==beforeFallback+3
     and selectCalls[beforeFallback+2]=='UI_SelectByCategory +nearest +goto COMMAND'
     and selectCalls[#selectCalls]=='UI_SelectByCategory AIR BOMBER','fallback runs once after both ACU selection attempts miss')
 testNow=0.1
-assert(service:ExecuteKeyboardComposite('ctxFallback','Z'))
-assert(#selectCalls==beforeFallback+4 and selectCalls[#selectCalls]=='UI_SelectByCategory AIR TRANSPORTATION','quick repeat remembers fallback selection and does not trigger fallback')
+assert(not service:ExecuteKeyboardComposite('ctxFallback','Z') and #selectCalls==beforeFallback+3,
+    'old quick repeat does not arm after a configured fallback')
 simulateSelection=makeUnit('COMMAND','CANNOT_BUILD'); selected={}; testNow=1
 beforeFallback=#selectCalls
 assert(service:ExecuteKeyboardComposite('ctxFallback','Z'))
@@ -617,8 +620,8 @@ simulateSelection=makeUnit('COMMAND','CANNOT_BUILD')
 selected={}; testNow=0
 assert(service:ExecuteKeyboardComposite('ctxQuick','Q'))
 testNow=0.4
-assert(service:ExecuteKeyboardComposite('ctxQuick','Q') and selectCalls[#selectCalls]=='UI_SelectByCategory AIR BOMBER',
-    'quick repeat precedes the new selection column')
+assert(service:ExecuteKeyboardComposite('ctxQuick','Q') and commandCalls[#commandCalls][2].name=='RULEUCC_Move',
+    'legacy quick repeat never overrides the current selection context')
 testNow=0.5
 assert(service:ExecuteKeyboardComposite('ctxQuick','Q') and commandCalls[#commandCalls][2].name=='RULEUCC_Move',
     'quick repeat does not rearm')
@@ -652,8 +655,9 @@ assert(service.contextModel:Put({id='ctxAbsoluteQuick',name='Absolute quick',abs
 selected={}; testNow=6
 assert(service:ExecuteAbsolute('ctxAbsoluteQuick','P'))
 testNow=6.2
-assert(service:ExecuteAbsolute('ctxAbsoluteQuick','P') and selectCalls[#selectCalls]=='UI_SelectByCategory AIR BOMBER',
-    'absolute binding executes quick repeat after selection')
+assert(service:ExecuteAbsolute('ctxAbsoluteQuick','P')
+    and selectCalls[#selectCalls]=='UI_SelectByCategory +inview +nearest COMMAND',
+    'absolute composite only executes its primary action')
 selected={}; testNow=7
 assert(service:ExecuteMappedAbsolute('ctxAbsoluteQuick','P'))
 testNow=7.2
@@ -673,8 +677,8 @@ simulateSelection=makeUnit('COMMAND','CANNOT_BUILD')
 selected={}; testNow=0
 assert(service:Execute('double','ctxDouble') and selected[1]==simulateSelection,'first press selects ACU')
 testNow=0.3
-assert(service:Execute('double','ctxDouble') and selectCalls[#selectCalls]=='UI_SelectByCategory +nearest +goto COMMAND',
-    'double press runs continuation before the individual ACU action')
+assert(service:Execute('double','ctxDouble') and commandCalls[#commandCalls][2].name=='RULEUCC_Move',
+    'old ACU double action keeps its first step and yields to the ACU context on the next press')
 selected={}; testNow=1
 assert(service:Execute('double','ctxDouble'))
 testNow=2
@@ -701,15 +705,21 @@ assert(service.contextModel:Put({id='ctxQuickAdd',name='Quick add',rows={
     {context='empty',action='select_acu',quickRepeat='select_engineers_t1'}}}))
 selected={}; simulateSelection=engineerA; testNow=30
 assert(service:ExecuteKeyboardComposite('ctxQuickAdd','K') and #selected==1)
-for press=2,5 do
-    testNow=testNow+0.1
-    assert(service:ExecuteKeyboardComposite('ctxQuickAdd','K') and #selected==press,
-        'quick repeat enters legacy accumulation on press '..press)
-end
+testNow=30.1
+assert(not service:ExecuteKeyboardComposite('ctxQuickAdd','K') and #selected==1,
+    'retired quick repeat does not start an engineer sequence')
+selected={}
+assert(service:ExecuteKeyboardComposite('ctxAdd') and selected[1]==engineerA)
+assert(service:ExecuteKeyboardComposite('ctxAdd') and selected[2]==engineerB,
+    'the standalone composite also adds another engineer after selection changes')
+selected={}
+assert(service:ExecuteMappedComposite('ctxAdd','F8') and selected[1]==engineerA)
+assert(not service:ExecuteMappedComposite('ctxAdd','F9') and #selected==1,
+    'a second key bound to the same composite does not inherit the first key chain')
 local unrelated=makeUnit('LAND','CANNOT_BUILD'); unrelated.entityId=33
 selected={unrelated}; testNow=26
-assert(service:Execute('add','ctxAdd') and #selected==2 and selected[1]==unrelated and selected[2]==engineerA,
-    'engineer binding adds to an unrelated existing selection without a preceding empty press')
+assert(not service:Execute('add','ctxAdd') and #selected==1 and selected[1]==unrelated,
+    'an empty-selection chain does not start on a manual unrelated selection')
 local mexA=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexA.entityId=20
 local mexB=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexB.entityId=21
 local upgrades=0
@@ -721,13 +731,14 @@ modules['/mods/ClaretHotbuild/modules/ContextUpgrade.lua']={
         return true
     end,
 }
-assert(service.contextModel:Put({id='ctxMexNext',name='Mex',rows={
+assert(not service.contextModel:Put({id='ctxMexNext',name='Mex',rows={
     {context='empty',action='upgrade_mex_select_next'}}}))
+assert(service.contextModel:Put({id='ctxMexNext',name='Mex',rows={
+    {context='cursor',action='upgrade_mex_select_next'}}}))
 assert(service.model:Put({id='mexNext',name='Mex',key='',entries={},grid={buildings={},units={},context='ctxMexNext'}}))
-selected={}; assert(service:Execute('mexNext','ctxMexNext') and selected[1]==mexA,'mex action begins from empty selection')
-testNow=50
+selected={mexA}; testNow=50
 assert(service:Execute('mexNext','ctxMexNext') and selected[1]==mexB and upgrades==1,
-    'mex action continues through runtime after the selection changes')
+    'the cursor action still dispatches the upgrade-and-select command')
 local cursorEligible=true
 local cursorCalls=0
 modules['/mods/ClaretHotbuild/modules/ContextUpgrade.lua']={
@@ -780,20 +791,22 @@ assert(service:ExecuteKeyboardComposite('cycle_factory') and selected[1]==cycleF
     and #selectCalls==cycleCallsBefore+1
     and selectCalls[#selectCalls]=='UI_Lua import("/lua/keymap/misckeyactions.lua").CycleIdleFactories()',
     'factory cycle repeats after its first press changes selection to a factory')
+assert(service:ExecuteKeyboardComposite('cycle_factory') and #selectCalls==cycleCallsBefore+2,
+    'factory cycling remains armed after the second press')
 cycleFactory=nil
 selected={}; simulateSelection=makeUnit('COMMAND','CANNOT_BUILD'); testNow=60
 assert(service:ExecuteKeyboardComposite('ctxDouble') and selected[1]==simulateSelection,
     'direct non-absolute composite executes its empty-context row')
 testNow=60.3
-assert(service:ExecuteKeyboardComposite('ctxDouble') and selectCalls[#selectCalls]=='UI_SelectByCategory +nearest +goto COMMAND',
-    'direct composite continuation runs before the changed ACU context row')
+assert(service:ExecuteKeyboardComposite('ctxDouble') and commandCalls[#commandCalls][2].name=='RULEUCC_Move',
+    'direct composite dispatches the changed ACU context on the next press')
 selected={}; testNow=61
 assert(service:ExecuteKeyboardAction('select_acu_double') and selected[1]==simulateSelection,
     'standalone individual action executes under an empty selection')
 testNow=61.3
 assert(service:ExecuteKeyboardAction('select_acu_double') and selectCalls[#selectCalls]=='UI_SelectByCategory +nearest +goto COMMAND',
     'standalone action preserves double-press continuation after selection changes')
--- Units win over a buildable engineer, and the same arbitration is used by direct binds.
+-- Mixed-context arbitration runs before either command or preset dispatch.
 assert(service.contextModel:Put({id='phase1',name='Phase 1',rows={
     {context='units',action='move'}, {context='air',mode='own',action='stop'},
     {context='engineer',mode='own',action='reclaim'}, {context='other',action='stop'},
@@ -803,8 +816,8 @@ assert(service.model:Put({id='phase1_preset',name='Phase 1 preset',key='',entrie
 selected={makeUnit('MOBILE','LAND'),makeUnit('ENGINEER')}
 local phaseCommands=#commandCalls
 local phaseResult,phaseMessage=service:Execute('phase1_preset','phase1')
-assert(phaseResult and #commandCalls==phaseCommands+1
-    and commandCalls[#commandCalls][2].name=='RULEUCC_Move', 'Units action precedes a buildable engineer: '..tostring(phaseMessage)..' calls='..tostring(#commandCalls-phaseCommands))
+assert(not phaseResult and #commandCalls==phaseCommands,
+    'different group actions block both the composite command and an eligible preset')
 selected={makeUnit('MOBILE','LAND'),makeUnit('MOBILE','AIR')}
 phaseCommands=#commandCalls
 assert(not service:ExecuteKeyboardComposite('phase1') and #commandCalls==phaseCommands,
@@ -818,13 +831,43 @@ assert(service.contextModel:Put({id='phase1_disabled',name='Disabled sibling',ro
     {context='land',mode='own',action='move'}, {context='air',mode='disabled'},
 }}))
 phaseCommands=#commandCalls
-assert(service:ExecuteKeyboardComposite('phase1_disabled') and #commandCalls==phaseCommands+1,
-    'disabled sibling does not block an assigned sibling')
+assert(not service:ExecuteKeyboardComposite('phase1_disabled') and #commandCalls==phaseCommands,
+    'disabled sibling conflicts with an assigned sibling')
 assert(service.contextModel:Put({id='phase1_legacy',name='Legacy fallback',rows={{context='other',action='move'}}}))
 selected={makeUnit('MOBILE','LAND')}
 phaseCommands=#commandCalls
 assert(service:ExecuteKeyboardComposite('phase1_legacy') and #commandCalls==phaseCommands+1,
     'empty Units group falls back to legacy Other')
+do
+    local engineer=makeUnit('ENGINEER','MOBILE','LAND')
+    local tank=makeUnit('MOBILE','LAND')
+    assert(service.contextActions.MatchesContext({engineer},'engineer')
+        and not service.contextActions.MatchesContext({engineer},'land'),
+        'FAF LAND does not make an engineer part of the Hotbuild land context')
+    assert(service.contextModel:Put({id='consensus_stop',name='Stop',rows={
+        {context='builder',action='stop'}, {context='land',action='stop'},
+    }}))
+    local mml=makeUnit('MOBILE','LAND','SILO','TECH2')
+    selected={engineer,tank,mml}
+    local before=#commandCalls
+    assert(service:ExecuteKeyboardComposite('consensus_stop') and #commandCalls==before+1
+        and commandCalls[#commandCalls][1]=='stop'
+        and commandCalls[#commandCalls][2][1]==engineer and commandCalls[#commandCalls][2][2]==tank
+        and commandCalls[#commandCalls][2][3]==mml,
+        'same action reaches FAF once with the entire selection')
+    assert(service.contextModel:Put({id='consensus_unavailable',name='Load unavailable',rows={
+        {context='land',action='discharge'}, {context='engineer',action='stop'},
+    }}))
+    assert(not service:ExecuteKeyboardComposite('consensus_unavailable') and #commandCalls==before+1)
+end
+do
+    selected={makeUnit('MOBILE','LAND'),makeUnit('MOBILE','AIR','TRANSPORTATION')}
+    local before=#selectCalls
+    assert(not service:ExecuteKeyboardComposite('ctxLegacyLoad') and #selectCalls==before,
+        'a retired composite load cannot issue the native call')
+    assert(service:ExecuteKeyboardAction('load_transports') and #selectCalls==before+1,
+        'ordinary keyboard transport loading is still available')
+end
 -- Per-chord pairs own both slots and dispatch independently of grid.context metadata.
 selected={makeUnit('COMMAND','CANNOT_BUILD')}
 local pairCommands=#commandCalls
@@ -893,6 +936,32 @@ previousSelects=#selectCalls
 assert(service:ExecuteKeyboardPair('X') and #selectCalls==previousSelects+1,
     'direct action runs when no ordinary builder can build the paired preset')
 local doubleChoices=service.keyboardBindings:GetDoubleChoices('select_scout')
+do
+    local loadChord='Ctrl-Alt-J'
+    local loadModifiers={ctrl=true,alt=true}
+    assert(service.keyboardBindings:Set({kind='action',id='select_transport_nearest'},'J',loadModifiers))
+    assert(service.keyboardBindings:SetDoubleForKey('J',loadModifiers,'select_transport_nearest','load_transports'))
+    for _, kind in ipairs({'ENGINEER','SUBCOMMANDER','COMMAND'}) do
+        selected={makeUnit(kind,'MOBILE','LAND'),makeUnit('TRANSPORTATION','MOBILE','AIR')}
+        assert(service:ExecuteKeyboardAction('select_transport_nearest',loadChord)
+            and selectCalls[#selectCalls]:find('LoadIntoTransports(false)',1,true),
+            'the standalone double action dispatches loading with selected '..kind..' and transport')
+    end
+    assert(service.keyboardBindings:Set(pairPreset,'J',loadModifiers))
+    selected={makeUnit('ENGINEER','MOBILE','LAND','CANNOT_BUILD'),makeUnit('TRANSPORTATION','MOBILE','AIR')}
+    assert(service:ExecuteKeyboardPair(loadChord)
+        and selectCalls[#selectCalls]:find('LoadIntoTransports(false)',1,true),
+        'the same double action dispatches when paired with an inapplicable preset')
+    local offered={}
+    for _,choice in ipairs(service.keyboardBindings:GetChoices().actions) do offered[choice.ref.id]=true end
+    assert(offered.ping_marker and offered.ping_alert and offered.ping_move and offered.ping_attack,
+        'all native map communication actions are offered for keyboard assignment')
+    assert(offered.toggle_all, 'the keyboard offers the consolidated toggle')
+    for _,duplicate in ipairs({'shield','stealth','toggle_production','toggle_intel','toggle_jamming','toggle_cloak'}) do
+        assert(not offered[duplicate], 'individual toggle is hidden from new assignments: '..duplicate)
+    end
+end
+
 local transportActions={'append_transport_cargo','ferry','transport_order'}
 for _,first in ipairs(transportActions) do
     local choices=service.keyboardBindings:GetDoubleChoices(first)

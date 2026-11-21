@@ -1,6 +1,6 @@
-Version = '0.2.108'
+Version = '0.2.120'
 -- Bump for every Claret UI code change so the loaded build is identifiable.
-local BuildStamp = '20261121-111'
+local BuildStamp = '20261121-123'
 LOG('[Claret][build] ui='..Version..' stamp='..BuildStamp)
 
 ReUI.Require {

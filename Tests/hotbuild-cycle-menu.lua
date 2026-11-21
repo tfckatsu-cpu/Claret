@@ -96,12 +96,19 @@ local preview=objects[first]
 mode={'build',{name='unit1'}}
 menu:Show('Test',{records[1],records[2]},'unit1')
 assert(preview.visible and preview.updating)
-preview:OnFrame(0.8); assert(preview.visible)
+local badge
+for _, item in ipairs(objects) do if item.text=='T1' then badge=item end end
+assert(badge and badge.alpha==0 and badge.parent.x==17 and badge.parent.y==40)
+preview:OnFrame(0.075); assert(badge.alpha==0.5)
+preview:OnFrame(0.725); assert(preview.visible and badge.alpha==1)
 menu:Show('Test',{records[1],records[2]},'unit1')
 preview:OnFrame(0.8); assert(preview.visible,'keypress resets timeout')
 preview:OnFrame(0.4); assert(not preview.visible and not preview.updating)
-menu:Show('Test',{records[1],records[2]},'unit1');mode={false,{}};preview:OnFrame(0.01)
-assert(not preview.visible,'cancel hides preview')
+menu:Show('Test',{records[1],records[2]},'unit1');preview:OnFrame(0.15)
+mode={false,{}};preview:OnFrame(0.075)
+assert(preview.visible and preview.updating,'cancel starts fading the preview')
+preview:OnFrame(0.075)
+assert(not preview.visible and not preview.updating,'cancel fades the preview out')
 menu:Destroy(); assert(preview.destroyed)
 modules['/mods/ClaretHotbuild/modules/Model.lua']=modelModule
 local contextActionsModule=setmetatable({},{__index=env})

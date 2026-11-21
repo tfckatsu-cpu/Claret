@@ -77,7 +77,9 @@ local camera = {
     GetMaxZoom = function() return 110 end,
     GetZoom = function() return zoom end,
 }
+local gameTime = 0
 local env = setmetatable({
+    GetGameTimeSeconds = function() return gameTime end,
     import = function(path) return assert(modules[path], 'unexpected import ' .. path) end,
     GetFrame = function() return root end,
     GetCamera = function() return camera end,
@@ -128,6 +130,9 @@ env.SetVisible(nil, true)
 local _, sync = next(callbacks)
 local function frame(delta) driver:OnFrame(delta or 1 / 60) end
 
+frame()
+assert(selections == 0 and selected == originalSelection, 'startup leaves the player selection untouched')
+gameTime = 15
 commandMode = 'build'
 frame()
 assert(selections == 0, 'active command mode defers roster discovery')
@@ -283,8 +288,19 @@ frame()
 assert(countMarkers(true) == 0 and projections == 0 and idleReads > 0,
     'busy engineers have no position queries after fading, and the state scan continues')
 waiting.idle = true
-for _ = 1, 14 do frame() end
-assert(findMarkerFor(waiting) and countMarkers(true) == 1, 'a busy engineer is shown again when it becomes idle')
+local returningMarker
+for _ = 1, 14 do
+    frame()
+    returningMarker = findMarkerFor(waiting)
+    if returningMarker then break end
+end
+assert(returningMarker and returningMarker.alpha > 0 and returningMarker.alpha < 1 and returningMarker.color == 'red',
+    'an engineer becoming idle starts with a partially visible red marker')
+local initialOpacity = returningMarker.alpha
+frame()
+assert(returningMarker.alpha > initialOpacity and returningMarker.alpha < 1, 'idle marker fades in over several frames')
+for _ = 1, 10 do frame() end
+assert(returningMarker.alpha == 1 and countMarkers(true) == 1, 'the returning marker reaches full opacity')
 optionCallbacks[optimize.OnChanged](nil, false)
 for _ = 1, 14 do frame() end
 projections = 0
@@ -304,4 +320,4 @@ env.SetVisible(nil, false)
 assert(not driver.updating and not next(callbacks), 'turning off stops frame and sync work')
 for _, c in ipairs(markers) do assert(c.destroyed, 'turning off destroys the pooled controls') end
 for _, cleanup in ipairs(cleanups) do cleanup() end
-print('PASS: engineer indicators preserve selection, bound optimized position queries and fade out busy markers')
+print('PASS: engineer indicators preserve selection, bound optimized position queries and fade idle markers in and out')

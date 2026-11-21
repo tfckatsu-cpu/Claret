@@ -1,7 +1,7 @@
 # ClaretHotbuild rules
 
 - Working modules Model/Catalog/Adapter/Keys/Runtime/Editor live in the separate ClaretHotbuild mod. Profile: ClaretHotbuild.
-- With a mixed selection, assigned “Units” take priority over “Builders” and building hotbuild; if the Units row is empty, use “Other.” Action IDs are stable; third-party and native assignments are not overwritten without a request.
+- For mixed selections with an applicable composite assignment, all represented contexts must resolve to the same action ID, including inherited assignments. A mixture of assigned and unassigned contexts consumes the key press. The `SILO` flag alone does not make a unit a launcher in Hotbuild. Within that category, `TACTICALMISSILEPLATFORM` and `NUKE` identify offensive launchers. Other units follow the normal roles, including land MMLs, naval missile cruisers and SMD under Other. Verified against installed FAF 3841 blueprints, 2026-11-21. An army-only selection with no assigned army contexts can still use the historical “Other” fallback. Action IDs are stable; third-party and native assignments are not overwritten without a request.
 - TemplateCatalog reads the game's `build_templates`. Do not modify the source; do not execute invalid data.
 - Template ID `claret_template_<hash>` depends on composition, order and geometry, not on name or index. A changed or deleted source makes the old bind unavailable; never silently substitute another template.
 - Cross-faction conversion goes through TemplateCatalog/Equivalents, only on a complete unambiguous match, without guessing prefixes. Preserve geometry, sizes, orientation and order.
@@ -13,11 +13,11 @@
 
 - User decision (2026-11-13): the pair of slots is stored separately for each key; compatibility is checked on assignment while preserving the other slot. Old `grid.context` links are migrated per assigned key; the old field remains in data for historical compatibility only. Key assignment and clearing happen only on the “Keyboard” page; preset and composite-bind editors show key usage as read-only.
 
-- Action/context pairs removed from the catalog are not offered for new assignments; saved rows and their quick repeat or “if empty” fallback retain their old IDs and behavior. FAF's native paused upgrade acts on the structure under the cursor.
+- Action/context pairs removed from the catalog are not offered for new assignments; saved rows retain their IDs, and an explicitly saved “if empty” fallback remains active. FAF's native paused upgrade acts on the structure under the cursor. The select-next extractor action is excluded from the empty-selection context. Legacy empty-selection assignments move to the cursor where migration is unambiguous. Remaining empty-selection references to that action are retired. The selected-extractors action upgrades each eligible owned extractor in place. New ability-toggle assignments use one action covering FAF's nine script toggles. The action works in every selected-unit context. Existing individual toggle bindings retain their original behavior.
 
 - Build 20261113-30: the absolute-mode, quick-repeat, fallback, and obsolete-row-list controls were removed from the composite-bind editor; saved data and its execution were preserved. For compatible standalone actions, double-press is configured per key on the “Keyboard” page and does not mix unit types. When a standalone action is paired with a building preset, an eligible builder gets priority if it can perform the preset entry; otherwise the action runs. In-game verification is pending.
 
-- Decision (2026-11-14): check the “Under cursor” context first for a structure that the selected units can upgrade; chains reserve their resulting contexts in both directions. An unsuitable cursor target or structure falls through to the ordinary context. Removed actions remain in saved assignments marked “obsolete” and are not offered again. Missile launch selects the type based on the available order; mixed types are not launched. Set deletion requires confirmation and clears it from keys without deleting other slots.
+- Decision (2026-11-14): check the “Under cursor” context first for a structure that the selected units can upgrade; chains reserve their resulting contexts in both directions. An engineer chain suppresses inherited builder actions for the engineer child only. Explicit old child assignments remain in saved data. An unsuitable cursor target or structure falls through to the ordinary context. Removed actions remain in saved assignments marked “obsolete” and are not offered again. Missile launch selects the type based on the available order; mixed types are not launched. Set deletion requires confirmation and clears it from keys without deleting other slots.
 
 - 2026-11-14: per user decision, right-clicking a key clears any visible Claret, FAF, or other-mod assignments for the displayed combination; saved sets, action definitions, and other combinations remain.
 - 2026-11-14: in the original layout, each domain/faction order tile is divided into three icon sections from left to right: T1/T2/T3; all are shown at once without unit labels. Tech level is checked against `GetCurrentTechTab()` in FAF3840. Old single slots are distributed by blueprint tech; T4 and unrecognized data are preserved.
@@ -33,7 +33,7 @@
 - Profiles are loaded with per-record quarantine: broken records keep their raw data, valid records keep working, an unknown version blocks only its own profile, and editors show a localized damaged-record summary.
 - Hotbuild is always active. A saved `enabled=false` is ignored; there is no menu toggle.
 - Double-press actions are consumed after one execution and limited by a 0.5 s window. Quick repeat is one-shot, limited by a 1.5 s window and never re-arms. Invalid windows (NaN, infinity, <=0) are rejected.
-- The quick-repeat window, its setting and the gear were removed in 0.10.38. The per-row `quickRepeat` field remains as legacy saved data and still executes.
+- The quick-repeat window, its setting and the gear were removed in 0.10.38. The per-row `quickRepeat` field is preserved as legacy saved data and is ignored by composite dispatch. Built-in double actions execute only their first step in a composite. Keyboard pairs and sequential selectors retain their behavior.
 - Sequential engineer selection requires a mobile engineer (ENGINEER + MOBILE); command units are excluded.
 - Version identity: `Version` in Main.lua = `ReUI` in mod_info.lua = README heading; `BuildStamp` = newest CHANGELOG build; Hotbuild requires Core >= 0.10.15.
 ## Order dispatch rules (verified 2026-11-19, build 0.10.40)
@@ -53,6 +53,7 @@ Single choke point: Adapter:CanBuild (ClaretHotbuild/modules/Adapter.lua). Prese
 Source: FAF profile `build_templates_factory` via `lua/ui/templates_factory.lua` (`GetTemplates`). Records are data only: `{name, icon, templateData = {{id, count}, ...}}`. Creation and renaming stay in the game (construction panel Templates tab or FAF's `create_template_factory`); Claret never writes this profile.
 
 - Identity: `claret_unit_template_<hash>` is computed from member ids, their order and counts, never from the name or list index. A changed or deleted source makes the old binding unavailable; another template at the same index is never substituted.
+- All selected factories must share a production domain and faction for a queue template or unit preset. Other selected unit types do not contribute to that check.
 - Availability: dispatch lives in `Adapter:CanBuild` (branch before the tech-tab check) and `Adapter:TemplatePlan`. Every entry must be in the factory's engine list `EntityCategoryGetUnitList(GetUnitCommandData({unit})[3])`; an entry may follow an earlier factory upgrade in the same queue, mirroring FAF's rule that lets a T1 factory queue a T2 template. Replays, observers and non-factory selections never queue.
 - Dispatch: `IssueBlueprintCommand('UNITCOMMAND_BuildFactory', id, count)` per entry through `WithFactorySelection` (shared with single-unit factory orders, including the explicit selection transaction). Shift never repeats a unit order: the composition is queued once with its saved counts.
 - Faction-bound (user decision 2026-11-19): no cross-faction variants are created and no other faction cell is filled; the same composition is saved per faction.
@@ -62,3 +63,9 @@ Source: FAF profile `build_templates_factory` via `lua/ui/templates_factory.lua`
 - `BuildKeyLabels` skips every `claret_` pseudo-id so queue templates never create construction key labels.
 - Shift no longer multiplies unit orders (user decision 2026-11-19, superseding build 2026-1117-147): a unit preset queues one unit and a queue template queues its saved counts.
 - Tests: `Tests/hotbuild-unit-templates.lua`; the shared factory path stays covered by `Tests/hotbuild-adapter.lua`.
+
+## Transports and map communication (0.10.50, 2026-11-21)
+
+- Loading is available on the keyboard page and uses the native FAF hotkey. Saved composite references are retained but unavailable. In a select-then-load pair the second action requires a transport and mobile non-air cargo. Engineer, ACU and SACU contexts can dispatch the command. FAF 3841's native loader only processes T1–T3 cargo, which excludes stock ACUs.
+- Transport selectors use ASE v3's temporary ignore state while discovering and applying the selection. The prior state is restored even if selection throws. The integration was checked against installed ASE v3 (4z0t and Nomander, UID `advanced-selection-extension-v03`) and FAF 3841.
+- The keyboard's Communication group offers FAF's text marker plus alert, move and attack pings. Selection does not affect their availability.

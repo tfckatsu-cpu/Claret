@@ -290,7 +290,7 @@ local function Draw(owner, view, delta)
                     remaining = remaining - 1
                 end
                 entry.marker = marker
-                marker.statusOpacity = 1
+                marker.statusOpacity = owner.idleOnly and 0 or 1
                 if marker.tier ~= entry.tier then
                     marker.tier = entry.tier
                     marker.idleColor = nil
@@ -351,7 +351,9 @@ local function Frame(owner, delta)
     if owner.army <= 0 or not view or view:IsHidden() then return end
 
     owner.nextDiscovery = owner.nextDiscovery - delta
-    if owner.nextDiscovery <= 0 and not Commands.GetCommandMode()[1] and not GetInputCapture() then
+    -- Give FAF's startup selection and the first player commands time to settle.
+    if owner.nextDiscovery <= 0 and GetGameTimeSeconds() >= 15
+        and not Commands.GetCommandMode()[1] and not GetInputCapture() then
         owner.nextDiscovery = DISCOVERY_INTERVAL
         Discover(owner)
     end

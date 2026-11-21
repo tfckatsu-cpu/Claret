@@ -7,6 +7,7 @@ end
 
 local controls, selection, candidates, onScreen = {}, {}, {}, {}
 local now, beat, order, paused = 0
+local gameTime, discoveryCalls, commandMode = 0, 0, false
 local army = 1
 local layoutLog, pendingPosition, savedPosition
 local function property(default)
@@ -40,6 +41,7 @@ local function control(parent)
     function c:SetColor(v) self.color=v end
     function c:SetAlpha(v) self.alpha=v end
     function c:SetTexture(v) self.texture=v end
+    function c:SetColorMask(v) self.colorMask=v end
     function c:SetSolidColor(v) self.fill=v end
     function c:SetNeedsFrameUpdate(v) self.frames=v end
     table.insert(controls,c)
@@ -87,7 +89,7 @@ local modules = {
     ['/lua/keymap/keyactions.lua'] = {keyActions=actions},
     ['/lua/keymap/keydescriptions.lua'] = {keyDescriptions=descriptions},
     ['/lua/keymap/keymapper.lua'] = {GetCurrentKeyMap=function() return keyMap end},
-    ['/mods/ClaretCore/modules/Theme.lua'] = {Colors={canvas='canvas', health='green', text='white',
+    ['/mods/ClaretCore/modules/Theme.lua'] = {Colors={canvas='canvas', health='green', text='white', hudValue='white', hudDamage='red',
         muted='muted', danger='red', warning='amber', transparent='clear', border='border'}, Metrics={buttonHeight=36,rowHeight=40,glyph=20,text=16,
         caption=12,secondaryText=14,buttonText=15}, Fonts={body='body'},
         RoundedPanel=function(panel)
@@ -100,6 +102,7 @@ local modules = {
     ['/lua/maui/dragger.lua'] = {Dragger=function() return control() end},
     ['/lua/ui/game/tooltip.lua'] = {CreateMouseoverDisplay=function() end, DestroyMouseoverDisplay=function() end},
     ['/lua/ui/game/commandmode.lua'] = {
+        GetCommandMode=function() return {commandMode} end,
         CacheAndClearCommandMode=function() assert(not cached); cached=true end,
         RestoreCommandMode=function(restore) assert(cached and restore); cached=false end,
     },
@@ -122,10 +125,13 @@ local env = setmetatable({
     SelectUnits=function(units) selection=units end,
     GetFocusArmy=function() return army end,
     GetSystemTimeSeconds=function() return now end,
+    GetGameTimeSeconds=function() return gameTime end,
+    GetInputCapture=function() return false end,
     IsDestroyed=function(c) return not c or c.destroyed end,
     LOG=function(message) if message:find('mex-layout',1,true) then layoutLog=message end end,
     WARN=function(message) error(message) end,
     UISelectionByCategory=function(category,_,onlyOnScreen,_,last)
+        discoveryCalls=discoveryCalls+1
         assert(ignored and cached and category == 'MASSEXTRACTION STRUCTURE' and last == false)
         selection=onlyOnScreen and onScreen or candidates
     end,
@@ -190,6 +196,12 @@ end
 assert(panel.hidden and panel.Width() == 0)
 for _, child in ipairs(controls) do assert(child.parent ~= panel) end
 env.SetVisible(env,true)
+assert(discoveryCalls == 0 and selection == original, 'startup leaves the player selection untouched')
+gameTime, commandMode = 15, 'build'
+beat()
+assert(discoveryCalls == 0 and selection == original, 'background discovery preserves active placement')
+commandMode, now = false, 0.2
+beat()
 for _, item in ipairs(controls) do
     if item.parent == panel and item.HandleEvent then table.insert(cells,item) end
     if item.parent == panel and not item.HandleEvent then backdrop=item end
@@ -285,11 +297,11 @@ local function arrow()
         end
     end
 end
-local function marker(text, color)
-    for _, item in ipairs(controls) do
-        local plate=item.parent
-        if plate and plate.parent == view and not plate.hidden and not plate.destroyed
-            and not item.hidden and item.text == text and (not color or color == item.color) then
+local function marker(tier, color)
+    local texture='/mods/ClaretUI/textures/engineers/tier-' .. tostring(tier) .. '.png'
+    for _, plate in ipairs(controls) do
+        if plate.parent == view and not plate.hidden and not plate.destroyed
+            and plate.texture == texture and (not color or color == plate.colorMask) then
             return plate
         end
     end
@@ -353,39 +365,44 @@ assert(not a.paused)
 b.pos=nil
 options.mexOverlay.value=true
 advance(0.3)
-assert(marker('1','white') and marker('2·','red') and not marker('2','white'))
+assert(marker(1,'red') and marker(2,'white') and not marker(2,'red'))
 local fill, activePlate
-activePlate=marker('1','white')
-assert(activePlate == arrow() and activePlate.fill == 'canvas')
+activePlate=marker(1,'red')
+assert(activePlate == arrow())
+a.paused=true
+advance(0.3)
+assert(marker(1,'red') == activePlate, 'a paused upgrade keeps its red tier digit')
+a.paused=false
+advance(0.3)
 options.mexNumbers.value=false
 updater:OnFrame(0.01)
-assert(not arrow() and marker('1','white') == activePlate and marker('2·','red'))
+assert(not arrow() and marker(1,'red') == activePlate and marker(2,'white'))
 options.mexOverlay.value=false
 updater:OnFrame(0.01)
-assert(not arrow() and not marker('1','white'))
+assert(not arrow() and not marker(1))
 options.mexNumbers.value=true
 updater:OnFrame(0.01)
-assert(arrow() and not marker('1','white'))
+assert(arrow() and not marker(1))
 options.mexOverlay.value=true
 updater:OnFrame(0.01)
-activePlate=assert(marker('1','white'))
+activePlate=assert(marker(1,'red'))
 assert(activePlate == arrow())
 options.mexOverlay.value=false
 updater:OnFrame(0.01)
-assert(arrow() and activePlate.destroyed and not marker('1','white'))
+assert(arrow() and activePlate.destroyed and not marker(1))
 options.mexOverlay.value=true
 updater:OnFrame(0.01)
-activePlate=assert(marker('1','white'))
+activePlate=assert(marker(1,'red'))
 for _, control in ipairs(controls) do
     if control.parent == activePlate and control.fill == 'green' then fill=control end
 end
-assert(fill.alpha == 0.35)
-assert(activePlate.Height() == 16 and fill.Height() == 6, 'progress fills the smaller badge from below')
+assert(activePlate.Height() == 18 and fill.Height() == 2 and fill.Top() == activePlate.Bottom())
+assert(fill.Width() == 7 and not fill.hidden, 'progress fills the bar below the badge')
 panel.Left:Set(830)
 panel.Top:Set(80)
 scale:Set(200)
 assert(panel.Width() == 680 and panel.Left() == 520 and panel.Top() == 80)
-assert(cells[1].Width() == 88 and activePlate.Width() == 16)
+assert(cells[1].Width() == 88 and activePlate.Width() == 18)
 assertPauseCentered(pauseIcon, mexIcon, 18 / 34, 18 / 40)
 assertPauseCentered(pauseT2, mexT2, 18 / 36, 17 / 40)
 local track, progress
@@ -408,26 +425,26 @@ click(4,{Left=true,Ctrl=true})
 assert(#order == 1 and order[1] == c, 'an uncapped T2 mex accepts a manual upgrade')
 c.mass=3
 advance(0.3)
-assert(marker('2','white') and not marker('2·','red'))
+assert(marker(2,'white') and not marker(2,'red'))
 click(4,{Left=true,Ctrl=true})
 assert(#order == 1 and order[1] == c, 'a capped T2 mex accepts a manual upgrade')
 a.focus,a.progress=nil,0.9
 advance(0.3)
-assert(marker('1','white') and not arrow() and fill.Height() == 0 and track.hidden)
+assert(marker(1,'white') == activePlate and not arrow() and fill.hidden and track.hidden)
 a.focus,a.progress=target,0.9
 advance(0.3)
-assert(marker('1','white'))
+assert(marker(1,'red') == activePlate)
 a.dead=true
 target.fraction=1
 c.pos=nil
 advance(1)
-assert(not marker('1','white'))
-local newTier = assert(marker('2·','red'))
+assert(not marker(1))
+local newTier = assert(marker(2,'white'))
 assert(newTier.Left() == target.pos.x - newTier.Width() / 2)
 target.dead=true
 c.pos=nil
 advance(1)
-assert(not marker('2','white') and not marker('2·','red'))
+assert(not marker(2))
 
 -- Enter dynamic mode while the feature is live. Only the populated tiers
 -- stay visible, and the cells keep their own input and progress.
@@ -515,7 +532,7 @@ assertLayout({true,true,true,true,true,true,true})
 
 
 env.SetVisible(env,false)
-assert(panel.hidden and not updater.frames and not marker('1'))
+assert(panel.hidden and not updater.frames and not marker(1))
 cleanup()
 assert(panel.destroyed and updater.destroyed and not beat and not scale.OnChanged.callback and not mode.OnChanged.callback and not locked.OnChanged.callback and not transparency.OnChanged.callback)
 local newPanelIndex = #controls + 1

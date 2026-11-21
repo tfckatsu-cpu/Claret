@@ -226,7 +226,7 @@ local function CreateHud(scope, options)
     local rows = {}
     for _, field in ipairs(fields) do
         local row = { field = field, option = options['selection_' .. field.key],
-            label = Text(M.caption, F.body, C.muted), value = Text(M.title + 4, F.heading, C[field.color]) }
+            label = Text(M.secondaryText, F.body, C.muted), value = Text(M.title + 4, F.heading, C[field.color]) }
         table.insert(rows, row)
         table.insert(groups[field.group].rows, row)
     end
@@ -252,7 +252,7 @@ local function CreateHud(scope, options)
                     row.value:SetText(text)
                     valueWidth = math.max(valueWidth, row.value:GetStringAdvance(text) / scale)
                     if labels then
-                        local label = localization.Text(PREFIX .. field.key)
+                        local label = localization.Text(PREFIX .. (field.caption or field.key))
                         row.label:SetText(label)
                         labelWidth = math.max(labelWidth, PAD + row.label:GetStringAdvance(label) / scale)
                     end
@@ -277,7 +277,7 @@ local function CreateHud(scope, options)
                     layout(row.value):AtLeftTopIn(panel, x, y)
                     row.value:Show()
                     if labels then
-                        layout(row.label):AtLeftTopIn(panel, x + valueWidth + PAD, y + 12)
+                        layout(row.label):AtLeftTopIn(panel, x + valueWidth + PAD, y + 11)
                         row.label:Show()
                     else
                         row.label:Hide()
