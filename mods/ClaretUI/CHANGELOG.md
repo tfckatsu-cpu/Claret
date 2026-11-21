@@ -1,5 +1,42 @@
 # История изменений
 
+## Сборка 20261121-139 — 2026-11-21
+- Restore InfoShare loading in FAF by keeping its startup closure below the LuaPlus upvalue limit.
+
+## Сборка 20261121-138 — 2026-11-21
+- Restore experimental names and icons on TIS progress rows when the unit can be identified, with a generic icon fallback.
+
+## Сборка 20261121-137 — 2026-11-21
+- Sort active InfoShare list rows by completion and temporarily hide stalled construction after ten game seconds.
+
+## Сборка 20261121-136 — 2026-11-21
+- Make construction and silo map labels compact with progress, remaining time and missile stock.
+
+## Сборка 20261121-135 — 2026-11-21
+- Accept legacy TIS string entity IDs and numeric values.
+- Show and share missile production ETA and stock for completed strategic missile launchers and defenses.
+
+## Сборка 20261121-134 — 2026-11-21
+- Log which stage of legacy TIS packet validation fails in live matches.
+
+## Сборка 20261121-133 — 2026-11-21
+- Register the legacy TIS chat channel directly when TeamInfo Share is absent locally.
+
+## Сборка 20261121-132 — 2026-11-21
+- Stabilize InfoShare label anchors and keep labels visible at the map edge.
+- Estimate missing TIS ETA from incoming progress changes.
+
+## Сборка 20261121-131 — 2026-11-21
+- Show construction ETA for SMD and experimentals and render allied TIS missile silo data on the map.
+- Center the camera on known work positions when an unlocked InfoShare row is clicked.
+
+## Сборка 20261121-130 — 2026-11-21
+- Hide duplicate FAF Notify upgrade markers while the corresponding InfoShare map label is active.
+- Add a work-name toggle for the InfoShare list.
+
+## Сборка 20261121-129 — 2026-11-21
+- Exchange experimental construction progress and map positions with TeamInfo Share v11.
+
 ## Сборка 20261121-128 — 2026-11-21
 - Hide zero Destroyed and Reclaimed totals in dynamic Selection Info.
 

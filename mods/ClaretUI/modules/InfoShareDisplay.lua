@@ -36,6 +36,21 @@ local function PositionValues(position)
     return x, y, z
 end
 
+local function MapCaption(row, compact)
+    if not compact then return row.name .. ' · ' .. row.status end
+    local caption = row.status
+    local eta = row.eta
+    if eta then
+        local minutes = math.floor(eta / 60)
+        local seconds = math.mod(eta, 60)
+        local countdown = string.format('%02d:%02d', math.mod(minutes, 60), seconds)
+        if minutes >= 60 then countdown = math.floor(minutes / 60) .. ':' .. countdown end
+        caption = caption .. ' · ' .. countdown
+    end
+    if row.stock then caption = caption .. ' · ×' .. row.stock end
+    return caption
+end
+
 function Create(scope, options)
     local parent = Borders.GetMapGroup()
     local frame = GetFrame(0)
@@ -50,10 +65,12 @@ function Create(scope, options)
     root.Depth:Set(function() return parent.Depth() + 80 end)
 
     local panel = Group(root)
+    panel.Left:Set(frame.Left)
+    panel.Top:Set(frame.Top)
+    layout(panel):Width(WIDTH):Height(HEADER + VISIBLE * ROW)
     panel:DisableHitTest()
     panel:Hide()
     panel.Depth:Set(function() return root.Depth() + 1 end)
-    layout(panel):Width(WIDTH):Height(HEADER + VISIBLE * ROW)
     local function PanelScale() return panel.Width() / WIDTH end
     local background = Bitmap(panel)
     background:SetSolidColor(C.canvas)
@@ -127,7 +144,9 @@ function Create(scope, options)
         player:DisableHitTest()
         player.Depth:Set(function() return panel.Depth() + 3 end)
         player.Left:Set(function() return panel.Left() + math.floor(10 * PanelScale()) end)
-        player.Top:Set(function() return panel.Top() + math.floor((y + 3) * PanelScale()) end)
+        local function PlayerTop() return panel.Top() + math.floor((y + 3) * PanelScale()) end
+        player.Top:Set(PlayerTop)
+        entry.playerTop = PlayerTop
 
         local work = UI.CreateText(group, '', M.secondaryText * scale / pixel, Theme.Fonts.body)
         work:SetColor(C.text)
@@ -173,6 +192,24 @@ function Create(scope, options)
     local prior = panel.HandleEvent
     panel.HandleEvent = function(control, event)
         if locked:Get() then return false end
+        if event.Type == 'ButtonPress' and event.Modifiers and event.Modifiers.Left
+            and type(event.MouseY) == 'number' and not drag then
+            local rowY = (event.MouseY - panel.Top()) / PanelScale() - HEADER
+            if rowY >= 0 and event.MouseY < panel.Bottom() then
+                local index = (root.rowOffset or 0) + math.floor(rowY / ROW) + 1
+                local row = root.rows and root.rows[index]
+                local x, y, z = PositionValues(row and row.position)
+                if x then
+                    local camera = GetCamera('WorldCamera')
+                    if camera then
+                        local settings = camera:SaveSettings()
+                        settings.Focus = Vector(x, y, z)
+                        camera:RestoreSettings(settings)
+                        return true
+                    end
+                end
+            end
+        end
         if event.Type == 'WheelRotation' and type(event.WheelRotation) == 'number' then
             local delta = event.WheelRotation > 0 and -1 or 1
             local count = table.getn(root.rows or {})
@@ -214,29 +251,39 @@ function Create(scope, options)
 
     local function IconPath(row)
         local blueprint = row.blueprint
-        if not blueprint then return nil end
-        local key = row.enhancement and blueprint .. ':' .. row.enhancement or blueprint
+        local key = blueprint and (row.enhancement and blueprint .. ':' .. row.enhancement or blueprint)
+            or row.kind == 'experimental' and 'experimental'
+        if not key then return nil end
         if iconPaths[key] == nil then
             local path
             if row.kind == 'acu' then
                 local bp = __blueprints[blueprint]
                 local upgrade = bp and bp.Enhancements and bp.Enhancements[row.enhancement]
                 if upgrade and upgrade.Icon then path = Construction.GetEnhancementTextures(blueprint, upgrade.Icon) end
-            else
+            elseif blueprint then
                 path = UI.UIFile('/icons/units/' .. blueprint .. '_icon.dds', true)
+            end
+            if row.kind == 'experimental' and (not path or not DiskGetFileInfo(path)) then
+                path = UI.UIFile('/game/strategicicons/icon_experimental_generic_rest.dds', true)
             end
             iconPaths[key] = path and DiskGetFileInfo(path) and path or false
         end
         return iconPaths[key]
     end
 
-    local function NewWorldLabel(view)
+    local function NewWorldLabel(view, compact)
         local group = Group(view)
+        group.Left:Set(view.Left)
+        group.Top:Set(view.Top)
+        group.Width:Set(1)
+        group.Height:Set(1)
         group:DisableHitTest()
         group.Depth:Set(function() return view.Depth() + 80 end)
         group:Hide()
 
-        local text = UI.CreateText(group, '', M.secondaryText * labelScale / pixel, Theme.Fonts.body)
+        local textSize = compact and M.caption or M.secondaryText
+        local size = textSize * labelScale / pixel
+        local text = UI.CreateText(group, '', size, Theme.Fonts.body)
         text:SetColor(C.hudValue)
         text:DisableHitTest()
         text.Depth:Set(function() return group.Depth() + 2 end)
@@ -245,7 +292,7 @@ function Create(scope, options)
         local outline = {}
         for _, offset in ipairs(outlineOffsets) do
             local dx, dy = offset[1] * outlineWidth, offset[2] * outlineWidth
-            local edge = UI.CreateText(group, '', M.secondaryText * labelScale / pixel, Theme.Fonts.body)
+            local edge = UI.CreateText(group, '', size, Theme.Fonts.body)
             edge:SetColor(C.canvas)
             edge:DisableHitTest()
             edge.Depth:Set(function() return group.Depth() + 1 end)
@@ -253,7 +300,7 @@ function Create(scope, options)
             edge.Top:Set(function() return text.Top() + dy end)
             table.insert(outline, edge)
         end
-        return { group = group, text = text, outline = outline, opacity = 0 }
+        return { group = group, text = text, outline = outline, opacity = 0, textSize = textSize }
     end
 
     local function SetWorldIcon(item, path, kind)
@@ -293,7 +340,7 @@ function Create(scope, options)
         worldLabels = {}
     end
 
-    local function RenderWorld(rows)
+    local function RenderWorld(rows, silos)
         local view = World.viewLeft
         if view ~= worldView then
             ClearWorld()
@@ -305,19 +352,20 @@ function Create(scope, options)
         local active = {}
         local experimentalIcon = options.infoShareExperimentalIcon:Get()
         local smdIcon = options.infoShareSmdIcon:Get()
-        for _, row in ipairs(rows) do
+        local function Add(row)
             local x, y, z = PositionValues(row.position)
             if x then
                 local item = worldLabels[row.key]
+                local compact = row.kind == 'experimental' or row.kind == 'smd' or row.kind == 'silo'
                 if not item then
-                    item = NewWorldLabel(view)
+                    item = NewWorldLabel(view, compact)
                     worldLabels[row.key] = item
                 end
                 local useIcon = row.kind == 'acu' or row.kind == 'experimental' and experimentalIcon or row.kind == 'smd' and smdIcon
                 SetWorldIcon(item, useIcon and IconPath(row) or false, row.kind)
                 active[row.key] = true
                 item.position = Vector(x, y, z)
-                local caption = row.name .. ' · ' .. row.status
+                local caption = MapCaption(row, compact)
                 if caption ~= item.caption then
                     item.text:SetText(caption)
                     for _, edge in ipairs(item.outline) do edge:SetText(caption) end
@@ -325,6 +373,8 @@ function Create(scope, options)
                 end
             end
         end
+        for _, row in ipairs(rows) do Add(row) end
+        for _, row in ipairs(silos) do Add(row) end
         for key, item in pairs(worldLabels) do item.visible = active[key] == true end
     end
 
@@ -352,11 +402,20 @@ function Create(scope, options)
     root.RenderRows = function()
         local rows = root.rows or {}
         local offset = root.rowOffset or 0
+        local showWorkNames = options.infoShareWorkNames:Get()
         for index, controls in ipairs(rowControls) do
             local row = rows[offset + index]
             controls.active = row ~= nil
             if row then
-                controls.background:Show(); controls.player:Show(); controls.work:Show(); controls.status:Show()
+                controls.background:Show(); controls.player:Show(); controls.status:Show()
+                if controls.showWorkNames ~= showWorkNames then
+                    controls.showWorkNames = showWorkNames
+                    if showWorkNames then
+                        controls.player.Top:Set(controls.playerTop)
+                    else
+                        controls.player.Top:Set(controls.status.Top)
+                    end
+                end
                 local path = IconPath(row)
                 if controls.iconPath ~= path then
                     controls.iconPath = path
@@ -376,7 +435,12 @@ function Create(scope, options)
                     controls.icon:Hide()
                 end
                 controls.player:SetText(row.player or '')
-                controls.work:SetText(row.name or '')
+                if showWorkNames then
+                    controls.work:SetText(row.name or '')
+                    controls.work:Show()
+                else
+                    controls.work:Hide()
+                end
                 controls.status:SetText(row.status or '')
                 controls.status:SetColor(PhaseColor(row.phase))
                 local progress = row.phase == 'done' and 100 or row.progress
@@ -420,9 +484,14 @@ function Create(scope, options)
         for key, item in pairs(worldLabels) do
             local label = item.group
             local point = view:Project(item.position)
-            local x = point and math.floor(left + point.x - label.Width() / 2)
-            local y = point and math.floor(top + point.y - label.Height() - 12 * pixel)
-            local onScreen = x and x >= left and x + label.Width() <= right and y >= top and y + label.Height() <= bottom
+            local x, y
+            local onScreen = point and point.x >= 0 and point.x < right - left
+                and point.y >= 0 and point.y < bottom - top
+            if onScreen then
+                local width, height = label.Width(), label.Height()
+                x = math.max(left, math.min(right - width, math.floor(left + point.x - width / 2)))
+                y = math.max(top, math.floor(top + point.y - height - 12 * pixel))
+            end
             item.opacity = Fade(item.opacity, item.visible and onScreen, delta)
             if item.opacity == 0 then
                 label:Hide()
@@ -464,8 +533,8 @@ function Create(scope, options)
             iconSize = math.floor(M.fieldHeight * 0.65 * labelScale)
             iconGap = math.floor(5 * labelScale)
             outlineWidth = math.max(1, math.floor(labelScale + 0.5))
-            local fontSize = M.secondaryText * labelScale / pixel
             for _, item in pairs(worldLabels) do
+                local fontSize = item.textSize * labelScale / pixel
                 local text = item.text
                 text:SetFont(Theme.Fonts.body, fontSize)
                 for index, edge in ipairs(item.outline) do
@@ -480,14 +549,14 @@ function Create(scope, options)
     end
 
     local display = {}
-    local listVisible, worldVisible
-    function display:Render(rows, showList, showWorld)
-        listVisible, worldVisible = showList, showWorld
+    local listVisible, worldVisible, latestSilos, latestListRows
+    function display:Render(rows, showList, showWorld, silos, listRows)
+        listVisible, worldVisible, latestSilos, latestListRows = showList, showWorld, silos, listRows
         ApplyAppearance()
-        local count = table.getn(rows or {})
+        local count = table.getn(listRows or {})
         panelWanted = showList and count > 0
         if panelWanted then
-            root.rows = rows
+            root.rows = listRows
             root.rowOffset = math.min(root.rowOffset or 0, math.max(0, count - VISIBLE))
             local visibleCount = math.min(VISIBLE, count)
             for index = table.getn(rowControls), visibleCount + 1, -1 do
@@ -511,18 +580,19 @@ function Create(scope, options)
             root:RenderRows()
             PaintPanel()
         else
+            root.rows = nil
             panel:DisableHitTest()
             if panelOpacity == 0 then panel:Hide() end
         end
         root.latestRows = rows
-        RenderWorld(showWorld and rows or {})
+        RenderWorld(showWorld and rows or {}, showWorld and silos or {})
         root:SetNeedsFrameUpdate(next(worldLabels) ~= nil or (panelWanted and panelOpacity < 1)
             or (not panelWanted and panelOpacity > 0))
     end
     local function RefreshAppearance()
-        display:Render(root.latestRows, listVisible, worldVisible)
+        display:Render(root.latestRows, listVisible, worldVisible, latestSilos, latestListRows)
     end
-    for _, key in ipairs({ 'Scale', 'Transparency', 'LabelScale', 'ExperimentalIcon', 'SmdIcon', 'Locked' }) do
+    for _, key in ipairs({ 'Scale', 'Transparency', 'LabelScale', 'ExperimentalIcon', 'SmdIcon', 'Locked', 'WorkNames' }) do
         scope:Bind(options['infoShare' .. key].OnChanged, RefreshAppearance)
     end
 

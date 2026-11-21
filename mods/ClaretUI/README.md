@@ -1,4 +1,4 @@
-# Claret UI — test build 0.2.125
+# Claret UI — test build 0.2.136
 
 **Show installed ACU upgrades** adds icons below the left edge of the ACU Health panel. An installed upgrade replaces the icons for its prerequisites. The icons disappear on commander death.
 
@@ -12,9 +12,23 @@ The InfoShare panel title follows the selected interface language during the mat
 
 Use F10 → Claret → UI → InfoShare to toggle the work list and labels above units independently. InfoShare tracks SMD construction, experimental construction and commander upgrades. SMD interceptor readiness remains a separate notification. The list shows up to five rows and scrolls for additional work. The list and map labels fade in and out. Progress fill remains visible at every background transparency setting. The list size, background transparency and map label size can be set independently. Drag the header to save the list position. Locking the list makes it pass clicks and wheel input through to the game. Map labels use outlined white text, with separate optional unit icons for experimentals and SMD. Active work is listed first, and results remain for 1.5 seconds before fading out.
 
+Turn off **Show work names in list** for a single line with the available icon, player name and progress or result. While InfoShare supplies an ACU upgrade map label, the local FAF Notify ETA label for that upgrade is suppressed. Notify messages remain available to allies and to the local InfoShare fallback.
+
+Left-click a row in the unlocked list to center the main camera on the known work position at the current zoom.
+
+The list puts active work with the highest completion percentage first. Experimental and SMD construction with measured progress disappears from the list after ten game seconds without growth. A decrease leaves that timer running. The next increase restores the row, including when the rounded percentage on screen stays the same. Map labels continue displaying tracked construction.
+
 Work in all three categories is shared automatically with connected allies while Claret UI is enabled, including with both displays off. The positions of shared work are included when available. The list shows unit and upgrade icons. The display toggles, position lock and appearance sliders are in the main settings, with filters and map icon toggles under Advanced. Stock FAF Notify can supply experimental and commander events for allies without InfoShare. Stock experimental events are grouped by blueprint because they have no per-unit identifier. Stock Notify provides no SMD construction event. An unfinished structure that disappears is marked interrupted. Stale snapshots expire without implying cancellation.
 
-Reference: installed TeamInfo Share v11 by 4z0t and FAF lua.nx2, checked 2026-11-20.
+Experimental construction, SMD construction and missile production use compact map labels. They show progress, remaining time when available, and missile stock as `×N` where applicable. For construction, Claret estimates remaining time from recent changes in the actual build fraction and includes it in native snapshots and TIS experimental updates. The estimate clears when construction stops making progress.
+
+If TIS omits ETA but continues sending changing progress, Claret can estimate ETA from those updates. Map labels stay within the map edge while the tracked unit position is on screen.
+
+InfoShare exchanges experimental construction progress and positions with allies running TeamInfo Share (TIS) v11. Native Claret snapshots take precedence when available. TIS v11 omits the blueprint and estimates progress from health. InfoShare keeps the `~` marker and uses the unit's name and icon when it can identify the allied entity or match a single recent FAF Notify start. Otherwise it uses the generic experimental name and icon.
+
+Completed land-based strategic missile launchers and T3 strategic missile defenses share their production percentage, ETA for the next missile, stock and position. Missile production is shown on the map and shared through both the native and TIS protocols. A TIS-only silo uses a generic label because its packet does not identify the blueprint. Native map labels at the same position take precedence. When TIS is active locally, it sends its own legacy updates and handles legacy silo overlays. SMD construction and commander upgrades use Claret's own protocol, with stock Notify as a fallback where available.
+
+Reference: installed TeamInfo Share v11 by 4z0t and FAF 3841 lua.nx2, checked 2026-11-21.
 
 ## Features
 

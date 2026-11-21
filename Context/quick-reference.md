@@ -2,7 +2,7 @@
 
 Snapshot of decisions and versions. The map of the knowledge base is `README.md`.
 
-Local versions as of 2026-11-21: Claret Core 0.10.41 (mod 60, build 20261121-73), Claret UI 0.2.125 (mod 127, build 20261121-128), and Claret Hotbuild 0.10.61 (mod 86, build 20261121-171). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. The installed game is FAF 3841 (`f643861f`). See the local stage notes when available for in-game confirmation.
+Local versions as of 2026-11-21: Claret Core 0.10.41 (mod 60, build 20261121-73), Claret UI 0.2.136 (mod 138, build 20261121-139), and Claret Hotbuild 0.10.61 (mod 86, build 20261121-171). ReUI Main 1.3.2, Core 1.7.0, Options 1.2.0. The installed game is FAF 3841 (`f643861f`). See the local stage notes when available for in-game confirmation.
 
 ## Product shape
 
@@ -13,7 +13,7 @@ Local versions as of 2026-11-21: Claret Core 0.10.41 (mod 60, build 20261121-73)
 - The menu is a compact launcher plus a standard panel; the Core section is compact (552×408), Hotbuild keeps the standard size. Hotbuild has three pages: Keyboard, Hotbuild, Contexts.
 - The quick-repeat window and its gear were removed in 0.10.38; the per-row `quickRepeat` field remains as legacy saved data.
 - **Selection Info** appears as **Информация выделения** in the Russian settings menu. It uses Core's FAF selection feed. See the [Claret UI README](../mods/ClaretUI/README.md#selection-info) for the display and saved controls.
-- **InfoShare** tracks SMD construction, experimentals, and ACU upgrades. Work and known positions go to connected allies while Claret UI is enabled, independent of display settings. Stock Notify provides no SMD construction event. See the [Claret UI README](../mods/ClaretUI/README.md#infoshare).
+- **InfoShare** tracks SMD construction, experimentals, ACU upgrades and land-based strategic missile production. Work and known positions go to connected allies independently of display settings. InfoShare and TIS v11 exchange experimental and missile production progress, ETA and positions, plus missile stock. See the [Claret UI README](../mods/ClaretUI/README.md#infoshare).
 
 ## Hotbuild data model
 

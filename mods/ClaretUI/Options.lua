@@ -21,6 +21,7 @@ local options = {
     selectionTransparency = ReUI.Options.OptionValue(0),
     selectionScale = ReUI.Options.OptionValue(100),
     infoShareList = ReUI.Options.OptionValue(false),
+    infoShareWorkNames = ReUI.Options.OptionValue(true),
     infoShareWorld = ReUI.Options.OptionValue(false),
     infoShareExperimentalIcon = ReUI.Options.OptionValue(false),
     infoShareSmdIcon = ReUI.Options.OptionValue(false),
