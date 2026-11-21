@@ -48,7 +48,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | SplitGroupScatter | 4z0t, HotCheese |  | v2; Context/sources/MainMods/SplitGroupScatter/mod_info.lua |
 | STP | 4z0t |  | v3; Context/sources/MainMods/STP/mod_info.lua |
 | TeamMouse | Lightningbulb & HotCheese / KasperAUS / Eternal- | https://github.com/Lightningbulb2/TeamMouse | v6; Context/sources/MainMods/TeamMouse/mod_info.lua |
-| TeamInfo Share (TIS) | 4z0t | Not specified | v11; installed ../mods/TIS, checked 2026-11-20. Behavior reference for InfoShare. |
+| TeamInfo Share (TIS) | 4z0t | Not specified | v11; installed ../mods/TIS, checked 2026-11-21. Protocol reference for experimental progress exchange in InfoShare. |
 | UMT | 4z0t |  | v13; Context/sources/MainMods/UMT/mod_info.lua |
 
 - Nunito Regular / SemiBold: The Nunito Project Authors, SIL Open Font License 1.1; TTFs were provided by the user; notices from their archive are kept in ClaretCore/fonts/Nunito. Project source: https://github.com/googlefonts/nunito. Checked 2026-11-12.

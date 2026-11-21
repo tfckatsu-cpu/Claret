@@ -1,6 +1,6 @@
 name = 'Claret UI'
 uid = 'claret-ui-001'
-version = 127
+version = 138
 description = [[
 [EN] Requires Claret Core and ReUI.
 Optional interface features: ACU health and upgrade icons, selection stats, engineer and mex markers, range previews, notifications, and allied information sharing.
@@ -15,4 +15,4 @@ selectable = true
 enabled = true
 exclusive = false
 ui_only = true
-ReUI = 'ClaretUI=0.2.125'
+ReUI = 'ClaretUI=0.2.136'

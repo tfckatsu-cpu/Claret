@@ -172,6 +172,7 @@ function Create(parent, layout, options, coreOptions)
             descriptionKey = 'claretui.infoshare.description',
             entries = {
                 { labelKey = 'claretui.infoshare.List', option = options.infoShareList, height = ROW_HEIGHT },
+                { labelKey = 'claretui.infoshare.WorkNames', option = options.infoShareWorkNames, height = ROW_HEIGHT },
                 { labelKey = 'claretui.infoshare.World', option = options.infoShareWorld, height = ROW_HEIGHT },
                 { labelKey = 'claretui.infoshare.Locked', option = options.infoShareLocked, height = ROW_HEIGHT },
                 { labelKey = 'claretui.infoshare.Scale', option = options.infoShareScale, kind = 'slider', height = 62 },
