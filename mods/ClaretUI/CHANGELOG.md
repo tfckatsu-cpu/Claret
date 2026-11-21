@@ -1,5 +1,24 @@
 # История изменений
 
+## Сборка 20261121-111 — 2026-11-21
+- Update the Russian engineer indicator description.
+
+## Сборка 20261121-110 — 2026-11-21
+- Shorten the engineer settings description to fit its panel.
+
+## Сборка 20261121-109 — 2026-11-21
+- Budget position checks for engineers without a marker when display optimization is enabled.
+- Add an idle-only display option that fades markers when engineers start working.
+
+## Сборка 20261121-108 — 2026-11-21
+- Add an optional 128-marker display limit that prioritizes idle engineers.
+
+## Сборка 20261121-107 — 2026-11-21
+- Enlarge engineer digits, add an indicator size slider, and fade indicators earlier during zoom-out.
+
+## Сборка 20261121-106 — 2026-11-21
+- Add pooled engineer tier and idle indicators with far-zoom hiding.
+
 ## Сборка 20261120-105 — 2026-11-20
 - Suppress experimental completion alerts from the local FAF spawn menu.
 

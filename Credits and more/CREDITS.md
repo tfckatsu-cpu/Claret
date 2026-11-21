@@ -29,6 +29,7 @@ Names and links below are copied from manifests for source attribution. No code 
 | Extra mini map | Eternal- |  | v3; Context/sources/MainMods/Extra mini map/mod_info.lua |
 | FactoryTemplates | 4z0t |  | v2; Context/sources/MainMods/FactoryTemplates/mod_info.lua |
 | GS | 4z0t |  | v7; Context/sources/MainMods/GS/mod_info.lua |
+| Idle Engineers Light | 4z0t | Not specified | Installed v12, checked 2026-11-21; engineer marker behaviour reference. [Author's forum post](https://forum.faforever.com/topic/4014/ui-revolution-project/21) |
 | InstantAssist | 4z0t | https://github.com/4z0t/FAF-UI-Mods | v3; Context/sources/MainMods/InstantAssist/mod_info.lua |
 | Mouse | HotCheese, LightningBulb, Eternal- |  | v3; Context/sources/MainMods/Mouse/mod_info.lua |
 | Music_PhilCrofts | Music - Phillip Crofts/ Coding - Exotic Retard | not specified | v5; Context/sources/MainMods/Music_PhilCrofts/mod_info.lua |

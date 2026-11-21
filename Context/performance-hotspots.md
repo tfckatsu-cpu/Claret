@@ -25,6 +25,8 @@ No measurements have been made yet. FPS and percentage values in friend-notes re
 
 ## Claret candidates (not measured)
 
+Engineer Indicators in Claret UI 0.2.108 (FAF3840, 2026-11-21): the user observed reduced FPS around 600 engineers with early builds, including the build that limited markers to 128 while still projecting every engineer every frame. With Optimize display enabled, shown markers update every frame and other engineers are scanned in batches. The local 600-engineer model verifies at most 188 position queries in stable frames and 212 when markers are reassigned. Fully faded markers at far zoom require no unit-position queries. Idle engineers only skips positions for busy engineers after their markers fade. The user confirmed 0.2.108 overall. Quantitative FPS improvement and individual scenarios were not reported.
+
 | Candidate | Observation | Hypothesis |
 |---|---|---|
 | KeyboardBindings:Refresh | Clears and rebuilds the whole engine key map on every change; OwnIds scans models and maps | Cost grows with bindings and foreign keys; measure with probeEnabled |

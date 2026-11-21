@@ -103,6 +103,18 @@ function Create(parent, layout, options, coreOptions)
             advancedEntries = selectionAdvanced,
         },
         {
+            labelKey = 'claretui.engineers.title',
+            descriptionKey = 'claretui.engineers.description',
+            entries = {
+                { labelKey = 'claretui.engineers.enabled', option = options.engineerIndicators, height = M.coreRowHeight },
+                { labelKey = 'claretui.engineers.scale', option = options.engineerIndicatorsScale, kind = 'slider', height = 62 },
+                { labelKey = 'claretui.engineers.hide_far', option = options.engineerIndicatorsHideFar, height = ROW_HEIGHT },
+                { labelKey = 'claretui.engineers.idle_only', option = options.engineerIndicatorsIdleOnly, height = ROW_HEIGHT },
+                { labelKey = 'claretui.engineers.optimize', hintKey = 'claretui.engineers.optimize_hint',
+                    option = options.engineerIndicatorsOptimize, height = M.coreRowHeight },
+            },
+        },
+        {
             labelKey = 'claretui.tab.minimap',
             descriptionKey = 'claretui.tab.minimap_description',
             entries = {
@@ -410,7 +422,14 @@ function Create(parent, layout, options, coreOptions)
                 Paint()
             else
                 label:SetFont(Theme.Fonts.body, M.text * ratio)
-                L(label):AtLeftTopIn(row, 16, math.floor((entry.height - M.text) / 2) - 4)
+                local hint
+                local hintKey = entry.hintKey
+                if hintKey then
+                    L(label):AtLeftTopIn(row, 16, 9)
+                    hint = Text(row, hintKey, 16, 31, M.caption, C.muted)
+                else
+                    L(label):AtLeftTopIn(row, 16, math.floor((entry.height - M.text) / 2) - 4)
+                end
                 local paintSurface = ButtonSurface(row, DETAIL_WIDTH, entry.height)
                 local paintSwitch = Theme.SettingsSwitch(row, L, DETAIL_WIDTH, entry.height, ratio, true)
                 local hover, pressed = false, false
@@ -447,6 +466,7 @@ function Create(parent, layout, options, coreOptions)
                 local labelKey = entry.labelKey
                 table.insert(refreshRows, function()
                     label:SetText(T(labelKey))
+                    if hint then hint:SetText(T(hintKey)) end
                     Paint()
                 end)
             end

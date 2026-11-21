@@ -1,4 +1,4 @@
-# Claret UI — test build 0.2.102
+# Claret UI — test build 0.2.108
 
 Child mod of Claret Core: game-interface overlays that Core does not own. The mod fills the `UI` section of the Claret launcher; Core keeps its placeholder until Claret UI is installed.
 
@@ -19,9 +19,10 @@ Reference: installed TeamInfo Share v11 by 4z0t and FAF lua.nx2, checked 2026-11
 | All Rings | `All Rings`; configurable preview keys and range filters | [Rings For All](https://github.com/4z0t/FAF-UI-Mods/blob/develop/Docs/Overview/RingsForAll.md) by 4z0t and Nomander, installed release 7 (2026-11-20) |
 | Mass extractors | Show mex panel, map markers and numbered mode | ECO UI Tools (EUT) v11 by 4z0t, installed copy checked on 2026-11-20 |
 | Selection Info | Show selection HUD | DynamicSelectionInfo v3 / ReUI module 1.2.0 by Nuggets HotCheese, installed copy checked on 2026-11-20 |
+| Engineer Indicators | Tier number and idle state above own T1–T3 engineers; optional far-zoom hiding | Idle Engineers Light v12 by 4z0t, installed copy checked on 2026-11-21 |
 | Reveal Positions | Show starting positions | Reveal Positions (legal) v4 by Myxir, Eternal-, Nomander and Erador; installed copy checked 2026-11-20 |
 | Notifications | HQ upgrade, ACU upgrade, strategic missile ready; compact or center | FAF 3840 and Strategic Missile Construction Alerts v2 by SonofaMitch |
-| Team info, eco panel, idle engineers, score/reclaim/economy | — | planned |
+| Team info, eco panel, score/reclaim/economy | — | planned |
 
 In **F10 → Claret → UI**, the left column lists feature groups. Selecting a group keeps that column the same width and expands the right side to show the group's settings. Select the same group again to collapse the right side. Each column ends below its own content, and both share a title bar.
 
@@ -40,6 +41,16 @@ The build preview shows the range of selected builders at the cursor. It moves t
 The user confirmed All Rings in FAF for Claret UI 0.2.38 (build 20261120-41) on 2026-11-20. Individual scenarios and mod combinations were not reported.
 
 Do not run the original mod next to the equivalent Claret UI feature.
+
+## Engineer Indicators
+
+Open **F10 → Claret → UI → Engineer Indicators** to show tier numbers above your T1–T3 engineers on the main map. Red digits indicate idle engineers and white digits indicate active engineers. Commanders and support commanders are excluded. The indicators start off. **Indicator size** ranges from 50% to 200% and uses the game's UI scale. At 100%, markers are 18 logical pixels tall. **Hide at far zoom** is enabled by default. Markers fade between 55% and 65% of the camera range as you zoom in or out. A full opacity change takes about 150 ms when the camera snaps. Disable Idle Engineers Light to avoid duplicate markers.
+
+Claret reuses off-screen markers and updates their positions every frame while they are visible. Position and colour updates stop when the markers are fully transparent. Colour checks are spread across frames, targeting an update every 200 ms per visible engineer. The pool adds at most 24 new markers per frame. Roster discovery uses FAF's category selector every two seconds, deferring while a command mode or input capture is active. Existing unit sync data supplements discovery between scans.
+
+**Optimize display** is off by default. Turn it on to draw at most 128 markers at once. Idle engineers have priority, and existing markers are kept first among engineers with the same status. Shown markers follow the camera every frame. Engineers without markers are scanned in batches, with a target sweep of about 200 ms at 60 FPS for 600 engineers. New markers may appear gradually after a fast pan. When the option is switched on during a match, the pool gradually frees excess controls.
+
+**Idle engineers only** is off by default and can be used with or without display optimization. An engineer's red marker fades over about 150 ms when FAF reports that the engineer is busy. Claret stops checking the engineer's screen position after the marker has faded and continues to sample its idle state in batches.
 
 ## Notifications
 

@@ -4,6 +4,7 @@ local features = {
     { id = 'positions', module = '/mods/ClaretUI/modules/features/RevealPositions.lua', option = 'revealPositions' },
     { id = 'acu', module = '/mods/ClaretUI/modules/features/AcuHealth.lua', option = 'acuHealth' },
     { id = 'selection', module = '/mods/ClaretUI/modules/features/SelectionHud.lua' },
+    { id = 'engineerIndicators', module = '/mods/ClaretUI/modules/features/EngineerIndicators.lua', option = 'engineerIndicators' },
     { id = 'mexes', module = '/mods/ClaretUI/modules/features/Mexes.lua', option = 'mexPanel' },
     { id = 'allRings', module = '/mods/ClaretUI/modules/features/AllRings.lua', option = 'allRings' },
     { id = 'infoShare', module = '/mods/ClaretUI/modules/features/InfoShare.lua' },

@@ -144,6 +144,7 @@ game.import = function(path)
     if path == '/lua/ui/game/gamemain.lua' then return { GetStatusCluster = function() return root end,
         ObserveSelection = { AddObserver = function(_, callback, name) selectionObservers[name] = callback end } }
     end
+    if path == '/lua/ui/game/commandmode.lua' then return { GetCommandMode = function() return { false } end } end
     if path == '/lua/maui/layouthelpers.lua' then return {GetPixelScaleFactor = function() return 1.25 end} end
     if path == '/lua/enhancementcommon.lua' then return {GetEnhancements = function(id)
         if id == 'acu' then return {Shield = 'ShieldUpgrade'} end
@@ -453,7 +454,7 @@ assert(next(uiOptions.selectionHud.OnChanged.callbacks) == nil)
 uiOptions.enabled:Set(true)
 panel = assert(hudPanel())
 assert(core.GetFeatureState('selectionSummary') == 'disabled' and driverCount() == 0)
-assert(#warnings == warningsBeforeHud)
+assert(#warnings == warningsBeforeHud, warnings[#warnings])
 uiOptions.selectionLocked:Set(false)
 assert(panel:HandleEvent(press))
 local closingDrag = assert(activeDrag)
