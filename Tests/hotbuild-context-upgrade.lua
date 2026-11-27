@@ -154,15 +154,19 @@ selected={}
 local mexAction = 'upgrade_mex_select_next'
 local occupied = unit('ueb1106', 1, { STRUCTURE=true, MASSEXTRACTION=true }, 'ueb1206', {10,0,10})
 occupied.focus=focusedOn('ueb1206'); table.insert(allUnits,occupied)
--- Legacy saved assignments without resolvedContext='cursor' retain selection based behavior.
-context.resolvedContext=nil
+-- The empty-selection assignment uses the mouse only to begin the chain.
+context.resolvedContext='empty'
 rollover=nil
 assert(env.Available(mexAction,context) and env.Execute(mexAction,context) and selected[1]==mexA,
-    'legacy empty-selection assignment still selects nearest upgradeable extractor')
+    'empty-selection assignment selects the nearest upgradeable extractor')
 context.selection={mexA}
+context.isRepeat=true
+worldView.viewLeft.CursorOverWorld=false
 assert(env.Available(mexAction,context) and env.Execute(mexAction,context)
     and issued[table.getn(issued)].unit==mexA and selected[1]==mexB,
-    'legacy selected-extractor assignment upgrades it and selects its successor')
+    'the continuation upgrades the selected extractor with the mouse outside the map')
+context.isRepeat=nil
+worldView.viewLeft.CursorOverWorld=true
 selected={}; context.selection={}; context.resolvedContext='cursor'
 rollover={userUnit=mexA}
 assert(env.Available(mexAction, context))

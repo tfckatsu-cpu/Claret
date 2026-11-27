@@ -45,6 +45,8 @@ assert(loadDraft.rows[1].action=='load_transports' and loadDraft.rows[2].action=
 loadDraft.name='Renamed'
 assert(oldLoad:Put(loadDraft), 'editing an old binding preserves its retired row')
 assert(not model:Put(binding('new_load','New load',{{context='land',action='load_transports'}})))
+assert(model:Put(binding('transport_load','Transport load',{{context='transport',action='load_transports'}})))
+assert(model:ResolveAction('transport_load','transport')=='load_transports')
 local offeredTransport=false
 for _,action in ipairs(actions.List()) do if action.id=='load_transports' then offeredTransport=true end end
 assert(offeredTransport and actions.Get('load_transports'),
@@ -368,8 +370,9 @@ local ambiguous=modelModule.Create({version=3,bindings={binding('cursor_conflict
     {context='factory',action='upgrade_structure_pause'},
     {context='mex',action='upgrade_mex_select_next'},
 })}},actions)
-assert(#ambiguous:Get('cursor_conflict').rows==2 and #ambiguous:GetDiagnostics()>0,
-    'ambiguous migration preserves both rows and reports the conflict')
+assert(#ambiguous:Get('cursor_conflict').rows==2
+    and ambiguous:ResolveRow('cursor_conflict','cursor').action=='upgrade_structure_pause',
+    'the retired extractor context does not block migration of the paused upgrade')
 local oldAbsolute=binding('mex_absolute','Old absolute',{
     {context='empty',action='upgrade_mex_select_next'},
 })
@@ -385,10 +388,11 @@ local emptyMigration=modelModule.Create({version=3,bindings={
     }),
     oldAbsolute,
 }},actions)
-assert(emptyMigration:Get('mex_empty').rows[1].context=='cursor')
-assert(#emptyMigration:Get('mex_occupied').rows==1
-    and emptyMigration:Get('mex_occupied').rows[1].action=='upgrade_structure_pause')
-assert(#emptyMigration:Get('mex_absolute').rows==0)
+assert(emptyMigration:Get('mex_empty').rows[1].context=='empty')
+assert(#emptyMigration:Get('mex_occupied').rows==2
+    and emptyMigration:Get('mex_occupied').rows[1].context=='empty'
+    and emptyMigration:Get('mex_occupied').rows[2].action=='upgrade_structure_pause')
+assert(emptyMigration:Get('mex_absolute').rows[1].context=='empty')
 local remaining=emptyMigration:Get('mex_auxiliary').rows[1]
 assert(remaining.action=='select_acu' and not remaining.quickRepeat and not remaining.fallback)
 print('PASS: context uniqueness, compatibility, copy isolation, restore, corrupt-profile save guard and limits')

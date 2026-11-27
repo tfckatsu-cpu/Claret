@@ -152,6 +152,12 @@ function Create(base, source)
         table.sort(records,function(a,b) if a.name~=b.name then return a.name<b.name end; return a.id<b.id end)
         LOG('[ClaretHotbuild] Unit templates loaded: source='..table.getn(values)..', available='..table.getn(records))
     end
+    if type(base.TemplateKey)=='function' then
+        function result:TemplateKey(id) return base:TemplateKey(id) end
+    end
+    if type(base.TemplateVariants)=='function' then
+        function result:TemplateVariants(id) return base:TemplateVariants(id) end
+    end
     function result:Get(id) return base:Get(id) or byId[id] or nil end
     function result:DisplayName(name,id,blueprint) return base:DisplayName(name,id,blueprint) end
     function result:List(filters)

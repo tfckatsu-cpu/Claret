@@ -100,7 +100,7 @@ local definitions = {
     {id='cycle_idle_factories', labelKey='hotbuild.action.cycle_idle_factories.label', contexts={'empty'}, select='UI_Lua import("/lua/keymap/misckeyactions.lua").CycleIdleFactories()', selectionPolicy='exclusive', continuation='cycle'},
     {id='patrol', labelKey='hotbuild.action.patrol.label', contexts={'land','air','navy'}, order='RULEUCC_Patrol'},
     {id='mode', labelKey='hotbuild.action.mode.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/orders.lua").CycleRetaliateStateUp()'},
-    {id='set_target_priority', labelKey='hotbuild.action.set_target_priority.label', contexts={'land','air','navy'}, select='UI_LUA import("/lua/keymap/misckeyactions.lua").SetWeaponPrioritiesToUnitType()'},
+    {id='set_target_priority', labelKey='hotbuild.action.set_target_priority.label', contexts={'land','air','navy','acu','sacu'}, select='UI_LUA import("/lua/keymap/misckeyactions.lua").SetWeaponPrioritiesToUnitType()'},
     {id='set_default_target_priority', labelKey='hotbuild.action.set_default_target_priority.label', contexts={'land','air','navy'}, select='UI_LUA import("/lua/keymap/misckeyactions.lua").SetDefaultWeaponPriorities()'},
     {id='spreadattack', labelKey='hotbuild.action.spreadattack.label', contexts={'land','air','navy'}, select='UI_Lua import("/lua/ui/game/hotkeys/distribute-queue.lua").DistributeOrders(true)'},
     {id='copy_orders', labelKey='hotbuild.action.copy_orders.label', contexts={'land','air','navy'}, select='UI_LUA import("/lua/ui/game/hotkeys/copy-queue.lua").CopyOrders()'},
@@ -146,7 +146,7 @@ local definitions = {
     {id='cycle_mex_screen', labelKey='hotbuild.action.cycle_mex_screen.label', contexts={'empty','mex'}, special='cycle_mex_screen', legacy=true},
     {id='cycle_mex_map', labelKey='hotbuild.action.cycle_mex_map.label', contexts={'empty','mex'}, special='cycle_mex_map', legacy=true},
     {id='upgrade_structure_under_cursor', labelKey='hotbuild.action.upgrade_structure_under_cursor.label', contexts={'empty'}, special='context_upgrade'},
-    {id='upgrade_mex_select_next', labelKey='hotbuild.action.upgrade_mex_select_next.label', contexts={'mex'}, special='context_upgrade', selectionPolicy='exclusive', continuation='accumulate'},
+    {id='upgrade_mex_select_next', labelKey='hotbuild.action.upgrade_mex_select_next.label', contexts={'empty','mex'}, special='context_upgrade', selectionPolicy='exclusive', continuation='accumulate'},
     {id='upgrade_mex', labelKey='hotbuild.action.upgrade_mex.label', contexts={'mex'}, special='upgrade_mex'},
     {id='overcharge', labelKey='hotbuild.action.overcharge.label', contexts={'acu','sacu'}, order='RULEUCC_Overcharge', special='overcharge'},
     {id='acu_tech', labelKey='hotbuild.action.acu_tech.label', contexts={'acu'}, special='enhancement'},
@@ -235,9 +235,9 @@ for _, action in ipairs(definitions) do
     local removed={suicide=true,mode=true,dock=true,set_default_target_priority=true,upgrade_structure=true,cap=true,
         create_template_factory=true,
         nuke=true,tactical=true,cycle_unit_types_in_sel=true,attack_move=true,select_transport=true}
-    local cursorOnly={upgrade_structure_under_cursor=true,upgrade_structure_pause=true,upgrade_mex_select_next=true}
+    local compositeOnly={upgrade_structure_under_cursor=true,upgrade_structure_pause=true,upgrade_mex_select_next=true}
     if removed[action.id] then action.hidden=true; action.obsolete=true end
-    if cursorOnly[action.id] then action.hidden=true; action.compositeOnly=true end
+    if compositeOnly[action.id] then action.hidden=true; action.compositeOnly=true end
     if action.id=='patrol' or action.id=='spreadattack' or action.id=='copy_orders' then
         for _, kind in ipairs({'acu','sacu','engineer'}) do table.insert(action.contexts,kind) end
     end
@@ -301,7 +301,7 @@ function Supports(id, context)
     if context=='builder' then return builderActions[id] == true end
     if context=='units' then return unitActions[id] == true end
     if context=='missiles' then return id=='stop' or id=='pause_unit' or id=='smart_missile' or id=='toggle_all' or id=='kill_selected_units' end
-    if context=='cursor' then return id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next' end
+    if context=='cursor' then return id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' end
     local action=byId[id]
     if not action then return false end
     if Contains(action.contexts,context) then return true end
@@ -309,6 +309,12 @@ function Supports(id, context)
         return Contains(action.contexts,'air')
     end
     return false
+end
+
+function SupportsComposite(id, context)
+    if id=='load_transports' then return context=='transport' end
+    if id=='upgrade_mex_select_next' then return context=='empty' end
+    return Supports(id,context)
 end
 
 local function UnitContext(unit)

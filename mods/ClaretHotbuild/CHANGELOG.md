@@ -1,5 +1,43 @@
 # История изменений
 
+## Сборка 20261127-193 — 2026-11-27
+- Roll back the Ctrl+A search changes in builds 191 and 192; the other changes remain.
+
+## Сборка 20261124-192 — 2026-11-24
+- Ctrl+A in the Hotbuild search fields now paints the whole query as selected and the next typed character replaces it, for Latin and Cyrillic input alike; clicks, caret moves and other edits drop the state.
+
+## Сборка 20261124-191 — 2026-11-24
+- Restrict the extractor upgrade chain to No selection.
+- Support Ctrl+A and replacement typing in Hotbuild search fields.
+
+## Сборка 20261124-190 — 2026-11-24
+- Offer Target priority in the ACU and SACU multifunction contexts.
+- Restore the extractor upgrade chain in the No selection context and reserve the Extractors tile for its continuation.
+
+## Сборка 20261122-189 — 2026-11-22
+- Restore cross-faction autofill for building templates in the Hotbuild grid.
+
+## Сборка 20261122-188 — 2026-11-22
+- Select factory queue templates by the active technology tab when several tiers are assigned, while keeping single-tier assignments available on any tab.
+
+## Сборка 20261122-187 — 2026-11-22
+- Offer Load into transports in the Multifunction Transport context and restore the previous cargo-marking label.
+
+## Сборка 20261122-186 — 2026-11-22
+- Name the transport cargo-marking action Sequential drop-off in the Multifunction catalog.
+
+## Сборка 20261122-185 — 2026-11-22
+- Remove the Guide button and dialog from the Multifunction tab.
+
+## Сборка 20261122-184 — 2026-11-22
+- Add a short in-game guide to the Multifunction tab with examples for shared hotkeys and switching selection.
+
+## Сборка 20261122-183 — 2026-11-22
+- Add an optional Builders exception to selection override and show inherited action names in the context tree.
+
+## Сборка 20261122-182 — 2026-11-22
+- Keep the current builders when a shared construction preset is available, so a paired multifunction selector cannot interrupt factory placement.
+
 ## Сборка 20261121-181 — 2026-11-21
 - Prepare Vault release 92 with a fresh UID.
 

@@ -99,6 +99,10 @@ local plain=module('TemplateCatalog').Create(factionBase,function() return facti
 originalId=plain:List({})[1].id
 assert(converted:Get(originalId),'old template ID must stay valid')
 local eq=equivalence.Create(converted,groups)
+local combined=module('UnitTemplateCatalog').Create(converted,function() return {} end)
+local combinedEq=equivalence.Create(combined,groups)
+assert(#combinedEq:Variants(originalId)==4, 'the runtime catalog exposes all building template variants')
+assert(combinedEq:Key(originalId)==eq:Key(originalId), 'the runtime catalog preserves template family identity')
 local variants=eq:Variants(originalId)
 assert(#variants==4)
 for _,variant in ipairs(variants) do

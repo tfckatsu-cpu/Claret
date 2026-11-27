@@ -162,7 +162,7 @@ function Available(action, context)
             local unit = RolloverUnit(context.focusArmy)
             return unit ~= nil and unit:IsInCategory('MASSEXTRACTION') and UpgradeableMex(unit) ~= nil
         end
-        if context.absolute then
+        if context.absolute and not context.isRepeat then
             local mouse=MouseWorldPosition()
             return mouse ~= nil and FindNearestMex(mouse,context.focusArmy) ~= nil
         end
@@ -217,12 +217,12 @@ function Execute(action, context)
         return issued
     elseif action == 'upgrade_mex_select_next' then
         if context.resolvedContext ~= 'cursor' then
-            local selection = context.absolute and {} or (context.selection or {})
-            if table.getn(selection) == 0 then
-                if not context.absolute and table.getn(GetSelectedUnits() or {}) ~= 0 then return false end
+            local selection = context.selection or {}
+            if (context.absolute and not context.isRepeat) or table.getn(selection) == 0 then
+                if not CurrentSelectionIs(selection) then return false end
                 local mouse = MouseWorldPosition()
                 local mex = mouse and FindNearestMex(mouse, context.focusArmy)
-                if not mex or table.getn(GetSelectedUnits() or {}) ~= 0 or not LiveOwned(mex, context.focusArmy) then
+                if not mex or not CurrentSelectionIs(selection) or not LiveOwned(mex, context.focusArmy) then
                     return false
                 end
                 SelectUnits({mex})

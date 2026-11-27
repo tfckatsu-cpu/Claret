@@ -355,6 +355,12 @@ assert(ContextActions.Get('select_transport_nearest').selectionPolicy=='accumula
     and ContextActions.Supports('select_transport_nearest','empty'),
     'nearest free transport accumulates into the selection')
 local loadTransports=ContextActions.Get('load_transports')
+local targetPriority=ContextActions.Get('set_target_priority')
+for _, entry in ipairs({{'acu','COMMAND'},{'sacu','SUBCOMMANDER'}}) do
+    assert(ContextActions.SupportsComposite(targetPriority.id,entry[1]))
+    assert(ContextActions.Execute(targetPriority,{selection={unit(categories(entry[2],'MOBILE','LAND'))},focusArmy=1})
+        and calls.conexecute==targetPriority.select, entry[1]..' reaches the native priority action')
+end
 for _, kind in ipairs({'engineer','acu','sacu'}) do
     assert(ContextActions.Supports('load_transports',kind))
     local tags={engineer='ENGINEER',acu='COMMAND',sacu='SUBCOMMANDER'}
@@ -462,9 +468,9 @@ local upgradeContext={selection={},focusArmy=1,isReplay=false,orders={}}
 assert(ContextActions.Execute(ContextActions.Get('upgrade_structure_under_cursor'),upgradeContext)
     and upgradeDispatch.available=='upgrade_structure_under_cursor'
     and upgradeDispatch.execute=='upgrade_structure_under_cursor','hover upgrade is routed through the upgrade module')
-assert(not ContextActions.Supports('upgrade_mex_select_next','empty')
-    and not ContextActions.Execute(ContextActions.Get('upgrade_mex_select_next'),upgradeContext),
-    'the select-next upgrade cannot run from empty selection')
+assert(ContextActions.SupportsComposite('upgrade_mex_select_next','empty')
+    and ContextActions.Execute(ContextActions.Get('upgrade_mex_select_next'),upgradeContext),
+    'the select-next upgrade starts from empty selection')
 upgradeContext.selection={mex}
 assert(ContextActions.Execute(ContextActions.Get('upgrade_mex_select_next'),upgradeContext),
     'mex upgrade continuation is supported with a mex selected')

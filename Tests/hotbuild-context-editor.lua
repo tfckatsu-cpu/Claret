@@ -864,14 +864,14 @@ end
 local function assertCatalog(context)
     local expected=0
     local function obsolete(id)
-        return id=='load_transports' or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical'
+        return (id=='load_transports' and context~='transport') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical'
             or id=='upgrade_structure'
-            or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next') and context~='cursor')
+            or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause') and context~='cursor')
             or (id=='sacu_tech' and context=='sacu') or (id=='soft_stop' and context~='factory')
             or ((id=='attack' or id=='attack_move') and context=='transport')
             or (id=='transport_order' and context=='other') or (id=='shield' and context=='factory')
     end
-    for _,action in ipairs(actions.List()) do if (not action.hidden or action.compositeOnly) and actions.Supports(action.id,context) and not obsolete(action.id) then expected=expected+1 end end
+    for _,action in ipairs(actions.List()) do if (not action.hidden or action.compositeOnly) and actions.SupportsComposite(action.id,context) and not obsolete(action.id) then expected=expected+1 end end
     local hint=findIn(groupFrame,'Действий: '..expected..' · колесо мыши прокручивает список')
     assert(hint,context..' catalog count must match applicability')
     local catalog
@@ -927,25 +927,44 @@ for _,entry in ipairs({{'ACU','acu'},{'SACU','sacu'},{'Инженер','engineer
     selectGroupTile(entry[1]); assertCatalog(entry[2])
 end
 selectGroupTile('Под курсором')
-for _,id in ipairs({'upgrade_structure_under_cursor','upgrade_structure_pause','upgrade_mex_select_next'}) do
+for _,id in ipairs({'upgrade_structure_under_cursor','upgrade_structure_pause'}) do
     assert(actions.Supports(id,'cursor'),id..' is supported by the cursor tile')
 end
 assert(findIn(groupFrame,'Улучшение с паузой'), 'cursor upgrade uses the new localized action name')
 selectGroupTile('Ничего не выделено')
 assert(not findIn(groupFrame,'Погрузить в транспорт'),
     'load into transports is unavailable in multifunction actions')
-assert(not findIn(groupFrame,'Улучшить добытчик и выбрать ближайший следующий'),
-    'new select-next assignments are offered only under the cursor')
+assert(actions.SupportsComposite('upgrade_mex_select_next','empty')
+    and not actions.SupportsComposite('upgrade_mex_select_next','cursor')
+    and not actions.SupportsComposite('upgrade_mex_select_next','mex')
+    and actions.ContinuationTargets(actions.Get('upgrade_mex_select_next'))[1]=='mex',
+    'the empty-selection chain reserves the extractor tile')
 assert(not findIn(groupFrame,'Улучшить структуру под курсором'),
     'cursor-only upgrade action is absent from the empty-selection catalog')
-local selectionOverrideOption=assert(findIn(groupFrame,'Сбрасывать выделение')).parent
-assert(not selectionOverrideOption.settingEnabled)
-selectionOverrideOption:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
-clickIn(groupFrame,'Сохранить')
-assert(selectionOverrideOption.settingEnabled and groupService.contextModel:Get('groups').selectionOverride==true)
-selectionOverrideOption:HandleEvent({Type='ButtonPress',Modifiers={Left=true}})
-clickIn(groupFrame,'Сохранить')
-assert(not selectionOverrideOption.settingEnabled and not groupService.contextModel:Get('groups').selectionOverride)
+do
+    local function option(label)
+        for _,control in ipairs(controls) do
+            if not control.destroyed and inside(control,groupFrame) and control.text==label then return control.parent end
+        end
+    end
+    local selectionOverrideOption=assert(option('Сбрасывать выделение'))
+    local keepBuildersOption=assert(option('Исключение: строители'))
+    local toggleClick={Type='ButtonPress',Modifiers={Left=true}}
+    assert(not selectionOverrideOption.settingEnabled)
+    assert(not keepBuildersOption:HandleEvent(toggleClick) and not keepBuildersOption.settingEnabled)
+    selectionOverrideOption:HandleEvent(toggleClick)
+    assert(keepBuildersOption:HandleEvent(toggleClick) and keepBuildersOption.settingEnabled)
+    clickIn(groupFrame,'Сохранить')
+    local savedOptions=groupService.contextModel:Get('groups')
+    assert(selectionOverrideOption.settingEnabled and savedOptions.selectionOverride and savedOptions.keepBuilders)
+    selectionOverrideOption:HandleEvent(toggleClick)
+    assert(not keepBuildersOption:HandleEvent(toggleClick) and not keepBuildersOption.settingEnabled)
+    clickIn(groupFrame,'Сохранить')
+    savedOptions=groupService.contextModel:Get('groups')
+    assert(not selectionOverrideOption.settingEnabled and not savedOptions.selectionOverride and savedOptions.keepBuilders)
+    selectionOverrideOption:HandleEvent(toggleClick)
+    assert(keepBuildersOption.settingEnabled,'reactivating the parent restores the saved exception')
+end
 groupFrame:Destroy()
 local lockModel=modelEnv.Create({version=3,bindings={{id='lockctx',name='Locked',rows={}}}},actions)
 local lockPreset={id='lockpreset',name='Building preset',key='K',grid={context='lockctx'},entries={{kind='blueprint',id='structure'}}}
@@ -995,6 +1014,17 @@ suicideSearch:OnTextChanged('мгновенно')
 assert(findIn(suicidePicker,'Самоуничтожение мгновенно'),
     'composite picker exposes the immediate composite-only action')
 suicidePicker:Destroy()
+local transportPicker=env.Create(host,{contextActions=actions,contextModel=modelEnv.Create(nil,actions)},nil)
+clickIn(transportPicker,'Транспорт')
+local transportSearch
+for _,c in ipairs(controls) do
+    if not c.destroyed and c.parent==transportPicker and c.OnTextChanged and c.Width()>400 then transportSearch=c end
+end
+assert(transportSearch,'transport action picker has a search field')
+transportSearch:OnTextChanged('Load into transports')
+assert(findIn(transportPicker,'Погрузить в транспорт [Load into transports]'),
+    'the Transport context exposes the native load action by its English search name')
+transportPicker:Destroy()
 local continuationCases={
     {'select_acu','acu',false}, {'select_acu_double','acu',false}, {'goto_acu','acu',false},
     {'select_transport_double','transport',false}, {'select_engineers_t1','engineer',true},

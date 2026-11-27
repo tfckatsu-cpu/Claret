@@ -1,4 +1,4 @@
-# Claret Hotbuild — prototype 0.10.70
+# Claret Hotbuild — prototype 0.10.82
 
 The build-cycle preview shows the available buildings while placing through Hotbuild. T1–T3 labels sit at the bottom center of each icon. The row fades in and out over 150 ms.
 
@@ -8,7 +8,7 @@ Selecting the ACU moves the camera to it. The **Select ACU** key can be configur
 
 0.10.14: refined the depth of the modal keyboard assignment list and restoration of hover states. These fixes require in-game verification.
 
-Enable ReUI, Claret Core 0.10.23, and Claret Hotbuild 0.10.70, then start a new match. Hotbuild requires Core >= 0.10.23 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
+Enable ReUI, Claret Core 0.10.23, and Claret Hotbuild 0.10.78, then start a new match. Hotbuild requires Core >= 0.10.23 and is always active; there is no menu toggle. A previously saved disable option is ignored; the profile and bindings are saved. Open the main menu with F10 → Claret → Hotbuild. Claret tabs have been removed from ReUI Options.
 
 Hotbuild uses the shared Claret language setting. The interface follows the game language by default; choose **English** or **Russian** under F10 → Claret → Core → **Interface language** to override it. The setting is saved and applies to open Claret windows immediately.
 
@@ -116,7 +116,7 @@ A multifunction binding assigns one action to each selected context type. Create
 
 Assign a preset and a multifunction binding in separate slots for the desired key on the **Keyboard** tab. Editors show keys as read-only; historical references in the data are preserved.
 
-The catalog offers selection actions, orders, and toggles compatible with the chosen context. The **Under cursor** context contains three upgrade actions. When migration is unambiguous, the previous row moves there; ambiguous rows and additional fields are preserved for manual correction. An embedded chain blocks its resulting context, and a chain-occupied context prevents assigning a new chain. Saved conflicts remain. **Stop firing** is offered for factories; old assignments in other contexts remain marked obsolete. **Add next unit to cargo** marks an already loaded unit for later selective unloading but does not unload it. Order availability depends on selected units and game state.
+The catalog offers selection actions, orders, and toggles compatible with the chosen context. The **Under cursor** context contains three upgrade actions. When migration is unambiguous, the previous row moves there; ambiguous rows and additional fields are preserved for manual correction. An embedded chain blocks its resulting context, and a chain-occupied context prevents assigning a new chain. Saved conflicts remain. **Stop firing** is offered for factories; old assignments in other contexts remain marked obsolete. **Mark next unit for drop-off** marks an already loaded unit for a later selective drop-off. Order availability depends on selected units and game state.
 
 For an assigned **Under cursor** context, Claret first checks for a suitable owned structure under the pointer. Ordinary mixed selections execute one composite command only when every represented context resolves to that command. Different assignments or a combination of assigned and unassigned contexts consume the press. An entirely army selection with no army assignments can still use the legacy **Other** fallback. Mobile missile launchers belong to land forces, and missile cruisers belong to naval forces. The launcher contexts use the tactical platform and nuclear launcher categories. The selected action receives the whole selection; its availability is checked before execution. Composite profiles still read legacy repeat data for compatibility, but only keyboard action assignments can trigger a second action. Sequential selectors continue normally. Toggle all unit abilities is offered for every selected-unit context and in the keyboard picker. It uses the nine native FAF script toggles. Legacy individual toggle assignments still execute.
 
@@ -128,7 +128,7 @@ In the set list, the × button opens a confirmation showing assigned keys; after
 
 **Upgrade selected extractors** issues each eligible owned extractor's next upgrade in place. **Upgrade with pause** and **Upgrade extractor and select the next nearest one** are offered in **Under cursor**. Legacy empty-selection assignments move to the cursor when migration is unambiguous. Any remaining assignments of select-next in the empty-selection context are retired.
 
-**Load into transports** dispatches FAF's load hotkey when the selection contains a transport and mobile non-air cargo, including engineers and commanders. FAF 3841 groups cargo by T1–T3, which leaves stock ACUs outside automatic loading. Claret transport selectors temporarily suspend ASE v3 filters for their selection changes, restoring the prior filter state afterwards.
+**Load into transports** is available on the keyboard page and in the multifunction **Transport** context. A Transport row can load a mixed selection with unassigned cargo contexts. A different assigned action still blocks a conflicting selection. The action dispatches FAF's load hotkey when the selection contains a transport and mobile non-air cargo, including engineers and commanders. FAF 3841 groups cargo by T1–T3, which leaves stock ACUs outside automatic loading. Claret transport selectors temporarily suspend ASE v3 filters for their selection changes, restoring the prior filter state afterwards.
 
 ### Check in a new match
 

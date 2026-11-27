@@ -210,7 +210,7 @@ function Create(parent, service, embedded, perf)
             local input=Edit(owner)
             input.Depth:Set(function() return owner.Depth()+2 end)
             L(input):AtLeftTopIn(owner,x+28,y):Width(w-28):Height(Theme.Metrics.fieldHeight)
-            UI.SetupEditStd(input,C.text,nil,C.text,C.surface,Theme.Fonts.body,Theme.Metrics.text*ratio,max)
+            UI.SetupEditStd(input,C.text,nil,C.text,C.selected,Theme.Fonts.body,Theme.Metrics.text*ratio,max)
             input.OnEnterPressed=function() return true end
             local mark=Bitmap(owner)
             mark:SetTexture('/mods/ClaretHotbuild/textures/search-icon.dds')

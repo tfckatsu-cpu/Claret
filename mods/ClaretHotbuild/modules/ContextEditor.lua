@@ -136,7 +136,7 @@ function Create(parent, service, embedded, memory)
             local field = Edit(owner)
             field.Depth:Set(function() return owner.Depth()+2 end)
             L(field):AtLeftTopIn(owner, x, y):Width(w):Height(Theme.Metrics.fieldHeight)
-            UI.SetupEditStd(field, C.text, nil, C.text, C.surface, Theme.Fonts.body, Theme.Metrics.text * ratio, max)
+            UI.SetupEditStd(field, C.text, nil, C.text, C.selected, Theme.Fonts.body, Theme.Metrics.text * ratio, max)
             field.OnEnterPressed = function() return true end
             return field
         end
@@ -283,30 +283,58 @@ function Create(parent, service, embedded, memory)
         local actions = service.contextActions.List()
         local keyHint=Text(frame,'',344,154,12,C.muted)
         draftStatus=Text(frame,'',344,174,12,C.muted)
-        local function CreateSelectionOverrideOption()
-            local row=Panel(frame,24,176,300,36,C.raised)
-            Text(row,T('hotbuild.context_editor.selection_override'),8,9,12)
-            local paint=Theme.SettingsSwitch(row,L,300,36,ratio,true)
-            row.HandleEvent=function(self,event)
-                if event.Type~='ButtonPress' or not (event.Modifiers and event.Modifiers.Left) or not draft then return false end
-                draft.selectionOverride=not draft.selectionOverride or nil
-                paint(draft.selectionOverride)
-                Change()
-                return true
+        local function CreateSelectionOptions()
+            local width,height=300,Theme.Metrics.buttonHeight
+            local hint=Text(frame,'',24,220,Theme.Metrics.label,C.muted)
+            local Refresh
+            local function CreateOption(x,field,labelKey,hintKey,requiresOverride)
+                local row=Panel(frame,x,176,width,height,C.raised)
+                local label=Text(row,labelKey,12,9,Theme.Metrics.secondaryText)
+                local paint=Theme.SettingsSwitch(row,L,width,height,ratio,true)
+                local hovered=false
+                local function Available(binding)
+                    return binding and (not requiresOverride or binding.selectionOverride)
+                end
+                row.HandleEvent=function(self,event)
+                    if event.Type=='MouseEnter' or event.Type=='MouseExit' then
+                        hovered=event.Type=='MouseEnter'
+                        Refresh(draft)
+                    elseif event.Type=='ButtonPress' and event.Modifiers and event.Modifiers.Left and Available(draft) then
+                        draft[field]=not draft[field] or nil
+                        Refresh(draft)
+                        Change()
+                        return true
+                    end
+                    return false
+                end
+                Tooltip.AddAutoUpdatedControlTooltip(row,function() return T(labelKey) end,function() return T(hintKey) end)
+                return function(binding)
+                    if not binding then hovered=false; row:Hide(); return end
+                    local enabled=Available(binding)
+                    row:Show()
+                    row:SetSolidColor(enabled and (hovered and C.hover or C.raised) or C.surface)
+                    label:SetColor(enabled and C.text or C.disabledText)
+                    paint(enabled and binding[field] or false)
+                end
             end
-            Tooltip.AddAutoUpdatedControlTooltip(row,function()
-                return T('hotbuild.context_editor.selection_override')
-            end,function() return T('hotbuild.context_editor.selection_override_hint') end)
-            return function(binding)
-                if binding then row:Show(); paint(binding.selectionOverride)
-                else row:Hide() end
+            local reset=CreateOption(24,'selectionOverride','hotbuild.context_editor.selection_override',
+                'hotbuild.context_editor.selection_override_hint')
+            local keep=CreateOption(344,'keepBuilders','hotbuild.context_editor.keep_builders',
+                'hotbuild.context_editor.keep_builders_hint',true)
+            Refresh=function(binding)
+                reset(binding)
+                keep(binding)
+                local key=binding and (binding.selectionOverride and 'hotbuild.context_editor.keep_builders_hint'
+                    or 'hotbuild.context_editor.keep_builders_disabled')
+                hint:SetText(key and T(key) or '')
             end
+            return Refresh
         end
-        local RefreshSelectionOverride=CreateSelectionOverrideOption()
+        local RefreshSelectionOptions=CreateSelectionOptions()
         Load=function(binding)
             loading = true
             draft = binding
-            RefreshSelectionOverride(binding)
+            RefreshSelectionOptions(binding)
             memory.bindingId = binding and binding.id or nil
             dirty = false; leaveIntent = nil; deleteIntent = nil; selectedContext = nil
             if draftStatus then draftStatus:SetText('') end
@@ -495,7 +523,7 @@ function Create(parent, service, embedded, memory)
                 Load({id='context_'..i,name=T('hotbuild.context_editor.s140'),rows={}}); Change(); RefreshSaved(); RefreshRows()
             end
             if MayLeave('new',CreateNew) then CreateNew(true) end
-        end,true)
+        end)
         SaveDraft=function()
             if not draft then Status(T('hotbuild.context_editor.s034'),true); return end
             if not dirty then Status(T('hotbuild.context_editor.s035')); return true end
@@ -521,8 +549,8 @@ function Create(parent, service, embedded, memory)
             return handled
         end
 
-        Text(frame,T('hotbuild.context_editor.s038'),24,220,18)
-        Text(frame,T('hotbuild.context_editor.s039'),24,246,12,C.muted)
+        Text(frame,'hotbuild.context_editor.s038',24,244,Theme.Metrics.heading)
+        Text(frame,'hotbuild.context_editor.actions_heading',552,244,Theme.Metrics.heading)
         local usageText=Text(frame,T('hotbuild.context_editor.s040'),24,266,12,C.muted)
         local contextPanel=Panel(frame,24,282,480,614,C.canvas)
         local contextButtons={}
@@ -566,15 +594,15 @@ function Create(parent, service, embedded, memory)
             return id
         end
         local function Obsolete(context, id)
-            return id and ((id=='load_transports') or (id=='suicide') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical' or id=='upgrade_structure' or (id=='sacu_tech' and context=='sacu')
-                or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause' or id=='upgrade_mex_select_next') and context~='cursor')
+            return id and ((id=='suicide') or id=='mode' or id=='dock' or id=='set_default_target_priority' or id=='nuke' or id=='tactical' or id=='upgrade_structure' or (id=='sacu_tech' and context=='sacu')
+                or ((id=='upgrade_structure_under_cursor' or id=='upgrade_structure_pause') and context~='cursor')
                 or (id=='soft_stop' and context~='factory')
                 or (id=='attack' and context=='transport')
                 or (id=='remove_queue' and context=='factory')
                 or (id=='transport_order' and context=='other')
                 or (id=='shield' and context=='factory')
                 or (service.contextActions.Get(id) or {}).obsolete
-                or not service.contextActions.Get(id) or not service.contextActions.Supports(id,context))
+                or not service.contextActions.Get(id) or not service.contextActions.SupportsComposite(id,context))
         end
         local function CatalogGroup(action,context)
             local id=action.id or ''
@@ -633,7 +661,6 @@ function Create(parent, service, embedded, memory)
             if policy == 'double' then return T('hotbuild.context_editor.s044') end
             if policy == 'accumulate' then return T('hotbuild.context_editor.s045') end
         end
-        local priorityRank={cursor=1,empty=2,units=3,builder=4,factory=5,missiles=6,mex=7,other=8}
         local selectedContextTitle=Text(frame,'',552,282,14,C.accentText)
         local catalogHint=Text(frame,T('hotbuild.context_editor.s046'),552,306,12,C.muted)
         local editTarget='action'
@@ -668,28 +695,14 @@ function Create(parent, service, embedded, memory)
                 item.hasAction=effective~=nil
                 ApplyContextTileStyle(item)
                 if not item.isBuilder and not item.other then item.mark:SetText(blocked and '!' or (effective and '●' or '○')) end
-                item.name:SetText((item.rank and (tostring(item.rank)..' · ') or (item.child and '· ' or ''))..Short(ContextLabel(item.context),28))
+                item.name:SetText(Short(ContextLabel(item.context),28))
                 local action=effective and service.contextActions.Get(effective)
-                item.action:SetText(action and ActionLabel(action) or '—')
-                if not isChild then item.action:SetColor(C.muted) end
-                if isChild and (not row or row.mode=='inherit') and action then
-                    item.action:SetText(T('hotbuild.context_editor.s050'))
-                    item.action:SetColor(C.disabledText)
-                elseif isChild then item.action:SetColor(C.muted) end
-                if item.isBuilder then
-                    local overrides=0
-                    for _,id in ipairs(item.children) do
-                        local child=CurrentRow(id)
-                        if child and (child.mode=='own' or child.mode=='disabled' or (child.mode==nil and child.action)) then overrides=overrides+1 end
-                    end
-                item.action:SetText(action and ActionLabel(action) or '—')
-                end
+                item.action:SetColor(isChild and (not row or row.mode=='inherit') and C.disabledText or C.muted)
                 local staleId=row and row.action or effective
                 local display=action and ActionLabel(action) or '—'
-                if isChild and (not row or row.mode=='inherit') and action then display=T('hotbuild.context_editor.s051') end
                 if staleId and Obsolete(item.context,staleId) then display=T('hotbuild.context_editor.s052')..((service.contextActions.Get(staleId) or {}).label or staleId) end
                 if locked then display=locked; item.action:SetColor(C.warning) end
-                Fit(item.action,display,isChild and (item.width-284) or (item.isBuilder and 220 or 260))
+                Fit(item.action,display,isChild and (item.width-252) or (item.isBuilder and 220 or 260))
                 if blocked then item.mark:SetColor(C.muted) end
                 item.outline(selectedContext==item.context and C.selectedBorder or (blocked and C.warningBorder or C.border))
             end
@@ -761,8 +774,8 @@ function Create(parent, service, embedded, memory)
             local border=Theme.Outline(button,L,w,treeRowHeight)
             local mark=Text(button,'○',8,5,14,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),28,0,14)
-            local mode=Text(button,'',188,0,11,C.muted)
-            local action=Text(button,'',276,0,12,C.muted)
+            local mode=Text(button,'',150,0,11,C.muted)
+            local action=Text(button,'',244,0,12,C.muted)
             local item={context=contextId,child=true,width=w,button=button,mark=mark,name=title,action=action,mode=mode,outline=border,treeX=x,treeY=y,displayY=y}
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -783,11 +796,11 @@ function Create(parent, service, embedded, memory)
             end)
             contextButtons[index]=item
         end
-        local function CreatePriorityTile(contextId, rank, x, w)
+        local function CreatePriorityTile(contextId, x, w)
             local y=4+table.getn(contextButtons)*treeRowStep
             local button=Panel(contextPanel,x,y,w,treeRowHeight,C.surface)
             local border=Theme.Outline(button,L,w,treeRowHeight)
-            local mark=Text(button,tostring(rank or '—'),8,2,13,C.accentText)
+            local mark=Text(button,'○',8,2,13,C.accentText)
             local title=Text(button,Short(ContextLabel(contextId),22),30,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
             local item={context=contextId,button=button,mark=mark,name=title,action=action,outline=border,priority=true,treeX=x,treeY=y,displayY=y}
@@ -803,7 +816,7 @@ function Create(parent, service, embedded, memory)
                 if lock then return lock..T('hotbuild.context_editor.s068') end
                 local row=CurrentRow(contextId)
                 local action=row and row.action and service.contextActions.Get(row.action)
-                local detail=rank and (T('hotbuild.context_editor.s069')..rank..T('hotbuild.context_editor.s070')) or T('hotbuild.context_editor.s071')
+                local detail=T('hotbuild.context_editor.s071')
                 return action and (detail..': '..ActionLabel(action)) or detail
             end)
         end
@@ -813,7 +826,7 @@ function Create(parent, service, embedded, memory)
             local border=Theme.Outline(button,L,w,treeRowHeight)
             local title=Text(button,Short(ContextLabel(contextId),20),8,0,14)
             local action=Text(button,'—',188,0,12,C.muted)
-            local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,rank=priorityRank[contextId],treeX=x,treeY=y,displayY=y}
+            local item={context=contextId,button=button,mark=title,name=title,action=action,outline=border,other=true,treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             button.HandleEvent=function(self,e)
                 if e.Type=='MouseEnter' then SetContextTileHover(item,true)
@@ -830,14 +843,15 @@ function Create(parent, service, embedded, memory)
             end)
         end
         -- Selection hierarchy is presented as a single vertical tree.
-        CreatePriorityTile('cursor',nil,8,456)
-        CreatePriorityTile('empty',nil,8,456)
+        CreatePriorityTile('cursor',8,456)
+        CreatePriorityTile('empty',8,456)
         local function CreateGroup(id,children,x,width)
             local y=4+table.getn(contextButtons)*treeRowStep
             local header=Panel(contextPanel,x,y,width,treeRowHeight,C.raised)
             local label=Text(header,ContextLabel(id),8,0,15)
             local action=Text(header,'',math.floor(width*0.5),0,11,C.muted)
-            local item={context=id,button=header,mark=label,name=label,action=action,outline=function() end,isBuilder=true,children=children,rank=priorityRank[id],treeX=x,treeY=y,displayY=y}
+            local border=Theme.Outline(header,L,width,treeRowHeight)
+            local item={context=id,button=header,mark=label,name=label,action=action,outline=border,isBuilder=true,treeX=x,treeY=y,displayY=y}
             contextButtons[table.getn(contextButtons)+1]=item
             for _,childId in ipairs(children) do
                 CreateContextTile(childId,x+22,width-22)
@@ -902,8 +916,8 @@ function Create(parent, service, embedded, memory)
             end
             local groups={{items={}},{items={}},{items={}},{items={}},{items={}},{items={}},{items={}}}
             for _,action in ipairs(actions) do
-                local cursorOnly=action.id=='upgrade_structure_under_cursor' or action.id=='upgrade_structure_pause' or action.id=='upgrade_mex_select_next'
-                if action.id~='load_transports' and (not action.hidden or action.compositeOnly) and service.contextActions.Supports(action.id,context)
+                local cursorOnly=action.id=='upgrade_structure_under_cursor' or action.id=='upgrade_structure_pause'
+                if (not action.hidden or action.compositeOnly) and service.contextActions.SupportsComposite(action.id,context)
                     and (context=='cursor' or not cursorOnly) and not Obsolete(context,action.id) then
                     local group=CatalogGroup(action,context)
                     table.insert(groups[group].items,action)

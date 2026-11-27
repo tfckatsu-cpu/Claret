@@ -15,9 +15,7 @@ local Compatibility = import('/mods/ClaretHotbuild/modules/Compatibility.lua')
 local KeyboardBindings = import('/mods/ClaretHotbuild/modules/KeyboardBindings.lua')
 local current
 
-local function CompositeSupports(id, kind)
-    return id ~= 'load_transports' and ContextActions.Supports(id,kind)
-end
+local CompositeSupports = ContextActions.SupportsComposite
 
 local function IsKeyCaptureActive()
     local core=ReUI.ClaretCore
@@ -183,7 +181,7 @@ function Create(isReplay)
                 allArmy=allArmy and ContextActions.IsArmyContext(kind)
                 local row=service.contextModel:ResolveRow(binding,kind)
                 local id=row and row.action
-                if id and id~='load_transports' then
+                if id and (id~='load_transports' or kind=='transport') then
                     assigned=assigned+1
                     if not CompositeSupports(id,kind) or (actionId and actionId~=id) then conflict=true end
                     actionId=id
@@ -199,7 +197,8 @@ function Create(isReplay)
             return id~=nil and id~='load_transports',id,'other',true
         end
         if assigned==0 or (unitsOnly and count==1 and not allArmy) then return false end
-        if conflict or assigned~=count then return true,nil,winningKind end
+        -- Native loading requires a mixed selection; cargo can have no action of its own.
+        if conflict or (assigned~=count and actionId~='load_transports') then return true,nil,winningKind end
         return true,actionId,winningKind
     end
 
@@ -266,6 +265,10 @@ function Create(isReplay)
 
     local function RunSelectionOverride(binding,context,id,chord,presetId)
         if not binding or not binding.selectionOverride then return false end
+        if binding.keepBuilders then
+            local selected=ContextActions.PresentContexts(context.selection)
+            if selected.acu or selected.sacu or selected.engineer then return false end
+        end
         local row=service.contextModel:ResolveRow(binding,'empty')
         local action=row and ContextActions.Get(row.action)
         if not action or not ContextActions.IsSelection(action.id) or not CompositeSupports(action.id,'empty') then

@@ -11,6 +11,7 @@ end
 local MAX_BINDINGS = 64
 local MAX_ROWS = 64
 local MAX_ID_LENGTH = 96
+local bindingFields = {id=true,name=true,absolute=true,selectionOverride=true,keepBuilders=true,deselectAfterOrder=true,rows=true}
 local childContexts = {
     acu='builder', sacu='builder', engineer='builder', land='units', air='units', navy='units',
     fighter='air', bomber='air', gunship='air', transport='air', scout='air',
@@ -34,7 +35,8 @@ local function IsList(value)
 end
 
 local function Copy(binding)
-    local result = {id=binding.id, name=binding.name, absolute=binding.absolute == true, selectionOverride=binding.selectionOverride, rows={}}
+    local result = {id=binding.id, name=binding.name, absolute=binding.absolute == true,
+        selectionOverride=binding.selectionOverride, keepBuilders=binding.keepBuilders, rows={}}
     for i, row in ipairs(binding.rows) do
         result.rows[i] = {context=row.context, action=row.action, mode=row.mode, quickRepeat=row.quickRepeat, fallback=row.fallback}
     end
@@ -54,13 +56,16 @@ local function Fields(value, allowed)
 end
 local function Validate(binding, actions, loading, previous)
     if type(binding) ~= 'table' or not Identifier(binding.id) then return nil, T('hotbuild.context_model.s001') end
-    if not Fields(binding, {id=true,name=true,absolute=true,selectionOverride=true,deselectAfterOrder=true,rows=true}) then return nil, T('hotbuild.context_model.s002') end
+    if not Fields(binding, bindingFields) then return nil, T('hotbuild.context_model.s002') end
     if type(binding.name) ~= 'string' then return nil, T('hotbuild.context_model.s003') end
     if binding.absolute ~= nil and type(binding.absolute) ~= 'boolean' then return nil, T('hotbuild.context_model.s004') end
     local selectionOverride=binding.selectionOverride
     if selectionOverride==nil then selectionOverride=binding.deselectAfterOrder end
     if selectionOverride ~= nil and type(selectionOverride) ~= 'boolean' then
         return nil, T('hotbuild.context_model.selection_override_type')
+    end
+    if binding.keepBuilders ~= nil and type(binding.keepBuilders) ~= 'boolean' then
+        return nil, T('hotbuild.context_model.keep_builders_type')
     end
     local name = string.gsub(string.gsub(binding.name, '^%s+', ''), '%s+$', '')
     if name == '' or string.len(name) > 128 then return nil, T('hotbuild.context_model.s005') end
@@ -135,7 +140,8 @@ local function Validate(binding, actions, loading, previous)
         end
         seen[row.context] = true
     end
-    return {id=binding.id, name=loading and binding.name or name, absolute=binding.absolute == true, selectionOverride=selectionOverride or nil, rows=rows}
+    return {id=binding.id, name=loading and binding.name or name, absolute=binding.absolute == true,
+        selectionOverride=selectionOverride or nil, keepBuilders=binding.keepBuilders or nil, rows=rows}
 end
 
 local function BuildActions(actions)
@@ -152,7 +158,7 @@ local function BuildActions(actions)
         if type(item) == 'table' and Identifier(item.id) then definitions[item.id] = true end
     end
     return {Contexts=contexts, IsSelection=function(id) return actions.IsSelection and actions.IsSelection(id) or false end, Get=function(id) if definitions[id] then return actions.Get(id) end end,
-        Supports=function(id, context) return id~='load_transports' and definitions[id] and actions.Supports(id, context) or false end}
+        Supports=function(id, context) return definitions[id] and actions.SupportsComposite(id, context) or false end}
 end
 
 function Create(saved, actions)
@@ -206,7 +212,7 @@ function Create(saved, actions)
             end
             -- Generic Forces assignments historically excluded transport and scouts.
             if childContext=='transport' or childContext=='scout' then
-                if not parent or (parent.mode or 'own')~='own' then return nil end
+                if not parent or (parent.mode or 'own')~='own' or parent.action=='load_transports' then return nil end
             elseif childContexts[childContexts[childContext]] then
                 parent=self:ResolveRow(binding,childContexts[childContext])
             end
@@ -326,8 +332,9 @@ function Create(saved, actions)
                     local valid
                     local source=binding
                     if saved.version==1 and type(binding)=='table' and IsList(binding.rows) then
-                        source={id=binding.id,name=binding.name,absolute=binding.absolute,selectionOverride=binding.selectionOverride,deselectAfterOrder=binding.deselectAfterOrder,rows={}}
-                        if not Fields(binding, {id=true,name=true,absolute=true,selectionOverride=true,deselectAfterOrder=true,rows=true}) then source=binding end
+                        source={id=binding.id,name=binding.name,absolute=binding.absolute,selectionOverride=binding.selectionOverride,
+                            keepBuilders=binding.keepBuilders,deselectAfterOrder=binding.deselectAfterOrder,rows={}}
+                        if not Fields(binding, bindingFields) then source=binding end
                         for _, row in ipairs(binding.rows) do
                             if source==binding then break end
                             if type(row)=='table' and Fields(row,{context=true,action=true,mode=true,quickRepeat=true,fallback=true}) then
@@ -346,7 +353,7 @@ function Create(saved, actions)
                         local cursorRow, candidate, candidateRow, candidateCount, ambiguous = nil, nil, nil, 0, false
                         for _, row in ipairs(valid.rows) do
                             if row.context=='cursor' then cursorRow=row end
-                            if row.mode~='disabled' and row.mode~='inherit' and (row.action=='upgrade_structure_under_cursor' or row.action=='upgrade_structure_pause' or row.action=='upgrade_mex_select_next' or row.action=='upgrade_structure') then
+                            if row.mode~='disabled' and row.mode~='inherit' and (row.action=='upgrade_structure_under_cursor' or row.action=='upgrade_structure_pause' or row.action=='upgrade_structure') then
                                 local cursorAction=row.action=='upgrade_structure' and 'upgrade_structure_under_cursor' or row.action
                                 candidateCount=candidateCount+1; candidateRow=row
                                 if candidate and candidate~=cursorAction then ambiguous=true else candidate=cursorAction end
@@ -362,17 +369,10 @@ function Create(saved, actions)
                         elseif not valid.absolute and not cursorRow and ambiguous then
                             table.insert(diagnostics,T('hotbuild.context_model.s033')..valid.id..T('hotbuild.context_model.s034'))
                         end
-                        -- Cursor migration above can keep the action when its target is free.
-                        -- Any surviving empty-selection assignment must be retired.
-                        for i=table.getn(valid.rows),1,-1 do
-                            local row=valid.rows[i]
-                            if row.context=='empty' then
-                                if row.action=='upgrade_mex_select_next' then
-                                    table.remove(valid.rows,i)
-                                else
-                                    if row.quickRepeat=='upgrade_mex_select_next' then row.quickRepeat=nil end
-                                    if row.fallback=='upgrade_mex_select_next' then row.fallback=nil end
-                                end
+                        for _, row in ipairs(valid.rows) do
+                            if row.context=='empty' and row.action~='upgrade_mex_select_next' then
+                                if row.quickRepeat=='upgrade_mex_select_next' then row.quickRepeat=nil end
+                                if row.fallback=='upgrade_mex_select_next' then row.fallback=nil end
                             end
                         end
                         table.insert(bindings, valid)

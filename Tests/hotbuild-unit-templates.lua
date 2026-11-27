@@ -126,6 +126,41 @@ assert(#commands==2 and commands[1][1]=='UNITCOMMAND_BuildFactory' and commands[
 assert(commands[2][2]=='uel0102' and commands[2][3]==1,'saved order and counts are kept')
 assert(#modes==0,'no placement mode for a queue template')
 assert(refreshes==1,'the construction panel refreshes once')
+-- Tier selection is shared between unit templates and ordinary factory orders.
+units.uel0303=unit('uel0303','Siege tank','UEF','T3','LAND')
+source={
+    {name='T1',templateData={{id='uel0101',count=1}}},
+    {name='T2',templateData={{id='uel0202',count=1}}},
+    {name='T3',templateData={{id='uel0303',count=1}}},
+}
+catalog:RefreshTemplates()
+local tierIds={}
+for _,item in ipairs(catalog:List({})) do tierIds[item.tech]=item.id end
+selected={factory(nil,{'uel0101','uel0202','uel0303'})}
+local entries={{kind='blueprint',id=tierIds.T1},{kind='blueprint',id=tierIds.T2},{kind='blueprint',id=tierIds.T3}}
+for tier=1,3 do
+    local tierContext=adapter:Context(false)
+    tierContext.factoryTechTab=tier
+    tierContext.bindingEntries=entries
+    for candidate=1,3 do
+        assert(adapter:CanBuild(tierIds['T'..candidate],tierContext)==(candidate==tier),
+            'multiple templates follow the selected tier')
+    end
+end
+for tier=1,3 do
+    local tierContext=adapter:Context(false)
+    tierContext.factoryTechTab=tier
+    tierContext.bindingEntries={{kind='blueprint',id=tierIds.T2}}
+    assert(adapter:CanBuild(tierIds.T2,tierContext),'a single assigned tier works on every tech tab')
+end
+local mixedContext=adapter:Context(false)
+mixedContext.factoryTechTab=2
+mixedContext.bindingEntries={{kind='blueprint',id='uel0101'},{kind='blueprint',id=tierIds.T2}}
+assert(not adapter:CanBuild('uel0101',mixedContext) and adapter:CanBuild(tierIds.T2,mixedContext),
+    'ordinary units and templates share the tier count')
+source={{name='Tank + AA',templateData={{id='uel0101',count=2},{id='uel0102',count=1}}}}
+catalog:RefreshTemplates()
+selected={factory(nil,{'uel0101','uel0102'})}
 assert(table.concat(transaction,',')=='issue,issue','a full factory selection needs no selection transaction')
 
 -- Shift never multiplies saved counts: the template queues exactly its composition.

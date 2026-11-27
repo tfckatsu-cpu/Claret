@@ -111,7 +111,9 @@ mapper={
 }
 runtimeEnvironment=setmetatable({
     __blueprints={ueb1101={BlueprintId='ueb1101',General={UnitName='Power Generator'},Description='Generator',
-        Categories={'UEF','STRUCTURE','TECH1','BUILTBYTIER1FACTORY'}}},
+        Categories={'UEF','STRUCTURE','TECH1','BUILTBYTIER1FACTORY'}},
+        ueb0101={BlueprintId='ueb0101',General={UnitName='Land Factory'},Description='Factory',
+            Categories={'UEF','STRUCTURE','FACTORY','LAND','TECH1','BUILTBYTIER1ENGINEER'}}},
     LOC=function(value) return value end,
     GetSelectedUnits=function() return selected end,
     IsKeyDown=function(key) return key=='Control' and commandModule.controlDown end,
@@ -151,7 +153,7 @@ runtimeEnvironment=setmetatable({
         if units and #units==1 and units[1].canPause then orders[#orders+1]='RULEUCC_Pause' end
         return orders, {}, category
     end,
-    EntityCategoryGetUnitList=function(category) return category=='BUILDABLE' and {'ueb1101'} or {} end,
+    EntityCategoryGetUnitList=function(category) return category=='BUILDABLE' and {'ueb1101','ueb0101'} or {} end,
     IssueBlueprintCommand=function(...) buildCalls[#buildCalls+1]={...} end,
     GetFrame=function() return {} end,
     IsDestroyed=function() return true end,
@@ -764,25 +766,37 @@ local unrelated=makeUnit('LAND','CANNOT_BUILD'); unrelated.entityId=33
 selected={unrelated}; testNow=26
 assert(not service:Execute('add','ctxAdd') and #selected==1 and selected[1]==unrelated,
     'an empty-selection chain does not start on a manual unrelated selection')
-local mexA=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexA.entityId=20
-local mexB=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexB.entityId=21
-local upgrades=0
-modules['/mods/ClaretHotbuild/modules/ContextUpgrade.lua']={
-    Available=function() return true end,
-    Execute=function(_,context)
-        if #context.selection==0 then selected={mexA}
-        else upgrades=upgrades+1; selected={mexB} end
-        return true
-    end,
-}
-assert(not service.contextModel:Put({id='ctxMexNext',name='Mex',rows={
-    {context='empty',action='upgrade_mex_select_next'}}}))
-assert(service.contextModel:Put({id='ctxMexNext',name='Mex',rows={
-    {context='cursor',action='upgrade_mex_select_next'}}}))
-assert(service.model:Put({id='mexNext',name='Mex',key='',entries={},grid={buildings={},units={},context='ctxMexNext'}}))
-selected={mexA}; testNow=50
-assert(service:Execute('mexNext','ctxMexNext') and selected[1]==mexB and upgrades==1,
-    'the cursor action still dispatches the upgrade-and-select command')
+do
+    local mexA=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexA.entityId=20
+    local mexB=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexB.entityId=21
+    local mexC=makeUnit('MASSEXTRACTION','CANNOT_BUILD'); mexC.entityId=22
+    local upgrades=0
+    modules['/mods/ClaretHotbuild/modules/ContextUpgrade.lua']={
+        Available=function() return true end,
+        Execute=function(_,context)
+            if #context.selection==0 then selected={mexA}
+            else
+                upgrades=upgrades+1
+                selected={context.selection[1]==mexA and mexB or mexC}
+            end
+            return true
+        end,
+    }
+    assert(service.contextModel:Put({id='ctxMexEmpty',name='Mex chain',rows={
+        {context='empty',action='upgrade_mex_select_next'}}}))
+    assert(not service.contextModel:Put({id='ctxMexNext',name='Mex',rows={
+        {context='cursor',action='upgrade_mex_select_next'}}}))
+    selected={}
+    assert(service:ExecuteKeyboardComposite('ctxMexEmpty') and selected[1]==mexA and upgrades==0,
+        'the empty tile starts by selecting an extractor without upgrading it')
+    testNow=testNow+10
+    assert(service:ExecuteKeyboardComposite('ctxMexEmpty') and selected[1]==mexB and upgrades==1)
+    assert(service:ExecuteKeyboardComposite('ctxMexEmpty') and selected[1]==mexC and upgrades==2,
+        'following presses continue in the extractor selection without a time window')
+    selected={mexA}
+    assert(not service:ExecuteKeyboardComposite('ctxMexEmpty') and upgrades==2,
+        'manually changing selection ends the extractor chain')
+end
 local cursorEligible=true
 local cursorCalls=0
 modules['/mods/ClaretHotbuild/modules/ContextUpgrade.lua']={
@@ -1024,8 +1038,70 @@ do
         'a retired composite load cannot issue the native call')
     assert(service:ExecuteKeyboardAction('load_transports') and #selectCalls==before+1,
         'ordinary keyboard transport loading is still available')
+    local cargo,transport=selected[1],selected[2]
+    assert(service.contextModel:Put({id='transport_load',name='Load',rows={
+        {context='transport',action='load_transports'},
+    }}))
+    assert(service:ExecuteKeyboardComposite('transport_load') and #selectCalls==before+2
+        and selectCalls[#selectCalls]:find('LoadIntoTransports(false)',1,true),
+        'the Transport row loads the combined selection once with unassigned cargo')
+    selected={transport}
+    assert(not service:ExecuteKeyboardComposite('transport_load') and #selectCalls==before+2,
+        'a transport without cargo does not issue the load action')
+    selected={cargo,transport}
+    assert(service.contextModel:Put({id='transport_conflict',name='Conflict',rows={
+        {context='transport',action='load_transports'}, {context='land',action='move'},
+    }}))
+    assert(not service:ExecuteKeyboardComposite('transport_conflict') and #selectCalls==before+2,
+        'an explicit cargo action conflicts with loading')
 end
 -- Per-chord pairs own both slots and dispatch independently of grid.context metadata.
+do
+    assert(service:Commit({id='factory_asf_build',name='Factory',key='',entries={{kind='blueprint',id='ueb0101'}}}))
+    assert(service:CommitContext({id='factory_asf_action',name='ASF',selectionOverride=true,keepBuilders=true,rows={
+        {context='empty',action='select_fighters'}, {context='air',action='move'},
+    }}))
+    assert(service.keyboardBindings:Set({kind='preset',id='factory_asf_build'},'W',{}))
+    assert(service.keyboardBindings:Set({kind='composite',id='factory_asf_action'},'W',{}))
+    local fighter=makeUnit('MOBILE','AIR','HIGHALTAIR','ANTIAIR')
+    commandModule.fighterSelection=fighter
+    for _,category in ipairs({'COMMAND','SUBCOMMANDER','ENGINEER'}) do
+        local builder=makeUnit(category,'MOBILE','LAND')
+        selected={builder}
+        local beforeCommands,beforeSelects=#commandCalls,#selectCalls
+        assert(service:ExecuteKeyboardPair('W') and #commandCalls==beforeCommands+1
+            and commandMode[1]=='build' and commandMode[2].name=='ueb0101'
+            and #selectCalls==beforeSelects and selected[1]==builder,
+            category..' opens factory placement before the paired fighter selector')
+    end
+    selected={makeUnit('ENGINEER','MOBILE','LAND','CANNOT_BUILD')}
+    commandMode={false,false}
+    local builder=selected[1]
+    assert(not service:ExecuteKeyboardPair('W') and selected[1]==builder,
+        'the Builders exception protects the selection even if the preset is unavailable')
+    assert(not service:ExecuteKeyboardComposite('factory_asf_action') and selected[1]==builder,
+        'the same exception applies to a standalone multifunction assignment')
+    local escort=makeUnit('MOBILE','LAND')
+    selected={escort,builder}
+    assert(not service:ExecuteKeyboardComposite('factory_asf_action')
+        and selected[1]==escort and selected[2]==builder,
+        'a mixed selection containing a builder is kept intact')
+    selected={makeUnit('MOBILE','LAND')}
+    assert(service:ExecuteKeyboardPair('W') and selected[1]==fighter,
+        'fighter selection still runs with a non-builder selected')
+    assert(service:ExecuteKeyboardPair('W') and commandMode[2].name=='RULEUCC_Move',
+        'the inherited air action still runs on selected fighters')
+    local binding=service.contextModel:Get('factory_asf_action')
+    binding.keepBuilders=nil
+    assert(service:CommitContext(binding))
+    commandMode={false,false}
+    selected={makeUnit('COMMAND','MOBILE','LAND')}
+    assert(service:ExecuteKeyboardPair('W') and selected[1]==fighter and not commandMode[1],
+        'with the exception off, the ordinary selection override replaces a build-capable selection')
+    commandModule.fighterSelection=nil
+    assert(service.keyboardBindings:Clear({kind='composite',id='factory_asf_action'},'W',{}))
+    assert(service.keyboardBindings:Clear({kind='preset',id='factory_asf_build'},'W',{}))
+end
 selected={makeUnit('COMMAND','CANNOT_BUILD')}
 local pairCommands=#commandCalls
 assert(service:ExecuteKeyboardPair('F1') and commandCalls[#commandCalls][2].name=='RULEUCC_Move',

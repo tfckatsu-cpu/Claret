@@ -185,21 +185,21 @@ function Create(catalog)
         if context.isReplay or context.focusArmy < 1 then return false end
         local record=catalog:Get(id)
         if not record then return false end
-        if record.unitTemplate then
-            if context.plans[id] ~= nil then return context.plans[id] ~= false end
-            local plan=self:TemplatePlan(record,context)
-            context.plans[id]=plan or false
-            return plan ~= nil
-        end
         if record.kind~='STRUCTURE' and not record.templateData and HasMixedFactories(context) then return false end
         local recordTechTab=techTabs[record.tech]
-        if context.factorySelection and record.kind~='STRUCTURE' and recordTechTab
+        if context.factorySelection and (not record.unitTemplate or context.bindingEntries)
+            and record.kind~='STRUCTURE' and recordTechTab
             and recordTechTab~=context.factoryTechTab then
             local singleTier=recordTechTab<=3 and context.factoryTechTab and context.factoryTechTab>=1
                 and context.factoryTechTab<=3 and SingleTierAssignment(record,context,catalog)
             if not singleTier then return false end
         end
         if context.plans[id] ~= nil then return context.plans[id] ~= false end
+        if record.unitTemplate then
+            local plan=self:TemplatePlan(record,context)
+            context.plans[id]=plan or false
+            return plan ~= nil
+        end
         if record.templateData then
             -- Initialize per-unit discovery through an ordinary constituent blueprint.
             self:CanBuild(record.firstBlueprint,context)
