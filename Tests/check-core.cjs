@@ -11,6 +11,7 @@ if (onlyIndex !== -1 && (!args[onlyIndex + 1] || args[onlyIndex + 1].startsWith(
 }
 const pattern = onlyIndex === -1 ? null : args[onlyIndex + 1];
 const root = '../mods/ClaretCore';
+const cinema = '../mods/ClaretCinema';
 let count = 0;
 function check(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -43,10 +44,11 @@ function check(dir) {
 check(root);
 check('../mods/ClaretHotbuild');
 check('../mods/ClaretUI');
+check(cinema);
 // LuaPlus rejects varargs in expression position (`f(...)`); such a module loads
 // as an empty table and the game reports a missing global. Claret UI forbids
 // varargs entirely, so the rule is checked on the AST, not on text.
-(function checkNoVarargs(dir) {
+function checkNoVarargs(dir) {
   const pending = [dir];
   while (pending.length) {
     const current = pending.pop();
@@ -67,7 +69,9 @@ check('../mods/ClaretUI');
       }
     }
   }
-})('../mods/ClaretUI');
+}
+checkNoVarargs('../mods/ClaretUI');
+checkNoVarargs(cinema);
 // FAF's import returns the module environment, not the chunk's return value: a
 // module that only declares `local` helpers and ends with `return { ... }`
 // loads as an empty table and the caller reports a nonexistent global. Every
@@ -106,6 +110,7 @@ function checkModuleExports(dir) {
 checkModuleExports(root);
 checkModuleExports('../mods/ClaretHotbuild');
 checkModuleExports('../mods/ClaretUI');
+checkModuleExports(cinema);
 function readLocalizationKeys(file) {
   const source = fs.readFileSync(file, 'utf8');
   const keys = { en: new Set(), ru: new Set() };
@@ -125,6 +130,7 @@ const localizationFiles = [
   '../mods/ClaretCore/modules/LocalizationStrings.lua',
   '../mods/ClaretHotbuild/modules/LocalizationStrings.lua',
   '../mods/ClaretUI/modules/LocalizationStrings.lua',
+  `${cinema}/modules/Localization.lua`,
 ];
 const localizationKeys = { en: new Set(), ru: new Set() };
 for (const file of localizationFiles) {
@@ -143,7 +149,7 @@ function checkLocalizationReferences(dir) {
     if (entry.isDirectory()) checkLocalizationReferences(file);
     else if (file.endsWith('.lua') && !file.endsWith('LocalizationStrings.lua')) {
       const source = fs.readFileSync(file, 'utf8');
-      const matcher = /(['"])((?:core|hotbuild)\.[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\1/g;
+      const matcher = /(['"])((?:core|hotbuild|cinema)\.[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\1/g;
       let match;
       while ((match = matcher.exec(source))) {
         const key = match[2];
@@ -157,6 +163,7 @@ function checkLocalizationReferences(dir) {
 }
 checkLocalizationReferences(root);
 checkLocalizationReferences('../mods/ClaretHotbuild');
+checkLocalizationReferences(cinema);
 // Architecture boundary: Core must never import ClaretHotbuild.
 function checkCoreBoundary(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -190,6 +197,7 @@ function checkVersionIdentity(modName, dir) {
 checkVersionIdentity('ClaretCore', root);
 checkVersionIdentity('ClaretHotbuild', '../mods/ClaretHotbuild');
 checkVersionIdentity('ClaretUI', '../mods/ClaretUI');
+checkVersionIdentity('ClaretCinema', cinema);
 // Claret UI is a leaf dependency: Core and Hotbuild must never import it.
 for (const dir of [root, '../mods/ClaretHotbuild']) {
   const pending = [dir];

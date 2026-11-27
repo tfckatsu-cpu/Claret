@@ -6,7 +6,7 @@ How Claret tests work and how to add one without weakening the suite.
 
 - `node Tests/check-core.cjs --quiet` from the project root. `--only <substring>` runs a subset. `--quiet` prints one summary line; without it every test prints its own `PASS:` and the parser summary.
 - Auto-discovery: every `Tests/*.lua` runs; files ending in `-helper.lua` are shared helpers and are skipped. Adding a test file is enough — never edit a list.
-- Tests load production modules from `../mods/...` (the live mod folders). Keep the project copies and `../mods` identical; the runner reads the live ones.
+- Tests load production modules from `../mods/...` (the live mod folders), including `../mods/ClaretCinema`. The runner does not read project mirrors.
 - The runner first parses all mod Lua files with Lua 5.1 grammar, then runs each test in Fengari (Lua 5.3 with `math.mod` shimmed).
 
 ## Static checks (fail before any test runs)

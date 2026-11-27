@@ -17,10 +17,10 @@ Names and links below are copied from manifests for source attribution. No code 
 | Bi4UI.StrategicRings | Bi4ara | not specified | v20; Context/sources/MainMods/Bi4UI.StrategicRings/mod_info.lua |
 | BindStorage | Fuper |  | v1; Context/sources/MainMods/BindStorage/mod_info.lua |
 | BuilderAltSelect | HotCheese |  | v3; Context/sources/MainMods/BuilderAltSelect/mod_info.lua |
-| cinematics | Jip | not specified | v7; Context/sources/MainMods/cinematics/mod_info.lua |
+| cinematics | Jip | not specified; user reports permission to copy | v7; `Context/sources/cinematics/mod_info.lua`; Claret Cinema uses the tab set and camera controls as a behavioral reference (2026-11-27). |
 | CinematicsMod | speed2 | not specified | v1; Context/sources/MainMods/CinematicsMod/mod_info.lua |
 | Ctrl | 4z0t |  | v2; Context/sources/MainMods/Ctrl/mod_info.lua |
-| dear-windowing | (Jip) Willem Wijnia | not specified | v9; Context/sources/MainMods/dear-windowing/mod_info.lua |
+| dear-windowing | (Jip) Willem Wijnia | not specified | v9; `../mods/dear-windowing/mod_info.lua` and `modules/window-docked-left.lua`; behavioral reference for folding the shooting drawer (2026-11-27). |
 | DelisRedundantEcoHelp | Deli |  | v3; Context/sources/MainMods/DelisRedundantEcoHelp/mod_info.lua |
 | DynamicSelectionInfo | Nuggets HotCheese | Not specified | v3 / ReUI module 1.2.0; installed `../mods/DynamicSelectionInfo/mod_info.lua`, checked 2026-11-20. Selection HUD behaviour reference. |
 | Strategic Missile Construction Alerts | SonofaMitch | Not specified | v2; installed `../mods/StrategicMissileAlerts/mod_info.lua` and `modules/NukeAlerts.lua`, checked 2026-11-20. Behaviour reference for missile notifications. |

@@ -41,7 +41,7 @@ Use for every task that changes shipped mod files. Docs-only changes skip the ga
 From the repository root:
 
 ```
-powershell -NoProfile -File .\Tools\Sync-ClaretMods.ps1 -Mod <ClaretCore|ClaretHotbuild> -Paths '<path1>','<path2>'
+powershell -NoProfile -File .\Tools\Sync-ClaretMods.ps1 -Mod <ClaretCore|ClaretHotbuild|ClaretUI|ClaretCinema> -Paths '<path1>','<path2>'
 ```
 
 - Only the files listed in step 1. The script copies originals to mirrors, stops on conflicts and verifies SHA-256.
